@@ -1,0 +1,115 @@
+name: planpal
+description: "A comprehensive task and team productivity application"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # State Management
+  flutter_riverpod: ^2.6.1
+  riverpod_annotation: ^2.6.1
+
+  # Navigation
+  go_router: ^14.6.2
+
+  # Supabase & Backend
+  supabase_flutter: ^2.9.2
+  dio: ^5.7.0
+
+  # Local Database (Offline)
+  drift: ^2.20.3
+  sqlite3_flutter_libs: ^0.5.24
+  path_provider: ^2.1.5
+  path: ^1.9.0
+
+  # Secure Storage
+  flutter_secure_storage: ^9.2.2
+
+  # Preferences
+  shared_preferences: ^2.3.3
+
+  # Connectivity
+  connectivity_plus: ^6.1.1
+
+  # Background Tasks
+  workmanager: ^0.5.2
+
+  # Data Classes & JSON
+  freezed_annotation: ^2.4.4
+  json_annotation: ^4.9.0
+
+  # Validation & Utilities
+  intl: ^0.20.0
+  uuid: ^4.5.1
+  logger: ^2.4.0
+  image: ^4.3.0
+
+  # UI Components & Charts
+  fl_chart: ^0.70.1
+  table_calendar: ^3.1.2
+  cached_network_image: ^3.4.1
+
+  # Rich Text Editor
+  flutter_quill: ^11.0.0
+
+  # File Handling
+  file_picker: ^8.1.6
+  image_picker: ^1.1.2
+  url_launcher: ^6.3.2
+
+  # Firebase (Push Notifications)
+  firebase_core: ^3.8.1
+  firebase_messaging: ^15.1.5
+  flutter_local_notifications: ^18.0.1
+
+  # Windows-specific
+  window_manager: ^0.4.3
+
+  # Google Sign In
+  google_sign_in: ^6.2.2
+
+  # Icons & Assets
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+  # Code Generation
+  build_runner: ^2.4.13
+  riverpod_generator: ^2.6.2
+  freezed: ^2.5.7
+  json_serializable: ^6.8.0
+  drift_dev: ^2.20.3
+
+  # Testing
+  mocktail: ^1.0.4
+
+flutter:
+  uses-material-design: true
+  generate: true
+
+  # Assets
+  assets:
+    - assets/images/
+    - assets/fonts/
+
+  # Fonts
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Regular.ttf
+        - asset: assets/fonts/Inter-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Inter-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Inter-Bold.ttf
+          weight: 700

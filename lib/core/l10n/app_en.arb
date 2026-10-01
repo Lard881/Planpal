@@ -1,0 +1,237 @@
+{
+  "@@locale": "en",
+  "appName": "PlanPal",
+  "welcome": "Welcome",
+  "login": "Sign In",
+  "signup": "Sign Up",
+  "email": "Email",
+  "password": "Password",
+  "confirmPassword": "Confirm Password",
+  "forgotPassword": "Forgot Password?",
+  "createAccount": "Create Account",
+  "orContinueWith": "or continue with",
+  "google": "Google",
+  "alreadyHaveAccount": "Already have an account?",
+  "dontHaveAccount": "Don't have an account?",
+  "home": "Home",
+  "tasks": "Tasks",
+  "calendar": "Calendar",
+  "chat": "Chat",
+  "documents": "Documents",
+  "analytics": "Analytics",
+  "team": "Team",
+  "settings": "Settings",
+  "profile": "Profile",
+  "notifications": "Notifications",
+  "logout": "Sign Out",
+  "save": "Save",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "edit": "Edit",
+  "create": "Create",
+  "search": "Search",
+  "filter": "Filter",
+  "sort": "Sort",
+  "loading": "Loading...",
+  "retry": "Retry",
+  "error": "Error",
+  "success": "Success",
+  "offline": "Offline",
+  "online": "Online",
+  "syncing": "Syncing...",
+  "noData": "No data available",
+  "noResults": "No results found",
+  
+  "@_NOTIFICATION_TITLES": {},
+  "notificationTitleTaskAssigned": "Task Assigned",
+  "notificationTitleTaskCompleted": "Task Completed",
+  "notificationTitleTaskOverdue": "Task Overdue",
+  "notificationTitleTaskDueSoon": "Task Due Soon",
+  "notificationTitleTaskCommented": "New Comment",
+  "notificationTitleTaskStatusChanged": "Task Status Changed",
+  "notificationTitleProjectInvite": "Project Invitation",
+  "notificationTitleProjectUpdated": "Project Updated",
+  "notificationTitleProjectDeadline": "Project Deadline",
+  "notificationTitleEventReminder": "Event Reminder",
+  "notificationTitleEventStartingSoon": "Event Starting Soon",
+  "notificationTitleEventUpdated": "Event Updated",
+  "notificationTitleEventCancelled": "Event Cancelled",
+  "notificationTitleChatMessage": "New Message",
+  "notificationTitleChatMention": "You Were Mentioned",
+  "notificationTitleWorkspaceInvite": "Workspace Invitation",
+  "notificationTitleWorkspaceRoleChanged": "Role Changed",
+  "notificationTitleSystem": "System Notification",
+  "notificationTitleDefault": "Notification",
+  
+  "@_NOTIFICATION_BODIES": {},
+  "notificationBodyTaskAssigned": "{actor} assigned you to \"{task}\"",
+  "@notificationBodyTaskAssigned": {
+    "placeholders": {
+      "actor": {"type": "String"},
+      "task": {"type": "String"}
+    }
+  },
+  "notificationBodyTaskAssignedGeneric": "You have been assigned to a new task",
+  "notificationBodyTaskCompleted": "{actor} completed \"{task}\"",
+  "@notificationBodyTaskCompleted": {
+    "placeholders": {
+      "actor": {"type": "String"},
+      "task": {"type": "String"}
+    }
+  },
+  "notificationBodyTaskCompletedGeneric": "A task has been completed",
+  "notificationBodyTaskOverdue": "\"{task}\" is overdue",
+  "@notificationBodyTaskOverdue": {
+    "placeholders": {
+      "task": {"type": "String"}
+    }
+  },
+  "notificationBodyTaskOverdueGeneric": "You have overdue tasks",
+  "notificationBodyTaskDueSoon": "\"{task}\" is due {time}",
+  "@notificationBodyTaskDueSoon": {
+    "placeholders": {
+      "task": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "notificationBodyTaskDueSoonGeneric": "You have tasks due soon",
+  "notificationBodyTaskCommented": "{actor} commented on \"{task}\"",
+  "@notificationBodyTaskCommented": {
+    "placeholders": {
+      "actor": {"type": "String"},
+      "task": {"type": "String"}
+    }
+  },
+  "notificationBodyTaskCommentedGeneric": "New comment on a task",
+  "notificationBodyTaskStatusChanged": "\"{task}\" status changed to {status}",
+  "@notificationBodyTaskStatusChanged": {
+    "placeholders": {
+      "task": {"type": "String"},
+      "status": {"type": "String"}
+    }
+  },
+  "notificationBodyTaskStatusChangedGeneric": "Task status has changed",
+  "notificationBodyProjectInvite": "{actor} invited you to join \"{project}\"",
+  "@notificationBodyProjectInvite": {
+    "placeholders": {
+      "actor": {"type": "String"},
+      "project": {"type": "String"}
+    }
+  },
+  "notificationBodyProjectInviteGeneric": "You have been invited to a project",
+  "notificationBodyProjectUpdated": "\"{project}\" has been updated",
+  "@notificationBodyProjectUpdated": {
+    "placeholders": {
+      "project": {"type": "String"}
+    }
+  },
+  "notificationBodyProjectUpdatedGeneric": "A project has been updated",
+  "notificationBodyProjectDeadline": "\"{project}\" deadline is {time}",
+  "@notificationBodyProjectDeadline": {
+    "placeholders": {
+      "project": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "notificationBodyProjectDeadlineGeneric": "Project deadline approaching",
+  "notificationBodyEventReminder": "Reminder: \"{event}\" starts {time}",
+  "@notificationBodyEventReminder": {
+    "placeholders": {
+      "event": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "notificationBodyEventReminderGeneric": "You have an upcoming event",
+  "notificationBodyEventStartingSoon": "\"{event}\" starts {time}",
+  "@notificationBodyEventStartingSoon": {
+    "placeholders": {
+      "event": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "notificationBodyEventStartingSoonGeneric": "An event is starting soon",
+  "notificationBodyEventUpdated": "\"{event}\" has been updated",
+  "@notificationBodyEventUpdated": {
+    "placeholders": {
+      "event": {"type": "String"}
+    }
+  },
+  "notificationBodyEventUpdatedGeneric": "An event has been updated",
+  "notificationBodyEventCancelled": "\"{event}\" has been cancelled",
+  "@notificationBodyEventCancelled": {
+    "placeholders": {
+      "event": {"type": "String"}
+    }
+  },
+  "notificationBodyEventCancelledGeneric": "An event has been cancelled",
+  "notificationBodyChatMessage": "{actor} sent you a message",
+  "@notificationBodyChatMessage": {
+    "placeholders": {
+      "actor": {"type": "String"}
+    }
+  },
+  "notificationBodyChatMessageGeneric": "You have a new message",
+  "notificationBodyChatMention": "{actor} mentioned you in a chat",
+  "@notificationBodyChatMention": {
+    "placeholders": {
+      "actor": {"type": "String"}
+    }
+  },
+  "notificationBodyChatMentionGeneric": "You were mentioned in a chat",
+  "notificationBodyWorkspaceInvite": "{actor} invited you to join \"{workspace}\"",
+  "@notificationBodyWorkspaceInvite": {
+    "placeholders": {
+      "actor": {"type": "String"},
+      "workspace": {"type": "String"}
+    }
+  },
+  "notificationBodyWorkspaceInviteGeneric": "You have been invited to a workspace",
+  "notificationBodyWorkspaceRoleChanged": "Your role in \"{workspace}\" changed to {role}",
+  "@notificationBodyWorkspaceRoleChanged": {
+    "placeholders": {
+      "workspace": {"type": "String"},
+      "role": {"type": "String"}
+    }
+  },
+  "notificationBodyWorkspaceRoleChangedGeneric": "Your workspace role has changed",
+  "notificationBodySystemGeneric": "System notification",
+  "notificationBodyDefault": "You have a new notification",
+  
+  "@_TIME_FORMATTING": {},
+  "timeRemainingDays": "in {days} {days, plural, =1{day} other{days}}",
+  "@timeRemainingDays": {
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
+  "timeRemainingHours": "in {hours} {hours, plural, =1{hour} other{hours}}",
+  "@timeRemainingHours": {
+    "placeholders": {
+      "hours": {"type": "int"}
+    }
+  },
+  "timeRemainingMinutes": "in {minutes} {minutes, plural, =1{minute} other{minutes}}",
+  "@timeRemainingMinutes": {
+    "placeholders": {
+      "minutes": {"type": "int"}
+    }
+  },
+  "timeOverdueDays": "{days} {days, plural, =1{day} other{days}} overdue",
+  "@timeOverdueDays": {
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
+  "timeOverdueHours": "{hours} {hours, plural, =1{hour} other{hours}} overdue",
+  "@timeOverdueHours": {
+    "placeholders": {
+      "hours": {"type": "int"}
+    }
+  },
+  "timeOverdueMinutes": "{minutes} {minutes, plural, =1{minute} other{minutes}} overdue",
+  "@timeOverdueMinutes": {
+    "placeholders": {
+      "minutes": {"type": "int"}
+    }
+  }
+}
