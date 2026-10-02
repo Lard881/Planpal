@@ -16,7 +16,7 @@ class Env {
   // Backend API
   static const String apiBaseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://localhost:3000/api/v1',
+    defaultValue: 'https://planpalbackend.onrender.com/api/v1',
   );
 
   // Google OAuth (will be added in Stage 4)
