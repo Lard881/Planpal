@@ -1,0 +1,105 @@
+Running Gradle task 'assembleDebug'...                          
+lib/features/tasks/screens/task_detail_screen.dart:38:70: Error: Can't find '}' to match '{'.
+class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
+                                                                     ^
+lib/features/tasks/screens/task_detail_screen.dart:1015:1: Error: Classes can't be declared inside other classes.
+Try moving the class to the top-level.
+class _LabelPickerSheet extends ConsumerStatefulWidget {
+^^^^^
+lib/features/tasks/screens/task_detail_screen.dart:1015:25: Error: Expected a class member, but got 'extends'.
+class _LabelPickerSheet extends ConsumerStatefulWidget {
+                        ^^^^^^^
+lib/features/tasks/screens/task_detail_screen.dart:1015:33: Error: A method declaration needs an explicit list of parameters.
+Try adding a parameter list to the method declaration.
+class _LabelPickerSheet extends ConsumerStatefulWidget {
+                                ^^^^^^^^^^^^^^^^^^^^^^
+lib/features/tasks/screens/task_detail_screen.dart:1032:1: Error: Classes can't be declared inside other classes.
+Try moving the class to the top-level.
+class _LabelPickerSheetState extends ConsumerState<_LabelPickerSheet> {
+^^^^^
+lib/features/tasks/screens/task_detail_screen.dart:1032:30: Error: Expected a class member, but got 'extends'.
+class _LabelPickerSheetState extends ConsumerState<_LabelPickerSheet> {
+                             ^^^^^^^
+lib/features/tasks/screens/task_detail_screen.dart:1032:38: Error: A method declaration needs an explicit list of parameters.
+Try adding a parameter list to the method declaration.
+class _LabelPickerSheetState extends ConsumerState<_LabelPickerSheet> {
+                                     ^^^^^^^^^^^^^
+lib/features/tasks/screens/task_detail_screen.dart:1171:1: Error: Classes can't be declared inside other classes.
+Try moving the class to the top-level.
+class _UploadDialog extends ConsumerStatefulWidget {
+^^^^^
+lib/features/tasks/screens/task_detail_screen.dart:1171:21: Error: Expected a class member, but got 'extends'.
+class _UploadDialog extends ConsumerStatefulWidget {
+                    ^^^^^^^
+lib/features/tasks/screens/task_detail_screen.dart:1171:29: Error: A method declaration needs an explicit list of parameters.
+Try adding a parameter list to the method declaration.
+class _UploadDialog extends ConsumerStatefulWidget {
+                            ^^^^^^^^^^^^^^^^^^^^^^
+lib/features/tasks/screens/task_detail_screen.dart:1184:1: Error: Classes can't be declared inside other classes.
+Try moving the class to the top-level.
+class _UploadDialogState extends ConsumerState<_UploadDialog> {
+^^^^^
+lib/features/tasks/screens/task_detail_screen.dart:1184:26: Error: Expected a class member, but got 'extends'.
+class _UploadDialogState extends ConsumerState<_UploadDialog> {
+                         ^^^^^^^
+lib/features/tasks/screens/task_detail_screen.dart:1184:34: Error: A method declaration needs an explicit list of parameters.
+Try adding a parameter list to the method declaration.
+class _UploadDialogState extends ConsumerState<_UploadDialog> {
+                                 ^^^^^^^^^^^^^
+lib/features/tasks/screens/task_detail_screen.dart:1171:29: Error: 'ConsumerStatefulWidget' is already declared in this scope.
+class _UploadDialog extends ConsumerStatefulWidget {
+                            ^^^^^^^^^^^^^^^^^^^^^^
+lib/features/tasks/screens/task_detail_screen.dart:1015:33: Context: Previous declaration of 'ConsumerStatefulWidget'.
+class _LabelPickerSheet extends ConsumerStatefulWidget {
+                                ^^^^^^^^^^^^^^^^^^^^^^
+lib/features/tasks/screens/task_detail_screen.dart:1184:34: Error: 'ConsumerState' is already declared in this scope.
+class _UploadDialogState extends ConsumerState<_UploadDialog> {
+                                 ^^^^^^^^^^^^^
+lib/features/tasks/screens/task_detail_screen.dart:1032:38: Context: Previous declaration of 'ConsumerState'.
+class _LabelPickerSheetState extends ConsumerState<_LabelPickerSheet> {
+                                     ^^^^^^^^^^^^^
+lib/features/tasks/screens/task_detail_screen.dart:130:32: Error: The getter '_saveChanges' isn't defined for the type '_TaskDetailScreenState'.
+ - '_TaskDetailScreenState' is from 'package:planpal/features/tasks/screens/task_detail_screen.dart' ('lib/features/tasks/screens/task_detail_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named '_saveChanges'.
+                    onPressed: _saveChanges,
+                               ^^^^^^^^^^^^
+lib/features/tasks/screens/task_detail_screen.dart:136:23: Error: The method '_confirmDelete' isn't defined for the type '_TaskDetailScreenState'.
+ - '_TaskDetailScreenState' is from 'package:planpal/features/tasks/screens/task_detail_screen.dart' ('lib/features/tasks/screens/task_detail_screen.dart').
+Try correcting the name to the name of an existing method, or defining a method named '_confirmDelete'.
+                      _confirmDelete(task);
+                      ^^^^^^^^^^^^^^
+lib/features/tasks/screens/task_detail_screen.dart:200:19: Error: The method '_buildMetadata' isn't defined for the type '_TaskDetailScreenState'.
+ - '_TaskDetailScreenState' is from 'package:planpal/features/tasks/screens/task_detail_screen.dart' ('lib/features/tasks/screens/task_detail_screen.dart').
+Try correcting the name to the name of an existing method, or defining a method named '_buildMetadata'.
+                  _buildMetadata(task),
+                  ^^^^^^^^^^^^^^
+lib/features/tasks/screens/task_detail_screen.dart:459:31: Error: The getter '_pickDueDate' isn't defined for the type '_TaskDetailScreenState'.
+ - '_TaskDetailScreenState' is from 'package:planpal/features/tasks/screens/task_detail_screen.dart' ('lib/features/tasks/screens/task_detail_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named '_pickDueDate'.
+          onTap: _isEditing ? _pickDueDate : null,
+                              ^^^^^^^^^^^^
+lib/features/tasks/screens/task_detail_screen.dart:473:25: Error: The method '_formatDate' isn't defined for the type '_TaskDetailScreenState'.
+ - '_TaskDetailScreenState' is from 'package:planpal/features/tasks/screens/task_detail_screen.dart' ('lib/features/tasks/screens/task_detail_screen.dart').
+Try correcting the name to the name of an existing method, or defining a method named '_formatDate'.
+                      ? _formatDate(_selectedDueDate!)
+                        ^^^^^^^^^^^
+lib/features/tasks/screens/task_detail_screen.dart:585:18: Error: The method '_LabelPickerSheet' isn't defined for the type '_TaskDetailScreenState'.
+ - '_TaskDetailScreenState' is from 'package:planpal/features/tasks/screens/task_detail_screen.dart' ('lib/features/tasks/screens/task_detail_screen.dart').
+Try correcting the name to the name of an existing method, or defining a method named '_LabelPickerSheet'.
+          return _LabelPickerSheet(
+                 ^^^^^^^^^^^^^^^^^
+lib/features/tasks/screens/task_detail_screen.dart:754:32: Error: The getter '_handleAddLink' isn't defined for the type '_TaskDetailScreenState'.
+ - '_TaskDetailScreenState' is from 'package:planpal/features/tasks/screens/task_detail_screen.dart' ('lib/features/tasks/screens/task_detail_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named '_handleAddLink'.
+                    onPressed: _handleAddLink,
+                               ^^^^^^^^^^^^^^
+lib/features/tasks/screens/task_detail_screen.dart:763:29: Error: The getter '_handleAddLink' isn't defined for the type '_TaskDetailScreenState'.
+ - '_TaskDetailScreenState' is from 'package:planpal/features/tasks/screens/task_detail_screen.dart' ('lib/features/tasks/screens/task_detail_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named '_handleAddLink'.
+              onAddPressed: _handleAddLink,
+                            ^^^^^^^^^^^^^^
+lib/features/tasks/screens/task_detail_screen.dart:882:9: Error: Local variable '_buildMetadataRow' can't be referenced before it is declared.
+        _buildMetadataRow('Created', _formatDateTime(task.createdAt)),
+        ^^^^^^^^^^^^^^^^^
+lib/features/tasks/screens/task_detail_screen.dart:890:10: Context: This is the declaration of the variable '_buildMetadataRow'.
+  Widget _buildMetadataRow(String label, String value) {

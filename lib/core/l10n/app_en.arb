@@ -1,0 +1,579 @@
+{
+  "@@locale": "en",
+  "appName": "PlanPal",
+  "welcome": "Welcome",
+  "login": "Sign In",
+  "signup": "Sign Up",
+  "email": "Email",
+  "password": "Password",
+  "confirmPassword": "Confirm Password",
+  "forgotPassword": "Forgot Password?",
+  "createAccount": "Create Account",
+  "orContinueWith": "or continue with",
+  "google": "Google",
+  "alreadyHaveAccount": "Already have an account?",
+  "dontHaveAccount": "Don't have an account?",
+  "home": "Home",
+  "tasks": "Tasks",
+  "calendar": "Calendar",
+  "chat": "Chat",
+  "documents": "Documents",
+  "analytics": "Analytics",
+  "team": "Team",
+  "settings": "Settings",
+  "profile": "Profile",
+  "notifications": "Notifications",
+  "logout": "Sign Out",
+  "save": "Save",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "edit": "Edit",
+  "create": "Create",
+  "search": "Search",
+  "filter": "Filter",
+  "sort": "Sort",
+  "loading": "Loading...",
+  "retry": "Retry",
+  "error": "Error",
+  "success": "Success",
+  "offline": "Offline",
+  "online": "Online",
+  "syncing": "Syncing...",
+  "noData": "No data available",
+  "noResults": "No results found",
+  
+  "@_NOTIFICATION_TITLES": {},
+  "notificationTitleTaskAssigned": "Task Assigned",
+  "notificationTitleTaskCompleted": "Task Completed",
+  "notificationTitleTaskOverdue": "Task Overdue",
+  "notificationTitleTaskDueSoon": "Task Due Soon",
+  "notificationTitleTaskCommented": "New Comment",
+  "notificationTitleTaskStatusChanged": "Task Status Changed",
+  "notificationTitleProjectInvite": "Project Invitation",
+  "notificationTitleProjectUpdated": "Project Updated",
+  "notificationTitleProjectDeadline": "Project Deadline",
+  "notificationTitleEventReminder": "Event Reminder",
+  "notificationTitleEventStartingSoon": "Event Starting Soon",
+  "notificationTitleEventUpdated": "Event Updated",
+  "notificationTitleEventCancelled": "Event Cancelled",
+  "notificationTitleChatMessage": "New Message",
+  "notificationTitleChatMention": "You Were Mentioned",
+  "notificationTitleWorkspaceInvite": "Workspace Invitation",
+  "notificationTitleWorkspaceRoleChanged": "Role Changed",
+  "notificationTitleSystem": "System Notification",
+  "notificationTitleDefault": "Notification",
+  
+  "@_NOTIFICATION_BODIES": {},
+  "notificationBodyTaskAssigned": "{actor} assigned you to \"{task}\"",
+  "@notificationBodyTaskAssigned": {
+    "placeholders": {
+      "actor": {"type": "String"},
+      "task": {"type": "String"}
+    }
+  },
+  "notificationBodyTaskAssignedGeneric": "You have been assigned to a new task",
+  "notificationBodyTaskCompleted": "{actor} completed \"{task}\"",
+  "@notificationBodyTaskCompleted": {
+    "placeholders": {
+      "actor": {"type": "String"},
+      "task": {"type": "String"}
+    }
+  },
+  "notificationBodyTaskCompletedGeneric": "A task has been completed",
+  "notificationBodyTaskOverdue": "\"{task}\" is overdue",
+  "@notificationBodyTaskOverdue": {
+    "placeholders": {
+      "task": {"type": "String"}
+    }
+  },
+  "notificationBodyTaskOverdueGeneric": "You have overdue tasks",
+  "notificationBodyTaskDueSoon": "\"{task}\" is due {time}",
+  "@notificationBodyTaskDueSoon": {
+    "placeholders": {
+      "task": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "notificationBodyTaskDueSoonGeneric": "You have tasks due soon",
+  "notificationBodyTaskCommented": "{actor} commented on \"{task}\"",
+  "@notificationBodyTaskCommented": {
+    "placeholders": {
+      "actor": {"type": "String"},
+      "task": {"type": "String"}
+    }
+  },
+  "notificationBodyTaskCommentedGeneric": "New comment on a task",
+  "notificationBodyTaskStatusChanged": "\"{task}\" status changed to {status}",
+  "@notificationBodyTaskStatusChanged": {
+    "placeholders": {
+      "task": {"type": "String"},
+      "status": {"type": "String"}
+    }
+  },
+  "notificationBodyTaskStatusChangedGeneric": "Task status has changed",
+  "notificationBodyProjectInvite": "{actor} invited you to join \"{project}\"",
+  "@notificationBodyProjectInvite": {
+    "placeholders": {
+      "actor": {"type": "String"},
+      "project": {"type": "String"}
+    }
+  },
+  "notificationBodyProjectInviteGeneric": "You have been invited to a project",
+  "notificationBodyProjectUpdated": "\"{project}\" has been updated",
+  "@notificationBodyProjectUpdated": {
+    "placeholders": {
+      "project": {"type": "String"}
+    }
+  },
+  "notificationBodyProjectUpdatedGeneric": "A project has been updated",
+  "notificationBodyProjectDeadline": "\"{project}\" deadline is {time}",
+  "@notificationBodyProjectDeadline": {
+    "placeholders": {
+      "project": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "notificationBodyProjectDeadlineGeneric": "Project deadline approaching",
+  "notificationBodyEventReminder": "Reminder: \"{event}\" starts {time}",
+  "@notificationBodyEventReminder": {
+    "placeholders": {
+      "event": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "notificationBodyEventReminderGeneric": "You have an upcoming event",
+  "notificationBodyEventStartingSoon": "\"{event}\" starts {time}",
+  "@notificationBodyEventStartingSoon": {
+    "placeholders": {
+      "event": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "notificationBodyEventStartingSoonGeneric": "An event is starting soon",
+  "notificationBodyEventUpdated": "\"{event}\" has been updated",
+  "@notificationBodyEventUpdated": {
+    "placeholders": {
+      "event": {"type": "String"}
+    }
+  },
+  "notificationBodyEventUpdatedGeneric": "An event has been updated",
+  "notificationBodyEventCancelled": "\"{event}\" has been cancelled",
+  "@notificationBodyEventCancelled": {
+    "placeholders": {
+      "event": {"type": "String"}
+    }
+  },
+  "notificationBodyEventCancelledGeneric": "An event has been cancelled",
+  "notificationBodyChatMessage": "{actor} sent you a message",
+  "@notificationBodyChatMessage": {
+    "placeholders": {
+      "actor": {"type": "String"}
+    }
+  },
+  "notificationBodyChatMessageGeneric": "You have a new message",
+  "notificationBodyChatMention": "{actor} mentioned you in a chat",
+  "@notificationBodyChatMention": {
+    "placeholders": {
+      "actor": {"type": "String"}
+    }
+  },
+  "notificationBodyChatMentionGeneric": "You were mentioned in a chat",
+  "notificationBodyWorkspaceInvite": "{actor} invited you to join \"{workspace}\"",
+  "@notificationBodyWorkspaceInvite": {
+    "placeholders": {
+      "actor": {"type": "String"},
+      "workspace": {"type": "String"}
+    }
+  },
+  "notificationBodyWorkspaceInviteGeneric": "You have been invited to a workspace",
+  "notificationBodyWorkspaceRoleChanged": "Your role in \"{workspace}\" changed to {role}",
+  "@notificationBodyWorkspaceRoleChanged": {
+    "placeholders": {
+      "workspace": {"type": "String"},
+      "role": {"type": "String"}
+    }
+  },
+  "notificationBodyWorkspaceRoleChangedGeneric": "Your workspace role has changed",
+  "notificationBodySystemGeneric": "System notification",
+  "notificationBodyDefault": "You have a new notification",
+  
+  "@_TIME_FORMATTING": {},
+  "timeRemainingDays": "in {days} {days, plural, =1{day} other{days}}",
+  "@timeRemainingDays": {
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
+  "timeRemainingHours": "in {hours} {hours, plural, =1{hour} other{hours}}",
+  "@timeRemainingHours": {
+    "placeholders": {
+      "hours": {"type": "int"}
+    }
+  },
+  "timeRemainingMinutes": "in {minutes} {minutes, plural, =1{minute} other{minutes}}",
+  "@timeRemainingMinutes": {
+    "placeholders": {
+      "minutes": {"type": "int"}
+    }
+  },
+  "timeOverdueDays": "{days} {days, plural, =1{day} other{days}} overdue",
+  "@timeOverdueDays": {
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
+  "timeOverdueHours": "{hours} {hours, plural, =1{hour} other{hours}} overdue",
+  "@timeOverdueHours": {
+    "placeholders": {
+      "hours": {"type": "int"}
+    }
+  },
+  "timeOverdueMinutes": "{minutes} {minutes, plural, =1{minute} other{minutes}} overdue",
+  "@timeOverdueMinutes": {
+    "placeholders": {
+      "minutes": {"type": "int"}
+    }
+  },
+  
+  "@_ERROR_MESSAGES": {},
+  "errorNoNetwork": "No network connection. Please check your device's network settings.",
+  "errorNoInternet": "No internet connection. Please check your Wi-Fi or mobile data.",
+  "errorServerUnreachable": "Server is unreachable. It may be starting up, please wait a moment.",
+  "errorTimeout": "Request timed out. Please try again.",
+  "errorAuthRequired": "You need to be signed in to do this.",
+  "errorAuthExpired": "Your session has expired. Please sign in again.",
+  "errorInvalidCredentials": "Invalid email or password. Please try again.",
+  "errorEmailNotConfirmed": "Please confirm your email address before signing in.",
+  "errorUserAlreadyExists": "An account with this email already exists.",
+  "errorEmailAlreadyInUse": "This email is already in use.",
+  "errorWeakPassword": "Password must be at least 8 characters long.",
+  "errorAuthCancelled": "Sign in was cancelled.",
+  "errorNotAMember": "You are not a member of this workspace.",
+  "errorForbidden": "You don't have permission to do this.",
+  "errorLastAdmin": "Cannot remove the last admin. Promote another member first.",
+  "errorInvalidCode": "Invalid invite code. Please check and try again.",
+  "errorCodeExpired": "This invite code has expired.",
+  "errorCodeRevoked": "This invite code has been revoked.",
+  "errorCodeUsedUp": "This invite code has reached its maximum uses.",
+  "errorAlreadyMember": "You are already a member of this workspace.",
+  "errorFileTooLarge": "File is too large. Maximum size is 20 MB.",
+  "errorFileTypeNotAllowed": "This file type is not allowed.",
+  "errorNotFound": "Item not found.",
+  "errorNotFoundWithResource": "{resource} not found.",
+  "@errorNotFoundWithResource": {
+    "placeholders": {
+      "resource": {"type": "String"}
+    }
+  },
+  "errorTaskNotFound": "Task not found.",
+  "errorWorkspaceNotFound": "Workspace not found.",
+  "errorValidationFailed": "Please check the form and try again.",
+  "errorSyncConflict": "This item was changed elsewhere. Please refresh and try again.",
+  "errorWorkspaceNameTaken": "A workspace with this name already exists.",
+  "errorChatNotAvailableInPersonal": "Chat is not available in Personal workspaces. Create or join a team workspace to use chat.",
+  "chatNotAvailable": "Chat Not Available",
+  "errorChannelNotFound": "Channel not found.",
+  "errorMessageNotFound": "Message not found.",
+  "errorUnknown": "Something went wrong. Please try again.",
+  "errorServerError": "Server error. Please try again later.",
+  
+  "@_ERROR_TITLES": {},
+  "errorTitleNetwork": "Connection Error",
+  "errorTitleServer": "Server Error",
+  "errorTitleTimeout": "Timeout",
+  "errorTitleAuth": "Authentication Error",
+  "errorTitlePermission": "Permission Denied",
+  "errorTitleInviteCode": "Invalid Invite Code",
+  "errorTitleFile": "File Error",
+  "errorTitleNotFound": "Not Found",
+  "errorTitleValidation": "Validation Error",
+  "errorTitleSync": "Sync Error",
+  "errorTitleChat": "Chat Error",
+  
+  "@_ERROR_DIALOG": {},
+  "errorDetails": "Error Details",
+  "technicalDetails": "Technical Details",
+  "copyToClipboard": "Copy to Clipboard",
+  "copiedToClipboard": "Error details copied to clipboard",
+  
+  "@_AUTH_VALIDATION": {},
+  "validationEmailRequired": "Email is required",
+  "validationEmailInvalid": "Please enter a valid email address",
+  "validationPasswordRequired": "Password is required",
+  "validationPasswordMinLength": "Password must be at least {minLength} characters",
+  "@validationPasswordMinLength": {
+    "placeholders": {
+      "minLength": {"type": "int"}
+    }
+  },
+  "validationPasswordMatch": "Passwords must match",
+  "validationNameRequired": "Name is required",
+  "validationTermsRequired": "You must agree to the Terms of Service and Privacy Policy",
+  
+  "@_AUTH_SCREENS": {},
+  "authWelcomeBack": "Welcome back",
+  "authSignInToContinue": "Sign in to continue to PlanPal",
+  "authCreateAccount": "Create Account",
+  "authSignUpToGetStarted": "Sign up to get started with PlanPal",
+  "authFullName": "Full Name",
+  "authEnterYourName": "Enter your full name",
+  "authEnterYourEmail": "Enter your email",
+  "authEnterYourPassword": "Enter your password",
+  "authConfirmYourPassword": "Confirm your password",
+  "authAgreeToTerms": "I agree to the {terms} and {privacy}",
+  "@authAgreeToTerms": {
+    "placeholders": {
+      "terms": {"type": "String"},
+      "privacy": {"type": "String"}
+    }
+  },
+  "authTermsOfService": "Terms of Service",
+  "authPrivacyPolicy": "Privacy Policy",
+  "authContinueWithGoogle": "Continue with Google",
+  "authVerifyEmail": "Verify Your Email",
+  "authVerifyEmailDesc": "Enter the 6-digit code sent to {email}",
+  "@authVerifyEmailDesc": {
+    "placeholders": {
+      "email": {"type": "String"}
+    }
+  },
+  "authResendCode": "Resend Code",
+  "authResendCodeIn": "Resend code in {seconds}s",
+  "@authResendCodeIn": {
+    "placeholders": {
+      "seconds": {"type": "int"}
+    }
+  },
+  "authVerifyButton": "Verify",
+  "authResetPassword": "Reset Password",
+  "authResetPasswordDesc": "Enter your email to receive a reset code",
+  "authSendResetCode": "Send Reset Code",
+  "authEnterResetCode": "Enter Reset Code",
+  "authEnterResetCodeDesc": "Enter the 6-digit code sent to your email",
+  "authEnterNewPassword": "Enter New Password",
+  "authEnterNewPasswordDesc": "Choose a new password for your account",
+  "authNewPassword": "New Password",
+  "authResetPasswordSuccess": "Password reset successfully",
+  "authSigningIn": "Signing in...",
+  "authSigningUp": "Creating account...",
+  "authVerifying": "Verifying...",
+  "authResetting": "Resetting password...",
+  
+  "@_AUTH_SUCCESS": {},
+  "authLoginSuccess": "Signed in successfully",
+  "authSignupSuccess": "Account created successfully",
+  "authVerificationSuccess": "Email verified successfully",
+  "authPasswordResetSuccess": "Password reset successfully",
+  "authCodeSent": "Verification code sent to your email",
+  
+  "@_SESSION": {},
+  "sessionExpired": "Your session has expired. Please sign in again.",
+  "sessionExpiredTitle": "Session Expired",
+  "sessionRestoring": "Restoring your session...",
+  "sessionCheckingAuth": "Checking authentication...",
+  
+  "@_WORKSPACES": {},
+  "workspaceCreateTitle": "Create Workspace",
+  "workspaceCreateDescription": "Create a new workspace for your team",
+  "workspaceCreateButton": "Create Workspace",
+  "workspaceName": "Workspace Name",
+  "workspaceNameHint": "e.g., Product Team",
+  "workspaceDescription": "Description",
+  "workspaceDescriptionHint": "What is this workspace for?",
+  "workspaceCreateSuccess": "Workspace created successfully",
+  "workspaceCreateError": "Failed to create workspace",
+  "workspaceJoinTitle": "Join Workspace",
+  "workspaceJoinDescription": "Enter the invite code to join a workspace",
+  "workspaceJoinButton": "Join Workspace",
+  "workspaceInviteCode": "Invite Code",
+  "workspaceCodeHelper": "Get this code from a team member",
+  "workspaceCodeLength": "Code must be 6 characters",
+  "workspaceCodeFormat": "Code must contain only letters and numbers",
+  "workspaceCodeInvalid": "Invalid invite code",
+  "workspaceCodeExpired": "This invite code has expired",
+  "workspaceAlreadyMember": "You are already a member of this workspace",
+  "workspaceJoinSuccess": "Joined workspace successfully",
+  "workspaceJoinError": "Failed to join workspace",
+  "workspaceCreateNew": "Create New Workspace",
+  
+  "@_WORKSPACE_MEMBERS": {},
+  "workspaceMembers": "Members",
+  "noMembersYet": "No members yet",
+  "memberRoleChanged": "Member role changed successfully",
+  "memberRoleChangeError": "Failed to change member role",
+  "memberRemoveConfirmTitle": "Remove Member",
+  "memberRemoveConfirmMessage": "Are you sure you want to remove {name} from this workspace?",
+  "@memberRemoveConfirmMessage": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "memberRemoved": "Member removed successfully",
+  "memberRemoveError": "Failed to remove member",
+  "workspaceLeaveConfirmTitle": "Leave Workspace",
+  "workspaceLeaveConfirmMessage": "Are you sure you want to leave this workspace?",
+  "workspaceLeft": "You have left the workspace",
+  "workspaceLeaveError": "Failed to leave workspace",
+  "workspaceLeave": "Leave Workspace",
+  "changeRole": "Change Role",
+  "removeMember": "Remove Member",
+  "roleAdmin": "Admin",
+  "roleAdminDescription": "Can manage workspace and members",
+  "roleMember": "Member",
+  "roleMemberDescription": "Can view and create content",
+  "you": "You",
+  "errorLoadingMembers": "Failed to load members",
+  
+  "@_INVITE_CODES": {},
+  "inviteCodes": "Invite Codes",
+  "noInviteCodesYet": "No invite codes yet",
+  "createInviteCode": "Create Invite Code",
+  "inviteCodeCreated": "Invite code created successfully",
+  "inviteCodeCreateError": "Failed to create invite code",
+  "inviteCodeRevokeConfirmTitle": "Revoke Invite Code",
+  "inviteCodeRevokeConfirmMessage": "Are you sure you want to revoke this invite code? It will no longer work.",
+  "inviteCodeRevoked": "Invite code revoked successfully",
+  "inviteCodeRevokeError": "Failed to revoke invite code",
+  "inviteCodeCopied": "Invite code copied to clipboard",
+  "copyCode": "Copy Code",
+  "revokeCode": "Revoke Code",
+  "statusActive": "Active",
+  "statusRevoked": "Revoked",
+  "statusExpired": "Expired",
+  "statusMaxedOut": "Max Uses Reached",
+  "uses": "Uses",
+  "expires": "Expires",
+  "inviteCodeMaxUses": "Maximum Uses",
+  "inviteCodeExpiry": "Expires In",
+  "unlimited": "Unlimited",
+  "never": "Never",
+  "daysCount": "{count} days",
+  "@daysCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "errorLoadingInviteCodes": "Failed to load invite codes",
+  
+  "@_WORKSPACE_SETTINGS": {},
+  "workspaceSettings": "Workspace Settings",
+  "workspaceUpdated": "Workspace updated successfully",
+  "workspaceUpdateError": "Failed to update workspace",
+  "workspaceNameTooShort": "Name must be at least 3 characters",
+  "workspaceNameTooLong": "Name must be less than 50 characters",
+  "workspaceType": "Type",
+  "workspaceTypePersonal": "Personal",
+  "workspaceTypeTeam": "Team",
+  "createdAt": "Created",
+  "adminOnlySettings": "Only workspace admins can edit settings",
+  "dangerZone": "Danger Zone",
+  "deleteWorkspace": "Delete Workspace",
+  "workspaceDeleteConfirmTitle": "Delete Workspace?",
+  "workspaceDeleteConfirmMessage": "Are you sure you want to delete this workspace? This action cannot be undone.",
+  "workspaceDeleteWarning": "All tasks, projects, and data in this workspace will be permanently deleted.",
+  "workspaceDeleted": "Workspace deleted successfully",
+  "workspaceDeleteError": "Failed to delete workspace",
+  "workspaceNotFound": "Workspace not found",
+  "errorLoadingWorkspace": "Failed to load workspace",
+  
+  "@_SYNC": {},
+  "syncStatus": "Sync Status",
+  "lastSync": "Last sync",
+  "pendingChanges": "Pending",
+  "failedChanges": "Failed",
+  "failedItems": "Failed Items",
+  "retryAll": "Retry All",
+  "discardAll": "Discard All",
+  "discardChange": "Discard Change?",
+  "discardAllChanges": "Discard All Changes?",
+  "discardAllWarning": "This will permanently discard all failed changes. This cannot be undone.",
+  "@_DOCUMENTS": {},
+  "uploadFile": "Upload File",
+  "uploads": "Uploads",
+  "noUploads": "No uploads",
+  "uploading": "Uploading",
+  "uploadCompleted": "Upload completed",
+  "uploadFailed": "Upload failed",
+  "uploadCancelled": "Upload cancelled",
+  "uploadStarted": "Upload started for {count} file(s)",
+  "@uploadStarted": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "clearCompleted": "Clear Completed",
+  "clearFailed": "Clear Failed",
+  "waiting": "Waiting",
+  "recent": "Recent",
+  "noRecentDocuments": "No recent documents",
+  "noDocuments": "No documents",
+  "uploadFileToGetStarted": "Upload a file to get started",
+  "errorLoadingData": "Error loading data",
+  "createFolder": "Create Folder",
+  "folderName": "Folder Name",
+  "enterFolderName": "Enter folder name",
+  "folderNameRequired": "Folder name is required",
+  "folderNameTooLong": "Folder name is too long (max 200 characters)",
+  "folderCreated": "Folder created successfully",
+  "selectFilesToUpload": "Select files to upload",
+  "browseFiles": "Browse Files",
+  "dragAndDropFiles": "Drag and drop files here",
+  "dropFilesHere": "Drop files here",
+  "orClickToBrowse": "or click to browse",
+  "rename": "Rename",
+  "move": "Move",
+  "download": "Download",
+  "downloadStarted": "Download started",
+  "confirmDeleteDocument": "Are you sure you want to delete this document?",
+  "confirmDeleteFolder": "Are you sure you want to delete this folder? It must be empty.",
+  "documentDeleted": "Document deleted successfully",
+  "folderDeleted": "Folder deleted successfully",
+  "documentName": "Document Name",
+  "documentNameRequired": "Document name is required",
+  "folderRenamed": "Folder renamed successfully",
+  "documentRenamed": "Document renamed successfully",
+  "moveToFolder": "Move to Folder",
+  "rootFolder": "Root Folder",
+  "noFoldersAvailable": "No folders available",
+  "folderMoved": "Folder moved successfully",
+  "documentMoved": "Document moved successfully",
+  "nameTooLong": "Name is too long (max 200 characters)",
+  "noWorkspaceSelected": "No workspace selected",
+  "close": "Close",
+  "documentSaved": "Document saved",
+  "savedAt": "Saved {time}",
+  "@savedAt": {
+    "placeholders": {
+      "time": {"type": "String"}
+    }
+  },
+  "openWithSystemApp": "Open with System App",
+  "errorLoadingFile": "Error loading file",
+  "downloading": "Downloading...",
+  "errorLoadingImage": "Error loading image",
+  "pdfDocument": "PDF Document",
+  "fileDocument": "File",
+  "attachFile": "Attach File",
+  "attachments": "Attachments",
+  "noAttachments": "No attachments",
+  "attachmentAdded": "Attachment added",
+  "attachmentRemoved": "Attachment removed",
+  "offlineUploadsDisabled": "File uploads are disabled while offline",
+  "notificationTaskAssigned": "Task Assigned",
+  "notificationTaskUpdated": "Task Updated",
+  "notificationTaskComment": "New Comment",
+  "notificationDeadlineApproaching": "Deadline Approaching",
+  "notificationTaskOverdue": "Task Overdue",
+  "notificationMention": "You were mentioned",
+  "notificationChatMessage": "New Message",
+  "notificationEventReminder": "Event Reminder",
+  "notificationWorkspaceInvite": "Workspace Invite",
+  "notificationTaskAssignedBody": "A task has been assigned to you",
+  "notificationTaskUpdatedBody": "A task has been updated",
+  "notificationTaskCommentBody": "Someone commented on a task",
+  "notificationDeadlineApproachingBody": "A task deadline is approaching",
+  "notificationTaskOverdueBody": "A task is overdue",
+  "notificationMentionBody": "Someone mentioned you",
+  "notificationChatMessageBody": "You have a new message",
+  "notificationEventReminderBody": "You have an upcoming event"
+}

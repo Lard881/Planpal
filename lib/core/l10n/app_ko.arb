@@ -1,0 +1,500 @@
+{
+  "@@locale": "ko",
+  "appName": "PlanPal",
+  "welcome": "환영합니다",
+  "login": "로그인",
+  "signup": "회원가입",
+  "email": "이메일",
+  "password": "비밀번호",
+  "confirmPassword": "비밀번호 확인",
+  "forgotPassword": "비밀번호를 잊으셨나요?",
+  "createAccount": "계정 만들기",
+  "orContinueWith": "또는 계속하기",
+  "google": "Google",
+  "alreadyHaveAccount": "이미 계정이 있으신가요?",
+  "dontHaveAccount": "계정이 없으신가요?",
+  "home": "홈",
+  "tasks": "작업",
+  "calendar": "캘린더",
+  "chat": "채팅",
+  "documents": "문서",
+  "analytics": "분석",
+  "team": "팀",
+  "settings": "설정",
+  "profile": "프로필",
+  "notifications": "알림",
+  "logout": "로그아웃",
+  "save": "저장",
+  "cancel": "취소",
+  "delete": "삭제",
+  "edit": "편집",
+  "create": "생성",
+  "search": "검색",
+  "filter": "필터",
+  "sort": "정렬",
+  "loading": "로딩 중...",
+  "retry": "재시도",
+  "error": "오류",
+  "success": "성공",
+  "offline": "오프라인",
+  "online": "온라인",
+  "syncing": "동기화 중...",
+  "noData": "데이터 없음",
+  "noResults": "결과 없음",
+  
+  "@_NOTIFICATION_TITLES": {},
+  "notificationTitleTaskAssigned": "작업 할당됨",
+  "notificationTitleTaskCompleted": "작업 완료됨",
+  "notificationTitleTaskOverdue": "작업 기한 초과",
+  "notificationTitleTaskDueSoon": "작업 마감 임박",
+  "notificationTitleTaskCommented": "새 댓글",
+  "notificationTitleTaskStatusChanged": "작업 상태 변경됨",
+  "notificationTitleProjectInvite": "프로젝트 초대",
+  "notificationTitleProjectUpdated": "프로젝트 업데이트됨",
+  "notificationTitleProjectDeadline": "프로젝트 마감일",
+  "notificationTitleEventReminder": "이벤트 알림",
+  "notificationTitleEventStartingSoon": "이벤트 곧 시작",
+  "notificationTitleEventUpdated": "이벤트 업데이트됨",
+  "notificationTitleEventCancelled": "이벤트 취소됨",
+  "notificationTitleChatMessage": "새 메시지",
+  "notificationTitleChatMention": "멘션됨",
+  "notificationTitleWorkspaceInvite": "워크스페이스 초대",
+  "notificationTitleWorkspaceRoleChanged": "역할 변경됨",
+  "notificationTitleSystem": "시스템 알림",
+  "notificationTitleDefault": "알림",
+  
+  "@_NOTIFICATION_BODIES": {},
+  "notificationBodyTaskAssigned": "{actor}님이 \"{task}\"에 회원님을 할당했습니다",
+  "@notificationBodyTaskAssigned": {
+    "placeholders": {
+      "actor": {"type": "String"},
+      "task": {"type": "String"}
+    }
+  },
+  "notificationBodyTaskAssignedGeneric": "새 작업이 할당되었습니다",
+  "notificationBodyTaskCompleted": "{actor}님이 \"{task}\"를 완료했습니다",
+  "@notificationBodyTaskCompleted": {
+    "placeholders": {
+      "actor": {"type": "String"},
+      "task": {"type": "String"}
+    }
+  },
+  "notificationBodyTaskCompletedGeneric": "작업이 완료되었습니다",
+  "notificationBodyTaskOverdue": "\"{task}\"의 기한이 지났습니다",
+  "@notificationBodyTaskOverdue": {
+    "placeholders": {
+      "task": {"type": "String"}
+    }
+  },
+  "notificationBodyTaskOverdueGeneric": "기한이 지난 작업이 있습니다",
+  "notificationBodyTaskDueSoon": "\"{task}\"의 마감이 {time}입니다",
+  "@notificationBodyTaskDueSoon": {
+    "placeholders": {
+      "task": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "notificationBodyTaskDueSoonGeneric": "곧 마감되는 작업이 있습니다",
+  "notificationBodyTaskCommented": "{actor}님이 \"{task}\"에 댓글을 달았습니다",
+  "@notificationBodyTaskCommented": {
+    "placeholders": {
+      "actor": {"type": "String"},
+      "task": {"type": "String"}
+    }
+  },
+  "notificationBodyTaskCommentedGeneric": "작업에 새 댓글이 있습니다",
+  "notificationBodyTaskStatusChanged": "\"{task}\"의 상태가 {status}(으)로 변경되었습니다",
+  "@notificationBodyTaskStatusChanged": {
+    "placeholders": {
+      "task": {"type": "String"},
+      "status": {"type": "String"}
+    }
+  },
+  "notificationBodyTaskStatusChangedGeneric": "작업 상태가 변경되었습니다",
+  "notificationBodyProjectInvite": "{actor}님이 \"{project}\"에 회원님을 초대했습니다",
+  "@notificationBodyProjectInvite": {
+    "placeholders": {
+      "actor": {"type": "String"},
+      "project": {"type": "String"}
+    }
+  },
+  "notificationBodyProjectInviteGeneric": "프로젝트에 초대되었습니다",
+  "notificationBodyProjectUpdated": "\"{project}\"가 업데이트되었습니다",
+  "@notificationBodyProjectUpdated": {
+    "placeholders": {
+      "project": {"type": "String"}
+    }
+  },
+  "notificationBodyProjectUpdatedGeneric": "프로젝트가 업데이트되었습니다",
+  "notificationBodyProjectDeadline": "\"{project}\"의 마감일은 {time}입니다",
+  "@notificationBodyProjectDeadline": {
+    "placeholders": {
+      "project": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "notificationBodyProjectDeadlineGeneric": "프로젝트 마감일이 다가옵니다",
+  "notificationBodyEventReminder": "알림: \"{event}\"가 {time}에 시작됩니다",
+  "@notificationBodyEventReminder": {
+    "placeholders": {
+      "event": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "notificationBodyEventReminderGeneric": "다가오는 이벤트가 있습니다",
+  "notificationBodyEventStartingSoon": "\"{event}\"가 {time}에 시작됩니다",
+  "@notificationBodyEventStartingSoon": {
+    "placeholders": {
+      "event": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "notificationBodyEventStartingSoonGeneric": "이벤트가 곧 시작됩니다",
+  "notificationBodyEventUpdated": "\"{event}\"가 업데이트되었습니다",
+  "@notificationBodyEventUpdated": {
+    "placeholders": {
+      "event": {"type": "String"}
+    }
+  },
+  "notificationBodyEventUpdatedGeneric": "이벤트가 업데이트되었습니다",
+  "notificationBodyEventCancelled": "\"{event}\"가 취소되었습니다",
+  "@notificationBodyEventCancelled": {
+    "placeholders": {
+      "event": {"type": "String"}
+    }
+  },
+  "notificationBodyEventCancelledGeneric": "이벤트가 취소되었습니다",
+  "notificationBodyChatMessage": "{actor}님이 메시지를 보냈습니다",
+  "@notificationBodyChatMessage": {
+    "placeholders": {
+      "actor": {"type": "String"}
+    }
+  },
+  "notificationBodyChatMessageGeneric": "새 메시지가 있습니다",
+  "notificationBodyChatMention": "{actor}님이 채팅에서 회원님을 멘션했습니다",
+  "@notificationBodyChatMention": {
+    "placeholders": {
+      "actor": {"type": "String"}
+    }
+  },
+  "notificationBodyChatMentionGeneric": "채팅에서 멘션되었습니다",
+  "notificationBodyWorkspaceInvite": "{actor}님이 \"{workspace}\"에 회원님을 초대했습니다",
+  "@notificationBodyWorkspaceInvite": {
+    "placeholders": {
+      "actor": {"type": "String"},
+      "workspace": {"type": "String"}
+    }
+  },
+  "notificationBodyWorkspaceInviteGeneric": "워크스페이스에 초대되었습니다",
+  "notificationBodyWorkspaceRoleChanged": "\"{workspace}\"에서의 역할이 {role}(으)로 변경되었습니다",
+  "@notificationBodyWorkspaceRoleChanged": {
+    "placeholders": {
+      "workspace": {"type": "String"},
+      "role": {"type": "String"}
+    }
+  },
+  "notificationBodyWorkspaceRoleChangedGeneric": "워크스페이스 역할이 변경되었습니다",
+  "notificationBodySystemGeneric": "시스템 알림",
+  "notificationBodyDefault": "새 알림이 있습니다",
+  
+  "@_TIME_FORMATTING": {},
+  "timeRemainingDays": "{days}일 후",
+  "@timeRemainingDays": {
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
+  "timeRemainingHours": "{hours}시간 후",
+  "@timeRemainingHours": {
+    "placeholders": {
+      "hours": {"type": "int"}
+    }
+  },
+  "timeRemainingMinutes": "{minutes}분 후",
+  "@timeRemainingMinutes": {
+    "placeholders": {
+      "minutes": {"type": "int"}
+    }
+  },
+  "timeOverdueDays": "{days}일 초과",
+  "@timeOverdueDays": {
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
+  "timeOverdueHours": "{hours}시간 초과",
+  "@timeOverdueHours": {
+    "placeholders": {
+      "hours": {"type": "int"}
+    }
+  },
+  "timeOverdueMinutes": "{minutes}분 초과",
+  "@timeOverdueMinutes": {
+    "placeholders": {
+      "minutes": {"type": "int"}
+    }
+  },
+  
+  "@_ERROR_MESSAGES": {},
+  "errorNoNetwork": "네트워크 연결이 감지되지 않습니다. 연결을 확인하고 다시 시도하세요.",
+  "errorNoInternet": "인터넷에 연결되어 있지 않습니다. 온라인 상태가 되면 변경 사항이 동기화됩니다.",
+  "errorServerUnreachable": "서버에 연결할 수 없습니다. 나중에 다시 시도하거나 지원팀에 문의하세요.",
+  "errorTimeout": "요청 시간이 초과되었습니다. 인터넷 연결을 확인하고 다시 시도하세요.",
+  "errorAuthRequired": "이 작업을 수행하려면 로그인이 필요합니다.",
+  "errorAuthExpired": "세션이 만료되었습니다. 다시 로그인하세요.",
+  "errorInvalidCredentials": "이메일 또는 비밀번호가 잘못되었습니다.",
+  "errorEmailNotConfirmed": "이메일이 아직 확인되지 않았습니다. 받은편지함을 확인하고 확인 링크를 클릭하세요.",
+  "errorUserAlreadyExists": "이 이메일의 사용자가 이미 존재합니다.",
+  "errorEmailAlreadyInUse": "이 이메일 주소는 이미 사용 중입니다.",
+  "errorWeakPassword": "비밀번호가 너무 약합니다. 더 강력한 비밀번호를 사용하세요.",
+  "errorAuthCancelled": "인증이 취소되었습니다.",
+  "errorNotAMember": "이 워크스페이스의 멤버가 아닙니다.",
+  "errorForbidden": "이 작업을 수행할 권한이 없습니다.",
+  "errorLastAdmin": "워크스페이스에는 최소 한 명의 관리자가 있어야 합니다.",
+  "errorInvalidCode": "유효하지 않거나 만료된 초대 코드입니다.",
+  "errorCodeExpired": "이 초대 코드는 만료되었습니다.",
+  "errorCodeRevoked": "이 초대 코드는 취소되었습니다.",
+  "errorCodeUsedUp": "이 초대 코드는 최대 사용 횟수에 도달했습니다.",
+  "errorAlreadyMember": "이미 이 워크스페이스의 멤버입니다.",
+  "errorFileTooLarge": "파일이 너무 큽니다. 최대 크기: {maxSize}MB.",
+  "@errorFileTooLarge": {
+    "placeholders": {
+      "maxSize": {"type": "int"}
+    }
+  },
+  "errorFileTypeNotAllowed": "이 파일 형식은 허용되지 않습니다. 허용되는 형식: {types}.",
+  "@errorFileTypeNotAllowed": {
+    "placeholders": {
+      "types": {"type": "String"}
+    }
+  },
+  "errorNotFound": "요청한 리소스를 찾을 수 없습니다.",
+  "errorNotFoundWithResource": "{resource}을(를) 찾을 수 없습니다.",
+  "@errorNotFoundWithResource": {
+    "placeholders": {
+      "resource": {"type": "String"}
+    }
+  },
+  "errorTaskNotFound": "작업을 찾을 수 없습니다. 삭제되었거나 액세스 권한이 없을 수 있습니다.",
+  "errorWorkspaceNotFound": "워크스페이스를 찾을 수 없습니다. 삭제되었거나 액세스 권한이 없을 수 있습니다.",
+  "errorValidationFailed": "입력이 유효하지 않습니다. 데이터를 확인하고 다시 시도하세요.",
+  "errorSyncConflict": "다른 기기에서 변경된 사항과 충돌합니다. 페이지를 새로 고치고 다시 시도하세요.",
+  "errorWorkspaceNameTaken": "이 이름의 워크스페이스가 이미 존재합니다.",
+  "errorChatNotAvailableInPersonal": "채팅은 개인 워크스페이스에서 사용할 수 없습니다.",
+  "chatNotAvailable": "채팅 사용 불가",
+  "errorChannelNotFound": "채널을 찾을 수 없습니다. 삭제되었거나 액세스 권한이 없을 수 있습니다.",
+  "errorMessageNotFound": "메시지를 찾을 수 없습니다. 삭제되었을 수 있습니다.",
+  "errorUnknown": "예기치 않은 오류가 발생했습니다. 다시 시도하세요.",
+  "errorServerError": "서버 오류가 발생했습니다. 나중에 다시 시도하세요.",
+  
+  "@_ERROR_TITLES": {},
+  "errorTitleNoNetwork": "네트워크 없음",
+  "errorTitleNoInternet": "인터넷 없음",
+  "errorTitleServerUnreachable": "서버 연결 실패",
+  "errorTitleTimeout": "시간 초과",
+  "errorTitleAuth": "인증 필요",
+  "errorTitleForbidden": "액세스 거부됨",
+  "errorTitleNotFound": "찾을 수 없음",
+  "errorTitleValidation": "유효하지 않은 입력",
+  "errorTitleConflict": "동기화 충돌",
+  "errorTitleServerError": "서버 오류",
+  "errorTitleUnknown": "오류",
+  
+  "@_ERROR_DIALOG": {},
+  "errorDetails": "오류 세부정보",
+  "technicalDetails": "기술 세부정보",
+  "copyToClipboard": "클립보드에 복사",
+  "copiedToClipboard": "오류 세부정보가 클립보드에 복사되었습니다",
+  
+  "@_AUTH_VALIDATION": {},
+  "validationEmailRequired": "이메일은 필수 항목입니다",
+  "validationEmailInvalid": "유효한 이메일 주소를 입력하세요",
+  "validationPasswordRequired": "비밀번호는 필수 항목입니다",
+  "validationPasswordMinLength": "비밀번호는 최소 {minLength}자 이상이어야 합니다",
+  "@validationPasswordMinLength": {
+    "placeholders": {
+      "minLength": {"type": "int"}
+    }
+  },
+  "validationPasswordMatch": "비밀번호가 일치해야 합니다",
+  "validationNameRequired": "이름은 필수 항목입니다",
+  "validationTermsRequired": "서비스 약관 및 개인정보 보호정책에 동의해야 합니다",
+  
+  "@_AUTH_SCREENS": {},
+  "authWelcomeBack": "환영합니다",
+  "authSignInToContinue": "PlanPal을 계속 사용하려면 로그인하세요",
+  "authCreateAccount": "계정 만들기",
+  "authSignUpToGetStarted": "PlanPal을 시작하려면 가입하세요",
+  "authFullName": "전체 이름",
+  "authEnterYourName": "전체 이름을 입력하세요",
+  "authEnterYourEmail": "이메일을 입력하세요",
+  "authEnterYourPassword": "비밀번호를 입력하세요",
+  "authConfirmYourPassword": "비밀번호를 확인하세요",
+  "authAgreeToTerms": "{terms} 및 {privacy}에 동의합니다",
+  "@authAgreeToTerms": {
+    "placeholders": {
+      "terms": {"type": "String"},
+      "privacy": {"type": "String"}
+    }
+  },
+  "authTermsOfService": "서비스 약관",
+  "authPrivacyPolicy": "개인정보 보호정책",
+  "authContinueWithGoogle": "Google로 계속하기",
+  "authVerifyEmail": "이메일 확인",
+  "authVerifyEmailDesc": "{email}로 전송된 6자리 코드를 입력하세요",
+  "@authVerifyEmailDesc": {
+    "placeholders": {
+      "email": {"type": "String"}
+    }
+  },
+  "authResendCode": "코드 재전송",
+  "authResendCodeIn": "{seconds}초 후 코드 재전송",
+  "@authResendCodeIn": {
+    "placeholders": {
+      "seconds": {"type": "int"}
+    }
+  },
+  "authVerifyButton": "확인",
+  "authResetPassword": "비밀번호 재설정",
+  "authResetPasswordDesc": "재설정 코드를 받으려면 이메일을 입력하세요",
+  "authSendResetCode": "재설정 코드 보내기",
+  "authEnterResetCode": "재설정 코드 입력",
+  "authEnterResetCodeDesc": "이메일로 전송된 6자리 코드를 입력하세요",
+  "authEnterNewPassword": "새 비밀번호 입력",
+  "authEnterNewPasswordDesc": "계정의 새 비밀번호를 선택하세요",
+  "authNewPassword": "새 비밀번호",
+  "authResetPasswordSuccess": "비밀번호가 성공적으로 재설정되었습니다",
+  "authSigningIn": "로그인 중...",
+  "authSigningUp": "계정 생성 중...",
+  "authVerifying": "확인 중...",
+  "authResetting": "비밀번호 재설정 중...",
+  
+  "@_AUTH_SUCCESS": {},
+  "authLoginSuccess": "로그인 성공",
+  "authSignupSuccess": "계정이 생성되었습니다",
+  "authVerificationSuccess": "이메일이 확인되었습니다",
+  "authPasswordResetSuccess": "비밀번호가 재설정되었습니다",
+  "authCodeSent": "인증 코드가 이메일로 전송되었습니다",
+  
+  "@_SESSION": {},
+  "sessionExpired": "세션이 만료되었습니다. 다시 로그인하세요.",
+  "sessionExpiredTitle": "세션 만료",
+  "sessionRestoring": "세션 복원 중...",
+  "sessionCheckingAuth": "인증 확인 중...",
+  
+  "@_WORKSPACES": {},
+  "workspaceCreateTitle": "워크스페이스 생성",
+  "workspaceCreateDescription": "팀을 위한 새 워크스페이스 만들기",
+  "workspaceCreateButton": "워크스페이스 생성",
+  "workspaceName": "워크스페이스 이름",
+  "workspaceNameHint": "예: 제품 팀",
+  "workspaceDescription": "설명",
+  "workspaceDescriptionHint": "이 워크스페이스의 용도는 무엇입니까?",
+  "workspaceCreateSuccess": "워크스페이스가 생성되었습니다",
+  "workspaceCreateError": "워크스페이스 생성 실패",
+  "workspaceJoinTitle": "워크스페이스 참여",
+  "workspaceJoinDescription": "초대 코드를 입력하여 워크스페이스에 참여하세요",
+  "workspaceJoinButton": "워크스페이스 참여",
+  "workspaceInviteCode": "초대 코드",
+  "workspaceCodeHelper": "팀 멤버에게서 이 코드를 받으세요",
+  "workspaceCodeLength": "코드는 6자여야 합니다",
+  "workspaceCodeFormat": "코드는 문자와 숫자만 포함해야 합니다",
+  "workspaceCodeInvalid": "유효하지 않은 초대 코드",
+  "workspaceCodeExpired": "이 초대 코드가 만료되었습니다",
+  "workspaceAlreadyMember": "이미 이 워크스페이스의 멤버입니다",
+  "workspaceJoinSuccess": "워크스페이스에 참여했습니다",
+  "workspaceJoinError": "워크스페이스 참여 실패",
+  "workspaceCreateNew": "새 워크스페이스 생성",
+  
+  "@_WORKSPACE_MEMBERS": {},
+  "workspaceMembers": "멤버",
+  "noMembersYet": "아직 멤버가 없습니다",
+  "memberRoleChanged": "멤버 역할이 변경되었습니다",
+  "memberRoleChangeError": "멤버 역할 변경 실패",
+  "memberRemoveConfirmTitle": "멤버 제거",
+  "memberRemoveConfirmMessage": "이 워크스페이스에서 {name}을(를) 제거하시겠습니까?",
+  "@memberRemoveConfirmMessage": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "memberRemoved": "멤버가 제거되었습니다",
+  "memberRemoveError": "멤버 제거 실패",
+  "workspaceLeaveConfirmTitle": "워크스페이스 나가기",
+  "workspaceLeaveConfirmMessage": "이 워크스페이스를 나가시겠습니까?",
+  "workspaceLeft": "워크스페이스를 나갔습니다",
+  "workspaceLeaveError": "워크스페이스 나가기 실패",
+  "workspaceLeave": "워크스페이스 나가기",
+  "changeRole": "역할 변경",
+  "removeMember": "멤버 제거",
+  "roleAdmin": "관리자",
+  "roleAdminDescription": "워크스페이스 및 멤버 관리 가능",
+  "roleMember": "멤버",
+  "roleMemberDescription": "콘텐츠 보기 및 생성 가능",
+  "you": "본인",
+  "errorLoadingMembers": "멤버 로드 실패",
+  
+  "@_INVITE_CODES": {},
+  "inviteCodes": "초대 코드",
+  "noInviteCodesYet": "아직 초대 코드가 없습니다",
+  "createInviteCode": "초대 코드 생성",
+  "inviteCodeCreated": "초대 코드가 생성되었습니다",
+  "inviteCodeCreateError": "초대 코드 생성 실패",
+  "inviteCodeRevokeConfirmTitle": "초대 코드 취소",
+  "inviteCodeRevokeConfirmMessage": "이 초대 코드를 취소하시겠습니까? 더 이상 작동하지 않습니다.",
+  "inviteCodeRevoked": "초대 코드가 취소되었습니다",
+  "inviteCodeRevokeError": "초대 코드 취소 실패",
+  "inviteCodeCopied": "초대 코드가 클립보드에 복사되었습니다",
+  "copyCode": "코드 복사",
+  "revokeCode": "코드 취소",
+  "statusActive": "활성",
+  "statusRevoked": "취소됨",
+  "statusExpired": "만료됨",
+  "statusMaxedOut": "최대 사용 횟수 도달",
+  "uses": "사용 횟수",
+  "expires": "만료",
+  "inviteCodeMaxUses": "최대 사용 횟수",
+  "inviteCodeExpiry": "만료 기간",
+  "unlimited": "무제한",
+  "never": "없음",
+  "daysCount": "{count}일",
+  "@daysCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "errorLoadingInviteCodes": "초대 코드 로드 실패"
+,
+  "@_WORKSPACE_SETTINGS": {},
+  "workspaceSettings": "워크스페이스 설정",
+  "workspaceUpdated": "워크스페이스가 업데이트되었습니다",
+  "workspaceUpdateError": "워크스페이스 업데이트 실패",
+  "workspaceNameTooShort": "이름은 최소 3자 이상이어야 합니다",
+  "workspaceNameTooLong": "이름은 50자 미만이어야 합니다",
+  "workspaceType": "유형",
+  "workspaceTypePersonal": "개인",
+  "workspaceTypeTeam": "팀",
+  "createdAt": "생성됨",
+  "adminOnlySettings": "관리자만 설정을 편집할 수 있습니다",
+  "dangerZone": "위험 구역",
+  "deleteWorkspace": "워크스페이스 삭제",
+  "workspaceDeleteConfirmTitle": "워크스페이스를 삭제하시겠습니까?",
+  "workspaceDeleteConfirmMessage": "이 워크스페이스를 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.",
+  "workspaceDeleteWarning": "이 워크스페이스의 모든 작업, 프로젝트 및 데이터가 영구적으로 삭제됩니다.",
+  "workspaceDeleted": "워크스페이스가 삭제되었습니다",
+  "workspaceDeleteError": "워크스페이스 삭제 실패",
+  "workspaceNotFound": "워크스페이스를 찾을 수 없습니다",
+  "errorLoadingWorkspace": "워크스페이스 로드 실패"
+,
+  "@_SYNC": {},
+  "syncStatus": "동기화 상태",
+  "lastSync": "마지막 동기화",
+  "pendingChanges": "대기 중",
+  "failedChanges": "실패",
+  "failedItems": "실패한 항목",
+  "retryAll": "모두 재시도",
+  "discardAll": "모두 삭제",
+  "discardChange": "변경사항을 삭제하시겠습니까?",
+  "discardAllChanges": "모든 변경사항을 삭제하시겠습니까?",
+  "discardAllWarning": "이렇게 하면 실패한 모든 변경사항이 영구적으로 삭제됩니다. 이 작업은 취소할 수 없습니다."
+}

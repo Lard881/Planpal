@@ -1,0 +1,490 @@
+{
+  "@@locale": "zh",
+  "appName": "PlanPal",
+  "welcome": "欢迎",
+  "login": "登录",
+  "signup": "注册",
+  "email": "电子邮件",
+  "password": "密码",
+  "confirmPassword": "确认密码",
+  "forgotPassword": "忘记密码？",
+  "createAccount": "创建账户",
+  "orContinueWith": "或继续使用",
+  "google": "Google",
+  "alreadyHaveAccount": "已有账户？",
+  "dontHaveAccount": "没有账户？",
+  "home": "首页",
+  "tasks": "任务",
+  "calendar": "日历",
+  "chat": "聊天",
+  "documents": "文档",
+  "analytics": "分析",
+  "team": "团队",
+  "settings": "设置",
+  "profile": "个人资料",
+  "notifications": "通知",
+  "logout": "登出",
+  "save": "保存",
+  "cancel": "取消",
+  "delete": "删除",
+  "edit": "编辑",
+  "create": "创建",
+  "search": "搜索",
+  "filter": "筛选",
+  "sort": "排序",
+  "loading": "加载中...",
+  "retry": "重试",
+  "error": "错误",
+  "success": "成功",
+  "offline": "离线",
+  "online": "在线",
+  "syncing": "同步中...",
+  "noData": "暂无数据",
+  "noResults": "未找到结果",
+  
+  "@_NOTIFICATION_TITLES": {},
+  "notificationTitleTaskAssigned": "任务已分配",
+  "notificationTitleTaskCompleted": "任务已完成",
+  "notificationTitleTaskOverdue": "任务逾期",
+  "notificationTitleTaskDueSoon": "任务即将到期",
+  "notificationTitleTaskCommented": "新评论",
+  "notificationTitleTaskStatusChanged": "任务状态已更改",
+  "notificationTitleProjectInvite": "项目邀请",
+  "notificationTitleProjectUpdated": "项目已更新",
+  "notificationTitleProjectDeadline": "项目截止日期",
+  "notificationTitleEventReminder": "事件提醒",
+  "notificationTitleEventStartingSoon": "事件即将开始",
+  "notificationTitleEventUpdated": "事件已更新",
+  "notificationTitleEventCancelled": "事件已取消",
+  "notificationTitleChatMessage": "新消息",
+  "notificationTitleChatMention": "有人@了你",
+  "notificationTitleWorkspaceInvite": "工作空间邀请",
+  "notificationTitleWorkspaceRoleChanged": "角色已更改",
+  "notificationTitleSystem": "系统通知",
+  "notificationTitleDefault": "通知",
+  
+  "@_NOTIFICATION_BODIES": {},
+  "notificationBodyTaskAssigned": "{actor} 将您分配到 \"{task}\"",
+  "@notificationBodyTaskAssigned": {
+    "placeholders": {
+      "actor": {"type": "String"},
+      "task": {"type": "String"}
+    }
+  },
+  "notificationBodyTaskAssignedGeneric": "您被分配了新任务",
+  "notificationBodyTaskCompleted": "{actor} 完成了 \"{task}\"",
+  "@notificationBodyTaskCompleted": {
+    "placeholders": {
+      "actor": {"type": "String"},
+      "task": {"type": "String"}
+    }
+  },
+  "notificationBodyTaskCompletedGeneric": "任务已完成",
+  "notificationBodyTaskOverdue": "\"{task}\" 已逾期",
+  "@notificationBodyTaskOverdue": {
+    "placeholders": {
+      "task": {"type": "String"}
+    }
+  },
+  "notificationBodyTaskOverdueGeneric": "您有逾期任务",
+  "notificationBodyTaskDueSoon": "\"{task}\" 将在 {time} 到期",
+  "@notificationBodyTaskDueSoon": {
+    "placeholders": {
+      "task": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "notificationBodyTaskDueSoonGeneric": "您有即将到期的任务",
+  "notificationBodyTaskCommented": "{actor} 评论了 \"{task}\"",
+  "@notificationBodyTaskCommented": {
+    "placeholders": {
+      "actor": {"type": "String"},
+      "task": {"type": "String"}
+    }
+  },
+  "notificationBodyTaskCommentedGeneric": "任务有新评论",
+  "notificationBodyTaskStatusChanged": "\"{task}\" 的状态更改为 {status}",
+  "@notificationBodyTaskStatusChanged": {
+    "placeholders": {
+      "task": {"type": "String"},
+      "status": {"type": "String"}
+    }
+  },
+  "notificationBodyTaskStatusChangedGeneric": "任务状态已更改",
+  "notificationBodyProjectInvite": "{actor} 邀请您加入 \"{project}\"",
+  "@notificationBodyProjectInvite": {
+    "placeholders": {
+      "actor": {"type": "String"},
+      "project": {"type": "String"}
+    }
+  },
+  "notificationBodyProjectInviteGeneric": "您被邀请加入项目",
+  "notificationBodyProjectUpdated": "\"{project}\" 已更新",
+  "@notificationBodyProjectUpdated": {
+    "placeholders": {
+      "project": {"type": "String"}
+    }
+  },
+  "notificationBodyProjectUpdatedGeneric": "项目已更新",
+  "notificationBodyProjectDeadline": "\"{project}\" 的截止日期是 {time}",
+  "@notificationBodyProjectDeadline": {
+    "placeholders": {
+      "project": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "notificationBodyProjectDeadlineGeneric": "项目截止日期临近",
+  "notificationBodyEventReminder": "提醒：\"{event}\" 将在 {time} 开始",
+  "@notificationBodyEventReminder": {
+    "placeholders": {
+      "event": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "notificationBodyEventReminderGeneric": "您有即将到来的事件",
+  "notificationBodyEventStartingSoon": "\"{event}\" 将在 {time} 开始",
+  "@notificationBodyEventStartingSoon": {
+    "placeholders": {
+      "event": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "notificationBodyEventStartingSoonGeneric": "事件即将开始",
+  "notificationBodyEventUpdated": "\"{event}\" 已更新",
+  "@notificationBodyEventUpdated": {
+    "placeholders": {
+      "event": {"type": "String"}
+    }
+  },
+  "notificationBodyEventUpdatedGeneric": "事件已更新",
+  "notificationBodyEventCancelled": "\"{event}\" 已取消",
+  "@notificationBodyEventCancelled": {
+    "placeholders": {
+      "event": {"type": "String"}
+    }
+  },
+  "notificationBodyEventCancelledGeneric": "事件已取消",
+  "notificationBodyChatMessage": "{actor} 给您发送了消息",
+  "@notificationBodyChatMessage": {
+    "placeholders": {
+      "actor": {"type": "String"}
+    }
+  },
+  "notificationBodyChatMessageGeneric": "您有新消息",
+  "notificationBodyChatMention": "{actor} 在聊天中@了你",
+  "@notificationBodyChatMention": {
+    "placeholders": {
+      "actor": {"type": "String"}
+    }
+  },
+  "notificationBodyChatMentionGeneric": "您在聊天中被@",
+  "notificationBodyWorkspaceInvite": "{actor} 邀请您加入 \"{workspace}\"",
+  "@notificationBodyWorkspaceInvite": {
+    "placeholders": {
+      "actor": {"type": "String"},
+      "workspace": {"type": "String"}
+    }
+  },
+  "notificationBodyWorkspaceInviteGeneric": "您被邀请加入工作空间",
+  "notificationBodyWorkspaceRoleChanged": "您在 \"{workspace}\" 中的角色更改为 {role}",
+  "@notificationBodyWorkspaceRoleChanged": {
+    "placeholders": {
+      "workspace": {"type": "String"},
+      "role": {"type": "String"}
+    }
+  },
+  "notificationBodyWorkspaceRoleChangedGeneric": "您的工作空间角色已更改",
+  "notificationBodySystemGeneric": "系统通知",
+  "notificationBodyDefault": "您有新通知",
+  
+  "@_TIME_FORMATTING": {},
+  "timeRemainingDays": "{days} 天后",
+  "@timeRemainingDays": {
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
+  "timeRemainingHours": "{hours} 小时后",
+  "@timeRemainingHours": {
+    "placeholders": {
+      "hours": {"type": "int"}
+    }
+  },
+  "timeRemainingMinutes": "{minutes} 分钟后",
+  "@timeRemainingMinutes": {
+    "placeholders": {
+      "minutes": {"type": "int"}
+    }
+  },
+  "timeOverdueDays": "逾期 {days} 天",
+  "@timeOverdueDays": {
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
+  "timeOverdueHours": "逾期 {hours} 小时",
+  "@timeOverdueHours": {
+    "placeholders": {
+      "hours": {"type": "int"}
+    }
+  },
+  "timeOverdueMinutes": "逾期 {minutes} 分钟",
+  "@timeOverdueMinutes": {
+    "placeholders": {
+      "minutes": {"type": "int"}
+    }
+  },
+  
+  "@_ERROR_MESSAGES": {},
+  "errorNoNetwork": "无网络连接。请检查设备的网络设置。",
+  "errorNoInternet": "无互联网连接。请检查Wi-Fi或移动数据。",
+  "errorServerUnreachable": "服务器无法访问。可能正在启动，请稍候。",
+  "errorTimeout": "请求超时。请重试。",
+  "errorAuthRequired": "您需要登录才能执行此操作。",
+  "errorAuthExpired": "您的会话已过期。请重新登录。",
+  "errorInvalidCredentials": "电子邮件或密码无效。请重试。",
+  "errorEmailNotConfirmed": "请先确认您的电子邮件地址，然后再登录。",
+  "errorUserAlreadyExists": "此电子邮件的账户已存在。",
+  "errorEmailAlreadyInUse": "此电子邮件已被使用。",
+  "errorWeakPassword": "密码必须至少8个字符。",
+  "errorAuthCancelled": "登录已取消。",
+  "errorNotAMember": "您不是此工作空间的成员。",
+  "errorForbidden": "您没有权限执行此操作。",
+  "errorLastAdmin": "无法删除最后一个管理员。请先提升另一个成员。",
+  "errorInvalidCode": "邀请码无效。请检查并重试。",
+  "errorCodeExpired": "此邀请码已过期。",
+  "errorCodeRevoked": "此邀请码已被撤销。",
+  "errorCodeUsedUp": "此邀请码已达到最大使用次数。",
+  "errorAlreadyMember": "您已经是此工作空间的成员。",
+  "errorFileTooLarge": "文件太大。最大大小为20 MB。",
+  "errorFileTypeNotAllowed": "不允许此文件类型。",
+  "errorNotFound": "未找到项目。",
+  "errorNotFoundWithResource": "未找到{resource}。",
+  "@errorNotFoundWithResource": {
+    "placeholders": {
+      "resource": {"type": "String"}
+    }
+  },
+  "errorTaskNotFound": "未找到任务。",
+  "errorWorkspaceNotFound": "未找到工作空间。",
+  "errorValidationFailed": "请检查表单并重试。",
+  "errorSyncConflict": "此项目在其他地方已更改。请刷新并重试。",
+  "errorWorkspaceNameTaken": "此名称的工作空间已存在。",
+  "errorChatNotAvailableInPersonal": "个人工作空间中不可用聊天。创建或加入团队工作空间以使用聊天。",
+  "chatNotAvailable": "聊天不可用",
+  "errorChannelNotFound": "未找到频道。",
+  "errorMessageNotFound": "未找到消息。",
+  "errorUnknown": "出了点问题。请重试。",
+  "errorServerError": "服务器错误。请稍后重试。",
+  
+  "@_ERROR_TITLES": {},
+  "errorTitleNetwork": "连接错误",
+  "errorTitleServer": "服务器错误",
+  "errorTitleTimeout": "超时",
+  "errorTitleAuth": "身份验证错误",
+  "errorTitlePermission": "权限被拒绝",
+  "errorTitleInviteCode": "邀请码无效",
+  "errorTitleFile": "文件错误",
+  "errorTitleNotFound": "未找到",
+  "errorTitleValidation": "验证错误",
+  "errorTitleSync": "同步错误",
+  "errorTitleChat": "聊天错误",
+  
+  "@_ERROR_DIALOG": {},
+  "errorDetails": "错误详情",
+  "technicalDetails": "技术详情",
+  "copyToClipboard": "复制到剪贴板",
+  "copiedToClipboard": "错误详情已复制到剪贴板",
+  
+  "@_AUTH_VALIDATION": {},
+  "validationEmailRequired": "电子邮件是必填项",
+  "validationEmailInvalid": "请输入有效的电子邮件地址",
+  "validationPasswordRequired": "密码是必填项",
+  "validationPasswordMinLength": "密码必须至少包含 {minLength} 个字符",
+  "@validationPasswordMinLength": {
+    "placeholders": {
+      "minLength": {"type": "int"}
+    }
+  },
+  "validationPasswordMatch": "密码必须匹配",
+  "validationNameRequired": "姓名是必填项",
+  "validationTermsRequired": "您必须同意服务条款和隐私政策",
+  
+  "@_AUTH_SCREENS": {},
+  "authWelcomeBack": "欢迎回来",
+  "authSignInToContinue": "登录以继续使用 PlanPal",
+  "authCreateAccount": "创建账户",
+  "authSignUpToGetStarted": "注册以开始使用 PlanPal",
+  "authFullName": "全名",
+  "authEnterYourName": "输入您的全名",
+  "authEnterYourEmail": "输入您的电子邮件",
+  "authEnterYourPassword": "输入您的密码",
+  "authConfirmYourPassword": "确认您的密码",
+  "authAgreeToTerms": "我同意{terms}和{privacy}",
+  "@authAgreeToTerms": {
+    "placeholders": {
+      "terms": {"type": "String"},
+      "privacy": {"type": "String"}
+    }
+  },
+  "authTermsOfService": "服务条款",
+  "authPrivacyPolicy": "隐私政策",
+  "authContinueWithGoogle": "使用 Google 继续",
+  "authVerifyEmail": "验证您的电子邮件",
+  "authVerifyEmailDesc": "输入发送到 {email} 的 6 位数字代码",
+  "@authVerifyEmailDesc": {
+    "placeholders": {
+      "email": {"type": "String"}
+    }
+  },
+  "authResendCode": "重新发送代码",
+  "authResendCodeIn": "{seconds}秒后重新发送代码",
+  "@authResendCodeIn": {
+    "placeholders": {
+      "seconds": {"type": "int"}
+    }
+  },
+  "authVerifyButton": "验证",
+  "authResetPassword": "重置密码",
+  "authResetPasswordDesc": "输入您的电子邮件以接收重置代码",
+  "authSendResetCode": "发送重置代码",
+  "authEnterResetCode": "输入重置代码",
+  "authEnterResetCodeDesc": "输入发送到您电子邮件的 6 位数字代码",
+  "authEnterNewPassword": "输入新密码",
+  "authEnterNewPasswordDesc": "为您的账户选择新密码",
+  "authNewPassword": "新密码",
+  "authResetPasswordSuccess": "密码重置成功",
+  "authSigningIn": "正在登录...",
+  "authSigningUp": "正在创建账户...",
+  "authVerifying": "正在验证...",
+  "authResetting": "正在重置密码...",
+  
+  "@_AUTH_SUCCESS": {},
+  "authLoginSuccess": "登录成功",
+  "authSignupSuccess": "账户创建成功",
+  "authVerificationSuccess": "电子邮件验证成功",
+  "authPasswordResetSuccess": "密码重置成功",
+  "authCodeSent": "验证码已发送到您的电子邮件",
+  
+  "@_SESSION": {},
+  "sessionExpired": "您的会话已过期。请重新登录。",
+  "sessionExpiredTitle": "会话已过期",
+  "sessionRestoring": "正在恢复您的会话...",
+  "sessionCheckingAuth": "正在检查身份验证...",
+  
+  "@_WORKSPACES": {},
+  "workspaceCreateTitle": "创建工作空间",
+  "workspaceCreateDescription": "为您的团队创建一个新的工作空间",
+  "workspaceCreateButton": "创建工作空间",
+  "workspaceName": "工作空间名称",
+  "workspaceNameHint": "例如，产品团队",
+  "workspaceDescription": "描述",
+  "workspaceDescriptionHint": "这个工作空间的用途是什么？",
+  "workspaceCreateSuccess": "工作空间创建成功",
+  "workspaceCreateError": "创建工作空间失败",
+  "workspaceJoinTitle": "加入工作空间",
+  "workspaceJoinDescription": "输入邀请码以加入工作空间",
+  "workspaceJoinButton": "加入工作空间",
+  "workspaceInviteCode": "邀请码",
+  "workspaceCodeHelper": "从团队成员处获取此代码",
+  "workspaceCodeLength": "代码必须为6个字符",
+  "workspaceCodeFormat": "代码只能包含字母和数字",
+  "workspaceCodeInvalid": "邀请码无效",
+  "workspaceCodeExpired": "此邀请码已过期",
+  "workspaceAlreadyMember": "您已经是此工作空间的成员",
+  "workspaceJoinSuccess": "成功加入工作空间",
+  "workspaceJoinError": "加入工作空间失败",
+  "workspaceCreateNew": "创建新工作空间",
+  
+  "@_WORKSPACE_MEMBERS": {},
+  "workspaceMembers": "成员",
+  "noMembersYet": "还没有成员",
+  "memberRoleChanged": "成员角色已更改",
+  "memberRoleChangeError": "更改成员角色失败",
+  "memberRemoveConfirmTitle": "移除成员",
+  "memberRemoveConfirmMessage": "您确定要从此工作空间中移除 {name} 吗？",
+  "@memberRemoveConfirmMessage": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "memberRemoved": "成员已移除",
+  "memberRemoveError": "移除成员失败",
+  "workspaceLeaveConfirmTitle": "离开工作空间",
+  "workspaceLeaveConfirmMessage": "您确定要离开此工作空间吗？",
+  "workspaceLeft": "您已离开工作空间",
+  "workspaceLeaveError": "离开工作空间失败",
+  "workspaceLeave": "离开工作空间",
+  "changeRole": "更改角色",
+  "removeMember": "移除成员",
+  "roleAdmin": "管理员",
+  "roleAdminDescription": "可以管理工作空间和成员",
+  "roleMember": "成员",
+  "roleMemberDescription": "可以查看和创建内容",
+  "you": "您",
+  "errorLoadingMembers": "加载成员失败",
+  
+  "@_INVITE_CODES": {},
+  "inviteCodes": "邀请码",
+  "noInviteCodesYet": "还没有邀请码",
+  "createInviteCode": "创建邀请码",
+  "inviteCodeCreated": "邀请码创建成功",
+  "inviteCodeCreateError": "创建邀请码失败",
+  "inviteCodeRevokeConfirmTitle": "撤销邀请码",
+  "inviteCodeRevokeConfirmMessage": "您确定要撤销此邀请码吗？它将不再有效。",
+  "inviteCodeRevoked": "邀请码已撤销",
+  "inviteCodeRevokeError": "撤销邀请码失败",
+  "inviteCodeCopied": "邀请码已复制到剪贴板",
+  "copyCode": "复制代码",
+  "revokeCode": "撤销代码",
+  "statusActive": "活跃",
+  "statusRevoked": "已撤销",
+  "statusExpired": "已过期",
+  "statusMaxedOut": "已达到最大使用次数",
+  "uses": "使用次数",
+  "expires": "过期时间",
+  "inviteCodeMaxUses": "最大使用次数",
+  "inviteCodeExpiry": "过期时间",
+  "unlimited": "无限制",
+  "never": "永不",
+  "daysCount": "{count} 天",
+  "@daysCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "errorLoadingInviteCodes": "加载邀请码失败"
+,
+  "@_WORKSPACE_SETTINGS": {},
+  "workspaceSettings": "工作空间设置",
+  "workspaceUpdated": "工作空间已更新",
+  "workspaceUpdateError": "更新工作空间失败",
+  "workspaceNameTooShort": "名称必须至少3个字符",
+  "workspaceNameTooLong": "名称必须少于50个字符",
+  "workspaceType": "类型",
+  "workspaceTypePersonal": "个人",
+  "workspaceTypeTeam": "团队",
+  "createdAt": "创建时间",
+  "adminOnlySettings": "只有管理员可以编辑设置",
+  "dangerZone": "危险区域",
+  "deleteWorkspace": "删除工作空间",
+  "workspaceDeleteConfirmTitle": "删除工作空间？",
+  "workspaceDeleteConfirmMessage": "您确定要删除此工作空间吗？此操作无法撤消。",
+  "workspaceDeleteWarning": "此工作空间中的所有任务、项目和数据将被永久删除。",
+  "workspaceDeleted": "工作空间已删除",
+  "workspaceDeleteError": "删除工作空间失败",
+  "workspaceNotFound": "未找到工作空间",
+  "errorLoadingWorkspace": "加载工作空间失败"
+,
+  "@_SYNC": {},
+  "syncStatus": "同步状态",
+  "lastSync": "上次同步",
+  "pendingChanges": "待处理",
+  "failedChanges": "失败",
+  "failedItems": "失败的项目",
+  "retryAll": "全部重试",
+  "discardAll": "全部丢弃",
+  "discardChange": "丢弃更改？",
+  "discardAllChanges": "丢弃所有更改？",
+  "discardAllWarning": "这将永久丢弃所有失败的更改。此操作无法撤消。"
+}
