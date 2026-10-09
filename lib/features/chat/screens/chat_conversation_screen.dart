@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/database/app_database.dart';
+import '../../../core/db/app_database.dart';
 import '../repositories/chat_repository.dart';
 
 class ChatConversationScreen extends ConsumerStatefulWidget {

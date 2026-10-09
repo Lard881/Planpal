@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../core/l10n/l10n.dart';
+import '../../../core/l10n/app_localizations.dart';
 import '../../../shared/widgets/app_snackbar.dart';
 import '../../home/screens/home_screen.dart';
 import '../../tasks/screens/tasks_screen.dart';
