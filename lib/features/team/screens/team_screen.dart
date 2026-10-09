@@ -197,8 +197,9 @@ class _TeamScreenState extends ConsumerState<TeamScreen> {
     final userEmail = member.profile?.email ?? '';
     final avatarUrl = member.profile?.avatarUrl;
     
-    // S15.2: Presence indicator (mock for now - will connect to Realtime)
-    final isOnline = member.userId.hashCode % 3 == 0; // Mock presence
+    // S15.2: Presence indicator
+    // TODO: Connect to Realtime presence when implemented
+    final isOnline = false; // Placeholder until presence is wired
 
     return Card(
       elevation: 2,
@@ -333,6 +334,7 @@ class _TeamScreenState extends ConsumerState<TeamScreen> {
 
   // S15.3: Latest Updates panel
   Widget _buildLatestUpdatesPanel() {
+    // TODO: Connect to real activity/audit log data
     return Padding(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -344,59 +346,26 @@ class _TeamScreenState extends ConsumerState<TeamScreen> {
           ),
           const SizedBox(height: 16),
           
-          Expanded(
-            child: ListView.separated(
-              itemCount: 5, // Mock data
-              separatorBuilder: (_, __) => const Divider(height: 24),
-              itemBuilder: (context, index) => _buildActivityItem(index),
+          // Empty state until real data is connected
+          const Expanded(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.history, size: 48, color: Colors.grey),
+                  SizedBox(height: 16),
+                  Text(
+                    'No recent activity',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
       ),
     );
   }
-
-  Widget _buildActivityItem(int index) {
-    final activities = [
-      {
-        'user': 'John Doe',
-        'action': 'completed task',
-        'target': 'Design Homepage',
-        'time': DateTime.now().subtract(Duration(minutes: 15 * index)),
-      },
-      {
-        'user': 'Jane Smith',
-        'action': 'uploaded document',
-        'target': 'Q4 Report.pdf',
-        'time': DateTime.now().subtract(Duration(hours: 1 + index)),
-      },
-      {
-        'user': 'Bob Johnson',
-        'action': 'commented on',
-        'target': 'Bug Fix #123',
-        'time': DateTime.now().subtract(Duration(hours: 2 + index)),
-      },
-    ];
-    
-    final activity = activities[index % activities.length];
-    
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CircleAvatar(
-          radius: 16,
-          backgroundColor: AppColors.primary,
-          child: Text(
-            (activity['user'] as String)[0],
-            style: const TextStyle(color: Colors.white, fontSize: 12),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              RichText(
                 text: TextSpan(
                   style: const TextStyle(fontSize: 13, color: Colors.black87),
                   children: [

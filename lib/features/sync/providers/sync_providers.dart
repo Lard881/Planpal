@@ -100,3 +100,9 @@ final failedCountProvider = FutureProvider<int>((ref) async {
   final coordinator = ref.watch(syncCoordinatorProvider);
   return await coordinator.getFailedCount();
 });
+
+/// Outbox items provider (all pending/failed items)
+final outboxItemsProvider = FutureProvider<List<OutboxData>>((ref) async {
+  final database = ref.watch(databaseProvider);
+  return await database.select(database.outbox).get();
+});

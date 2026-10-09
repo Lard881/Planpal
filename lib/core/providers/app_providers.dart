@@ -299,3 +299,84 @@ final fileUploadServiceProvider = Provider<FileUploadService>((ref) {
 final thumbnailServiceProvider = Provider<ThumbnailService>((ref) {
   return ThumbnailService();
 });
+
+
+// ============================================================================
+// Connectivity providers (Missing providers fix)
+// ============================================================================
+
+/// Connectivity service provider
+final connectivityServiceProvider = Provider<ConnectivityService>((ref) {
+  final service = ConnectivityService();
+  ref.onDispose(() => service.dispose());
+  return service;
+});
+
+/// Connectivity state stream provider
+final connectivityStateStreamProvider = StreamProvider<ConnectivityState>((ref) {
+  final service = ref.watch(connectivityServiceProvider);
+  return service.state;
+});
+
+/// Is online provider (helper)
+final isOnlineProvider = Provider<bool>((ref) {
+  final state = ref.watch(connectivityStateStreamProvider);
+  return state.maybeWhen(
+    data: (state) => state == ConnectivityState.online,
+    orElse: () => false,
+  );
+});
+
+/// Is offline provider (helper)
+final isOfflineProvider = Provider<bool>((ref) {
+  final state = ref.watch(connectivityStateStreamProvider);
+  return state.maybeWhen(
+    data: (state) => state != ConnectivityState.online,
+    orElse: () => true,
+  );
+});
+
+/// Network type provider (for UI display)
+final networkTypeProvider = Provider<String>((ref) {
+  final state = ref.watch(connectivityStateStreamProvider);
+  return state.maybeWhen(
+    data: (state) {
+      switch (state) {
+        case ConnectivityState.online:
+          return 'Online';
+        case ConnectivityState.noNetwork:
+          return 'No Network';
+        case ConnectivityState.noInternet:
+          return 'No Internet';
+        case ConnectivityState.serverUnreachable:
+          return 'Server Unreachable';
+      }
+    },
+    orElse: () => 'Unknown',
+  );
+});
+
+// ============================================================================
+// Additional missing providers (stubs for compilation)
+// ============================================================================
+
+/// Locale provider (TODO: implement proper locale management)
+final localeProvider = StateProvider<String>((ref) => 'en');
+
+/// Team repository provider (TODO: implement team repository)
+final teamRepositoryProvider = Provider<dynamic>((ref) {
+  throw UnimplementedError('Team repository not yet implemented');
+});
+
+/// Sync trigger service provider (TODO: implement sync trigger)
+final syncTriggerServiceProvider = Provider<dynamic>((ref) {
+  throw UnimplementedError('Sync trigger service not yet implemented');
+});
+
+/// Time since last sync provider (TODO: implement last sync tracking)
+final timeSinceLastSyncProvider = FutureProvider<Duration?>((ref) async {
+  return null; // TODO: Implement actual last sync time tracking
+});
+
+/// Notification realtime service provider (already exists as realtimeServiceProvider)
+final notificationRealtimeServiceProvider = realtimeServiceProvider;

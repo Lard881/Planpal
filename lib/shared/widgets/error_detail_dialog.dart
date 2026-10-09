@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:planpal/core/l10n/app_localizations.dart';
 
 /// Dialog that displays technical error details including error code and request ID.
 /// Shows a "Copy" button to copy all details to clipboard.

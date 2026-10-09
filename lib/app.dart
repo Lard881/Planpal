@@ -7,8 +7,7 @@ import 'core/providers/theme_provider.dart';
 import 'core/navigation/global_navigator_key.dart';
 import 'core/initialization/fcm_initializer.dart';
 import 'features/search/presentation/widgets/search_shortcut_listener.dart';
-// Temporarily disabled until flutter_gen is generated
-// import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'core/l10n/app_localizations.dart';
 
 class PlanPalApp extends ConsumerWidget {
   const PlanPalApp({super.key});

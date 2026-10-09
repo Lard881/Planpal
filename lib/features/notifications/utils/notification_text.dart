@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:planpal/core/l10n/app_localizations.dart';
 import 'package:planpal/core/db/app_database.dart';
 
 /// Generate localized notification text

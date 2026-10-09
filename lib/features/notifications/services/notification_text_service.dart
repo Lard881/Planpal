@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-// Temporarily disabled until flutter_gen is generated
-// import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:planpal/core/l10n/app_localizations.dart';
 import '../models/notification.dart';
 
 /// Service for generating localized notification text

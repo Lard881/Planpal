@@ -176,3 +176,65 @@ final currentWorkspacePermissionsProvider = FutureProvider<WorkspacePermissions?
     currentMember: currentMember,
   );
 });
+
+// ========================================================================
+// Workspace Operations (Missing Providers)
+// ========================================================================
+
+/// Workspace list provider (alias for workspacesProvider for compatibility)
+final workspaceListProvider = workspacesProvider;
+
+/// Workspace invite codes provider (alias for inviteCodesProvider)
+final workspaceInviteCodesProvider = inviteCodesProvider;
+
+/// Update workspace provider
+final updateWorkspaceProvider = Provider<Future<Workspace> Function(String, String)>((ref) {
+  return (workspaceId, name) async {
+    final repository = ref.read(workspaceRepositoryProvider);
+    return repository.updateWorkspace(workspaceId, name: name);
+  };
+});
+
+/// Delete workspace provider
+final deleteWorkspaceProvider = Provider<Future<void> Function(String)>((ref) {
+  return (workspaceId) async {
+    final repository = ref.read(workspaceRepositoryProvider);
+    return repository.deleteWorkspace(workspaceId);
+  };
+});
+
+/// Leave workspace provider
+final leaveWorkspaceProvider = Provider<Future<void> Function(String)>((ref) {
+  return (workspaceId) async {
+    final repository = ref.read(workspaceRepositoryProvider);
+    return repository.leaveWorkspace(workspaceId);
+  };
+});
+
+/// Remove member provider
+final removeMemberProvider = Provider<Future<void> Function(String, String)>((ref) {
+  return (workspaceId, memberId) async {
+    final repository = ref.read(workspaceRepositoryProvider);
+    return repository.removeMember(workspaceId: workspaceId, memberId: memberId);
+  };
+});
+
+/// Create invite code provider
+final createInviteCodeProvider = Provider<Future<InviteCode> Function(String, int?, DateTime?)>((ref) {
+  return (workspaceId, maxUses, expiresAt) async {
+    final repository = ref.read(workspaceRepositoryProvider);
+    return repository.createInviteCode(
+      workspaceId: workspaceId,
+      maxUses: maxUses,
+      expiresAt: expiresAt,
+    );
+  };
+});
+
+/// Revoke invite code provider
+final revokeInviteCodeProvider = Provider<Future<void> Function(String, String)>((ref) {
+  return (workspaceId, inviteId) async {
+    final repository = ref.read(workspaceRepositoryProvider);
+    return repository.revokeInviteCode(inviteId);
+  };
+});
