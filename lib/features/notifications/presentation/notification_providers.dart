@@ -71,11 +71,6 @@ class NotificationActions {
   }
 }
 
-/// Database provider
-final appDatabaseProvider = Provider<AppDatabase>((ref) {
-  return AppDatabase();
-});
-
 /// API client provider
 final apiClientProvider = Provider<ApiClient>((ref) {
   throw UnimplementedError('ApiClient provider must be overridden');

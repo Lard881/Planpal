@@ -77,7 +77,8 @@ class SyncStatusScreen extends ConsumerWidget {
               Row(
                 children: [
                   Expanded(
-                    child: AppButton(
+                    child: PlanPalButton(
+                      text: 'Retry All',
                       onPressed: () async {
                         await ref
                             .read(outboxServiceProvider)
@@ -90,7 +91,9 @@ class SyncStatusScreen extends ConsumerWidget {
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: AppButton(
+                    child: PlanPalButton(
+                      text: 'Discard All',
+                      type: ButtonType.danger,
                       onPressed: () async {
                         final confirmed =
                             await _showDiscardAllConfirmation(context);

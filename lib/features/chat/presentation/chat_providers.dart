@@ -102,11 +102,6 @@ class SendMessageController {
   }
 }
 
-/// Database provider (from core)
-final appDatabaseProvider = Provider<AppDatabase>((ref) {
-  return AppDatabase();
-});
-
 /// API client provider (from core)
 final apiClientProvider = Provider<ApiClient>((ref) {
   throw UnimplementedError('ApiClient provider must be overridden');

@@ -99,6 +99,7 @@ dev_dependencies:
 
   # Testing
   mocktail: ^1.0.4
+  mockito: ^5.4.4
   
   # App Icon Generator
   flutter_launcher_icons: ^0.14.1

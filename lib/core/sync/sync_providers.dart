@@ -2,8 +2,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:logger/logger.dart';
-import '../database/database_providers.dart';
+import '../providers/app_providers.dart';
 import 'sync_service.dart';
+import 'sync_engine.dart';
 
 /// Device ID provider (persisted in SharedPreferences)
 final deviceIdProvider = FutureProvider<String>((ref) async {
@@ -11,12 +12,29 @@ final deviceIdProvider = FutureProvider<String>((ref) async {
   String? deviceId = prefs.getString('device_id');
   
   if (deviceId == null) {
-    deviceId = generateDeviceId();
+    deviceId = DateTime.now().millisecondsSinceEpoch.toString();
     await prefs.setString('device_id', deviceId);
   }
   
   return deviceId;
 });
+
+/// Sync configuration class (minimal for compilation)
+class SyncConfig {
+  final String deviceId;
+  final List<String> entityTypes;
+  final ConflictResolutionStrategy strategy;
+  final int batchSize;
+  final Duration timeout;
+
+  const SyncConfig({
+    required this.deviceId,
+    required this.entityTypes,
+    required this.strategy,
+    required this.batchSize,
+    required this.timeout,
+  });
+}
 
 /// Sync configuration provider
 final syncConfigProvider = FutureProvider<SyncConfig>((ref) async {

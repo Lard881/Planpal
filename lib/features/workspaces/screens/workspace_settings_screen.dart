@@ -6,7 +6,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/planpal_button.dart';
 import '../../../core/widgets/planpal_text_field.dart';
 import '../../../shared/widgets/app_snackbar.dart';
-import '../../../core/widgets/loading_overlay.dart';
+import '../../../shared/widgets/loading_overlay.dart';
 import '../providers/workspace_providers.dart';
 
 /// Workspace settings screen
@@ -242,10 +242,9 @@ class _WorkspaceSettingsScreenState
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   // Workspace name
-                  AppTextField(
-                    controller: _nameController,
+                  PlanPalTextField(
                     label: context.l10n.workspaceName,
-                    validator: _validateName,
+                    controller: _nameController,
                     enabled: canEdit && !_isLoading,
                     prefixIcon: const Icon(Icons.workspaces),
                   ),
@@ -253,9 +252,9 @@ class _WorkspaceSettingsScreenState
                   const SizedBox(height: 16),
 
                   // Workspace description
-                  AppTextField(
-                    controller: _descriptionController,
+                  PlanPalTextField(
                     label: context.l10n.workspaceDescription,
+                    controller: _descriptionController,
                     hint: context.l10n.workspaceDescriptionHint,
                     enabled: canEdit && !_isLoading,
                     maxLines: 3,
@@ -322,12 +321,11 @@ class _WorkspaceSettingsScreenState
 
                     const SizedBox(height: 16),
 
-                    AppButton(
-                      onPressed: _isLoading ? null : _deleteWorkspace,
-                      label: context.l10n.deleteWorkspace,
-                      variant: AppButtonVariant.outlined,
-                      color: AppColors.error,
+                    PlanPalButton(
+                      text: context.l10n.deleteWorkspace,
+                      type: ButtonType.danger,
                       icon: Icons.delete_forever,
+                      onPressed: _isLoading ? null : _deleteWorkspace,
                     ),
                   ],
                 ],
@@ -347,7 +345,9 @@ class _WorkspaceSettingsScreenState
                 style: AppTextStyles.bodyMedium,
               ),
               const SizedBox(height: 16),
-              AppButton(
+              PlanPalButton(
+                text: 'Refresh',
+                type: ButtonType.secondary,
                 onPressed: () {
                   ref.invalidate(workspaceProvider(widget.workspaceId));
                 },

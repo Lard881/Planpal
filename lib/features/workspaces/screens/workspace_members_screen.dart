@@ -4,7 +4,7 @@ import '../../../core/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/planpal_button.dart';
 import '../../../shared/widgets/app_snackbar.dart';
-import '../../../core/widgets/loading_overlay.dart';
+import '../../../shared/widgets/loading_overlay.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../models/workspace_member.dart';
 import '../providers/workspace_providers.dart';
@@ -248,12 +248,11 @@ class _WorkspaceMembersScreenState extends ConsumerState<WorkspaceMembersScreen>
               if (!isPersonalWorkspace && index == members.length) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: AppButton(
-                    onPressed: _leaveWorkspace,
-                    label: context.l10n.workspaceLeave,
-                    variant: AppButtonVariant.outlined,
+                  child: PlanPalButton(
+                    text: context.l10n.workspaceLeave,
+                    type: ButtonType.danger,
                     icon: Icons.exit_to_app,
-                    color: AppColors.error,
+                    onPressed: _leaveWorkspace,
                   ),
                 );
               }
@@ -400,7 +399,9 @@ class _WorkspaceMembersScreenState extends ConsumerState<WorkspaceMembersScreen>
                 style: AppTextStyles.bodyMedium,
               ),
               const SizedBox(height: 16),
-              AppButton(
+              PlanPalButton(
+                text: 'Refresh',
+                type: ButtonType.secondary,
                 onPressed: () {
                   ref.invalidate(workspaceMembersProvider(widget.workspaceId));
                 },

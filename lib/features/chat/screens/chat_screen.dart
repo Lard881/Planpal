@@ -109,95 +109,28 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     // TODO: Replace with real chat/messaging data from database
     // For now, showing example structure that matches the design
     
-    final conversations = [
-      _ConversationItem(
-        channel: 'Global Team Sync',
-        lastMessage: 'Maya Webb: Redesigned slide assets up...',
-        time: '10:24 AM',
-        unreadCount: 2,
-        isOnline: true,
-        avatarColor: const Color(0xFF3B82F6),
-      ),
-      _ConversationItem(
-        channel: 'Maya Webb',
-        lastMessage: 'Can you check the cake inviting document...',
-        time: '9:15 AM',
-        unreadCount: 0,
-        isOnline: true,
-        avatarColor: const Color(0xFF10B981),
-      ),
-      _ConversationItem(
-        channel: 'Zoe Harrington',
-        lastMessage: 'The client call is rescheduled for tomorrow.',
-        time: 'Yesterday',
-        unreadCount: 0,
-        isOnline: false,
-        avatarColor: const Color(0xFFF59E0B),
-      ),
-      _ConversationItem(
-        channel: 'Ethan Blackwell',
-        lastMessage: 'Nice work on that last integration!',
-        time: 'Yesterday',
-        unreadCount: 0,
-        isOnline: false,
-        avatarColor: const Color(0xFF8B5CF6),
-      ),
-      _ConversationItem(
-        channel: 'James Holloway',
-        lastMessage: 'Let\'s review the proposal blog ideas.',
-        time: 'May 13',
-        unreadCount: 0,
-        isOnline: false,
-        avatarColor: const Color(0xFFEF4444),
-      ),
-    ];
-
-    // Filter by search query
-    final filteredConversations = _searchQuery.isEmpty
-        ? conversations
-        : conversations.where((conv) {
-            return conv.channel.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-                conv.lastMessage.toLowerCase().contains(_searchQuery.toLowerCase());
-          }).toList();
-
-    if (filteredConversations.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.chat_bubble_outline,
-              size: 64,
-              color: Colors.grey[300],
+    // TODO: Replace with real chat channels from database/API
+    // For now, show empty state
+    return const Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.chat_bubble_outline, size: 64, color: Colors.grey),
+          SizedBox(height: 16),
+          Text(
+            'No conversations yet',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+              color: Colors.grey,
             ),
-            const SizedBox(height: 16),
-            Text(
-              'No messages found',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey[600],
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    return RefreshIndicator(
-      onRefresh: () async {
-        // TODO: Implement refresh
-      },
-      child: ListView.separated(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        itemCount: filteredConversations.length,
-        separatorBuilder: (context, index) => Divider(
-          height: 1,
-          color: Colors.grey[200],
-        ),
-        itemBuilder: (context, index) {
-          final conversation = filteredConversations[index];
-          return _buildConversationTile(conversation);
-        },
+          ),
+          SizedBox(height: 8),
+          Text(
+            'Start chatting with your team',
+            style: TextStyle(color: Colors.grey),
+          ),
+        ],
       ),
     );
   }

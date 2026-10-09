@@ -160,9 +160,10 @@ class _JoinWorkspaceScreenState extends ConsumerState<JoinWorkspaceScreen> {
                     const SizedBox(height: 40),
                     
                     // Invite code field
-                    AppTextField(
-                      controller: _codeController,
+                    PlanPalTextField(
                       label: context.l10n.workspaceInviteCode,
+                      hint: context.l10n.workspaceInviteCodeHint,
+                      controller: _codeController,
                       hint: 'ABC123',
                       validator: _validateCode,
                       enabled: !_isLoading,
@@ -195,9 +196,10 @@ class _JoinWorkspaceScreenState extends ConsumerState<JoinWorkspaceScreen> {
                     const SizedBox(height: 32),
                     
                     // Join button
-                    AppButton(
+                    PlanPalButton(
+                      text: context.l10n.workspaceJoinButton,
+                      fullWidth: true,
                       onPressed: _isLoading ? null : _joinWorkspace,
-                      label: context.l10n.workspaceJoinButton,
                       isLoading: _isLoading,
                       icon: Icons.login_rounded,
                     ),
@@ -205,9 +207,11 @@ class _JoinWorkspaceScreenState extends ConsumerState<JoinWorkspaceScreen> {
                     const SizedBox(height: 16),
                     
                     // Cancel button
-                    AppButton(
+                    PlanPalButton(
+                      text: context.l10n.cancel,
+                      type: ButtonType.secondary,
+                      fullWidth: true,
                       onPressed: _isLoading ? null : () => context.pop(),
-                      label: context.l10n.cancel,
                       variant: AppButtonVariant.outlined,
                     ),
                     

@@ -6,7 +6,7 @@ import '../../../core/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/planpal_button.dart';
 import '../../../shared/widgets/app_snackbar.dart';
-import '../../../core/widgets/loading_overlay.dart';
+import '../../../shared/widgets/loading_overlay.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../models/invite_code.dart';
 import '../providers/workspace_providers.dart';
@@ -153,9 +153,10 @@ class _InviteCodesScreenState extends ConsumerState<InviteCodesScreen> {
                   ),
                   if (isAdmin) ...[
                     const SizedBox(height: 24),
-                    AppButton(
+                    PlanPalButton(
+                      text: context.l10n.createInviteCode,
+                      icon: Icons.add,
                       onPressed: _createInviteCode,
-                      label: context.l10n.createInviteCode,
                       icon: Icons.add,
                     ),
                   ],
@@ -203,9 +204,10 @@ class _InviteCodesScreenState extends ConsumerState<InviteCodesScreen> {
                     ],
                   ),
                   child: SafeArea(
-                    child: AppButton(
+                    child: PlanPalButton(
+                      text: context.l10n.createInviteCode,
+                      icon: Icons.add,
                       onPressed: _createInviteCode,
-                      label: context.l10n.createInviteCode,
                       icon: Icons.add,
                       width: double.infinity,
                     ),
@@ -227,7 +229,9 @@ class _InviteCodesScreenState extends ConsumerState<InviteCodesScreen> {
                 style: AppTextStyles.bodyMedium,
               ),
               const SizedBox(height: 16),
-              AppButton(
+              PlanPalButton(
+                text: 'Refresh',
+                type: ButtonType.secondary,
                 onPressed: () {
                   ref.invalidate(inviteCodesProvider(widget.workspaceId));
                 },
