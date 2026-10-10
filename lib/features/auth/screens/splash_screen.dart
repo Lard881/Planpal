@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:planpal/core/l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/logger.dart';
 import '../presentation/auth_providers.dart';
@@ -74,7 +75,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   Future<void> _fetchUserDataAndNavigate() async {
     try {
       final apiClient = ref.read(apiClientProvider);
-      final prefs = ref.read(sharedPreferencesProvider);
+      final prefs = await SharedPreferences.getInstance();
       
       logger.i('📡 Calling GET /me endpoint...');
       final response = await apiClient.get('/me');

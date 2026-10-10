@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:drift/drift.dart' show Value;
 import '../../../core/db/app_database.dart';
 import '../../tasks/repositories/task_repository.dart';
-import '../../workspaces/providers/workspace_provider.dart';
+import '../../workspaces/providers/workspace_providers.dart';
 
 class ScheduleEventScreen extends ConsumerStatefulWidget {
   final DateTime? initialDate;

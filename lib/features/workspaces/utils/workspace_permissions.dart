@@ -8,7 +8,7 @@ import '../models/workspace_member.dart';
 /// - User role (admin, member, guest)
 /// - Feature availability
 class WorkspacePermissions {
-  final Workspace workspace;
+  final dynamic workspace;
   final WorkspaceMember? currentMember;
 
   WorkspacePermissions({
@@ -19,10 +19,10 @@ class WorkspacePermissions {
   // ============ Workspace Type Checks ============
 
   /// Check if this is a personal workspace
-  bool get isPersonal => workspace.type == 'personal';
+  bool get isPersonal => workspace.type == 'personal' || workspace.type == WorkspaceType.personal;
 
   /// Check if this is a team workspace
-  bool get isTeam => workspace.type == 'team';
+  bool get isTeam => workspace.type == 'team' || workspace.type == WorkspaceType.team;
 
   // ============ Role Checks ============
 

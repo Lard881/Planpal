@@ -79,11 +79,11 @@ class NotificationRepository {
   }
 
   /// Get unread notification count
-  Stream<int> watchUnreadCount({String? workspaceId}) {
+  Stream<int> watchUnreadCount([String? userId, String? workspaceId]) {
     final query = _db.notifications.count(
       where: (n) {
         Expression<bool> condition = n.readAt.isNull();
-        if (workspaceId != null) {
+        if (workspaceId != null && workspaceId.isNotEmpty) {
           condition = condition & n.workspaceId.equals(workspaceId);
         }
         return condition;

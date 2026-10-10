@@ -6,11 +6,11 @@ import '../../../core/utils/logger.dart';
 /// Service to handle post-login flow
 /// Fetches user data, applies theme/language, starts sync
 class PostLoginService {
-  final Dio _apiClient;
+  final ApiClient _apiClient;
   final SharedPreferences _prefs;
 
   PostLoginService({
-    required Dio apiClient,
+    required ApiClient apiClient,
     required SharedPreferences prefs,
   })  : _apiClient = apiClient,
         _prefs = prefs;

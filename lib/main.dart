@@ -19,6 +19,10 @@ void main() async {
 
   logger.i('🚀 Starting PlanPal...');
 
+  // Initialize SharedPreferences first (needed by window manager)
+  final prefs = await SharedPreferences.getInstance();
+  logger.i('✓ SharedPreferences initialized');
+
   // Initialize window manager for desktop platforms (Windows, macOS, Linux)
   // S16.3: Remember size and position
   if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
@@ -53,10 +57,6 @@ void main() async {
     // Listen for window changes to save preferences
     windowManager.addListener(_WindowPreferencesSaver(prefs));
   }
-
-  // Initialize SharedPreferences
-  final prefs = await SharedPreferences.getInstance();
-  logger.i('✓ SharedPreferences initialized');
 
   // Initialize Firebase
   try {

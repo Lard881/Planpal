@@ -20,9 +20,7 @@ class GoogleSignInWindows {
   /// Throws AppFailure on error
   Future<bool> signInWithBrowser() async {
     if (!Platform.isWindows) {
-      throw AppFailure.forbidden(
-        message: 'Browser OAuth flow is only available on Windows',
-      );
+      throw const AppFailure.forbidden();
     }
 
     try {
@@ -56,7 +54,7 @@ class GoogleSignInWindows {
       }
     } on AuthException catch (e) {
       logger.e('❌ Supabase auth error during Windows OAuth', error: e);
-      throw SupabaseAuthErrorMapper.mapToAppFailure(e);
+      throw SupabaseAuthErrorMapper.mapAuthException(e);
     } catch (e, stack) {
       if (e is AppFailure) rethrow;
       
@@ -93,9 +91,7 @@ class GoogleSignInWindows {
         const Duration(minutes: 2),
         onTimeout: () {
           logger.w('⚠️ Authentication timeout - user may have cancelled');
-          throw AppFailure.authCancelled(
-            message: 'Authentication timeout. Please try again.',
-          );
+          throw const AppFailure.authCancelled();
         },
       );
 

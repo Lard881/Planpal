@@ -6,7 +6,7 @@ import '../repositories/workspace_repository.dart';
 import '../models/workspace_member.dart';
 import '../models/invite_code.dart';
 import '../utils/workspace_permissions.dart';
-import '../../../core/db/app_database.dart';
+import '../../../core/db/app_database.dart' hide WorkspaceMember;
 
 /// Workspace repository provider
 final workspaceRepositoryProvider = Provider<WorkspaceRepository>((ref) {

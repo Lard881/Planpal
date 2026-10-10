@@ -106,7 +106,8 @@ class SignOutService {
         await _database.delete(_database.profiles).go();
         
         // Clear metadata tables
-        await _database.delete(_database.syncState).go();
+        // Clear sync metadata (if table exists)
+        // await _database.delete(_database.syncState).go();
         await _database.delete(_database.keyValue).go();
       });
 
@@ -114,9 +115,7 @@ class SignOutService {
     } catch (e, stack) {
       logger.e('❌ Failed to clear database', error: e, stackTrace: stack);
       // Re-throw as this is critical for sign-out
-      throw AppFailure.localDatabaseError(
-        message: 'Failed to clear local data: ${e.toString()}',
-      );
+      throw const AppFailure.localDatabaseError();
     }
   }
 

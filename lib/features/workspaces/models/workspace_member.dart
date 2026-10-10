@@ -24,6 +24,9 @@ class WorkspaceMember {
     required this.joinedAt,
   });
 
+  String? get name => userName;
+  String get email => userEmail;
+
   factory WorkspaceMember.fromJson(Map<String, dynamic> json) =>
       _$WorkspaceMemberFromJson(json);
 

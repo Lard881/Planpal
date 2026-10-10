@@ -1,0 +1,1188 @@
+Running Gradle task 'assembleDebug'...                          
+WARNING: Your app uses the following plugins that apply Kotlin Gradle Plugin (KGP): desktop_drop, share_plus
+Future versions of Flutter will fail to build if your app uses plugins that apply KGP.
+
+Please check the changelogs of these plugins and upgrade to a version that supports Built-in Kotlin.
+If no such version exists, report the issue to the plugin. If necessary, here is a guide on filing 
+an issue against a plugin: https://docs.flutter.dev/release/breaking-changes/migrate-to-built-in-kotlin/for-app-developers#report-incompatible-kotlin-gradle-plugin-usage-to-plugin-authors
+
+If you are a plugin author, please migrate your plugin to Built-in Kotlin using this guide: https://docs.flutter.dev/release/breaking-changes/migrate-to-built-in-kotlin/for-plugin-authors
+lib/features/search/presentation/search_providers.dart:2:8: Error: Error when reading 'lib/core/sync/sync_providers.dart': The system cannot find the file specified
+import '../../../core/sync/sync_providers.dart';
+       ^
+lib/features/search/presentation/search_providers.dart:10:25: Error: Undefined name 'dioProvider'.
+  final dio = ref.watch(dioProvider);
+                        ^^^^^^^^^^^
+lib/features/auth/data/google_sign_in_service.dart:51:9: Error: No named parameter with the name 'message'.
+        message: 'Native Google Sign-In is only available on Android',
+        ^^^^^^^
+lib/core/errors/app_failure.dart:26:17: Context: Found this candidate, but the arguments don't match.
+  const factory AppFailure.forbidden() = ForbiddenFailure;
+                ^^^^^^^^^
+lib/features/auth/data/google_sign_in_service.dart:57:9: Error: No named parameter with the name 'message'.
+        message: 'Google Sign-In not initialized. Call initializeForAndroid first.',
+        ^^^^^^^
+lib/core/errors/app_failure.dart:57:17: Context: Found this candidate, but the arguments don't match.
+  const factory AppFailure.internalError() = InternalErrorFailure;
+                ^^^^^^^^^^^^^
+lib/features/auth/data/google_sign_in_service.dart:88:11: Error: No named parameter with the name 'message'.
+          message: 'Failed to get Google ID token',
+          ^^^^^^^
+lib/core/errors/app_failure.dart:57:17: Context: Found this candidate, but the arguments don't match.
+  const factory AppFailure.internalError() = InternalErrorFailure;
+                ^^^^^^^^^^^^^
+lib/features/auth/data/google_sign_in_service.dart:107:11: Error: No named parameter with the name 'message'.
+          message: 'Failed to authenticate with Google',
+          ^^^^^^^
+lib/core/errors/app_failure.dart:17:17: Context: Found this candidate, but the arguments don't match.
+  const factory AppFailure.invalidCredentials() = InvalidCredentialsFailure;
+                ^^^^^^^^^^^^^^^^^^
+lib/features/auth/data/google_sign_in_service.dart:112:37: Error: Member not found: 'SupabaseAuthErrorMapper.mapToAppFailure'.
+      throw SupabaseAuthErrorMapper.mapToAppFailure(e);
+                                    ^^^^^^^^^^^^^^^
+lib/features/auth/data/google_sign_in_service.dart:135:9: Error: No named parameter with the name 'message'.
+        message: 'Browser OAuth flow is only available on Windows',
+        ^^^^^^^
+lib/core/errors/app_failure.dart:26:17: Context: Found this candidate, but the arguments don't match.
+  const factory AppFailure.forbidden() = ForbiddenFailure;
+                ^^^^^^^^^
+lib/features/auth/data/google_sign_in_windows.dart:24:9: Error: No named parameter with the name 'message'.
+        message: 'Browser OAuth flow is only available on Windows',
+        ^^^^^^^
+lib/core/errors/app_failure.dart:26:17: Context: Found this candidate, but the arguments don't match.
+  const factory AppFailure.forbidden() = ForbiddenFailure;
+                ^^^^^^^^^
+lib/features/auth/data/google_sign_in_windows.dart:59:37: Error: Member not found: 'SupabaseAuthErrorMapper.mapToAppFailure'.
+      throw SupabaseAuthErrorMapper.mapToAppFailure(e);
+                                    ^^^^^^^^^^^^^^^
+lib/features/auth/data/google_sign_in_windows.dart:97:13: Error: No named parameter with the name 'message'.
+            message: 'Authentication timeout. Please try again.',
+            ^^^^^^^
+lib/core/errors/app_failure.dart:22:17: Context: Found this candidate, but the arguments don't match.
+  const factory AppFailure.authCancelled() = AuthCancelledFailure;
+                ^^^^^^^^^^^^^
+lib/core/db/app_database.dart:405:22: Error: Too many positional arguments: 0 allowed, but 1 found.
+Try removing the extra positional arguments.
+    final file = File(p.join(dbFolder.path, 'planpal.db'));
+                     ^
+lib/core/db/app_database.g.dart:6517:9: Context: Found this candidate, but the arguments don't match.
+  const File(
+        ^^^^
+lib/features/auth/presentation/auth_providers.dart:19:27: Error: Undefined name 'sharedPreferencesProvider'.
+  final prefs = ref.watch(sharedPreferencesProvider);
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^
+lib/core/providers/app_providers.dart:241:24: Error: Required named parameter 'outboxService' must be provided.
+  return TaskRepository(
+                       ^
+lib/features/tasks/repositories/task_repository.dart:18:3: Context: Found this candidate, but the arguments don't match.
+  TaskRepository({
+  ^^^^^^^^^^^^^^
+lib/features/tasks/repositories/task_repository.dart:60:28: Error: The getter 'labelId' isn't defined for the type '$TasksTable'.
+ - '$TasksTable' is from 'package:planpal/core/db/app_database.dart' ('lib/core/db/app_database.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'labelId'.
+      query.where((t) => t.labelId.equals(labelId));
+                           ^^^^^^^
+lib/features/tasks/repositories/task_repository.dart:154:7: Error: No named parameter with the name 'action'.
+      action: 'create',
+      ^^^^^^
+lib/features/tasks/repositories/task_repository.dart:206:7: Error: No named parameter with the name 'action'.
+      action: 'update',
+      ^^^^^^
+lib/features/tasks/repositories/task_repository.dart:234:7: Error: No named parameter with the name 'action'.
+      action: 'delete',
+      ^^^^^^
+lib/core/router/app_router.dart:146:61: Error: Required named parameter 'workspaceId' must be provided.
+            builder: (context, state) => const NewTaskScreen(),
+                                                            ^
+lib/features/tasks/screens/new_task_screen.dart:14:9: Context: Found this candidate, but the arguments don't match.
+  const NewTaskScreen({
+        ^^^^^^^^^^^^^
+lib/features/profile/screens/profile_screen.dart:167:40: Error: The method 'watchAllTasks' isn't defined for the type 'TaskRepository'.
+ - 'TaskRepository' is from 'package:planpal/features/tasks/repositories/task_repository.dart' ('lib/features/tasks/repositories/task_repository.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'watchAllTasks'.
+                stream: taskRepository.watchAllTasks(workspaceId),
+                                       ^^^^^^^^^^^^^
+lib/features/profile/screens/profile_screen.dart:170:51: Error: The method 'where' isn't defined for the type 'Object'.
+ - 'Object' is from 'dart:core'.
+Try correcting the name to the name of an existing method, or defining a method named 'where'.
+                  final completedCount = allTasks.where((t) => t.status == 'completed').length;
+                                                  ^^^^^
+lib/features/profile/screens/profile_screen.dart:174:24: Error: The method 'where' isn't defined for the type 'Object'.
+ - 'Object' is from 'dart:core'.
+Try correcting the name to the name of an existing method, or defining a method named 'where'.
+                      .where((t) => t.projectId != null)
+                       ^^^^^
+lib/features/profile/screens/profile_screen.dart:180:51: Error: The method 'where' isn't defined for the type 'Object'.
+ - 'Object' is from 'dart:core'.
+Try correcting the name to the name of an existing method, or defining a method named 'where'.
+                  final completedTasks = allTasks.where((t) => t.completedAt != null).toList();
+                                                  ^^^^^
+lib/features/profile/screens/profile_screen.dart:235:36: Error: The method 'watchAllTasks' isn't defined for the type 'TaskRepository'.
+ - 'TaskRepository' is from 'package:planpal/features/tasks/repositories/task_repository.dart' ('lib/features/tasks/repositories/task_repository.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'watchAllTasks'.
+            stream: taskRepository.watchAllTasks(workspaceId),
+                                   ^^^^^^^^^^^^^
+lib/features/settings/screens/settings_screen.dart:248:42: Error: 'currentWorkspaceIdProvider' is imported from both 'package:planpal/core/providers/app_providers.dart' and 'package:planpal/features/workspaces/providers/workspace_providers.dart'.
+    final currentWorkspaceId = ref.watch(currentWorkspaceIdProvider);
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+lib/features/settings/screens/settings_screen.dart:377:30: Error: 'currentWorkspaceIdProvider' is imported from both 'package:planpal/core/providers/app_providers.dart' and 'package:planpal/features/workspaces/providers/workspace_providers.dart'.
+                    ref.read(currentWorkspaceIdProvider.notifier).state = workspace.id;
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+lib/features/workspaces/providers/workspace_providers.dart:59:27: Error: Undefined name 'sharedPreferencesProvider'.
+  final prefs = ref.watch(sharedPreferencesProvider);
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^
+lib/features/workspaces/providers/workspace_providers.dart:97:27: Error: Undefined name 'sharedPreferencesProvider'.
+  final prefs = ref.watch(sharedPreferencesProvider);
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^
+lib/features/workspaces/providers/workspace_providers.dart:9:1: Error: 'WorkspaceMember' is imported from both 'package:planpal/core/db/app_database.dart' and 'package:planpal/features/workspaces/models/workspace_member.dart'.
+import '../../../core/db/app_database.dart';
+^^^^^^^^^^^^^^^
+lib/features/workspaces/providers/workspace_providers.dart:143:48: Error: The getter 'userId' isn't defined for the type 'Object?'.
+ - 'Object' is from 'dart:core'.
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'userId'.
+  final currentMember = members.where((m) => m.userId == userId).firstOrNull;
+                                               ^^^^^^
+lib/features/workspaces/providers/workspace_providers.dart:172:48: Error: The getter 'userId' isn't defined for the type 'Object?'.
+ - 'Object' is from 'dart:core'.
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'userId'.
+  final currentMember = members.where((m) => m.userId == userId).firstOrNull;
+                                               ^^^^^^
+lib/features/workspaces/providers/workspace_providers.dart:175:16: Error: The argument type 'Workspace/*1*/' can't be assigned to the parameter type 'Workspace/*2*/'.
+ - 'Workspace/*1*/' is from 'package:planpal/core/db/app_database.dart' ('lib/core/db/app_database.dart').
+ - 'Workspace/*2*/' is from 'package:planpal/features/workspaces/models/workspace.dart' ('lib/features/workspaces/models/workspace.dart').
+    workspace: workspace,
+               ^
+lib/features/calendar/screens/calendar_screen.dart:184:54: Error: The method 'watchAllTasks' isn't defined for the type 'TaskRepository'.
+ - 'TaskRepository' is from 'package:planpal/features/tasks/repositories/task_repository.dart' ('lib/features/tasks/repositories/task_repository.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'watchAllTasks'.
+                              stream: taskRepository.watchAllTasks(workspaceId),
+                                                     ^^^^^^^^^^^^^
+lib/features/calendar/screens/calendar_screen.dart:193:62: Error: The method 'where' isn't defined for the type 'Object'.
+ - 'Object' is from 'dart:core'.
+Try correcting the name to the name of an existing method, or defining a method named 'where'.
+                                final todaysTasks = allTasks.where((task) {
+                                                             ^^^^^
+lib/features/notifications/screens/notifications_screen.dart:70:47: Error: Member not found: 'primaryColor'.
+                              color: AppTheme.primaryColor,
+                                              ^^^^^^^^^^^^
+lib/features/notifications/widgets/notification_tile.dart:3:1: Error: 'Notification' is imported from both 'package:flutter/src/widgets/notification_listener.dart' and 'package:planpal/core/db/app_database.dart'.
+import 'package:planpal/core/db/app_database.dart';
+^^^^^^^^^^^^
+lib/features/notifications/widgets/notification_tile.dart:83:28: Error: Not a constant expression.
+                    color: AppColors.primary,
+                           ^^^^^^^^^
+lib/features/notifications/widgets/notification_tile.dart:39:27: Error: The getter 'AppColors' isn't defined for the type 'NotificationTile'.
+ - 'NotificationTile' is from 'package:planpal/features/notifications/widgets/notification_tile.dart' ('lib/features/notifications/widgets/notification_tile.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppColors'.
+        color: isUnread ? AppColors.primary.withOpacity(0.05) : null,
+                          ^^^^^^^^^
+lib/features/notifications/widgets/notification_tile.dart:145:25: Error: Member not found: 'primaryColor'.
+        return AppTheme.primaryColor;
+                        ^^^^^^^^^^^^
+lib/features/notifications/presentation/notification_providers.dart:9:24: Error: Undefined name 'appDatabaseProvider'.
+  final db = ref.watch(appDatabaseProvider);
+                       ^^^^^^^^^^^^^^^^^^^
+lib/features/notifications/presentation/notification_providers.dart:81:10: Error: Couldn't find constructor 'SupabaseService'.
+  return SupabaseService();
+         ^^^^^^^^^^^^^^^
+lib/features/notifications/data/notification_repository.dart:180:20: Error: The argument type 'Value<String?>' can't be assigned to the parameter type 'String'.
+ - 'Value' is from 'package:drift/src/runtime/data_class.dart' ('../../../AppData/Local/Pub/Cache/hosted/pub.dev/drift-2.28.2/lib/src/runtime/data_class.dart').
+      workspaceId: Value(json['workspace_id'] as String?),
+                   ^
+lib/features/workspaces/screens/workspace_settings_screen.dart:63:22: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+      return context.l10n.fieldRequired;
+                     ^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:66:22: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+      return context.l10n.workspaceNameTooShort;
+                     ^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:69:22: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+      return context.l10n.workspaceNameTooLong;
+                     ^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:97:19: Error: Member not found: 'AppSnackbar.showSuccess'.
+      AppSnackbar.showSuccess(
+                  ^^^^^^^^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:105:19: Error: Member not found: 'AppSnackbar.showError'.
+      AppSnackbar.showError(
+                  ^^^^^^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:85:66: Error: Too few positional arguments: 1 required, 0 given.
+      await ref.read(workspaceRepositoryProvider).updateWorkspace(
+                                                                 ^
+lib/features/workspaces/screens/workspace_settings_screen.dart:180:19: Error: Member not found: 'AppSnackbar.showSuccess'.
+      AppSnackbar.showSuccess(
+                  ^^^^^^^^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:189:19: Error: Member not found: 'AppSnackbar.showError'.
+      AppSnackbar.showError(
+                  ^^^^^^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:121:29: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+        title: Text(context.l10n.workspaceDeleteConfirmTitle),
+                            ^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:126:26: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+            Text(context.l10n.workspaceDeleteConfirmMessage),
+                         ^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:140:31: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                      context.l10n.workspaceDeleteWarning,
+                              ^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:141:30: Error: The getter 'AppTextStyles' isn't defined for the type '_WorkspaceSettingsScreenState'.
+ - '_WorkspaceSettingsScreenState' is from 'package:planpal/features/workspaces/screens/workspace_settings_screen.dart' ('lib/features/workspaces/screens/workspace_settings_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTextStyles'.
+                      style: AppTextStyles.caption.copyWith(
+                             ^^^^^^^^^^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:154:33: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+            child: Text(context.l10n.cancel),
+                                ^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:159:33: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+            child: Text(context.l10n.delete),
+                                ^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:354:17: Error: No named parameter with the name 'label'.
+                label: context.l10n.retry,
+                ^^^^^
+lib/core/widgets/planpal_button.dart:16:9: Context: Found this candidate, but the arguments don't match.
+  const PlanPalButton({
+        ^^^^^^^^^^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:207:29: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+        title: Text(context.l10n.workspaceSettings),
+                            ^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:213:35: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+              child: Text(context.l10n.save),
+                                  ^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:221:35: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+              child: Text(context.l10n.workspaceNotFound),
+                                  ^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:228:53: Error: The getter 'description' isn't defined for the type 'Workspace'.
+ - 'Workspace' is from 'package:planpal/core/db/app_database.dart' ('lib/core/db/app_database.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'description'.
+            _descriptionController.text = workspace.description ?? '';
+                                                    ^^^^^^^^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:246:36: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                    label: context.l10n.workspaceName,
+                                   ^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:256:36: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                    label: context.l10n.workspaceDescription,
+                                   ^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:258:35: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                    hint: context.l10n.workspaceDescriptionHint,
+                                  ^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:269:36: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                    label: context.l10n.workspaceType,
+                                   ^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:271:35: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                        ? context.l10n.workspaceTypePersonal
+                                  ^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:272:35: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                        : context.l10n.workspaceTypeTeam,
+                                  ^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:280:36: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                    label: context.l10n.createdAt,
+                                   ^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:298:39: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                              context.l10n.adminOnlySettings,
+                                      ^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:299:38: Error: The getter 'AppTextStyles' isn't defined for the type '_WorkspaceSettingsScreenState'.
+ - '_WorkspaceSettingsScreenState' is from 'package:planpal/features/workspaces/screens/workspace_settings_screen.dart' ('lib/features/workspaces/screens/workspace_settings_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTextStyles'.
+                              style: AppTextStyles.caption.copyWith(
+                                     ^^^^^^^^^^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:316:31: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                      context.l10n.dangerZone,
+                              ^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:317:30: Error: The getter 'AppTextStyles' isn't defined for the type '_WorkspaceSettingsScreenState'.
+ - '_WorkspaceSettingsScreenState' is from 'package:planpal/features/workspaces/screens/workspace_settings_screen.dart' ('lib/features/workspaces/screens/workspace_settings_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTextStyles'.
+                      style: AppTextStyles.h4.copyWith(
+                             ^^^^^^^^^^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:325:37: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                      text: context.l10n.deleteWorkspace,
+                                    ^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:344:25: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                context.l10n.errorLoadingWorkspace,
+                        ^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:345:24: Error: The getter 'AppTextStyles' isn't defined for the type '_WorkspaceSettingsScreenState'.
+ - '_WorkspaceSettingsScreenState' is from 'package:planpal/features/workspaces/screens/workspace_settings_screen.dart' ('lib/features/workspaces/screens/workspace_settings_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTextStyles'.
+                style: AppTextStyles.bodyMedium,
+                       ^^^^^^^^^^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:388:41: Error: Member not found: 'textSecondary'.
+            Icon(icon, color: AppColors.textSecondary),
+                                        ^^^^^^^^^^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:397:40: Error: Member not found: 'textSecondary'.
+                      color: AppColors.textSecondary,
+                                       ^^^^^^^^^^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:396:28: Error: The getter 'AppTextStyles' isn't defined for the type '_InfoCard'.
+ - '_InfoCard' is from 'package:planpal/features/workspaces/screens/workspace_settings_screen.dart' ('lib/features/workspaces/screens/workspace_settings_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTextStyles'.
+                    style: AppTextStyles.caption.copyWith(
+                           ^^^^^^^^^^^^^
+lib/features/workspaces/screens/workspace_settings_screen.dart:403:28: Error: The getter 'AppTextStyles' isn't defined for the type '_InfoCard'.
+ - '_InfoCard' is from 'package:planpal/features/workspaces/screens/workspace_settings_screen.dart' ('lib/features/workspaces/screens/workspace_settings_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTextStyles'.
+                    style: AppTextStyles.bodyLarge.copyWith(
+                           ^^^^^^^^^^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:64:19: Error: Member not found: 'AppSnackbar.showSuccess'.
+      AppSnackbar.showSuccess(
+                  ^^^^^^^^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:70:19: Error: Member not found: 'AppSnackbar.showError'.
+      AppSnackbar.showError(
+                  ^^^^^^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:57:13: Error: No named parameter with the name 'expiresInDays'.
+            expiresInDays: result['expiresInDays'] as int?,
+            ^^^^^^^^^^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:110:19: Error: Member not found: 'AppSnackbar.showSuccess'.
+      AppSnackbar.showSuccess(
+                  ^^^^^^^^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:116:19: Error: Member not found: 'AppSnackbar.showError'.
+      AppSnackbar.showError(
+                  ^^^^^^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:82:29: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+        title: Text(context.l10n.inviteCodeRevokeConfirmTitle),
+                            ^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:83:31: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+        content: Text(context.l10n.inviteCodeRevokeConfirmMessage),
+                              ^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:87:33: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+            child: Text(context.l10n.cancel),
+                                ^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:92:33: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+            child: Text(context.l10n.revoke),
+                                ^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:101:67: Error: Too few positional arguments: 1 required, 0 given.
+      await ref.read(workspaceRepositoryProvider).revokeInviteCode(
+                                                                  ^
+lib/features/workspaces/screens/invite_codes_screen.dart:125:17: Error: Member not found: 'AppSnackbar.showSuccess'.
+    AppSnackbar.showSuccess(
+                ^^^^^^^^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:150:29: Error: Required named parameter 'title' must be provided.
+                  EmptyState(
+                            ^
+lib/shared/widgets/empty_state.dart:12:9: Context: Found this candidate, but the arguments don't match.
+  const EmptyState({
+        ^^^^^^^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:212:23: Error: No named parameter with the name 'width'.
+                      width: double.infinity,
+                      ^^^^^
+lib/core/widgets/planpal_button.dart:16:9: Context: Found this candidate, but the arguments don't match.
+  const PlanPalButton({
+        ^^^^^^^^^^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:238:17: Error: No named parameter with the name 'label'.
+                label: context.l10n.retry,
+                ^^^^^
+lib/core/widgets/planpal_button.dart:16:9: Context: Found this candidate, but the arguments don't match.
+  const PlanPalButton({
+        ^^^^^^^^^^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:138:29: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+        title: Text(context.l10n.inviteCodes),
+                            ^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:157:37: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                      text: context.l10n.createInviteCode,
+                                    ^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:160:23: Error: Duplicated named argument 'icon'.
+                      icon: Icons.add,
+                      ^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:180:30: Error: The getter 'usesCount' isn't defined for the type 'InviteCode'.
+ - 'InviteCode' is from 'package:planpal/features/workspaces/models/invite_code.dart' ('lib/features/workspaces/models/invite_code.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'usesCount'.
+                        code.usesCount >= code.maxUses!;
+                             ^^^^^^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:181:44: Error: The getter 'isRevoked' isn't defined for the type 'InviteCode'.
+ - 'InviteCode' is from 'package:planpal/features/workspaces/models/invite_code.dart' ('lib/features/workspaces/models/invite_code.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'isRevoked'.
+                    final isActive = !code.isRevoked && !isExpired && !isMaxedOut;
+                                           ^^^^^^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:228:25: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                context.l10n.errorLoadingInviteCodes,
+                        ^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:229:24: Error: The getter 'AppTextStyles' isn't defined for the type '_InviteCodesScreenState'.
+ - '_InviteCodesScreenState' is from 'package:planpal/features/workspaces/screens/invite_codes_screen.dart' ('lib/features/workspaces/screens/invite_codes_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTextStyles'.
+                style: AppTextStyles.bodyMedium,
+                       ^^^^^^^^^^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:289:43: Error: Member not found: 'textSecondary'.
+                              : AppColors.textSecondary.withOpacity(0.1),
+                                          ^^^^^^^^^^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:295:77: Error: Member not found: 'textSecondary'.
+                            color: isActive ? AppColors.primary : AppColors.textSecondary,
+                                                                            ^^^^^^^^^^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:294:34: Error: The getter 'AppTextStyles' isn't defined for the type '_InviteCodeCard'.
+ - '_InviteCodeCard' is from 'package:planpal/features/workspaces/screens/invite_codes_screen.dart' ('lib/features/workspaces/screens/invite_codes_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTextStyles'.
+                          style: AppTextStyles.h3.copyWith(
+                                 ^^^^^^^^^^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:305:42: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                        tooltip: context.l10n.copyCode,
+                                         ^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:324:34: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                  label: context.l10n.uses,
+                                 ^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:326:33: Error: The getter 'usesCount' isn't defined for the type 'InviteCode'.
+ - 'InviteCode' is from 'package:planpal/features/workspaces/models/invite_code.dart' ('lib/features/workspaces/models/invite_code.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'usesCount'.
+                      ? '${code.usesCount}/${code.maxUses}'
+                                ^^^^^^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:327:33: Error: The getter 'usesCount' isn't defined for the type 'InviteCode'.
+ - 'InviteCode' is from 'package:planpal/features/workspaces/models/invite_code.dart' ('lib/features/workspaces/models/invite_code.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'usesCount'.
+                      : '${code.usesCount}',
+                                ^^^^^^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:333:36: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                    label: context.l10n.expires,
+                                   ^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:347:37: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                label: Text(context.l10n.revokeCode),
+                                    ^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:360:14: Error: The getter 'isRevoked' isn't defined for the type 'InviteCode'.
+ - 'InviteCode' is from 'package:planpal/features/workspaces/models/invite_code.dart' ('lib/features/workspaces/models/invite_code.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'isRevoked'.
+    if (code.isRevoked) return context.l10n.statusRevoked;
+             ^^^^^^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:360:40: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+    if (code.isRevoked) return context.l10n.statusRevoked;
+                                       ^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:362:22: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+      return context.l10n.statusExpired;
+                     ^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:364:38: Error: The getter 'usesCount' isn't defined for the type 'InviteCode'.
+ - 'InviteCode' is from 'package:planpal/features/workspaces/models/invite_code.dart' ('lib/features/workspaces/models/invite_code.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'usesCount'.
+    if (code.maxUses != null && code.usesCount >= code.maxUses!) {
+                                     ^^^^^^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:365:22: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+      return context.l10n.statusMaxedOut;
+                     ^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:367:20: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+    return context.l10n.statusActive;
+                   ^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:396:16: Error: The getter 'AppTextStyles' isn't defined for the type '_StatusChip'.
+ - '_StatusChip' is from 'package:planpal/features/workspaces/screens/invite_codes_screen.dart' ('lib/features/workspaces/screens/invite_codes_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTextStyles'.
+        style: AppTextStyles.caption.copyWith(
+               ^^^^^^^^^^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:421:47: Error: Member not found: 'textSecondary'.
+        Icon(icon, size: 16, color: AppColors.textSecondary),
+                                              ^^^^^^^^^^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:426:30: Error: Member not found: 'textSecondary'.
+            color: AppColors.textSecondary,
+                             ^^^^^^^^^^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:425:18: Error: The getter 'AppTextStyles' isn't defined for the type '_StatItem'.
+ - '_StatItem' is from 'package:planpal/features/workspaces/screens/invite_codes_screen.dart' ('lib/features/workspaces/screens/invite_codes_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTextStyles'.
+          style: AppTextStyles.caption.copyWith(
+                 ^^^^^^^^^^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:431:18: Error: The getter 'AppTextStyles' isn't defined for the type '_StatItem'.
+ - '_StatItem' is from 'package:planpal/features/workspaces/screens/invite_codes_screen.dart' ('lib/features/workspaces/screens/invite_codes_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTextStyles'.
+          style: AppTextStyles.caption.copyWith(
+                 ^^^^^^^^^^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:458:27: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+      title: Text(context.l10n.createInviteCode),
+                          ^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:464:21: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+            context.l10n.inviteCodeMaxUses,
+                    ^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:465:20: Error: The getter 'AppTextStyles' isn't defined for the type '_CreateInviteCodeDialogState'.
+ - '_CreateInviteCodeDialogState' is from 'package:planpal/features/workspaces/screens/invite_codes_screen.dart' ('lib/features/workspaces/screens/invite_codes_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTextStyles'.
+            style: AppTextStyles.bodyMedium.copyWith(
+                   ^^^^^^^^^^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:476:52: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                label: Text(uses == null ? context.l10n.unlimited : '$uses'),
+                                                   ^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:486:21: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+            context.l10n.inviteCodeExpiry,
+                    ^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:487:20: Error: The getter 'AppTextStyles' isn't defined for the type '_CreateInviteCodeDialogState'.
+ - '_CreateInviteCodeDialogState' is from 'package:planpal/features/workspaces/screens/invite_codes_screen.dart' ('lib/features/workspaces/screens/invite_codes_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTextStyles'.
+            style: AppTextStyles.bodyMedium.copyWith(
+                   ^^^^^^^^^^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:500:33: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                      ? context.l10n.never
+                                ^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:501:33: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                      : context.l10n.daysCount(days),
+                                ^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:515:31: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+          child: Text(context.l10n.cancel),
+                              ^^^^
+lib/features/workspaces/screens/invite_codes_screen.dart:524:31: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+          child: Text(context.l10n.create),
+                              ^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:39:61: Error: The getter 'notifier' isn't defined for the type 'FutureProvider<List<invalid-type>>'.
+ - 'FutureProvider' is from 'package:riverpod/src/future_provider.dart' ('../../../AppData/Local/Pub/Cache/hosted/pub.dev/riverpod-2.6.1/lib/src/future_provider.dart').
+ - 'List' is from 'dart:core'.
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'notifier'.
+      ref.read(workspaceMembersProvider(widget.workspaceId).notifier).fetchMembers();
+                                                            ^^^^^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:58:19: Error: Member not found: 'AppSnackbar.showSuccess'.
+      AppSnackbar.showSuccess(
+                  ^^^^^^^^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:64:19: Error: Member not found: 'AppSnackbar.showError'.
+      AppSnackbar.showError(
+                  ^^^^^^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:106:19: Error: Member not found: 'AppSnackbar.showSuccess'.
+      AppSnackbar.showSuccess(
+                  ^^^^^^^^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:112:19: Error: Member not found: 'AppSnackbar.showError'.
+      AppSnackbar.showError(
+                  ^^^^^^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:76:29: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+        title: Text(context.l10n.memberRemoveConfirmTitle),
+                            ^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:78:19: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+          context.l10n.memberRemoveConfirmMessage(member.name ?? member.email),
+                  ^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:78:58: Error: The getter 'name' isn't defined for the type 'WorkspaceMember'.
+ - 'WorkspaceMember' is from 'package:planpal/features/workspaces/models/workspace_member.dart' ('lib/features/workspaces/models/workspace_member.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'name'.
+          context.l10n.memberRemoveConfirmMessage(member.name ?? member.email),
+                                                         ^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:78:73: Error: The getter 'email' isn't defined for the type 'WorkspaceMember'.
+ - 'WorkspaceMember' is from 'package:planpal/features/workspaces/models/workspace_member.dart' ('lib/features/workspaces/models/workspace_member.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'email'.
+          context.l10n.memberRemoveConfirmMessage(member.name ?? member.email),
+                                                                        ^^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:83:33: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+            child: Text(context.l10n.cancel),
+                                ^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:88:33: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+            child: Text(context.l10n.remove),
+                                ^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:151:19: Error: Member not found: 'AppSnackbar.showSuccess'.
+      AppSnackbar.showSuccess(
+                  ^^^^^^^^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:163:21: Error: Member not found: 'AppSnackbar.showError'.
+        AppSnackbar.showError(
+                    ^^^^^^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:168:21: Error: Member not found: 'AppSnackbar.showError'.
+        AppSnackbar.showError(
+                    ^^^^^^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:124:29: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+        title: Text(context.l10n.workspaceLeaveConfirmTitle),
+                            ^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:125:31: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+        content: Text(context.l10n.workspaceLeaveConfirmMessage),
+                              ^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:129:33: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+            child: Text(context.l10n.cancel),
+                                ^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:134:33: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+            child: Text(context.l10n.leave),
+                                ^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:185:35: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+              title: Text(context.l10n.roleAdmin),
+                                  ^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:186:38: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+              subtitle: Text(context.l10n.roleAdminDescription),
+                                     ^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:197:35: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+              title: Text(context.l10n.roleMember),
+                                  ^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:198:38: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+              subtitle: Text(context.l10n.roleMemberDescription),
+                                     ^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:227:30: Error: Required named parameter 'title' must be provided.
+            return EmptyState(
+                             ^
+lib/shared/widgets/empty_state.dart:12:9: Context: Found this candidate, but the arguments don't match.
+  const EmptyState({
+        ^^^^^^^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:293:46: Error: Member not found: 'textSecondary'.
+                            color: AppColors.textSecondary,
+                                             ^^^^^^^^^^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:307:45: Error: Member not found: 'textSecondary'.
+                                : AppColors.textSecondary,
+                                            ^^^^^^^^^^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:317:47: Error: Member not found: 'textSecondary'.
+                                  : AppColors.textSecondary,
+                                              ^^^^^^^^^^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:408:17: Error: No named parameter with the name 'label'.
+                label: context.l10n.retry,
+                ^^^^^
+lib/core/widgets/planpal_button.dart:16:9: Context: Found this candidate, but the arguments don't match.
+  const PlanPalButton({
+        ^^^^^^^^^^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:216:40: Error: The getter 'currentUserProvider' isn't defined for the type '_WorkspaceMembersScreenState'.
+ - '_WorkspaceMembersScreenState' is from 'package:planpal/features/workspaces/screens/workspace_members_screen.dart' ('lib/features/workspaces/screens/workspace_members_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'currentUserProvider'.
+    final currentUserAsync = ref.watch(currentUserProvider);
+                                       ^^^^^^^^^^^^^^^^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:221:29: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+        title: Text(context.l10n.workspaceMembers),
+                            ^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:236:22: Error: The getter 'userId' isn't defined for the type 'Object?'.
+ - 'Object' is from 'dart:core'.
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'userId'.
+            (m) => m.userId == currentUserId,
+                     ^^^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:252:35: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                    text: context.l10n.workspaceLeave,
+                                  ^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:273:30: Error: The getter 'AppTextStyles' isn't defined for the type '_WorkspaceMembersScreenState'.
+ - '_WorkspaceMembersScreenState' is from 'package:planpal/features/workspaces/screens/workspace_members_screen.dart' ('lib/features/workspaces/screens/workspace_members_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTextStyles'.
+                      style: AppTextStyles.bodyLarge.copyWith(
+                             ^^^^^^^^^^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:281:28: Error: The getter 'AppTextStyles' isn't defined for the type '_WorkspaceMembersScreenState'.
+ - '_WorkspaceMembersScreenState' is from 'package:planpal/features/workspaces/screens/workspace_members_screen.dart' ('lib/features/workspaces/screens/workspace_members_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTextStyles'.
+                    style: AppTextStyles.bodyLarge.copyWith(
+                           ^^^^^^^^^^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:292:34: Error: The getter 'AppTextStyles' isn't defined for the type '_WorkspaceMembersScreenState'.
+ - '_WorkspaceMembersScreenState' is from 'package:planpal/features/workspaces/screens/workspace_members_screen.dart' ('lib/features/workspaces/screens/workspace_members_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTextStyles'.
+                          style: AppTextStyles.caption.copyWith(
+                                 ^^^^^^^^^^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:312:43: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                                ? context.l10n.roleAdmin
+                                          ^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:313:43: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                                : context.l10n.roleMember,
+                                          ^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:314:36: Error: The getter 'AppTextStyles' isn't defined for the type '_WorkspaceMembersScreenState'.
+ - '_WorkspaceMembersScreenState' is from 'package:planpal/features/workspaces/screens/workspace_members_screen.dart' ('lib/features/workspaces/screens/workspace_members_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTextStyles'.
+                            style: AppTextStyles.caption.copyWith(
+                                   ^^^^^^^^^^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:335:41: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                                context.l10n.you,
+                                        ^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:336:40: Error: The getter 'AppTextStyles' isn't defined for the type '_WorkspaceMembersScreenState'.
+ - '_WorkspaceMembersScreenState' is from 'package:planpal/features/workspaces/screens/workspace_members_screen.dart' ('lib/features/workspaces/screens/workspace_members_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTextStyles'.
+                                style: AppTextStyles.caption.copyWith(
+                                       ^^^^^^^^^^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:358:48: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                                  Text(context.l10n.changeRole),
+                                               ^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:369:45: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                                    context.l10n.removeMember,
+                                            ^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:398:25: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                context.l10n.errorLoadingMembers,
+                        ^^^^
+lib/features/workspaces/screens/workspace_members_screen.dart:399:24: Error: The getter 'AppTextStyles' isn't defined for the type '_WorkspaceMembersScreenState'.
+ - '_WorkspaceMembersScreenState' is from 'package:planpal/features/workspaces/screens/workspace_members_screen.dart' ('lib/features/workspaces/screens/workspace_members_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTextStyles'.
+                style: AppTextStyles.bodyMedium,
+                       ^^^^^^^^^^^^^
+lib/features/workspaces/screens/join_workspace_screen.dart:40:22: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+      return context.l10n.fieldRequired;
+                     ^^^^
+lib/features/workspaces/screens/join_workspace_screen.dart:45:22: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+      return context.l10n.workspaceCodeLength;
+                     ^^^^
+lib/features/workspaces/screens/join_workspace_screen.dart:50:22: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+      return context.l10n.workspaceCodeFormat;
+                     ^^^^
+lib/features/workspaces/screens/join_workspace_screen.dart:76:19: Error: Member not found: 'AppSnackbar.showSuccess'.
+      AppSnackbar.showSuccess(
+                  ^^^^^^^^^^^
+lib/features/workspaces/screens/join_workspace_screen.dart:100:19: Error: Member not found: 'AppSnackbar.showError'.
+      AppSnackbar.showError(context, errorMessage);
+                  ^^^^^^^^^
+lib/features/workspaces/screens/join_workspace_screen.dart:88:37: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+      String errorMessage = context.l10n.workspaceJoinError;
+                                    ^^^^
+lib/features/workspaces/screens/join_workspace_screen.dart:93:32: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+        errorMessage = context.l10n.workspaceCodeInvalid;
+                               ^^^^
+lib/features/workspaces/screens/join_workspace_screen.dart:95:32: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+        errorMessage = context.l10n.workspaceCodeExpired;
+                               ^^^^
+lib/features/workspaces/screens/join_workspace_screen.dart:97:32: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+        errorMessage = context.l10n.workspaceAlreadyMember;
+                               ^^^^
+lib/features/workspaces/screens/join_workspace_screen.dart:155:42: Error: Member not found: 'textSecondary'.
+                        color: AppColors.textSecondary,
+                                         ^^^^^^^^^^^^^
+lib/features/workspaces/screens/join_workspace_screen.dart:168:23: Error: No named parameter with the name 'validator'.
+                      validator: _validateCode,
+                      ^^^^^^^^^
+lib/core/widgets/planpal_text_field.dart:20:9: Context: Found this candidate, but the arguments don't match.
+  const PlanPalTextField({
+        ^^^^^^^^^^^^^^^^
+lib/features/workspaces/screens/join_workspace_screen.dart:191:42: Error: Member not found: 'textSecondary'.
+                        color: AppColors.textSecondary,
+                                         ^^^^^^^^^^^^^
+lib/features/workspaces/screens/join_workspace_screen.dart:215:23: Error: No named parameter with the name 'variant'.
+                      variant: AppButtonVariant.outlined,
+                      ^^^^^^^
+lib/core/widgets/planpal_button.dart:16:9: Context: Found this candidate, but the arguments don't match.
+  const PlanPalButton({
+        ^^^^^^^^^^^^^
+lib/features/workspaces/screens/join_workspace_screen.dart:229:48: Error: Member not found: 'textSecondary'.
+                              color: AppColors.textSecondary,
+                                               ^^^^^^^^^^^^^
+lib/features/workspaces/screens/join_workspace_screen.dart:116:29: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+        title: Text(context.l10n.workspaceJoinTitle),
+                            ^^^^
+lib/features/workspaces/screens/join_workspace_screen.dart:142:31: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                      context.l10n.workspaceJoinTitle,
+                              ^^^^
+lib/features/workspaces/screens/join_workspace_screen.dart:143:30: Error: The getter 'AppTextStyles' isn't defined for the type '_JoinWorkspaceScreenState'.
+ - '_JoinWorkspaceScreenState' is from 'package:planpal/features/workspaces/screens/join_workspace_screen.dart' ('lib/features/workspaces/screens/join_workspace_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTextStyles'.
+                      style: AppTextStyles.h2.copyWith(
+                             ^^^^^^^^^^^^^
+lib/features/workspaces/screens/join_workspace_screen.dart:153:31: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                      context.l10n.workspaceJoinDescription,
+                              ^^^^
+lib/features/workspaces/screens/join_workspace_screen.dart:154:30: Error: The getter 'AppTextStyles' isn't defined for the type '_JoinWorkspaceScreenState'.
+ - '_JoinWorkspaceScreenState' is from 'package:planpal/features/workspaces/screens/join_workspace_screen.dart' ('lib/features/workspaces/screens/join_workspace_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTextStyles'.
+                      style: AppTextStyles.bodyMedium.copyWith(
+                             ^^^^^^^^^^^^^
+lib/features/workspaces/screens/join_workspace_screen.dart:189:31: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                      context.l10n.workspaceCodeHelper,
+                              ^^^^
+lib/features/workspaces/screens/join_workspace_screen.dart:190:30: Error: The getter 'AppTextStyles' isn't defined for the type '_JoinWorkspaceScreenState'.
+ - '_JoinWorkspaceScreenState' is from 'package:planpal/features/workspaces/screens/join_workspace_screen.dart' ('lib/features/workspaces/screens/join_workspace_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTextStyles'.
+                      style: AppTextStyles.caption.copyWith(
+                             ^^^^^^^^^^^^^
+lib/features/workspaces/screens/join_workspace_screen.dart:200:37: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                      text: context.l10n.workspaceJoinButton,
+                                    ^^^^
+lib/features/workspaces/screens/join_workspace_screen.dart:227:37: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                            context.l10n.or,
+                                    ^^^^
+lib/features/workspaces/screens/join_workspace_screen.dart:228:36: Error: The getter 'AppTextStyles' isn't defined for the type '_JoinWorkspaceScreenState'.
+ - '_JoinWorkspaceScreenState' is from 'package:planpal/features/workspaces/screens/join_workspace_screen.dart' ('lib/features/workspaces/screens/join_workspace_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'AppTextStyles'.
+                            style: AppTextStyles.caption.copyWith(
+                                   ^^^^^^^^^^^^^
+lib/features/workspaces/screens/join_workspace_screen.dart:245:43: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                      label: Text(context.l10n.workspaceCreateNew),
+                                          ^^^^
+lib/features/workspaces/screens/create_workspace_screen.dart:208:25: Error: The method 'getFailureMessage' isn't defined for the type '_CreateWorkspaceScreenState'.
+ - '_CreateWorkspaceScreenState' is from 'package:planpal/features/workspaces/screens/create_workspace_screen.dart' ('lib/features/workspaces/screens/create_workspace_screen.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'getFailureMessage'.
+        _errorMessage = getFailureMessage(e, l10n);
+                        ^^^^^^^^^^^^^^^^^
+lib/features/tasks/screens/new_task_screen.dart:52:37: Error: The getter 'labelId' isn't defined for the type 'Task'.
+ - 'Task' is from 'package:planpal/core/db/app_database.dart' ('lib/core/db/app_database.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'labelId'.
+      _labelId = widget.taskToEdit!.labelId;
+                                    ^^^^^^^
+lib/features/tasks/screens/new_task_screen.dart:397:13: Error: No named parameter with the name 'labelId'.
+            labelId: Value(_labelId),
+            ^^^^^^^
+lib/core/db/app_database.g.dart:2498:9: Context: Found this candidate, but the arguments don't match.
+  const TasksCompanion({
+        ^^^^^^^^^^^^^^
+lib/features/tasks/providers/task_providers.dart:11:28: Error: Undefined name 'outboxServiceProvider'.
+  final outbox = ref.watch(outboxServiceProvider);
+                           ^^^^^^^^^^^^^^^^^^^^^
+lib/features/tasks/screens/task_detail_screen.dart:62:22: Error: The method 'Value' isn't defined for the type '_TaskDetailScreenState'.
+ - '_TaskDetailScreenState' is from 'package:planpal/features/tasks/screens/task_detail_screen.dart' ('lib/features/tasks/screens/task_detail_screen.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'Value'.
+              title: Value(_titleController.text.trim()),
+                     ^^^^^
+lib/features/tasks/screens/task_detail_screen.dart:63:28: Error: The method 'Value' isn't defined for the type '_TaskDetailScreenState'.
+ - '_TaskDetailScreenState' is from 'package:planpal/features/tasks/screens/task_detail_screen.dart' ('lib/features/tasks/screens/task_detail_screen.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'Value'.
+              description: Value(_descriptionController.text.trim()),
+                           ^^^^^
+lib/features/tasks/screens/task_detail_screen.dart:479:21: Error: The method 'Value' isn't defined for the type '_TaskDetailScreenState'.
+ - '_TaskDetailScreenState' is from 'package:planpal/features/tasks/screens/task_detail_screen.dart' ('lib/features/tasks/screens/task_detail_screen.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'Value'.
+            status: Value(newStatus),
+                    ^^^^^
+lib/features/tasks/screens/task_detail_screen.dart:480:26: Error: The method 'Value' isn't defined for the type '_TaskDetailScreenState'.
+ - '_TaskDetailScreenState' is from 'package:planpal/features/tasks/screens/task_detail_screen.dart' ('lib/features/tasks/screens/task_detail_screen.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'Value'.
+            completedAt: Value(newStatus == 'completed' ? DateTime.now() : null),
+                         ^^^^^
+lib/features/tasks/screens/task_detail_screen.dart:492:36: Error: The method 'Value' isn't defined for the type '_TaskDetailScreenState'.
+ - '_TaskDetailScreenState' is from 'package:planpal/features/tasks/screens/task_detail_screen.dart' ('lib/features/tasks/screens/task_detail_screen.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'Value'.
+          TasksCompanion(priority: Value(newPriority)),
+                                   ^^^^^
+lib/features/tasks/screens/task_detail_screen.dart:527:39: Error: The method 'Value' isn't defined for the type '_TaskDetailScreenState'.
+ - '_TaskDetailScreenState' is from 'package:planpal/features/tasks/screens/task_detail_screen.dart' ('lib/features/tasks/screens/task_detail_screen.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'Value'.
+              TasksCompanion(dueDate: Value(newDueDate)),
+                                      ^^^^^
+lib/features/tasks/screens/tasks_screen.dart:231:13: Error: The argument type 'TaskView/*1*/' can't be assigned to the parameter type 'TaskView/*2*/?'.
+ - 'TaskView/*1*/' is from 'package:planpal/features/tasks/screens/tasks_screen.dart' ('lib/features/tasks/screens/tasks_screen.dart').
+ - 'TaskView/*2*/' is from 'package:planpal/features/tasks/models/task.dart' ('lib/features/tasks/models/task.dart').
+      view: _selectedView,
+            ^
+lib/features/tasks/screens/tasks_screen.dart:439:14: Error: The argument type 'List<StatefulWidget>' can't be assigned to the parameter type 'List<PopupMenuEntry<dynamic>>'.
+ - 'List' is from 'dart:core'.
+ - 'StatefulWidget' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+ - 'PopupMenuEntry' is from 'package:flutter/src/material/popup_menu.dart' ('/C:/flutter/packages/flutter/lib/src/material/popup_menu.dart').
+      items: [
+             ^
+lib/features/tasks/screens/tasks_screen.dart:502:36: Error: Too few positional arguments: 2 required, 1 given.
+          taskRepository.updateTask(
+                                   ^
+lib/features/home/screens/home_screen.dart:38:35: Error: 'currentWorkspaceIdProvider' is imported from both 'package:planpal/core/providers/app_providers.dart' and 'package:planpal/features/workspaces/providers/workspace_providers.dart'.
+    final workspaceId = ref.watch(currentWorkspaceIdProvider);
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
+lib/features/home/screens/home_screen.dart:98:59: Error: A value of type 'Workspace?' can't be returned from a function with return type 'Workspace'.
+ - 'Workspace' is from 'package:planpal/core/db/app_database.dart' ('lib/core/db/app_database.dart').
+                      orElse: () => workspaces.isNotEmpty ? workspaces.first : null,
+                                                          ^
+lib/features/home/screens/home_screen.dart:159:84: Error: Too many positional arguments: 0 allowed, but 2 found.
+Try removing the extra positional arguments.
+                        ? ref.read(notificationRepositoryProvider).watchUnreadCount(userProfile?.id ?? '', workspaceId)
+                                                                                   ^
+lib/features/home/screens/home_screen.dart:164:45: Error: The operator '>' isn't defined for the type 'Object'.
+ - 'Object' is from 'dart:core'.
+Try correcting the operator to an existing operator, or defining a '>' operator.
+                          icon: unreadCount > 0
+                                            ^
+lib/features/home/screens/home_screen.dart:165:63: Error: The operator '>' isn't defined for the type 'Object'.
+ - 'Object' is from 'dart:core'.
+Try correcting the operator to an existing operator, or defining a '>' operator.
+                              ? Badge(label: Text(unreadCount > 9 ? '9+' : '$unreadCount'), child: const Icon(Icons.notifications_outlined))
+                                                              ^
+lib/features/home/screens/home_screen.dart:219:87: Error: The getter 'TaskView' isn't defined for the type '_HomeScreenState'.
+ - '_HomeScreenState' is from 'package:planpal/features/home/screens/home_screen.dart' ('lib/features/home/screens/home_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'TaskView'.
+            stream: taskRepository.watchTasksFiltered(workspaceId: workspaceId, view: TaskView.today),
+                                                                                      ^^^^^^^^
+lib/features/home/screens/home_screen.dart:329:95: Error: The getter 'TaskView' isn't defined for the type '_HomeScreenState'.
+ - '_HomeScreenState' is from 'package:planpal/features/home/screens/home_screen.dart' ('lib/features/home/screens/home_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'TaskView'.
+                    stream: taskRepository.watchTasksFiltered(workspaceId: workspaceId, view: TaskView.today),
+                                                                                          ^^^^^^^^
+lib/features/home/screens/home_screen.dart:395:54: Error: The method 'watchAllTasks' isn't defined for the type 'TaskRepository'.
+ - 'TaskRepository' is from 'package:planpal/features/tasks/repositories/task_repository.dart' ('lib/features/tasks/repositories/task_repository.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'watchAllTasks'.
+                              stream: taskRepository.watchAllTasks(workspaceId),
+                                                     ^^^^^^^^^^^^^
+lib/features/home/screens/home_screen.dart:398:60: Error: The method 'where' isn't defined for the type 'Object'.
+ - 'Object' is from 'dart:core'.
+Try correcting the name to the name of an existing method, or defining a method named 'where'.
+                                final completed = allTasks.where((t) => t.status == 'completed').length;
+                                                           ^^^^^
+lib/features/home/screens/home_screen.dart:399:61: Error: The method 'where' isn't defined for the type 'Object'.
+ - 'Object' is from 'dart:core'.
+Try correcting the name to the name of an existing method, or defining a method named 'where'.
+                                final inProgress = allTasks.where((t) => t.status == 'in_progress').length;
+                                                            ^^^^^
+lib/features/home/screens/home_screen.dart:400:58: Error: The method 'where' isn't defined for the type 'Object'.
+ - 'Object' is from 'dart:core'.
+Try correcting the name to the name of an existing method, or defining a method named 'where'.
+                                final overdue = allTasks.where((t) => t.dueDate != null && t.dueDate!.isBefore(DateTime.now()) && t.status != 'completed').length;
+                                                         ^^^^^
+lib/features/home/screens/home_screen.dart:401:63: Error: The getter 'isEmpty' isn't defined for the type 'Object'.
+ - 'Object' is from 'dart:core'.
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'isEmpty'.
+                                final productivity = allTasks.isEmpty ? 0 : ((completed / allTasks.length) * 100).round();
+                                                              ^^^^^^^
+lib/features/home/screens/home_screen.dart:401:100: Error: The getter 'length' isn't defined for the type 'Object'.
+ - 'Object' is from 'dart:core'.
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'length'.
+                                final productivity = allTasks.isEmpty ? 0 : ((completed / allTasks.length) * 100).round();
+                                                                                          ^^^^^^
+lib/features/home/screens/home_screen.dart:494:95: Error: The getter 'TaskView' isn't defined for the type '_HomeScreenState'.
+ - '_HomeScreenState' is from 'package:planpal/features/home/screens/home_screen.dart' ('lib/features/home/screens/home_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'TaskView'.
+                    stream: taskRepository.watchTasksFiltered(workspaceId: workspaceId, view: TaskView.week),
+                                                                                          ^^^^^^^^
+lib/features/home/screens/home_screen.dart:1046:30: Error: 'currentWorkspaceIdProvider' is imported from both 'package:planpal/core/providers/app_providers.dart' and 'package:planpal/features/workspaces/providers/workspace_providers.dart'.
+                    ref.read(currentWorkspaceIdProvider.notifier).state = workspace.id;
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+lib/features/home/screens/home_screen.dart:1049:44: Error: The getter 'sharedPreferencesProvider' isn't defined for the type '_HomeScreenState'.
+ - '_HomeScreenState' is from 'package:planpal/features/home/screens/home_screen.dart' ('lib/features/home/screens/home_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'sharedPreferencesProvider'.
+                    final prefs = ref.read(sharedPreferencesProvider);
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^
+lib/features/home/presentation/home_providers.dart:9:25: Error: Undefined name 'dioProvider'.
+  final dio = ref.watch(dioProvider);
+                        ^^^^^^^^^^^
+lib/features/home/presentation/home_providers.dart:19:33: Error: 'currentWorkspaceIdProvider' is imported from both 'package:planpal/core/providers/app_providers.dart' and 'package:planpal/features/workspaces/providers/workspace_providers.dart'.
+  final workspaceId = ref.watch(currentWorkspaceIdProvider);
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+lib/features/main/screens/main_navigation_screen.dart:40:19: Error: Member not found: 'AppSnackbar.showError'.
+      AppSnackbar.showError(
+                  ^^^^^^^^^
+lib/features/main/screens/main_navigation_screen.dart:73:28: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+            label: context.l10n.home,
+                           ^^^^
+lib/features/main/screens/main_navigation_screen.dart:78:28: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+            label: context.l10n.tasks,
+                           ^^^^
+lib/features/main/screens/main_navigation_screen.dart:89:28: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+            label: context.l10n.chat,
+                           ^^^^
+lib/features/main/screens/main_navigation_screen.dart:94:28: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+            label: context.l10n.profile,
+                           ^^^^
+lib/features/main/screens/main_navigation_screen.dart:99:28: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+            label: context.l10n.settings,
+                           ^^^^
+lib/features/main/screens/main_navigation_screen.dart:173:40: Error: Member not found: 'textSecondary'.
+                      color: AppColors.textSecondary,
+                                       ^^^^^^^^^^^^^
+lib/features/main/screens/main_navigation_screen.dart:150:29: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+        title: Text(context.l10n.chat),
+                            ^^^^
+lib/features/main/screens/main_navigation_screen.dart:165:25: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                context.l10n.chatNotAvailable,
+                        ^^^^
+lib/features/main/screens/main_navigation_screen.dart:171:25: Error: The getter 'l10n' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('/C:/flutter/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'l10n'.
+                context.l10n.errorChatNotAvailableInPersonal,
+                        ^^^^
+lib/features/auth/screens/simple_register_screen.dart:335:47: Error: Member not found: 'SupabaseAuthErrorMapper.mapToAppFailure'.
+      final failure = SupabaseAuthErrorMapper.mapToAppFailure(e);
+                                              ^^^^^^^^^^^^^^^
+lib/features/auth/screens/simple_register_screen.dart:336:28: Error: The method 'getFailureMessage' isn't defined for the type '_SimpleRegisterScreenState'.
+ - '_SimpleRegisterScreenState' is from 'package:planpal/features/auth/screens/simple_register_screen.dart' ('lib/features/auth/screens/simple_register_screen.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'getFailureMessage'.
+      final errorMessage = getFailureMessage(failure, l10n);
+                           ^^^^^^^^^^^^^^^^^
+lib/features/auth/screens/simple_register_screen.dart:350:24: Error: The method 'getFailureMessage' isn't defined for the type '_SimpleRegisterScreenState'.
+ - '_SimpleRegisterScreenState' is from 'package:planpal/features/auth/screens/simple_register_screen.dart' ('lib/features/auth/screens/simple_register_screen.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'getFailureMessage'.
+        errorMessage = getFailureMessage(e, l10n);
+                       ^^^^^^^^^^^^^^^^^
+lib/features/auth/screens/simple_register_screen.dart:352:29: Error: The getter 'unknownError' isn't defined for the type 'AppLocalizations'.
+ - 'AppLocalizations' is from 'package:planpal/core/l10n/app_localizations.dart' ('lib/core/l10n/app_localizations.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'unknownError'.
+        errorMessage = l10n.unknownError;
+                            ^^^^^^^^^^^^
+lib/features/auth/screens/simple_register_screen.dart:389:24: Error: The method 'getFailureMessage' isn't defined for the type '_SimpleRegisterScreenState'.
+ - '_SimpleRegisterScreenState' is from 'package:planpal/features/auth/screens/simple_register_screen.dart' ('lib/features/auth/screens/simple_register_screen.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'getFailureMessage'.
+        errorMessage = getFailureMessage(e, l10n);
+                       ^^^^^^^^^^^^^^^^^
+lib/features/auth/screens/simple_register_screen.dart:391:29: Error: The getter 'unknownError' isn't defined for the type 'AppLocalizations'.
+ - 'AppLocalizations' is from 'package:planpal/core/l10n/app_localizations.dart' ('lib/core/l10n/app_localizations.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'unknownError'.
+        errorMessage = l10n.unknownError;
+                            ^^^^^^^^^^^^
+lib/features/auth/screens/login_screen.dart:290:34: Error: The getter 'sharedPreferencesProvider' isn't defined for the type '_LoginScreenState'.
+ - '_LoginScreenState' is from 'package:planpal/features/auth/screens/login_screen.dart' ('lib/features/auth/screens/login_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'sharedPreferencesProvider'.
+          final prefs = ref.read(sharedPreferencesProvider);
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+lib/features/auth/screens/login_screen.dart:293:24: Error: The argument type 'ApiClient' can't be assigned to the parameter type 'Dio'.
+ - 'ApiClient' is from 'package:planpal/core/network/api_client.dart' ('lib/core/network/api_client.dart').
+ - 'Dio' is from 'package:dio/src/dio.dart' ('../../../AppData/Local/Pub/Cache/hosted/pub.dev/dio-5.11.1/lib/src/dio.dart').
+            apiClient: apiClient,
+                       ^
+lib/features/auth/screens/login_screen.dart:329:24: Error: The method 'getFailureMessage' isn't defined for the type '_LoginScreenState'.
+ - '_LoginScreenState' is from 'package:planpal/features/auth/screens/login_screen.dart' ('lib/features/auth/screens/login_screen.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'getFailureMessage'.
+        errorMessage = getFailureMessage(e, l10n);
+                       ^^^^^^^^^^^^^^^^^
+lib/features/auth/screens/login_screen.dart:331:29: Error: The getter 'unknownError' isn't defined for the type 'AppLocalizations'.
+ - 'AppLocalizations' is from 'package:planpal/core/l10n/app_localizations.dart' ('lib/core/l10n/app_localizations.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'unknownError'.
+        errorMessage = l10n.unknownError;
+                            ^^^^^^^^^^^^
+lib/features/auth/screens/login_screen.dart:368:24: Error: The method 'getFailureMessage' isn't defined for the type '_LoginScreenState'.
+ - '_LoginScreenState' is from 'package:planpal/features/auth/screens/login_screen.dart' ('lib/features/auth/screens/login_screen.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'getFailureMessage'.
+        errorMessage = getFailureMessage(e, l10n);
+                       ^^^^^^^^^^^^^^^^^
+lib/features/auth/screens/login_screen.dart:370:29: Error: The getter 'unknownError' isn't defined for the type 'AppLocalizations'.
+ - 'AppLocalizations' is from 'package:planpal/core/l10n/app_localizations.dart' ('lib/core/l10n/app_localizations.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'unknownError'.
+        errorMessage = l10n.unknownError;
+                            ^^^^^^^^^^^^
+lib/features/auth/screens/splash_screen.dart:77:30: Error: The getter 'sharedPreferencesProvider' isn't defined for the type '_SplashScreenState'.
+ - '_SplashScreenState' is from 'package:planpal/features/auth/screens/splash_screen.dart' ('lib/features/auth/screens/splash_screen.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'sharedPreferencesProvider'.
+      final prefs = ref.read(sharedPreferencesProvider);
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^
+lib/features/notifications/data/firebase_messaging_provider.dart:12:31: Error: 'apiClientProvider' is imported from both 'package:planpal/core/providers/app_providers.dart' and 'package:planpal/features/notifications/presentation/notification_providers.dart'.
+  final apiClient = ref.watch(apiClientProvider);
+                              ^^^^^^^^^^^^^^^^^
+lib/features/notifications/data/firebase_messaging_provider.dart:13:32: Error: 'notificationRepositoryProvider' is imported from both 'package:planpal/core/providers/app_providers.dart' and 'package:planpal/features/notifications/presentation/notification_providers.dart'.
+  final repository = ref.watch(notificationRepositoryProvider);
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Target kernel_snapshot_program failed: Exception
+
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileFlutterBuildDebug'.
+> Process 'command 'C:\flutter\bin\flutter.bat'' finished with non-zero exit value 1
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 1m 29s
+Running Gradle task 'assembleDebug'...                             92.0s
+Gradle task assembleDebug failed with exit code 1

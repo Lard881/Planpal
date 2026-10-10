@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/providers/app_providers.dart';
+import '../../../core/db/app_database.dart';
 
 /// Calendar Screen - Mobile Design
 /// Shows month view with today's schedule
@@ -180,14 +181,14 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                     Expanded(
                       child: workspaceId == null
                           ? const Center(child: Text('No workspace selected'))
-                          : StreamBuilder(
-                              stream: taskRepository.watchAllTasks(workspaceId),
+                          : StreamBuilder<List<Task>>(
+                              stream: taskRepository.watchTasks(workspaceId),
                               builder: (context, snapshot) {
                                 if (snapshot.connectionState == ConnectionState.waiting) {
                                   return const Center(child: CircularProgressIndicator());
                                 }
 
-                                final allTasks = snapshot.data ?? [];
+                                final allTasks = snapshot.data ?? <Task>[];
                                 
                                 // Filter tasks for selected day
                                 final todaysTasks = allTasks.where((task) {

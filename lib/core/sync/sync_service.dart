@@ -58,17 +58,17 @@ class SyncService {
         queryParameters: sinceParam != null ? {'since': sinceParam} : null,
       );
 
-      final serverTime = DateTime.parse(response['serverTime'] as String);
+      final serverTime = DateTime.parse(response.data['serverTime'] as String);
       
       // Process each entity type
       await _processLabels(
         workspaceId,
-        (response['labels'] as List?)?.cast<Map<String, dynamic>>() ?? [],
+        (response.data['labels'] as List?)?.cast<Map<String, dynamic>>() ?? [],
       );
       
       await _processMembers(
         workspaceId,
-        (response['members'] as List?)?.cast<Map<String, dynamic>>() ?? [],
+        (response.data['members'] as List?)?.cast<Map<String, dynamic>>() ?? [],
       );
       
       // TODO: Add more entity types as they're implemented
@@ -83,7 +83,7 @@ class SyncService {
       await _setLastSyncTime(workspaceId, serverTime);
       _lastSyncTime = serverTime;
       
-      final hasMore = response['hasMore'] as bool? ?? false;
+      final hasMore = response.data['hasMore'] as bool? ?? false;
       
       if (hasMore) {
         logger.w('📥 More data available, will sync again');

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../connectivity/connectivity_providers.dart';
-import '../sync/sync_manager.dart';
+import '../../features/sync/providers/sync_providers.dart';
 import '../offline_queue/offline_queue_providers.dart';
-import '../database/app_database.dart';
+import '../db/app_database.dart';
 
 /// Bottom sheet showing detailed sync information
 class SyncDetailsBottomSheet extends ConsumerWidget {

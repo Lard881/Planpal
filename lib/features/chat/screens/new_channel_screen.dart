@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/db/app_database.dart';
 import '../repositories/chat_repository.dart';
-import '../../workspaces/providers/workspace_provider.dart';
+import '../../workspaces/providers/workspace_providers.dart';
 
 class NewChannelScreen extends ConsumerStatefulWidget {
   const NewChannelScreen({super.key});

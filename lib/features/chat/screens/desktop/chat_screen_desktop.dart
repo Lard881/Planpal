@@ -4,7 +4,7 @@ import 'package:planpal/core/theme/app_theme.dart';
 import 'package:planpal/features/chat/presentation/chat_providers.dart';
 import 'package:planpal/features/chat/widgets/message_composer.dart';
 import 'package:planpal/features/chat/widgets/message_bubble.dart';
-import 'package:planpal/features/workspaces/presentation/workspace_providers.dart';
+import 'package:planpal/features/workspaces/providers/workspace_providers.dart';
 import 'package:planpal/core/services/supabase_service.dart';
 import 'package:timeago/timeago.dart' as timeago;
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:planpal/core/theme/app_theme.dart';
+import 'package:planpal/core/theme/app_colors.dart';
 import 'package:planpal/features/notifications/presentation/notification_providers.dart';
 import 'package:planpal/features/notifications/widgets/notification_tile.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -67,7 +68,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen>
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
-                              color: AppTheme.primaryColor,
+                              color: AppColors.primary,
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Text(

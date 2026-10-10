@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/l10n/app_localizations.dart';
+import '../../../core/l10n/l10n_extension.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/planpal_button.dart';
 import '../../../core/widgets/planpal_text_field.dart';
 import '../../../shared/widgets/app_snackbar.dart';
@@ -60,7 +61,7 @@ class _WorkspaceSettingsScreenState
 
   String? _validateName(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return context.l10n.fieldRequired;
+      return context.l10n.validationNameRequired;
     }
     if (value.trim().length < 3) {
       return context.l10n.workspaceNameTooShort;
@@ -83,7 +84,7 @@ class _WorkspaceSettingsScreenState
       final description = _descriptionController.text.trim();
 
       await ref.read(workspaceRepositoryProvider).updateWorkspace(
-            workspaceId: widget.workspaceId,
+            widget.workspaceId,
             name: name,
             description: description.isEmpty ? null : description,
           );
@@ -225,7 +226,6 @@ class _WorkspaceSettingsScreenState
           // Initialize controllers with workspace data
           if (_nameController.text.isEmpty) {
             _nameController.text = workspace.name;
-            _descriptionController.text = workspace.description ?? '';
             _nameController.addListener(_onFieldChanged);
             _descriptionController.addListener(_onFieldChanged);
           }
@@ -346,13 +346,11 @@ class _WorkspaceSettingsScreenState
               ),
               const SizedBox(height: 16),
               PlanPalButton(
-                text: 'Refresh',
+                text: 'Retry',
                 type: ButtonType.secondary,
                 onPressed: () {
                   ref.invalidate(workspaceProvider(widget.workspaceId));
                 },
-                label: context.l10n.retry,
-                variant: AppButtonVariant.outlined,
               ),
             ],
           ),

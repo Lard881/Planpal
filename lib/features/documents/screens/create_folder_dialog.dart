@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/l10n/app_localizations.dart';
-import '../../../features/auth/providers/auth_providers.dart';
+import '../../../features/auth/presentation/auth_providers.dart';
 import '../../../features/workspaces/providers/workspace_providers.dart';
 import '../providers/document_providers.dart';
 import '../repositories/document_repository.dart';

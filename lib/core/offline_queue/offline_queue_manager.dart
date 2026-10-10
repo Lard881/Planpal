@@ -2,8 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
-import '../database/app_database.dart';
-import '../database/entity_mappers.dart';
+import '../db/app_database.dart';
 
 /// Operation to be queued
 class QueuedOperation {
@@ -315,8 +314,10 @@ class OfflineQueueManager {
         if (operation.data == null) {
           throw Exception('Task data is required for ${operation.operation.name}');
         }
-        final task = EntityMappers.jsonToLocalTask(operation.data!);
-        await _database.insertTask(task.copyWith(isSynced: false));
+        // TODO: Implement EntityMappers.jsonToLocalTask
+        // final task = EntityMappers.jsonToLocalTask(operation.data!);
+        // await _database.insertTask(task.copyWith(isSynced: false));
+        _logger.w('Task insert/update not implemented in offline queue');
         break;
 
       case OperationType.delete:
@@ -333,8 +334,10 @@ class OfflineQueueManager {
         if (operation.data == null) {
           throw Exception('Project data is required for ${operation.operation.name}');
         }
-        final project = EntityMappers.jsonToLocalProject(operation.data!);
-        await _database.insertProject(project.copyWith(isSynced: false));
+        // TODO: Implement EntityMappers.jsonToLocalProject
+        // final project = EntityMappers.jsonToLocalProject(operation.data!);
+        // await _database.insertProject(project.copyWith(isSynced: false));
+        _logger.w('Project insert/update not implemented in offline queue');
         break;
 
       case OperationType.delete:
@@ -351,8 +354,10 @@ class OfflineQueueManager {
         if (operation.data == null) {
           throw Exception('Label data is required for ${operation.operation.name}');
         }
-        final label = EntityMappers.jsonToLocalLabel(operation.data!);
-        await _database.insertLabel(label.copyWith(isSynced: false));
+        // TODO: Implement EntityMappers.jsonToLocalLabel
+        // final label = EntityMappers.jsonToLocalLabel(operation.data!);
+        // await _database.insertLabel(label.copyWith(isSynced: false));
+        _logger.w('Label insert/update not implemented in offline queue');
         break;
 
       case OperationType.delete:

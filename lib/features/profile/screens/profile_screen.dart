@@ -4,6 +4,7 @@ import 'package:timeago/timeago.dart' as timeago;
 import '../../auth/presentation/auth_providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/providers/app_providers.dart';
+import '../../../core/db/app_database.dart';
 
 /// Profile Screen - Shows user profile information
 /// Matches mobile design mockup with REAL user data from database
@@ -163,10 +164,10 @@ class ProfileScreen extends ConsumerWidget {
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: StreamBuilder(
-                stream: taskRepository.watchAllTasks(workspaceId),
+              child: StreamBuilder<List<Task>>(
+                stream: taskRepository.watchTasks(workspaceId),
                 builder: (context, snapshot) {
-                  final allTasks = snapshot.data ?? [];
+                  final allTasks = snapshot.data ?? <Task>[];
                   final completedCount = allTasks.where((t) => t.status == 'completed').length;
                   
                   // Count unique projects
@@ -231,13 +232,13 @@ class ProfileScreen extends ConsumerWidget {
 
         // Activity List - REAL DATA
         if (workspaceId != null)
-          StreamBuilder(
-            stream: taskRepository.watchAllTasks(workspaceId),
+          StreamBuilder<List<Task>>(
+            stream: taskRepository.watchTasks(workspaceId),
             builder: (context, snapshot) {
-              final allTasks = snapshot.data ?? [];
+              final allTasks = snapshot.data ?? <Task>[];
               
               // Get recently completed or updated tasks
-              final recentTasks = allTasks
+              final recentTasks = (allTasks as List)
                   .where((t) => t.completedAt != null || t.updatedAt.isAfter(DateTime.now().subtract(const Duration(days: 7))))
                   .toList()
                 ..sort((a, b) {

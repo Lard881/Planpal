@@ -205,7 +205,7 @@ class _CreateWorkspaceScreenState extends ConsumerState<CreateWorkspaceScreen> {
       final l10n = AppLocalizations.of(context)!;
       setState(() {
         _isLoading = false;
-        _errorMessage = getFailureMessage(e, l10n);
+        _errorMessage = FailureMessages.getMessage(context, e);
       });
     } catch (e) {
       if (!mounted) return;

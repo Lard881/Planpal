@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/providers/app_providers.dart';
+import '../models/task.dart' show TaskView;
 
 /// Tasks Screen - Mobile Design
 /// Shows task list with search, filter tabs (All, Today, This Week, Overdue)
@@ -19,8 +20,6 @@ class TasksScreen extends ConsumerStatefulWidget {
   @override
   ConsumerState<TasksScreen> createState() => _TasksScreenState();
 }
-
-enum TaskView { all, today, week, overdue }
 
 class _TasksScreenState extends ConsumerState<TasksScreen> {
   TaskView _selectedView = TaskView.all;
@@ -252,6 +251,8 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
         return 'Showing tasks due this week';
       case TaskView.overdue:
         return tasks.isEmpty ? '' : 'These tasks need your attention';
+      case TaskView.completed:
+        return 'Showing completed tasks';
     }
   }
 
@@ -268,6 +269,8 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
         return 'No tasks due this week';
       case TaskView.overdue:
         return 'Great! No overdue tasks';
+      case TaskView.completed:
+        return 'No completed tasks yet';
     }
   }
 
@@ -436,7 +439,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
         position.dx + 1,
         position.dy + 1,
       ),
-      items: [
+      items: <PopupMenuEntry<String>>[
         PopupMenuItem(
           value: 'open',
           child: const Row(
@@ -499,10 +502,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
           Navigator.pushNamed(context, '/tasks/${task.id}');
           break;
         case 'complete':
-          taskRepository.updateTask(
-            task.id,
-            status: 'completed',
-          );
+          taskRepository.toggleComplete(task.id, true);
           break;
         case 'edit':
           Navigator.pushNamed(context, '/tasks/${task.id}/edit');

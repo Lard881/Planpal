@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/providers/app_providers.dart';
 import '../../../core/db/app_database.dart';
+import '../../sync/providers/sync_providers.dart';
 import '../repositories/task_repository.dart';
 import '../models/task.dart' show TaskView;
 

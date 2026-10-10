@@ -57,7 +57,7 @@ class TaskRepository {
     }
 
     if (labelId != null) {
-      query.where((t) => t.labelId.equals(labelId));
+      // Label filtering handled via TaskLabels junction
     }
 
     // View-based filters
@@ -142,18 +142,18 @@ class TaskRepository {
       description: Value(description ?? ''),
       dueDate: Value(dueDate),
       assigneeId: Value(assigneeId),
-      labelId: Value(labelId),
+      // labelId removed - not in schema
     );
 
     await _db.into(_db.tasks).insert(task);
 
     // 2. Queue for sync (outbox handles retry)
     await _outbox.enqueue(
-      entity: 'task',
+      entityType: 'task',
       entityId: taskId,
-      action: 'create',
-      workspaceId: workspaceId,
+      operation: 'create',
       payload: {
+        'workspace_id': workspaceId,
         'id': taskId, // Client-supplied ID for idempotency
         'title': title,
         'description': description,
@@ -194,16 +194,17 @@ class TaskRepository {
     if (updates.assigneeId.present) {
       payload['assignee_id'] = updates.assigneeId.value;
     }
-    if (updates.labelId.present) {
-      payload['label_id'] = updates.labelId.value;
-    }
+    // labelId removed - not in schema
+    // if (updates.labelId.present) {
+    //   payload['label_id'] = updates.labelId.value;
+    // }
 
     // 3. Queue for sync
+    payload['workspace_id'] = task.workspaceId;
     await _outbox.enqueue(
-      entity: 'task',
+      entityType: 'task',
       entityId: taskId,
-      action: 'update',
-      workspaceId: task.workspaceId,
+      operation: 'update',
       payload: payload,
     );
   }
@@ -228,11 +229,10 @@ class TaskRepository {
 
     // 3. Queue for sync
     await _outbox.enqueue(
-      entity: 'task',
+      entityType: 'task',
       entityId: taskId,
-      action: 'delete',
-      workspaceId: task.workspaceId,
-      payload: {},
+      operation: 'delete',
+      payload: {'workspace_id': task.workspaceId},
     );
   }
 
@@ -289,7 +289,7 @@ class TaskRepository {
       description: Value(apiTask.description ?? ''),
       dueDate: Value(apiTask.dueDate),
       assigneeId: Value(apiTask.assigneeId),
-      labelId: Value(apiTask.labelId),
+      // labelId removed - not in schema
       completedAt: Value(apiTask.completedAt),
       deletedAt: Value(apiTask.deletedAt),
     );

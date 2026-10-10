@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../auth/presentation/auth_providers.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../core/providers/app_providers.dart';
+import '../../../core/providers/app_providers.dart' hide currentWorkspaceIdProvider;
+import '../../../core/providers/theme_provider.dart';
+import '../../../core/db/app_database.dart' show Task;
+import '../../tasks/models/task.dart' show TaskView;
 import '../../workspaces/providers/workspace_providers.dart';
 import '../presentation/home_providers.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -93,10 +96,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 // Workspace Switcher Button
                 workspacesAsync.when(
                   data: (workspaces) {
-                    final currentWorkspace = workspaces.firstWhere(
+                    final currentWorkspace = workspaces.where(
                       (w) => w.id == workspaceId,
-                      orElse: () => workspaces.isNotEmpty ? workspaces.first : null,
-                    );
+                    ).firstOrNull ?? (workspaces.isNotEmpty ? workspaces.first : null);
                     
                     if (currentWorkspace == null) {
                       return const Text('PlanPal', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold));
@@ -154,7 +156,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 // Notification and Profile
                 Row(
                   children: [
-                    StreamBuilder(
+                    StreamBuilder<int>(
                       stream: workspaceId != null 
                         ? ref.read(notificationRepositoryProvider).watchUnreadCount(userProfile?.id ?? '', workspaceId)
                         : Stream.value(0),
@@ -215,10 +217,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
         // Today's Tasks
         if (workspaceId != null)
-          StreamBuilder(
+          StreamBuilder<List<Task>>(
             stream: taskRepository.watchTasksFiltered(workspaceId: workspaceId, view: TaskView.today),
             builder: (context, snapshot) {
-              final tasks = (snapshot.data ?? []).take(3).toList();
+              final tasks = (snapshot.data ?? <Task>[]).take(3).toList();
               if (tasks.isEmpty) {
                 return SliverToBoxAdapter(
                   child: Padding(
@@ -325,10 +327,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
                 // Task Cards (3 columns)
                 if (workspaceId != null)
-                  StreamBuilder(
+                  StreamBuilder<List<Task>>(
                     stream: taskRepository.watchTasksFiltered(workspaceId: workspaceId, view: TaskView.today),
                     builder: (context, snapshot) {
-                      final tasks = (snapshot.data ?? []).take(3).toList();
+                      final tasks = (snapshot.data ?? <Task>[]).take(3).toList();
                       return Row(
                         children: List.generate(3, (index) {
                           if (index < tasks.length) {
@@ -391,10 +393,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         data: (overview) {
                           if (overview == null) {
                             // Fallback to task repository if analytics fails
-                            return StreamBuilder(
-                              stream: taskRepository.watchAllTasks(workspaceId),
+                            return StreamBuilder<List<Task>>(
+                              stream: taskRepository.watchTasks(workspaceId),
                               builder: (context, snapshot) {
-                                final allTasks = snapshot.data ?? [];
+                                final allTasks = snapshot.data ?? <Task>[];
                                 final completed = allTasks.where((t) => t.status == 'completed').length;
                                 final inProgress = allTasks.where((t) => t.status == 'in_progress').length;
                                 final overdue = allTasks.where((t) => t.dueDate != null && t.dueDate!.isBefore(DateTime.now()) && t.status != 'completed').length;
@@ -490,10 +492,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               const SizedBox(height: 16),
               if (workspaceId != null)
                 Expanded(
-                  child: StreamBuilder(
+                  child: StreamBuilder<List<Task>>(
                     stream: taskRepository.watchTasksFiltered(workspaceId: workspaceId, view: TaskView.week),
                     builder: (context, snapshot) {
-                      final tasks = (snapshot.data ?? []).take(4).toList();
+                      final tasks = (snapshot.data ?? <Task>[]).take(4).toList();
                       return ListView.separated(
                         itemCount: tasks.length,
                         separatorBuilder: (_, __) => const SizedBox(height: 12),

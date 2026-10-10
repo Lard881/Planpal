@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import '../../../core/l10n/app_localizations.dart';
+import '../../../core/l10n/l10n_extension.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/planpal_button.dart';
 import '../../../shared/widgets/app_snackbar.dart';
 import '../../../shared/widgets/loading_overlay.dart';
@@ -51,10 +52,11 @@ class _InviteCodesScreenState extends ConsumerState<InviteCodesScreen> {
     if (result == null) return;
 
     try {
+      final expiresInDays = result['expiresInDays'] as int?;
       await ref.read(workspaceRepositoryProvider).createInviteCode(
             workspaceId: widget.workspaceId,
             maxUses: result['maxUses'] as int?,
-            expiresInDays: result['expiresInDays'] as int?,
+            expiresAt: expiresInDays != null ? DateTime.now().add(Duration(days: expiresInDays)) : null,
           );
 
       // Refresh invite codes
@@ -89,7 +91,7 @@ class _InviteCodesScreenState extends ConsumerState<InviteCodesScreen> {
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: TextButton.styleFrom(foregroundColor: AppColors.error),
-            child: Text(context.l10n.revoke),
+            child: Text(context.l10n.delete),
           ),
         ],
       ),
@@ -98,10 +100,7 @@ class _InviteCodesScreenState extends ConsumerState<InviteCodesScreen> {
     if (confirmed != true) return;
 
     try {
-      await ref.read(workspaceRepositoryProvider).revokeInviteCode(
-            workspaceId: widget.workspaceId,
-            codeId: code.id,
-          );
+      await ref.read(workspaceRepositoryProvider).revokeInviteCode(code.id);
 
       // Refresh invite codes
       ref.invalidate(inviteCodesProvider(widget.workspaceId));
@@ -149,7 +148,8 @@ class _InviteCodesScreenState extends ConsumerState<InviteCodesScreen> {
                 children: [
                   EmptyState(
                     icon: Icons.key_off,
-                    message: context.l10n.noInviteCodesYet,
+                    title: context.l10n.noInviteCodesYet,
+                    message: '',
                   ),
                   if (isAdmin) ...[
                     const SizedBox(height: 24),
@@ -157,7 +157,6 @@ class _InviteCodesScreenState extends ConsumerState<InviteCodesScreen> {
                       text: context.l10n.createInviteCode,
                       icon: Icons.add,
                       onPressed: _createInviteCode,
-                      icon: Icons.add,
                     ),
                   ],
                 ],
@@ -208,8 +207,7 @@ class _InviteCodesScreenState extends ConsumerState<InviteCodesScreen> {
                       text: context.l10n.createInviteCode,
                       icon: Icons.add,
                       onPressed: _createInviteCode,
-                      icon: Icons.add,
-                      width: double.infinity,
+                      fullWidth: true,
                     ),
                   ),
                 ),
@@ -230,13 +228,11 @@ class _InviteCodesScreenState extends ConsumerState<InviteCodesScreen> {
               ),
               const SizedBox(height: 16),
               PlanPalButton(
-                text: 'Refresh',
+                text: 'Retry',
                 type: ButtonType.secondary,
                 onPressed: () {
                   ref.invalidate(inviteCodesProvider(widget.workspaceId));
                 },
-                label: context.l10n.retry,
-                variant: AppButtonVariant.outlined,
               ),
             ],
           ),

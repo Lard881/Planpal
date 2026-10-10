@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
-import '../database/database_providers.dart';
+import '../providers/app_providers.dart';
 import 'offline_queue_manager.dart';
 
 /// Offline queue manager provider

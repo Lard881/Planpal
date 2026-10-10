@@ -6,6 +6,7 @@ import 'api_error_mapper.dart';
 /// Configured Dio client for API requests
 class ApiClient {
   late final Dio _dio;
+  Dio get dio => _dio;
   final String baseUrl;
   final String? accessToken;
   final VoidCallback? onUnauthorized;

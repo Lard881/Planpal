@@ -39,7 +39,7 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
     if (index == 2 && !canUseChat) {
       AppSnackbar.showError(
         context,
-        context.l10n.errorChatNotAvailableInPersonal,
+        AppLocalizations.of(context)!.errorChatNotAvailableInPersonal,
       );
       return;
     }
@@ -66,16 +66,18 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
           const SettingsScreen(),
         ];
 
+        final l10n = AppLocalizations.of(context)!;
+
         final List<BottomNavigationBarItem> navItems = [
           BottomNavigationBarItem(
             icon: const Icon(Icons.home_outlined),
             activeIcon: const Icon(Icons.home),
-            label: context.l10n.home,
+            label: l10n.home,
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.task_alt_outlined),
             activeIcon: const Icon(Icons.task_alt),
-            label: context.l10n.tasks,
+            label: l10n.tasks,
           ),
           BottomNavigationBarItem(
             icon: Icon(
@@ -86,17 +88,17 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
               Icons.chat_bubble,
               color: canUseChat ? null : AppColors.grey400,
             ),
-            label: context.l10n.chat,
+            label: l10n.chat,
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.person_outline),
             activeIcon: const Icon(Icons.person),
-            label: context.l10n.profile,
+            label: l10n.profile,
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.settings_outlined),
             activeIcon: const Icon(Icons.settings),
-            label: context.l10n.settings,
+            label: l10n.settings,
           ),
         ];
 
@@ -147,7 +149,7 @@ class _ChatDisabledScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.l10n.chat),
+        title: Text(AppLocalizations.of(context)!.chat),
       ),
       body: Center(
         child: Padding(
@@ -162,13 +164,13 @@ class _ChatDisabledScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               Text(
-                context.l10n.chatNotAvailable,
+                AppLocalizations.of(context)!.chatNotAvailable,
                 style: Theme.of(context).textTheme.titleLarge,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 12),
               Text(
-                context.l10n.errorChatNotAvailableInPersonal,
+                AppLocalizations.of(context)!.errorChatNotAvailableInPersonal,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: AppColors.textSecondary,
                     ),

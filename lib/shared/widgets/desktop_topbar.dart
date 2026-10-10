@@ -51,10 +51,7 @@ class DesktopTopBar extends ConsumerWidget {
           // Notifications
           StreamBuilder(
             stream: workspaceId != null
-                ? ref.read(notificationRepositoryProvider).watchUnreadCount(
-                      userProfileAsync.value?.id ?? '',
-                      workspaceId,
-                    )
+                ? ref.read(notificationRepositoryProvider).watchUnreadCount()
                 : Stream.value(0),
             builder: (context, snapshot) {
               final unreadCount = snapshot.data ?? 0;

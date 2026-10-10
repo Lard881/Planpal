@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../connectivity/connectivity_providers.dart';
-import '../sync/sync_manager.dart';
+import '../../features/sync/providers/sync_providers.dart';
 import '../offline_queue/offline_queue_providers.dart';
 
 /// Sync status indicator widget
@@ -20,17 +20,18 @@ class SyncStatusIndicator extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final syncStateAsync = ref.watch(syncStateStreamProvider);
+    final syncStateAsync = ref.watch(syncStateProvider);
     final isOnline = ref.watch(isOnlineProvider);
-    final pendingCountAsync = ref.watch(pendingOperationsProvider);
+    final queueStatsAsync = ref.watch(queueStatsStreamProvider);
 
     return syncStateAsync.when(
       data: (syncState) {
+        final pendingCount = queueStatsAsync.value?.pendingOperations ?? 0;
         return _buildIndicator(
           context,
           syncState,
           isOnline,
-          pendingCountAsync.value ?? 0,
+          pendingCount,
         );
       },
       loading: () => _buildLoadingIndicator(),
@@ -49,7 +50,7 @@ class SyncStatusIndicator extends ConsumerWidget {
     Color color;
     String text;
 
-    if (syncState.isLoading) {
+    if (syncState.isSyncing) {
       icon = Icons.sync;
       color = theme.colorScheme.primary;
       text = 'Syncing...';
@@ -57,28 +58,24 @@ class SyncStatusIndicator extends ConsumerWidget {
       icon = Icons.cloud_off;
       color = Colors.orange;
       text = pendingCount > 0 ? '$pendingCount pending' : 'Offline';
-    } else if (syncState.hasConflicts) {
-      icon = Icons.warning_amber;
-      color = Colors.amber;
-      text = 'Sync conflicts';
-    } else if (syncState.isError) {
+    } else if (syncState.failedCount > 0) {
       icon = Icons.error_outline;
       color = Colors.red;
       text = 'Sync failed';
-    } else if (syncState.isSuccess || syncState.isIdle) {
+    } else if (pendingCount == 0) {
       icon = Icons.cloud_done;
       color = Colors.green;
       text = 'Synced';
     } else {
       icon = Icons.cloud_queue;
-      color = Colors.grey;
-      text = 'Unknown';
+      color = Colors.orange;
+      text = '$pendingCount pending';
     }
 
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (syncState.isLoading)
+        if (syncState.isSyncing)
           SizedBox(
             width: iconSize,
             height: iconSize,
@@ -223,13 +220,13 @@ class OfflineBanner extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isOffline = ref.watch(isOfflineProvider);
-    final pendingCountAsync = ref.watch(pendingOperationsProvider);
+    final queueStatsAsync = ref.watch(queueStatsStreamProvider);
 
     if (!isOffline) {
       return const SizedBox.shrink();
     }
 
-    final pendingCount = pendingCountAsync.value ?? 0;
+    final pendingCount = queueStatsAsync.value?.pendingOperations ?? 0;
 
     return MaterialBanner(
       backgroundColor: Colors.orange.shade700,
@@ -265,10 +262,11 @@ class PendingOperationsBadge extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final pendingCountAsync = ref.watch(pendingOperationsProvider);
+    final queueStatsAsync = ref.watch(queueStatsStreamProvider);
 
-    return pendingCountAsync.when(
-      data: (count) {
+    return queueStatsAsync.when(
+      data: (stats) {
+        final count = stats.pendingOperations;
         if (count == 0 && !showZero) {
           return const SizedBox.shrink();
         }
@@ -317,28 +315,38 @@ class SyncButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final syncStateAsync = ref.watch(syncStateStreamProvider);
+    final syncStateAsync = ref.watch(syncStateProvider);
     final isOnline = ref.watch(isOnlineProvider);
 
     return syncStateAsync.when(
       data: (syncState) {
-        final isSyncing = syncState.isLoading;
+        final isSyncing = syncState.isSyncing;
         final canSync = isOnline && !isSyncing;
 
         return ElevatedButton.icon(
           onPressed: canSync
               ? () async {
-                  final syncTrigger = ref.read(syncTriggerServiceProvider);
-                  final result = await syncTrigger.triggerManualSync();
-                  
-                  if (result?.success == true && context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Synced ${result!.successful} changes'),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
-                    onSyncComplete?.call();
+                  try {
+                    await ref.read(syncCoordinatorProvider).triggerSync();
+                    
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Sync completed'),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                      onSyncComplete?.call();
+                    }
+                  } catch (e) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Sync failed: $e'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
                   }
                 }
               : null,
@@ -378,7 +386,7 @@ class SyncStatusCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final syncStateAsync = ref.watch(syncStateStreamProvider);
+    final syncStateAsync = ref.watch(syncStateProvider);
     final queueStatsAsync = ref.watch(queueStatsStreamProvider);
     final isOnline = ref.watch(isOnlineProvider);
     final networkType = ref.watch(networkTypeProvider);
@@ -414,16 +422,13 @@ class SyncStatusCard extends ConsumerWidget {
                 String stateText;
                 Color stateColor;
 
-                if (syncState.isLoading) {
+                if (syncState.isSyncing) {
                   stateText = 'Syncing in progress...';
                   stateColor = theme.colorScheme.primary;
-                } else if (syncState.isSuccess) {
+                } else if (syncState.pendingCount == 0 && syncState.failedCount == 0) {
                   stateText = 'All changes synced';
                   stateColor = Colors.green;
-                } else if (syncState.hasConflicts) {
-                  stateText = 'Sync completed with conflicts';
-                  stateColor = Colors.amber;
-                } else if (syncState.isError) {
+                } else if (syncState.failedCount > 0) {
                   stateText = 'Sync failed';
                   stateColor = Colors.red;
                 } else {
@@ -533,11 +538,11 @@ class SyncProgressOverlay extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final syncStateAsync = ref.watch(syncStateStreamProvider);
+    final syncStateAsync = ref.watch(syncStateProvider);
 
     return syncStateAsync.when(
       data: (syncState) {
-        if (!syncState.isLoading) {
+        if (!syncState.isSyncing) {
           return const SizedBox.shrink();
         }
 

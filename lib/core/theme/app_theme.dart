@@ -5,6 +5,8 @@ import 'app_colors.dart';
 class AppTheme {
   AppTheme._();
 
+  static const Color primaryColor = AppColors.primary;
+
   // Corner radius
   static const double radiusCard = 16.0;
   static const double radiusButton = 10.0;

@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dio/dio.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:go_router/go_router.dart';
 import '../config/env.dart';
@@ -22,6 +23,8 @@ import '../services/local_notifications_service.dart';
 import '../../features/attachments/services/file_upload_service.dart';
 import '../../features/attachments/services/thumbnail_service.dart';
 import '../../features/attachments/repositories/attachment_repository.dart';
+import '../../features/sync/providers/sync_providers.dart';
+export 'theme_provider.dart' show sharedPreferencesProvider;
 
 /// Database provider - singleton instance
 final databaseProvider = Provider<AppDatabase>((ref) {
@@ -104,6 +107,11 @@ final apiClientProvider = Provider<ApiClient>((ref) {
       print('Unauthorized - token expired');
     },
   );
+});
+
+/// Dio HTTP client provider
+final dioProvider = Provider<Dio>((ref) {
+  return ref.watch(apiClientProvider).dio;
 });
 
 /// Connectivity service provider
@@ -237,10 +245,12 @@ final realtimeEnabledProvider = StateProvider<bool>((ref) {
 final taskRepositoryProvider = Provider<TaskRepository>((ref) {
   final db = ref.watch(databaseProvider);
   final api = ref.watch(apiClientProvider);
+  final outbox = ref.watch(outboxServiceProvider);
   
   return TaskRepository(
     database: db,
     apiClient: api,
+    outboxService: outbox,
   );
 });
 

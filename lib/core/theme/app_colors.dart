@@ -19,7 +19,10 @@ class AppColors {
   static const sidebar = Color(0xFF0F172A);
   static const textPrimary = Color(0xFF0F172A);
   static const textMuted = Color(0xFF64748B);
+  static const textSecondary = textMuted;
   static const border = Color(0xFFE2E8F0);
+  static const white = Color(0xFFFFFFFF);
+  static const transparent = Colors.transparent;
   
   // Grey scale (Tailwind-inspired)
   static const grey50 = Color(0xFFF9FAFB);

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:planpal/core/theme/app_theme.dart';
 import 'package:planpal/features/chat/presentation/chat_providers.dart';
-import 'package:planpal/features/workspaces/presentation/workspace_providers.dart';
+import 'package:planpal/features/workspaces/providers/workspace_providers.dart';
 
 /// Screen to select a user to start a direct message
 class NewDirectMessageScreen extends ConsumerStatefulWidget {

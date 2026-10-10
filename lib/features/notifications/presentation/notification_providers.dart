@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:planpal/core/db/app_database.dart';
 import 'package:planpal/core/network/api_client.dart';
 import 'package:planpal/core/services/supabase_service.dart';
+import 'package:planpal/core/providers/app_providers.dart';
 import 'package:planpal/features/notifications/data/notification_repository.dart';
 
 /// Notification repository provider
@@ -78,5 +79,5 @@ final apiClientProvider = Provider<ApiClient>((ref) {
 
 /// Supabase service provider
 final supabaseServiceProvider = Provider<SupabaseService>((ref) {
-  return SupabaseService();
+  return SupabaseService.instance;
 });

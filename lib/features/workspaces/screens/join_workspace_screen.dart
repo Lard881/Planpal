@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/l10n/app_localizations.dart';
+import '../../../core/l10n/l10n_extension.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/planpal_button.dart';
 import '../../../core/widgets/planpal_text_field.dart';
 import '../../../shared/widgets/app_snackbar.dart';
@@ -160,11 +161,8 @@ class _JoinWorkspaceScreenState extends ConsumerState<JoinWorkspaceScreen> {
                     const SizedBox(height: 40),
                     
                     // Invite code field
-                    PlanPalTextField(
-                      label: context.l10n.workspaceInviteCode,
-                      hint: context.l10n.workspaceInviteCodeHint,
+                    TextFormField(
                       controller: _codeController,
-                      hint: 'ABC123',
                       validator: _validateCode,
                       enabled: !_isLoading,
                       textCapitalization: TextCapitalization.characters,
@@ -173,11 +171,18 @@ class _JoinWorkspaceScreenState extends ConsumerState<JoinWorkspaceScreen> {
                         FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z0-9]')),
                         UpperCaseTextFormatter(),
                       ],
-                      prefixIcon: const Icon(Icons.key_rounded),
                       textAlign: TextAlign.center,
                       style: AppTextStyles.h3.copyWith(
                         letterSpacing: 8,
                         fontWeight: FontWeight.bold,
+                      ),
+                      decoration: InputDecoration(
+                        labelText: context.l10n.workspaceInviteCode,
+                        hintText: 'ABC123',
+                        prefixIcon: const Icon(Icons.key_rounded),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
                       onFieldSubmitted: (_) => _joinWorkspace(),
                     ),
@@ -212,7 +217,6 @@ class _JoinWorkspaceScreenState extends ConsumerState<JoinWorkspaceScreen> {
                       type: ButtonType.secondary,
                       fullWidth: true,
                       onPressed: _isLoading ? null : () => context.pop(),
-                      variant: AppButtonVariant.outlined,
                     ),
                     
                     const SizedBox(height: 24),

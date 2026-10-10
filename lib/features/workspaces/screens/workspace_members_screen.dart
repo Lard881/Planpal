@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/l10n/app_localizations.dart';
+import '../../../core/l10n/l10n_extension.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/planpal_button.dart';
 import '../../../shared/widgets/app_snackbar.dart';
 import '../../../shared/widgets/loading_overlay.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../models/workspace_member.dart';
 import '../providers/workspace_providers.dart';
+import '../../auth/presentation/auth_providers.dart';
 
 /// Screen for managing workspace members
 /// 
@@ -36,7 +38,7 @@ class _WorkspaceMembersScreenState extends ConsumerState<WorkspaceMembersScreen>
     super.initState();
     // Fetch members on load
     Future.microtask(() {
-      ref.read(workspaceMembersProvider(widget.workspaceId).notifier).fetchMembers();
+      ref.invalidate(workspaceMembersProvider(widget.workspaceId));
     });
   }
 
@@ -85,7 +87,7 @@ class _WorkspaceMembersScreenState extends ConsumerState<WorkspaceMembersScreen>
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: TextButton.styleFrom(foregroundColor: AppColors.error),
-            child: Text(context.l10n.remove),
+            child: Text(context.l10n.delete),
           ),
         ],
       ),
@@ -131,7 +133,7 @@ class _WorkspaceMembersScreenState extends ConsumerState<WorkspaceMembersScreen>
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: TextButton.styleFrom(foregroundColor: AppColors.error),
-            child: Text(context.l10n.leave),
+            child: const Text('Leave'),
           ),
         ],
       ),
@@ -213,7 +215,7 @@ class _WorkspaceMembersScreenState extends ConsumerState<WorkspaceMembersScreen>
   @override
   Widget build(BuildContext context) {
     final membersAsync = ref.watch(workspaceMembersProvider(widget.workspaceId));
-    final currentUserAsync = ref.watch(currentUserProvider);
+    final currentUser = ref.watch(currentUserProvider);
     final workspaceAsync = ref.watch(currentWorkspaceProvider);
 
     return Scaffold(
@@ -222,16 +224,17 @@ class _WorkspaceMembersScreenState extends ConsumerState<WorkspaceMembersScreen>
         centerTitle: true,
       ),
       body: membersAsync.when(
-        data: (members) {
+        data: (List<WorkspaceMember> members) {
           if (members.isEmpty) {
             return EmptyState(
               icon: Icons.people_outline,
-              message: context.l10n.noMembersYet,
+              title: context.l10n.noMembersYet,
+              message: '',
             );
           }
 
           // Determine if current user is admin
-          final currentUserId = currentUserAsync.value?.id;
+          final currentUserId = currentUser?.id;
           final currentMember = members.firstWhere(
             (m) => m.userId == currentUserId,
             orElse: () => members.first,
@@ -400,13 +403,11 @@ class _WorkspaceMembersScreenState extends ConsumerState<WorkspaceMembersScreen>
               ),
               const SizedBox(height: 16),
               PlanPalButton(
-                text: 'Refresh',
+                text: 'Retry',
                 type: ButtonType.secondary,
                 onPressed: () {
                   ref.invalidate(workspaceMembersProvider(widget.workspaceId));
                 },
-                label: context.l10n.retry,
-                variant: AppButtonVariant.outlined,
               ),
             ],
           ),

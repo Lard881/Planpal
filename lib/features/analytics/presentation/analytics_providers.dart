@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/sync/sync_providers.dart';
+import '../../sync/providers/sync_providers.dart';
 import '../../../core/providers/app_providers.dart';
+import '../../../core/providers/theme_provider.dart';
 import '../../../features/auth/presentation/auth_providers.dart';
 import '../../../features/workspaces/providers/workspace_providers.dart';
 import '../data/analytics_repository.dart';

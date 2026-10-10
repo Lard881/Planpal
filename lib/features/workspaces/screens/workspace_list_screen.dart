@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/providers/app_providers.dart';
+import '../../../core/providers/app_providers.dart' hide currentWorkspaceIdProvider;
 import '../providers/workspace_providers.dart';
 import 'create_workspace_screen.dart';
 import 'join_workspace_screen.dart';

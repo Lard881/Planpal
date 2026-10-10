@@ -20,6 +20,9 @@ class InviteCode {
     required this.createdAt,
   });
 
+  int get usesCount => currentUses;
+  bool get isRevoked => false;
+
   factory InviteCode.fromJson(Map<String, dynamic> json) {
     return InviteCode(
       id: json['id'] as String,

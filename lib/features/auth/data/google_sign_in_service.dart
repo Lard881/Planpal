@@ -47,15 +47,11 @@ class GoogleSignInService {
   /// 3. Exchange tokens with Supabase
   Future<bool> signInWithGoogleNative() async {
     if (!Platform.isAndroid) {
-      throw AppFailure.forbidden(
-        message: 'Native Google Sign-In is only available on Android',
-      );
+      throw const AppFailure.forbidden();
     }
 
     if (_googleSignIn == null) {
-      throw AppFailure.internalError(
-        message: 'Google Sign-In not initialized. Call initializeForAndroid first.',
-      );
+      throw const AppFailure.internalError();
     }
 
     try {
@@ -84,9 +80,7 @@ class GoogleSignInService {
 
       if (idToken == null) {
         logger.e('❌ Failed to get ID token from Google');
-        throw AppFailure.internalError(
-          message: 'Failed to get Google ID token',
-        );
+        throw const AppFailure.internalError();
       }
 
       logger.i('✅ Got Google tokens, exchanging with Supabase...');
@@ -103,13 +97,11 @@ class GoogleSignInService {
         return true;
       } else {
         logger.e('❌ Supabase authentication failed: no user or session');
-        throw AppFailure.invalidCredentials(
-          message: 'Failed to authenticate with Google',
-        );
+        throw const AppFailure.invalidCredentials();
       }
     } on AuthException catch (e) {
       logger.e('❌ Supabase auth error during Google Sign-In', error: e);
-      throw SupabaseAuthErrorMapper.mapToAppFailure(e);
+      throw SupabaseAuthErrorMapper.mapAuthException(e);
     } catch (e, stack) {
       if (e is AppFailure) rethrow;
       
@@ -131,9 +123,7 @@ class GoogleSignInService {
   /// 4. Supabase handles callback and creates session
   Future<bool> signInWithGoogleBrowser() async {
     if (!Platform.isWindows) {
-      throw AppFailure.forbidden(
-        message: 'Browser OAuth flow is only available on Windows',
-      );
+      throw const AppFailure.forbidden();
     }
 
     return await _windowsSignIn.signInWithBrowser();

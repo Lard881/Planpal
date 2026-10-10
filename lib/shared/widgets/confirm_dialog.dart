@@ -48,12 +48,12 @@ class ConfirmDialog extends StatelessWidget {
       actions: [
         PlanPalButton(
           text: cancelText,
-          type: ButtonType.secondary,
+          isOutlined: true,
           onPressed: () => Navigator.of(context).pop(false),
         ),
         PlanPalButton(
           text: confirmText,
-          type: isDangerous ? ButtonType.danger : ButtonType.primary,
+          backgroundColor: isDangerous ? AppColors.danger : AppColors.primary,
           onPressed: () => Navigator.of(context).pop(true),
         ),
       ],

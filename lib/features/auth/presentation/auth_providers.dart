@@ -7,6 +7,7 @@ import '../domain/models/user_profile.dart';
 import '../../../core/db/app_database.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/providers/app_providers.dart';
+import '../../../core/providers/theme_provider.dart';
 
 /// Auth repository provider
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
@@ -130,9 +131,9 @@ class AuthStateNotifier extends StateNotifier<AsyncValue<AuthState>> {
       // Sign out from Supabase (clears session)
       await _authRepository.signOut();
       
-      state = const AsyncValue.data(AuthState(
-        event: AuthChangeEvent.signedOut,
-        session: null,
+      state = AsyncValue.data(AuthState(
+        AuthChangeEvent.signedOut,
+        null,
       ));
     } catch (e, stack) {
       state = AsyncValue.error(e, stack);

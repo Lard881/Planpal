@@ -148,7 +148,7 @@ class NotificationRepository {
     _notificationSubscription = _supabase.client
         .from('notifications')
         .stream(primaryKey: ['id'])
-        .eq('user_id', _supabase.currentUserId!)
+        .eq('user_id', _supabase.client.auth.currentUser!.id)
         .listen((data) {
       final notifications = data.map((json) => _notificationFromJson(json)).toList();
       _db.batch((batch) {
@@ -174,10 +174,10 @@ class NotificationRepository {
       userId: json['user_id'] as String,
       type: json['type'] as String,
       title: json['title'] as String,
-      body: Value(json['body'] as String? ?? ''),
+      body: json['body'] as String? ?? '',
       entityType: Value(json['entity_type'] as String?),
       entityId: Value(json['entity_id'] as String?),
-      workspaceId: Value(json['workspace_id'] as String?),
+      workspaceId: (json['workspace_id'] as String?) ?? '',
       dedupeKey: Value(json['dedupe_key'] as String?),
       readAt: Value(json['read_at'] != null ? DateTime.parse(json['read_at'] as String) : null),
       pushedAt: Value(json['pushed_at'] != null ? DateTime.parse(json['pushed_at'] as String) : null),

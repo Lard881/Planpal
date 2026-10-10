@@ -5,7 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:mime/mime.dart';
 import '../../../core/l10n/app_localizations.dart';
-import '../../../features/auth/providers/auth_providers.dart';
+import '../../../features/auth/presentation/auth_providers.dart';
 import '../../../features/workspaces/providers/workspace_providers.dart';
 import '../providers/document_providers.dart';
 import '../services/file_upload_service.dart';

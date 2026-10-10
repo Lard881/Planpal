@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:planpal/core/l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/layout/breakpoints.dart';
 import '../../../core/providers/app_providers.dart';
@@ -287,7 +288,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         // Execute post-login flow (GET /me, apply theme/language, set workspace)
         try {
           final apiClient = ref.read(apiClientProvider);
-          final prefs = ref.read(sharedPreferencesProvider);
+          final prefs = await SharedPreferences.getInstance();
           
           final postLoginService = PostLoginService(
             apiClient: apiClient,
@@ -326,9 +327,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       String errorMessage;
       
       if (e is AppFailure) {
-        errorMessage = getFailureMessage(e, l10n);
+        errorMessage = FailureMessages.getMessage(context, e);
       } else {
-        errorMessage = l10n.unknownError;
+        errorMessage = 'An unknown error occurred';
       }
       
       setState(() {
@@ -365,9 +366,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       String errorMessage;
       
       if (e is AppFailure) {
-        errorMessage = getFailureMessage(e, l10n);
+        errorMessage = FailureMessages.getMessage(context, e);
       } else {
-        errorMessage = l10n.unknownError;
+        errorMessage = 'An unknown error occurred';
       }
       
       setState(() {

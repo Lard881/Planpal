@@ -82,7 +82,7 @@ class AuthRepository {
       }
     } on AuthException catch (e) {
       logger.e('❌ Supabase auth error during email sign-in', error: e);
-      throw SupabaseAuthErrorMapper.mapToAppFailure(e);
+      throw SupabaseAuthErrorMapper.mapAuthException(e);
     } catch (e, stack) {
       if (e is AppFailure) rethrow;
       
@@ -118,7 +118,7 @@ class AuthRepository {
       }
     } on AuthException catch (e) {
       logger.e('❌ Supabase auth error during email sign-up', error: e);
-      throw SupabaseAuthErrorMapper.mapToAppFailure(e);
+      throw SupabaseAuthErrorMapper.mapAuthException(e);
     } catch (e, stack) {
       if (e is AppFailure) rethrow;
       

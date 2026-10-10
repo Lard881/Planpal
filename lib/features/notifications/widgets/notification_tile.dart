@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Notification;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:planpal/core/db/app_database.dart';
 import 'package:planpal/core/theme/app_theme.dart';
+import 'package:planpal/core/theme/app_colors.dart';
 import 'package:planpal/features/notifications/presentation/notification_providers.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -36,7 +37,7 @@ class NotificationTile extends ConsumerWidget {
         );
       },
       child: Container(
-        color: isUnread ? AppTheme.primaryColor.withOpacity(0.05) : null,
+        color: isUnread ? AppColors.primary.withOpacity(0.05) : null,
         child: ListTile(
           leading: CircleAvatar(
             backgroundColor: _getIconColor(notification.type).withOpacity(0.1),
@@ -80,7 +81,7 @@ class NotificationTile extends ConsumerWidget {
                   width: 8,
                   height: 8,
                   decoration: const BoxDecoration(
-                    color: AppTheme.primaryColor,
+                    color: AppColors.primary,
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -142,7 +143,7 @@ class NotificationTile extends ConsumerWidget {
       case 'task_overdue':
         return Colors.red;
       case 'mention':
-        return AppTheme.primaryColor;
+        return AppColors.primary;
       case 'chat_message':
         return Colors.teal;
       case 'event_reminder':

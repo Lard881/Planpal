@@ -9,6 +9,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/config/env.dart';
 import '../../../core/errors/app_failure.dart';
 import '../../../core/errors/failure_messages.dart';
+import '../../../core/errors/failure_messages.dart';
 import '../../../shared/widgets/planpal_button.dart';
 import '../../../shared/widgets/planpal_text_field.dart';
 import '../data/auth_repository.dart';
@@ -331,9 +332,8 @@ class _SimpleRegisterScreenState extends ConsumerState<SimpleRegisterScreen> {
       if (!mounted) return;
       
       // Map Supabase auth errors to localized messages
-      final l10n = AppLocalizations.of(context)!;
-      final failure = SupabaseAuthErrorMapper.mapToAppFailure(e);
-      final errorMessage = getFailureMessage(failure, l10n);
+      final failure = SupabaseAuthErrorMapper.mapAuthException(e);
+      final errorMessage = FailureMessages.getMessage(context, failure);
       
       setState(() {
         _isLoading = false;
@@ -347,9 +347,9 @@ class _SimpleRegisterScreenState extends ConsumerState<SimpleRegisterScreen> {
       String errorMessage;
       
       if (e is AppFailure) {
-        errorMessage = getFailureMessage(e, l10n);
+        errorMessage = FailureMessages.getMessage(context, e);
       } else {
-        errorMessage = l10n.unknownError;
+        errorMessage = 'An unknown error occurred';
       }
       
       setState(() {
@@ -386,9 +386,9 @@ class _SimpleRegisterScreenState extends ConsumerState<SimpleRegisterScreen> {
       String errorMessage;
       
       if (e is AppFailure) {
-        errorMessage = getFailureMessage(e, l10n);
+        errorMessage = FailureMessages.getMessage(context, e);
       } else {
-        errorMessage = l10n.unknownError;
+        errorMessage = 'An unknown error occurred';
       }
       
       setState(() {

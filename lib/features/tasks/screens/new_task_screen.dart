@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:drift/drift.dart' show Value;
 import '../../../core/db/app_database.dart';
-import '../providers/task_providers.dart';
+import '../providers/task_providers.dart' hide currentWorkspaceIdProvider;
+import '../../workspaces/providers/workspace_providers.dart';
 import 'package:intl/intl.dart';
 
 /// S7.16: New Task Screen/Dialog
 /// All fields, attachments disabled offline with explanation
 class NewTaskScreen extends ConsumerStatefulWidget {
-  final String workspaceId;
+  final String? workspaceId;
   final Task? taskToEdit;
 
   const NewTaskScreen({
     super.key,
-    required this.workspaceId,
+    this.workspaceId,
     this.taskToEdit,
   });
 
@@ -49,7 +51,6 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
       _priority = widget.taskToEdit!.priority;
       _dueDate = widget.taskToEdit!.dueDate;
       _assigneeId = widget.taskToEdit!.assigneeId;
-      _labelId = widget.taskToEdit!.labelId;
     }
   }
 
@@ -394,13 +395,13 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
             priority: Value(_priority),
             dueDate: Value(_dueDate),
             assigneeId: Value(_assigneeId),
-            labelId: Value(_labelId),
           ),
         );
       } else {
         // Create new task
+        final effectiveWorkspaceId = widget.workspaceId ?? ref.read(currentWorkspaceIdProvider) ?? '';
         await repository.createTask(
-          workspaceId: widget.workspaceId,
+          workspaceId: effectiveWorkspaceId,
           title: _titleController.text.trim(),
           description: _descriptionController.text.trim(),
           status: _status,

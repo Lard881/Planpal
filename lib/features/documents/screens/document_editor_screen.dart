@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import '../../../core/l10n/app_localizations.dart';
-import '../../../features/auth/providers/auth_providers.dart';
+import '../../../features/auth/presentation/auth_providers.dart';
 import '../../../features/workspaces/providers/workspace_providers.dart';
 import '../repositories/document_repository.dart';
 
@@ -229,26 +229,6 @@ class _DocumentEditorScreenState extends ConsumerState<DocumentEditorScreen> {
           // Toolbar
           QuillToolbar.simple(
             controller: _controller,
-            configurations: const QuillSimpleToolbarConfigurations(
-              showAlignmentButtons: true,
-              showBackgroundColorButton: false,
-              showClearFormat: true,
-              showCodeBlock: true,
-              showColorButton: false,
-              showDividers: true,
-              showFontFamily: false,
-              showFontSize: true,
-              showHeaderStyle: true,
-              showIndent: true,
-              showInlineCode: true,
-              showLink: true,
-              showListBullets: true,
-              showListCheck: true,
-              showListNumbers: true,
-              showQuote: true,
-              showRedo: true,
-              showUndo: true,
-            ),
           ),
           const Divider(height: 1),
           // Editor
@@ -257,10 +237,6 @@ class _DocumentEditorScreenState extends ConsumerState<DocumentEditorScreen> {
               padding: const EdgeInsets.all(16),
               child: QuillEditor.basic(
                 controller: _controller,
-                configurations: const QuillEditorConfigurations(
-                  padding: EdgeInsets.all(16),
-                  placeholder: 'Start writing...',
-                ),
               ),
             ),
           ),

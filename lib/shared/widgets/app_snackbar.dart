@@ -78,9 +78,13 @@ class AppSnackbar {
     show(context, message: message, type: SnackbarType.success);
   }
 
+  static void showSuccess(BuildContext context, String message) => success(context, message);
+
   static void error(BuildContext context, String message) {
     show(context, message: message, type: SnackbarType.error);
   }
+
+  static void showError(BuildContext context, String message) => error(context, message);
 
   static void info(BuildContext context, String message) {
     show(context, message: message, type: SnackbarType.info);
