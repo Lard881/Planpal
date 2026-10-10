@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../core/providers/app_providers.dart' hide currentWorkspaceIdProvider;
+import '../../../core/providers/app_providers.dart';
 import '../../../core/providers/theme_provider.dart';
 import '../../auth/presentation/auth_providers.dart';
 import '../../workspaces/providers/workspace_providers.dart';
@@ -374,10 +374,7 @@ class SettingsScreen extends ConsumerWidget {
                 trailing: isSelected ? const Icon(Icons.check, color: AppColors.primary) : null,
                 onTap: () {
                   if (!isSelected) {
-                    ref.read(currentWorkspaceIdProvider.notifier).state = workspace.id;
-                    // Save last used workspace (like Asana/ClickUp/Notion)
-                    final prefs = ref.read(sharedPreferencesProvider);
-                    prefs.setString('last_workspace_id', workspace.id);
+                    ref.read(currentWorkspaceIdProvider.notifier).setWorkspace(workspace.id);
                   }
                   Navigator.pop(context);
                 },

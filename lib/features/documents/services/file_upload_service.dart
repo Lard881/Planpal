@@ -328,9 +328,3 @@ class FileUploadService {
     _tasksController.close();
   }
 }
-
-/// Provider
-final fileUploadServiceProvider = Provider<FileUploadService>((ref) {
-  final apiClient = ref.watch(apiClientProvider);
-  return FileUploadService(apiClient);
-});

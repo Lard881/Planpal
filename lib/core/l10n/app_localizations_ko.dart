@@ -473,10 +473,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get errorServerError => '서버 오류가 발생했습니다. 나중에 다시 시도하세요.';
 
   @override
-  String get errorTitleNetwork => 'Connection Error';
+  String get errorTitleNetwork => '연결 오류';
 
   @override
-  String get errorTitleServer => 'Server Error';
+  String get errorTitleServer => '서버 오류';
 
   @override
   String get errorTitleTimeout => '시간 초과';
@@ -485,13 +485,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get errorTitleAuth => '인증 필요';
 
   @override
-  String get errorTitlePermission => 'Permission Denied';
+  String get errorTitlePermission => '권한 거부됨';
 
   @override
-  String get errorTitleInviteCode => 'Invalid Invite Code';
+  String get errorTitleInviteCode => '유효하지 않은 초대 코드';
 
   @override
-  String get errorTitleFile => 'File Error';
+  String get errorTitleFile => '파일 오류';
 
   @override
   String get errorTitleNotFound => '찾을 수 없음';
@@ -500,10 +500,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get errorTitleValidation => '유효하지 않은 입력';
 
   @override
-  String get errorTitleSync => 'Sync Error';
+  String get errorTitleSync => '동기화 오류';
 
   @override
-  String get errorTitleChat => 'Chat Error';
+  String get errorTitleChat => '채팅 오류';
 
   @override
   String get errorDetails => '오류 세부정보';
@@ -697,7 +697,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get workspaceJoinTitle => '워크스페이스 참여';
 
   @override
-  String get workspaceJoinDescription => '초대 코드를 입력하여 워크스페이스에 참여하세요';
+  String get workspaceJoinDescription => '기존 워크스페이스에 참여하려면 초대 코드를 입력하세요';
 
   @override
   String get workspaceJoinButton => '워크스페이스 참여';
@@ -706,13 +706,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get workspaceInviteCode => '초대 코드';
 
   @override
-  String get workspaceCodeHelper => '팀 멤버에게서 이 코드를 받으세요';
+  String get workspaceCodeHelper => '워크스페이스 관리자에게 초대 코드를 요청하세요';
 
   @override
-  String get workspaceCodeLength => '코드는 6자여야 합니다';
+  String get workspaceCodeLength => '초대 코드는 6자여야 합니다';
 
   @override
-  String get workspaceCodeFormat => '코드는 문자와 숫자만 포함해야 합니다';
+  String get workspaceCodeFormat => '코드는 영숫자여야 합니다';
 
   @override
   String get workspaceCodeInvalid => '유효하지 않은 초대 코드';
@@ -730,7 +730,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get workspaceJoinError => '워크스페이스 참여 실패';
 
   @override
-  String get workspaceCreateNew => '새 워크스페이스 생성';
+  String get workspaceCreateNew => '대신 새 워크스페이스 만들기';
 
   @override
   String get workspaceMembers => '멤버';
@@ -963,245 +963,252 @@ class AppLocalizationsKo extends AppLocalizations {
       '이렇게 하면 실패한 모든 변경사항이 영구적으로 삭제됩니다. 이 작업은 취소할 수 없습니다.';
 
   @override
-  String get uploadFile => 'Upload File';
+  String get uploadFile => '파일 업로드';
 
   @override
-  String get uploads => 'Uploads';
+  String get uploads => '업로드';
 
   @override
-  String get noUploads => 'No uploads';
+  String get noUploads => '업로드 없음';
 
   @override
-  String get uploading => 'Uploading';
+  String get uploading => '업로드 중';
 
   @override
-  String get uploadCompleted => 'Upload completed';
+  String get uploadCompleted => '업로드 완료';
 
   @override
-  String get uploadFailed => 'Upload failed';
+  String get uploadFailed => '업로드 실패';
 
   @override
-  String get uploadCancelled => 'Upload cancelled';
+  String get uploadCancelled => '업로드 취소됨';
 
   @override
   String uploadStarted(int count) {
-    return 'Upload started for $count file(s)';
+    return '$count개 파일의 업로드가 시작되었습니다';
   }
 
   @override
-  String get clearCompleted => 'Clear Completed';
+  String get clearCompleted => '완료된 항목 지우기';
 
   @override
-  String get clearFailed => 'Clear Failed';
+  String get clearFailed => '실패한 항목 지우기';
 
   @override
-  String get waiting => 'Waiting';
+  String get waiting => '대기 중';
 
   @override
-  String get recent => 'Recent';
+  String get recent => '최근';
 
   @override
-  String get noRecentDocuments => 'No recent documents';
+  String get noRecentDocuments => '최근 문서 없음';
 
   @override
-  String get noDocuments => 'No documents';
+  String get noDocuments => '문서 없음';
 
   @override
-  String get uploadFileToGetStarted => 'Upload a file to get started';
+  String get uploadFileToGetStarted => '시작하려면 파일을 업로드하세요';
 
   @override
-  String get errorLoadingData => 'Error loading data';
+  String get errorLoadingData => '데이터 로드 오류';
 
   @override
-  String get createFolder => 'Create Folder';
+  String get createFolder => '폴더 만들기';
 
   @override
-  String get folderName => 'Folder Name';
+  String get folderName => '폴더 이름';
 
   @override
-  String get enterFolderName => 'Enter folder name';
+  String get enterFolderName => '폴더 이름을 입력하세요';
 
   @override
-  String get folderNameRequired => 'Folder name is required';
+  String get folderNameRequired => '폴더 이름은 필수입니다';
 
   @override
-  String get folderNameTooLong =>
-      'Folder name is too long (max 200 characters)';
+  String get folderNameTooLong => '폴더 이름이 너무 깁니다 (최대 200자)';
 
   @override
-  String get folderCreated => 'Folder created successfully';
+  String get folderCreated => '폴더가 생성되었습니다';
 
   @override
-  String get selectFilesToUpload => 'Select files to upload';
+  String get selectFilesToUpload => '업로드할 파일 선택';
 
   @override
-  String get browseFiles => 'Browse Files';
+  String get browseFiles => '파일 찾아보기';
 
   @override
-  String get dragAndDropFiles => 'Drag and drop files here';
+  String get dragAndDropFiles => '여기에 파일을 끌어다 놓으세요';
 
   @override
-  String get dropFilesHere => 'Drop files here';
+  String get dropFilesHere => '여기에 파일을 놓으세요';
 
   @override
-  String get orClickToBrowse => 'or click to browse';
+  String get orClickToBrowse => '또는 클릭하여 찾아보기';
 
   @override
-  String get rename => 'Rename';
+  String get rename => '이름 바꾸기';
 
   @override
-  String get move => 'Move';
+  String get move => '이동';
 
   @override
-  String get download => 'Download';
+  String get download => '다운로드';
 
   @override
-  String get downloadStarted => 'Download started';
+  String get downloadStarted => '다운로드가 시작되었습니다';
 
   @override
-  String get confirmDeleteDocument =>
-      'Are you sure you want to delete this document?';
+  String get confirmDeleteDocument => '이 문서를 삭제하시겠습니까?';
 
   @override
-  String get confirmDeleteFolder =>
-      'Are you sure you want to delete this folder? It must be empty.';
+  String get confirmDeleteFolder => '이 폴더를 삭제하시겠습니까? 폴더가 비어 있어야 합니다.';
 
   @override
-  String get documentDeleted => 'Document deleted successfully';
+  String get documentDeleted => '문서가 삭제되었습니다';
 
   @override
-  String get folderDeleted => 'Folder deleted successfully';
+  String get folderDeleted => '폴더가 삭제되었습니다';
 
   @override
-  String get documentName => 'Document Name';
+  String get documentName => '문서 이름';
 
   @override
-  String get documentNameRequired => 'Document name is required';
+  String get documentNameRequired => '문서 이름은 필수입니다';
 
   @override
-  String get folderRenamed => 'Folder renamed successfully';
+  String get folderRenamed => '폴더 이름이 변경되었습니다';
 
   @override
-  String get documentRenamed => 'Document renamed successfully';
+  String get documentRenamed => '문서 이름이 변경되었습니다';
 
   @override
-  String get moveToFolder => 'Move to Folder';
+  String get moveToFolder => '폴더로 이동';
 
   @override
-  String get rootFolder => 'Root Folder';
+  String get rootFolder => '루트 폴더';
 
   @override
-  String get noFoldersAvailable => 'No folders available';
+  String get noFoldersAvailable => '사용 가능한 폴더 없음';
 
   @override
-  String get folderMoved => 'Folder moved successfully';
+  String get folderMoved => '폴더가 이동되었습니다';
 
   @override
-  String get documentMoved => 'Document moved successfully';
+  String get documentMoved => '문서가 이동되었습니다';
 
   @override
-  String get nameTooLong => 'Name is too long (max 200 characters)';
+  String get nameTooLong => '이름이 너무 깁니다 (최대 200자)';
 
   @override
-  String get noWorkspaceSelected => 'No workspace selected';
+  String get noWorkspaceSelected => '선택된 워크스페이스 없음';
 
   @override
-  String get close => 'Close';
+  String get close => '닫기';
 
   @override
-  String get documentSaved => 'Document saved';
+  String get documentSaved => '문서가 저장되었습니다';
 
   @override
   String savedAt(String time) {
-    return 'Saved $time';
+    return '$time에 저장됨';
   }
 
   @override
-  String get openWithSystemApp => 'Open with System App';
+  String get openWithSystemApp => '시스템 앱으로 열기';
 
   @override
-  String get errorLoadingFile => 'Error loading file';
+  String get errorLoadingFile => '파일 로드 오류';
 
   @override
-  String get downloading => 'Downloading...';
+  String get downloading => '다운로드 중...';
 
   @override
-  String get errorLoadingImage => 'Error loading image';
+  String get errorLoadingImage => '이미지 로드 오류';
 
   @override
-  String get pdfDocument => 'PDF Document';
+  String get pdfDocument => 'PDF 문서';
 
   @override
-  String get fileDocument => 'File';
+  String get fileDocument => '파일';
 
   @override
-  String get attachFile => 'Attach File';
+  String get attachFile => '파일 첨부';
 
   @override
-  String get attachments => 'Attachments';
+  String get attachments => '첨부 파일';
 
   @override
-  String get noAttachments => 'No attachments';
+  String get noAttachments => '첨부 파일 없음';
 
   @override
-  String get attachmentAdded => 'Attachment added';
+  String get attachmentAdded => '첨부 파일이 추가되었습니다';
 
   @override
-  String get attachmentRemoved => 'Attachment removed';
+  String get attachmentRemoved => '첨부 파일이 삭제되었습니다';
 
   @override
-  String get offlineUploadsDisabled =>
-      'File uploads are disabled while offline';
+  String get offlineUploadsDisabled => '오프라인 상태에서는 파일 업로드를 사용할 수 없습니다';
 
   @override
-  String get notificationTaskAssigned => 'Task Assigned';
+  String get notificationTaskAssigned => '작업 배정됨';
 
   @override
-  String get notificationTaskUpdated => 'Task Updated';
+  String get notificationTaskUpdated => '작업 업데이트됨';
 
   @override
-  String get notificationTaskComment => 'New Comment';
+  String get notificationTaskComment => '새 댓글';
 
   @override
-  String get notificationDeadlineApproaching => 'Deadline Approaching';
+  String get notificationDeadlineApproaching => '마감일 임박';
 
   @override
-  String get notificationTaskOverdue => 'Task Overdue';
+  String get notificationTaskOverdue => '기한 지난 작업';
 
   @override
-  String get notificationMention => 'You were mentioned';
+  String get notificationMention => '멘션되었습니다';
 
   @override
-  String get notificationChatMessage => 'New Message';
+  String get notificationChatMessage => '새 메시지';
 
   @override
-  String get notificationEventReminder => 'Event Reminder';
+  String get notificationEventReminder => '이벤트 알림';
 
   @override
-  String get notificationWorkspaceInvite => 'Workspace Invite';
+  String get notificationWorkspaceInvite => '워크스페이스 초대';
 
   @override
-  String get notificationTaskAssignedBody => 'A task has been assigned to you';
+  String get notificationTaskAssignedBody => '작업이 회원님에게 배정되었습니다';
 
   @override
-  String get notificationTaskUpdatedBody => 'A task has been updated';
+  String get notificationTaskUpdatedBody => '작업이 업데이트되었습니다';
 
   @override
-  String get notificationTaskCommentBody => 'Someone commented on a task';
+  String get notificationTaskCommentBody => '누군가 작업에 댓글을 달았습니다';
 
   @override
-  String get notificationDeadlineApproachingBody =>
-      'A task deadline is approaching';
+  String get notificationDeadlineApproachingBody => '작업 마감일이 다가옵니다';
 
   @override
-  String get notificationTaskOverdueBody => 'A task is overdue';
+  String get notificationTaskOverdueBody => '작업 기한이 지났습니다';
 
   @override
-  String get notificationMentionBody => 'Someone mentioned you';
+  String get notificationMentionBody => '누군가 회원님을 멘션했습니다';
 
   @override
-  String get notificationChatMessageBody => 'You have a new message';
+  String get notificationChatMessageBody => '새 메시지가 있습니다';
 
   @override
-  String get notificationEventReminderBody => 'You have an upcoming event';
+  String get notificationEventReminderBody => '예정된 이벤트가 있습니다';
+
+  @override
+  String get fieldRequired => '필수 항목입니다';
+
+  @override
+  String get workspaceInviteCodeHint => '예: ABC123';
+
+  @override
+  String get or => '또는';
+
+  @override
+  String get workspaceNameTaken => '이미 사용 중인 워크스페이스 이름입니다';
 }

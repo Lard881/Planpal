@@ -5,8 +5,8 @@ import 'package:go_router/go_router.dart';
 import '../../../core/l10n/l10n_extension.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
-import '../../../core/widgets/planpal_button.dart';
-import '../../../core/widgets/planpal_text_field.dart';
+import '../../../shared/widgets/planpal_button.dart';
+import '../../../shared/widgets/planpal_text_field.dart';
 import '../../../shared/widgets/app_snackbar.dart';
 import '../providers/workspace_providers.dart';
 

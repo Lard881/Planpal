@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/providers/app_providers.dart' hide currentWorkspaceIdProvider;
+import '../../../core/providers/app_providers.dart';
 import '../providers/workspace_providers.dart';
 import 'create_workspace_screen.dart';
 import 'join_workspace_screen.dart';
@@ -122,8 +122,7 @@ class WorkspaceListScreen extends ConsumerWidget {
                       : const Icon(Icons.chevron_right),
                   onTap: () {
                     if (!isSelected) {
-                      ref.read(currentWorkspaceIdProvider.notifier).state =
-                          workspace.id;
+                      ref.read(currentWorkspaceIdProvider.notifier).setWorkspace(workspace.id);
                       Navigator.of(context).pop();
                     } else {
                       // Navigate to workspace details

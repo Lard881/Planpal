@@ -134,11 +134,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         
         // Set as current workspace
         final workspaceId = selectedWorkspace['id'] as String?;
-        ref.read(currentWorkspaceIdProvider.notifier).state = workspaceId;
-        
-        // Save for next login
         if (workspaceId != null) {
-          await prefs.setString('last_workspace_id', workspaceId);
+          await ref.read(currentWorkspaceIdProvider.notifier).setWorkspace(workspaceId);
         }
       }
 

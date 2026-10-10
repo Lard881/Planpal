@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import '../../../core/l10n/app_localizations.dart';
+import '../../../core/l10n/l10n_extension.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
+import '../../../core/db/app_database.dart';
 import '../../../core/sync/sync_messages.dart';
-import '../../../core/widgets/planpal_button.dart';
+import '../../../shared/widgets/planpal_button.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../providers/sync_providers.dart';
 
@@ -21,7 +23,7 @@ class SyncStatusScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final syncState = ref.watch(syncStateProvider);
+    final syncState = ref.watch(syncSummaryProvider);
     final failedItems = ref.watch(failedSyncItemsProvider);
 
     return Scaffold(
@@ -138,7 +140,7 @@ class SyncStatusScreen extends ConsumerWidget {
           TextButton(
             onPressed: () => Navigator.pop(context, true),
             style: TextButton.styleFrom(foregroundColor: AppColors.error),
-            child: Text(context.l10n.discard),
+            child: Text(context.l10n.delete),
           ),
         ],
       ),
@@ -371,7 +373,7 @@ class _FailedItemCard extends StatelessWidget {
                 TextButton.icon(
                   onPressed: onDiscard,
                   icon: const Icon(Icons.delete, size: 18),
-                  label: Text(context.l10n.discard),
+                  label: Text(context.l10n.delete),
                   style: TextButton.styleFrom(
                     foregroundColor: AppColors.error,
                   ),

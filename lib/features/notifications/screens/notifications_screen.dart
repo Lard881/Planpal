@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:planpal/core/theme/app_theme.dart';
 import 'package:planpal/core/theme/app_colors.dart';
+import 'package:planpal/core/providers/app_providers.dart';
 import 'package:planpal/features/notifications/presentation/notification_providers.dart';
 import 'package:planpal/features/notifications/widgets/notification_tile.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -132,8 +133,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen>
 
         return RefreshIndicator(
           onRefresh: () async {
-            final filter = ref.read(notificationFilterProvider);
-            await ref.read(notificationRepositoryProvider).syncNotifications(filter: filter);
+            await ref.read(notificationRepositoryProvider).fetchAndSyncNotifications();
           },
           child: ListView.builder(
             itemCount: notifications.length,

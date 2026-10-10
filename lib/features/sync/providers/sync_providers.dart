@@ -69,7 +69,7 @@ class SyncState {
 }
 
 /// Sync state provider
-final syncStateProvider = FutureProvider<SyncState>((ref) async {
+final syncSummaryProvider = FutureProvider<SyncState>((ref) async {
   final coordinator = ref.watch(syncCoordinatorProvider);
   
   final pendingCount = await coordinator.getPendingCount();

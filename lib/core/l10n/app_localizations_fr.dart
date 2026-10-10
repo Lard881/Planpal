@@ -775,28 +775,28 @@ class AppLocalizationsFr extends AppLocalizations {
       'Échec de la création de l\'espace de travail';
 
   @override
-  String get workspaceJoinTitle => 'Rejoindre un Espace de Travail';
+  String get workspaceJoinTitle => 'Rejoindre l\'espace de travail';
 
   @override
   String get workspaceJoinDescription =>
-      'Entrez le code d\'invitation pour rejoindre un espace de travail';
+      'Entrez un code d\'invitation pour rejoindre un espace de travail existant';
 
   @override
-  String get workspaceJoinButton => 'Rejoindre l\'Espace de Travail';
+  String get workspaceJoinButton => 'Rejoindre l\'espace de travail';
 
   @override
-  String get workspaceInviteCode => 'Code d\'Invitation';
+  String get workspaceInviteCode => 'Code d\'invitation';
 
   @override
   String get workspaceCodeHelper =>
-      'Obtenez ce code auprès d\'un membre de l\'équipe';
+      'Demandez un code d\'invitation à votre administrateur';
 
   @override
-  String get workspaceCodeLength => 'Le code doit comporter 6 caractères';
+  String get workspaceCodeLength =>
+      'Le code d\'invitation doit comporter 6 caractères';
 
   @override
-  String get workspaceCodeFormat =>
-      'Le code ne doit contenir que des lettres et des chiffres';
+  String get workspaceCodeFormat => 'Le code doit être alphanumérique';
 
   @override
   String get workspaceCodeInvalid => 'Code d\'invitation invalide';
@@ -817,7 +817,8 @@ class AppLocalizationsFr extends AppLocalizations {
       'Échec de la jonction à l\'espace de travail';
 
   @override
-  String get workspaceCreateNew => 'Créer un Nouvel Espace de Travail';
+  String get workspaceCreateNew =>
+      'Créer un nouvel espace de travail à la place';
 
   @override
   String get workspaceMembers => 'Membres';
@@ -1064,245 +1065,257 @@ class AppLocalizationsFr extends AppLocalizations {
       'Cela rejettera définitivement tous les changements échoués. Cela ne peut pas être annulé.';
 
   @override
-  String get uploadFile => 'Upload File';
+  String get uploadFile => 'Téléverser le fichier';
 
   @override
-  String get uploads => 'Uploads';
+  String get uploads => 'Téléversements';
 
   @override
-  String get noUploads => 'No uploads';
+  String get noUploads => 'Aucun téléversement';
 
   @override
-  String get uploading => 'Uploading';
+  String get uploading => 'Téléversement en cours';
 
   @override
-  String get uploadCompleted => 'Upload completed';
+  String get uploadCompleted => 'Téléversement terminé';
 
   @override
-  String get uploadFailed => 'Upload failed';
+  String get uploadFailed => 'Échec du téléversement';
 
   @override
-  String get uploadCancelled => 'Upload cancelled';
+  String get uploadCancelled => 'Téléversement annulé';
 
   @override
   String uploadStarted(int count) {
-    return 'Upload started for $count file(s)';
+    return 'Téléversement démarré pour $count fichier(s)';
   }
 
   @override
-  String get clearCompleted => 'Clear Completed';
+  String get clearCompleted => 'Effacer les terminés';
 
   @override
-  String get clearFailed => 'Clear Failed';
+  String get clearFailed => 'Effacer les échecs';
 
   @override
-  String get waiting => 'Waiting';
+  String get waiting => 'En attente';
 
   @override
-  String get recent => 'Recent';
+  String get recent => 'Récent';
 
   @override
-  String get noRecentDocuments => 'No recent documents';
+  String get noRecentDocuments => 'Aucun document récent';
 
   @override
-  String get noDocuments => 'No documents';
+  String get noDocuments => 'Aucun document';
 
   @override
-  String get uploadFileToGetStarted => 'Upload a file to get started';
+  String get uploadFileToGetStarted => 'Téléversez un fichier pour commencer';
 
   @override
-  String get errorLoadingData => 'Error loading data';
+  String get errorLoadingData => 'Erreur lors du chargement des données';
 
   @override
-  String get createFolder => 'Create Folder';
+  String get createFolder => 'Créer un dossier';
 
   @override
-  String get folderName => 'Folder Name';
+  String get folderName => 'Nom du dossier';
 
   @override
-  String get enterFolderName => 'Enter folder name';
+  String get enterFolderName => 'Entrez le nom du dossier';
 
   @override
-  String get folderNameRequired => 'Folder name is required';
+  String get folderNameRequired => 'Le nom du dossier est obligatoire';
 
   @override
   String get folderNameTooLong =>
-      'Folder name is too long (max 200 characters)';
+      'Le nom du dossier est trop long (200 caractères max)';
 
   @override
-  String get folderCreated => 'Folder created successfully';
+  String get folderCreated => 'Dossier créé avec succès';
 
   @override
-  String get selectFilesToUpload => 'Select files to upload';
+  String get selectFilesToUpload => 'Sélectionner les fichiers à téléverser';
 
   @override
-  String get browseFiles => 'Browse Files';
+  String get browseFiles => 'Parcourir les fichiers';
 
   @override
-  String get dragAndDropFiles => 'Drag and drop files here';
+  String get dragAndDropFiles => 'Glissez et déposez des fichiers ici';
 
   @override
-  String get dropFilesHere => 'Drop files here';
+  String get dropFilesHere => 'Déposez les fichiers ici';
 
   @override
-  String get orClickToBrowse => 'or click to browse';
+  String get orClickToBrowse => 'ou cliquez pour parcourir';
 
   @override
-  String get rename => 'Rename';
+  String get rename => 'Renommer';
 
   @override
-  String get move => 'Move';
+  String get move => 'Déplacer';
 
   @override
-  String get download => 'Download';
+  String get download => 'Télécharger';
 
   @override
-  String get downloadStarted => 'Download started';
+  String get downloadStarted => 'Téléchargement démarré';
 
   @override
   String get confirmDeleteDocument =>
-      'Are you sure you want to delete this document?';
+      'Êtes-vous sûr de vouloir supprimer ce document ?';
 
   @override
   String get confirmDeleteFolder =>
-      'Are you sure you want to delete this folder? It must be empty.';
+      'Êtes-vous sûr de vouloir supprimer ce dossier ? Il doit être vide.';
 
   @override
-  String get documentDeleted => 'Document deleted successfully';
+  String get documentDeleted => 'Document supprimé avec succès';
 
   @override
-  String get folderDeleted => 'Folder deleted successfully';
+  String get folderDeleted => 'Dossier supprimé avec succès';
 
   @override
-  String get documentName => 'Document Name';
+  String get documentName => 'Nom du document';
 
   @override
-  String get documentNameRequired => 'Document name is required';
+  String get documentNameRequired => 'Le nom du document est obligatoire';
 
   @override
-  String get folderRenamed => 'Folder renamed successfully';
+  String get folderRenamed => 'Dossier renommé avec succès';
 
   @override
-  String get documentRenamed => 'Document renamed successfully';
+  String get documentRenamed => 'Document renommé avec succès';
 
   @override
-  String get moveToFolder => 'Move to Folder';
+  String get moveToFolder => 'Déplacer vers le dossier';
 
   @override
-  String get rootFolder => 'Root Folder';
+  String get rootFolder => 'Dossier racine';
 
   @override
-  String get noFoldersAvailable => 'No folders available';
+  String get noFoldersAvailable => 'Aucun dossier disponible';
 
   @override
-  String get folderMoved => 'Folder moved successfully';
+  String get folderMoved => 'Dossier déplacé avec succès';
 
   @override
-  String get documentMoved => 'Document moved successfully';
+  String get documentMoved => 'Document déplacé avec succès';
 
   @override
-  String get nameTooLong => 'Name is too long (max 200 characters)';
+  String get nameTooLong => 'Le nom est trop long (200 caractères max)';
 
   @override
-  String get noWorkspaceSelected => 'No workspace selected';
+  String get noWorkspaceSelected => 'Aucun espace de travail sélectionné';
 
   @override
-  String get close => 'Close';
+  String get close => 'Fermer';
 
   @override
-  String get documentSaved => 'Document saved';
+  String get documentSaved => 'Document enregistré';
 
   @override
   String savedAt(String time) {
-    return 'Saved $time';
+    return 'Enregistré à $time';
   }
 
   @override
-  String get openWithSystemApp => 'Open with System App';
+  String get openWithSystemApp => 'Ouvrir avec l\'application système';
 
   @override
-  String get errorLoadingFile => 'Error loading file';
+  String get errorLoadingFile => 'Erreur lors du chargement du fichier';
 
   @override
-  String get downloading => 'Downloading...';
+  String get downloading => 'Téléchargement en cours...';
 
   @override
-  String get errorLoadingImage => 'Error loading image';
+  String get errorLoadingImage => 'Erreur lors du chargement de l\'image';
 
   @override
-  String get pdfDocument => 'PDF Document';
+  String get pdfDocument => 'Document PDF';
 
   @override
-  String get fileDocument => 'File';
+  String get fileDocument => 'Fichier';
 
   @override
-  String get attachFile => 'Attach File';
+  String get attachFile => 'Joindre un fichier';
 
   @override
-  String get attachments => 'Attachments';
+  String get attachments => 'Pièces jointes';
 
   @override
-  String get noAttachments => 'No attachments';
+  String get noAttachments => 'Aucune pièce jointe';
 
   @override
-  String get attachmentAdded => 'Attachment added';
+  String get attachmentAdded => 'Pièce jointe ajoutée';
 
   @override
-  String get attachmentRemoved => 'Attachment removed';
+  String get attachmentRemoved => 'Pièce jointe supprimée';
 
   @override
   String get offlineUploadsDisabled =>
-      'File uploads are disabled while offline';
+      'Les téléversements sont désactivés hors ligne';
 
   @override
-  String get notificationTaskAssigned => 'Task Assigned';
+  String get notificationTaskAssigned => 'Tâche assignée';
 
   @override
-  String get notificationTaskUpdated => 'Task Updated';
+  String get notificationTaskUpdated => 'Tâche mise à jour';
 
   @override
-  String get notificationTaskComment => 'New Comment';
+  String get notificationTaskComment => 'Nouveau commentaire';
 
   @override
-  String get notificationDeadlineApproaching => 'Deadline Approaching';
+  String get notificationDeadlineApproaching => 'Échéance proche';
 
   @override
-  String get notificationTaskOverdue => 'Task Overdue';
+  String get notificationTaskOverdue => 'Tâche en retard';
 
   @override
-  String get notificationMention => 'You were mentioned';
+  String get notificationMention => 'Vous avez été mentionné';
 
   @override
-  String get notificationChatMessage => 'New Message';
+  String get notificationChatMessage => 'Nouveau message';
 
   @override
-  String get notificationEventReminder => 'Event Reminder';
+  String get notificationEventReminder => 'Rappel d\'événement';
 
   @override
-  String get notificationWorkspaceInvite => 'Workspace Invite';
+  String get notificationWorkspaceInvite => 'Invitation à l\'espace de travail';
 
   @override
-  String get notificationTaskAssignedBody => 'A task has been assigned to you';
+  String get notificationTaskAssignedBody => 'Une tâche vous a été assignée';
 
   @override
-  String get notificationTaskUpdatedBody => 'A task has been updated';
+  String get notificationTaskUpdatedBody => 'Une tâche a été mise à jour';
 
   @override
-  String get notificationTaskCommentBody => 'Someone commented on a task';
+  String get notificationTaskCommentBody => 'Quelqu\'un a commenté une tâche';
 
   @override
   String get notificationDeadlineApproachingBody =>
-      'A task deadline is approaching';
+      'La date limite d\'une tâche approche';
 
   @override
-  String get notificationTaskOverdueBody => 'A task is overdue';
+  String get notificationTaskOverdueBody => 'Une tâche est en retard';
 
   @override
-  String get notificationMentionBody => 'Someone mentioned you';
+  String get notificationMentionBody => 'Quelqu\'un vous a mentionné';
 
   @override
-  String get notificationChatMessageBody => 'You have a new message';
+  String get notificationChatMessageBody => 'Vous avez un nouveau message';
 
   @override
-  String get notificationEventReminderBody => 'You have an upcoming event';
+  String get notificationEventReminderBody => 'Vous avez un événement à venir';
+
+  @override
+  String get fieldRequired => 'Ce champ est obligatoire';
+
+  @override
+  String get workspaceInviteCodeHint => 'ex. ABC123';
+
+  @override
+  String get or => 'ou';
+
+  @override
+  String get workspaceNameTaken => 'Nom de l\'espace de travail déjà pris';
 }

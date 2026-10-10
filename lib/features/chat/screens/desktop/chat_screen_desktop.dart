@@ -388,7 +388,7 @@ class _ChannelTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final unreadCountAsync = ref.watch(unreadCountProvider(channel.id));
+    final unreadCountAsync = ref.watch(channelUnreadCountProvider(channel.id));
 
     return unreadCountAsync.when(
       data: (unreadCount) => _buildTile(context, unreadCount),

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:drift/drift.dart' show Value;
 import '../../../core/db/app_database.dart';
-import '../providers/task_providers.dart' hide currentWorkspaceIdProvider;
+import '../providers/task_providers.dart';
 import '../../workspaces/providers/workspace_providers.dart';
 import 'package:intl/intl.dart';
 

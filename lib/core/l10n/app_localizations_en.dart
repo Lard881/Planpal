@@ -762,7 +762,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get workspaceJoinDescription =>
-      'Enter the invite code to join a workspace';
+      'Enter an invite code to join an existing workspace';
 
   @override
   String get workspaceJoinButton => 'Join Workspace';
@@ -771,14 +771,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workspaceInviteCode => 'Invite Code';
 
   @override
-  String get workspaceCodeHelper => 'Get this code from a team member';
+  String get workspaceCodeHelper =>
+      'Ask your workspace admin for an invite code';
 
   @override
-  String get workspaceCodeLength => 'Code must be 6 characters';
+  String get workspaceCodeLength => 'Invite code must be 6 characters';
 
   @override
-  String get workspaceCodeFormat =>
-      'Code must contain only letters and numbers';
+  String get workspaceCodeFormat => 'Code must be alphanumeric';
 
   @override
   String get workspaceCodeInvalid => 'Invalid invite code';
@@ -797,7 +797,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workspaceJoinError => 'Failed to join workspace';
 
   @override
-  String get workspaceCreateNew => 'Create New Workspace';
+  String get workspaceCreateNew => 'Create a new workspace instead';
 
   @override
   String get workspaceMembers => 'Members';
@@ -1272,4 +1272,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notificationEventReminderBody => 'You have an upcoming event';
+
+  @override
+  String get fieldRequired => 'This field is required';
+
+  @override
+  String get workspaceInviteCodeHint => 'e.g. ABC123';
+
+  @override
+  String get or => 'or';
+
+  @override
+  String get workspaceNameTaken => 'Workspace name already taken';
 }

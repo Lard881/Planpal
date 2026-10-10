@@ -1,19 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:planpal/core/providers/theme_provider.dart';
 import '../models/notification_settings.dart';
 import '../services/notification_settings_service.dart';
 
-/// Provider for SharedPreferences instance
-final sharedPreferencesProvider = FutureProvider<SharedPreferences>((ref) async {
-  return await SharedPreferences.getInstance();
-});
-
 /// Provider for NotificationSettingsService
 final notificationSettingsServiceProvider = Provider<NotificationSettingsService>((ref) {
-  final prefs = ref.watch(sharedPreferencesProvider).value;
-  if (prefs == null) {
-    throw Exception('SharedPreferences not initialized');
-  }
+  final prefs = ref.watch(sharedPreferencesProvider);
   return NotificationSettingsService(prefs);
 });
 

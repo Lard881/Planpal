@@ -1352,46 +1352,46 @@ abstract class AppLocalizations {
   /// **'Failed to create workspace'**
   String get workspaceCreateError;
 
-  /// No description provided for @workspaceJoinTitle.
+  /// workspaceJoinTitle
   ///
   /// In en, this message translates to:
   /// **'Join Workspace'**
   String get workspaceJoinTitle;
 
-  /// No description provided for @workspaceJoinDescription.
+  /// workspaceJoinDescription
   ///
   /// In en, this message translates to:
-  /// **'Enter the invite code to join a workspace'**
+  /// **'Enter an invite code to join an existing workspace'**
   String get workspaceJoinDescription;
 
-  /// No description provided for @workspaceJoinButton.
+  /// workspaceJoinButton
   ///
   /// In en, this message translates to:
   /// **'Join Workspace'**
   String get workspaceJoinButton;
 
-  /// No description provided for @workspaceInviteCode.
+  /// workspaceInviteCode
   ///
   /// In en, this message translates to:
   /// **'Invite Code'**
   String get workspaceInviteCode;
 
-  /// No description provided for @workspaceCodeHelper.
+  /// workspaceCodeHelper
   ///
   /// In en, this message translates to:
-  /// **'Get this code from a team member'**
+  /// **'Ask your workspace admin for an invite code'**
   String get workspaceCodeHelper;
 
-  /// No description provided for @workspaceCodeLength.
+  /// workspaceCodeLength
   ///
   /// In en, this message translates to:
-  /// **'Code must be 6 characters'**
+  /// **'Invite code must be 6 characters'**
   String get workspaceCodeLength;
 
-  /// No description provided for @workspaceCodeFormat.
+  /// workspaceCodeFormat
   ///
   /// In en, this message translates to:
-  /// **'Code must contain only letters and numbers'**
+  /// **'Code must be alphanumeric'**
   String get workspaceCodeFormat;
 
   /// No description provided for @workspaceCodeInvalid.
@@ -1424,10 +1424,10 @@ abstract class AppLocalizations {
   /// **'Failed to join workspace'**
   String get workspaceJoinError;
 
-  /// No description provided for @workspaceCreateNew.
+  /// workspaceCreateNew
   ///
   /// In en, this message translates to:
-  /// **'Create New Workspace'**
+  /// **'Create a new workspace instead'**
   String get workspaceCreateNew;
 
   /// No description provided for @workspaceMembers.
@@ -2341,6 +2341,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You have an upcoming event'**
   String get notificationEventReminderBody;
+
+  /// fieldRequired
+  ///
+  /// In en, this message translates to:
+  /// **'This field is required'**
+  String get fieldRequired;
+
+  /// workspaceInviteCodeHint
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. ABC123'**
+  String get workspaceInviteCodeHint;
+
+  /// or
+  ///
+  /// In en, this message translates to:
+  /// **'or'**
+  String get or;
+
+  /// workspaceNameTaken
+  ///
+  /// In en, this message translates to:
+  /// **'Workspace name already taken'**
+  String get workspaceNameTaken;
 }
 
 class _AppLocalizationsDelegate

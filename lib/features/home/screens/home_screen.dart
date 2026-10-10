@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../auth/presentation/auth_providers.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../core/providers/app_providers.dart' hide currentWorkspaceIdProvider;
+import '../../../core/providers/app_providers.dart';
 import '../../../core/providers/theme_provider.dart';
 import '../../../core/db/app_database.dart' show Task;
 import '../../tasks/models/task.dart' show TaskView;
@@ -10,6 +10,8 @@ import '../../workspaces/providers/workspace_providers.dart';
 import '../presentation/home_providers.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
+import '../../../shared/widgets/empty_state.dart';
+import '../../../core/l10n/l10n_extension.dart';
 
 /// Home Dashboard Screen - Supports both Mobile and Desktop layouts
 /// Shows greeting, today's tasks, quick actions, and overview stats
@@ -598,44 +600,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildProductivityChartFallback() {
-    // Fallback chart with sample data
-    return LineChart(
-      LineChartData(
-        gridData: const FlGridData(show: true),
-        titlesData: FlTitlesData(
-          leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              getTitlesWidget: (value, meta) {
-                final now = DateTime.now();
-                final date = now.subtract(Duration(days: 6 - value.toInt()));
-                return Text(DateFormat('MMM d').format(date), style: const TextStyle(fontSize: 10));
-              },
-            ),
-          ),
-        ),
-        borderData: FlBorderData(show: false),
-        lineBarsData: [
-          LineChartBarData(
-            spots: const [
-              FlSpot(0, 3),
-              FlSpot(1, 2.5),
-              FlSpot(2, 4),
-              FlSpot(3, 3.5),
-              FlSpot(4, 4.5),
-              FlSpot(5, 4),
-              FlSpot(6, 3),
-            ],
-            isCurved: true,
-            color: AppColors.primary,
-            barWidth: 3,
-            dotData: const FlDotData(show: false),
-          ),
-        ],
-      ),
+    return EmptyState(
+      icon: Icons.show_chart_outlined,
+      title: context.l10n.noData,
     );
   }
 
@@ -1045,11 +1012,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 onTap: () async {
                   if (!isSelected) {
                     // Switch workspace
-                    ref.read(currentWorkspaceIdProvider.notifier).state = workspace.id;
-                    
-                    // Save last used workspace (like Asana/ClickUp/Notion)
-                    final prefs = ref.read(sharedPreferencesProvider);
-                    await prefs.setString('last_workspace_id', workspace.id);
+                    await ref.read(currentWorkspaceIdProvider.notifier).setWorkspace(workspace.id);
                   }
                   if (context.mounted) {
                     Navigator.pop(context);

@@ -401,4 +401,12 @@ class NotificationRepository {
       updatedAt: n.updatedAt,
     );
   }
+
+  Future<void> syncNotifications({String? filter, String? cursor}) async {
+    await fetchAndSyncNotifications();
+  }
+
+  void subscribeToNotifications() {}
+
+  void dispose() {}
 }

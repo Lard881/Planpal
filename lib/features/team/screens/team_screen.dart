@@ -44,7 +44,7 @@ class _TeamScreenState extends ConsumerState<TeamScreen> {
         title: Text(l10n.team),
         actions: [
           // S15.5: Invite with code button
-          if (workspaceAsync.value?.kind != 'personal')
+          if (workspaceAsync.value?.type != 'personal')
             TextButton.icon(
               onPressed: () => _showInviteDialog(context, workspaceId),
               icon: const Icon(Icons.person_add),
@@ -364,32 +364,6 @@ class _TeamScreenState extends ConsumerState<TeamScreen> {
           ),
         ],
       ),
-    );
-  }
-                text: TextSpan(
-                  style: const TextStyle(fontSize: 13, color: Colors.black87),
-                  children: [
-                    TextSpan(
-                      text: activity['user'] as String,
-                      style: const TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                    TextSpan(text: ' ${activity['action']} '),
-                    TextSpan(
-                      text: activity['target'] as String,
-                      style: const TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                timeago.format(activity['time'] as DateTime),
-                style: TextStyle(fontSize: 11, color: Colors.grey[600]),
-              ),
-            ],
-          ),
-        ),
-      ],
     );
   }
 

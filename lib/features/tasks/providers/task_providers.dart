@@ -4,19 +4,7 @@ import '../../../core/db/app_database.dart';
 import '../../sync/providers/sync_providers.dart';
 import '../repositories/task_repository.dart';
 import '../models/task.dart' show TaskView;
-
-/// Task repository provider (S7.13)
-final taskRepositoryProvider = Provider<TaskRepository>((ref) {
-  final db = ref.watch(databaseProvider);
-  final api = ref.watch(apiClientProvider);
-  final outbox = ref.watch(outboxServiceProvider);
-
-  return TaskRepository(
-    database: db,
-    apiClient: api,
-    outboxService: outbox,
-  );
-});
+export '../../../core/providers/app_providers.dart' show taskRepositoryProvider;
 
 /// Watch tasks for a workspace (reactive stream)
 final watchTasksProvider = StreamProvider.autoDispose
@@ -73,15 +61,3 @@ final getTaskProvider =
   return repository.getTask(taskId);
 });
 
-/// Current workspace ID provider (from core providers)
-final currentWorkspaceIdProvider = Provider<String?>((ref) {
-  // This should be defined in core/providers/app_providers.dart
-  // For now, return null - will be fixed when workspace context is available
-  return ref.watch(currentWorkspaceProvider)?.id;
-});
-
-/// Current workspace provider (placeholder)
-final currentWorkspaceProvider = Provider<({String id, String name})?>((ref) {
-  // TODO: Get from actual workspace state
-  return null;
-});

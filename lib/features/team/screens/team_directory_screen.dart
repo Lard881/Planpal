@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../workspaces/repositories/workspace_repository.dart';
+import '../../../core/providers/app_providers.dart';
 
 class TeamDirectoryScreen extends ConsumerStatefulWidget {
   const TeamDirectoryScreen({super.key});
@@ -359,8 +360,7 @@ class _MemberListItem extends StatelessWidget {
 
 // Provider
 final teamMembersProvider = StreamProvider<List<TeamMember>>((ref) {
-  final repository = ref.watch(workspaceRepositoryProvider);
-  return repository.watchTeamMembers();
+  return const Stream.empty();
 });
 
 // Placeholder model

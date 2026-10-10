@@ -20,11 +20,16 @@ import '../../features/workspaces/repositories/workspace_repository.dart';
 import '../../features/comments/repositories/comment_repository.dart';
 import '../../features/notifications/repositories/notification_repository.dart';
 import '../services/local_notifications_service.dart';
-import '../../features/attachments/services/file_upload_service.dart';
+import '../../features/documents/services/file_upload_service.dart';
 import '../../features/attachments/services/thumbnail_service.dart';
 import '../../features/attachments/repositories/attachment_repository.dart';
 import '../../features/sync/providers/sync_providers.dart';
+import '../../features/workspaces/providers/workspace_providers.dart'
+    show currentWorkspaceIdProvider, currentWorkspaceProvider;
 export 'theme_provider.dart' show sharedPreferencesProvider;
+export 'locale_provider.dart' show localeProvider;
+export '../../features/workspaces/providers/workspace_providers.dart'
+    show currentWorkspaceIdProvider, currentWorkspaceProvider;
 
 /// Database provider - singleton instance
 final databaseProvider = Provider<AppDatabase>((ref) {
@@ -162,16 +167,6 @@ final syncEngineProvider = Provider<sync.SyncEngine>((ref) {
   return syncEngine;
 });
 
-/// Current workspace ID provider
-/// Now defined in features/workspaces/providers/workspace_providers.dart
-/// Use: ref.watch(currentWorkspaceIdProvider) from workspace_providers
-/// 
-/// Note: This is maintained here for backward compatibility but delegates to
-/// the workspace feature provider. Import workspace_providers.dart instead.
-final currentWorkspaceIdProvider = StateProvider<String?>((ref) {
-  return null;
-});
-
 /// Connectivity status stream provider
 final connectivityStatusProvider = StreamProvider<bool>((ref) {
   final connectivity = ref.watch(connectivityProvider);
@@ -299,10 +294,7 @@ final attachmentRepositoryProvider = Provider<AttachmentRepository>((ref) {
 /// File upload service provider
 final fileUploadServiceProvider = Provider<FileUploadService>((ref) {
   final apiClient = ref.watch(apiClientProvider);
-  
-  return FileUploadService(
-    apiClient: apiClient,
-  );
+  return FileUploadService(apiClient);
 });
 
 /// Thumbnail generation service provider
@@ -369,9 +361,6 @@ final networkTypeProvider = Provider<String>((ref) {
 // ============================================================================
 // Additional missing providers (stubs for compilation)
 // ============================================================================
-
-/// Locale provider (TODO: implement proper locale management)
-final localeProvider = StateProvider<String>((ref) => 'en');
 
 /// Team repository provider (TODO: implement team repository)
 final teamRepositoryProvider = Provider<dynamic>((ref) {

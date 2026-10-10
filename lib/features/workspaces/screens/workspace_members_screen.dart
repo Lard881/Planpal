@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/l10n/l10n_extension.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
-import '../../../core/widgets/planpal_button.dart';
+import '../../../shared/widgets/planpal_button.dart';
 import '../../../shared/widgets/app_snackbar.dart';
 import '../../../shared/widgets/loading_overlay.dart';
 import '../../../shared/widgets/empty_state.dart';

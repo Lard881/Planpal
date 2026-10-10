@@ -3,25 +3,7 @@ import 'package:planpal/core/db/app_database.dart';
 import 'package:planpal/core/network/api_client.dart';
 import 'package:planpal/core/services/supabase_service.dart';
 import 'package:planpal/core/providers/app_providers.dart';
-import 'package:planpal/features/notifications/data/notification_repository.dart';
-
-/// Notification repository provider
-final notificationRepositoryProvider = Provider<NotificationRepository>((ref) {
-  final db = ref.watch(appDatabaseProvider);
-  final api = ref.watch(apiClientProvider);
-  final supabase = ref.watch(supabaseServiceProvider);
-
-  final repo = NotificationRepository(db: db, api: api, supabase: supabase);
-
-  // Subscribe to realtime updates
-  Future.microtask(() => repo.subscribeToNotifications());
-
-  ref.onDispose(() {
-    repo.dispose();
-  });
-
-  return repo;
-});
+import 'package:planpal/features/notifications/repositories/notification_repository.dart';
 
 /// Current notification filter provider
 final notificationFilterProvider = StateProvider<String?>((ref) => null);
@@ -32,9 +14,9 @@ final notificationsProvider = StreamProvider<List<Notification>>((ref) {
   final filter = ref.watch(notificationFilterProvider);
 
   // Trigger initial sync
-  Future.microtask(() => repo.syncNotifications(filter: filter));
+  Future.microtask(() => repo.fetchAndSyncNotifications());
 
-  return repo.watchNotifications(filter: filter);
+  return repo.watchNotifications(type: filter);
 });
 
 /// Unread count provider
@@ -72,12 +54,3 @@ class NotificationActions {
   }
 }
 
-/// API client provider
-final apiClientProvider = Provider<ApiClient>((ref) {
-  throw UnimplementedError('ApiClient provider must be overridden');
-});
-
-/// Supabase service provider
-final supabaseServiceProvider = Provider<SupabaseService>((ref) {
-  return SupabaseService.instance;
-});

@@ -28,13 +28,3 @@ final eventsInRangeProvider = StreamProvider.autoDispose.family<
     to: params.to,
   );
 });
-
-/// Current workspace ID (from workspace providers)
-final currentWorkspaceIdProvider = Provider<String?>((ref) {
-  return ref.watch(currentWorkspaceProvider)?.id;
-});
-
-/// Current workspace (placeholder)
-final currentWorkspaceProvider = Provider<({String id, String name})?>((ref) {
-  return null; // TODO: Get from workspace state
-});

@@ -690,25 +690,25 @@ class AppLocalizationsZh extends AppLocalizations {
   String get workspaceCreateError => '创建工作空间失败';
 
   @override
-  String get workspaceJoinTitle => '加入工作空间';
+  String get workspaceJoinTitle => '加入工作区';
 
   @override
-  String get workspaceJoinDescription => '输入邀请码以加入工作空间';
+  String get workspaceJoinDescription => '输入邀请码以加入现有工作区';
 
   @override
-  String get workspaceJoinButton => '加入工作空间';
+  String get workspaceJoinButton => '加入工作区';
 
   @override
   String get workspaceInviteCode => '邀请码';
 
   @override
-  String get workspaceCodeHelper => '从团队成员处获取此代码';
+  String get workspaceCodeHelper => '向工作区管理员索取邀请码';
 
   @override
-  String get workspaceCodeLength => '代码必须为6个字符';
+  String get workspaceCodeLength => '邀请码必须为6个字符';
 
   @override
-  String get workspaceCodeFormat => '代码只能包含字母和数字';
+  String get workspaceCodeFormat => '代码必须是字母或数字';
 
   @override
   String get workspaceCodeInvalid => '邀请码无效';
@@ -726,7 +726,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get workspaceJoinError => '加入工作空间失败';
 
   @override
-  String get workspaceCreateNew => '创建新工作空间';
+  String get workspaceCreateNew => '改为创建新工作区';
 
   @override
   String get workspaceMembers => '成员';
@@ -955,245 +955,252 @@ class AppLocalizationsZh extends AppLocalizations {
   String get discardAllWarning => '这将永久丢弃所有失败的更改。此操作无法撤消。';
 
   @override
-  String get uploadFile => 'Upload File';
+  String get uploadFile => '上传文件';
 
   @override
-  String get uploads => 'Uploads';
+  String get uploads => '上传';
 
   @override
-  String get noUploads => 'No uploads';
+  String get noUploads => '无上传';
 
   @override
-  String get uploading => 'Uploading';
+  String get uploading => '上传中';
 
   @override
-  String get uploadCompleted => 'Upload completed';
+  String get uploadCompleted => '上传完成';
 
   @override
-  String get uploadFailed => 'Upload failed';
+  String get uploadFailed => '上传失败';
 
   @override
-  String get uploadCancelled => 'Upload cancelled';
+  String get uploadCancelled => '上传已取消';
 
   @override
   String uploadStarted(int count) {
-    return 'Upload started for $count file(s)';
+    return '已开始上传 $count 个文件';
   }
 
   @override
-  String get clearCompleted => 'Clear Completed';
+  String get clearCompleted => '清除已完成';
 
   @override
-  String get clearFailed => 'Clear Failed';
+  String get clearFailed => '清除失败项';
 
   @override
-  String get waiting => 'Waiting';
+  String get waiting => '等待中';
 
   @override
-  String get recent => 'Recent';
+  String get recent => '最近';
 
   @override
-  String get noRecentDocuments => 'No recent documents';
+  String get noRecentDocuments => '无最近文档';
 
   @override
-  String get noDocuments => 'No documents';
+  String get noDocuments => '无文档';
 
   @override
-  String get uploadFileToGetStarted => 'Upload a file to get started';
+  String get uploadFileToGetStarted => '上传文件以开始';
 
   @override
-  String get errorLoadingData => 'Error loading data';
+  String get errorLoadingData => '加载数据出错';
 
   @override
-  String get createFolder => 'Create Folder';
+  String get createFolder => '创建文件夹';
 
   @override
-  String get folderName => 'Folder Name';
+  String get folderName => '文件夹名称';
 
   @override
-  String get enterFolderName => 'Enter folder name';
+  String get enterFolderName => '输入文件夹名称';
 
   @override
-  String get folderNameRequired => 'Folder name is required';
+  String get folderNameRequired => '文件夹名称为必填项';
 
   @override
-  String get folderNameTooLong =>
-      'Folder name is too long (max 200 characters)';
+  String get folderNameTooLong => '文件夹名称过长（最多200个字符）';
 
   @override
-  String get folderCreated => 'Folder created successfully';
+  String get folderCreated => '文件夹创建成功';
 
   @override
-  String get selectFilesToUpload => 'Select files to upload';
+  String get selectFilesToUpload => '选择要上传的文件';
 
   @override
-  String get browseFiles => 'Browse Files';
+  String get browseFiles => '浏览文件';
 
   @override
-  String get dragAndDropFiles => 'Drag and drop files here';
+  String get dragAndDropFiles => '拖放文件到此处';
 
   @override
-  String get dropFilesHere => 'Drop files here';
+  String get dropFilesHere => '将文件拖放到此处';
 
   @override
-  String get orClickToBrowse => 'or click to browse';
+  String get orClickToBrowse => '或点击浏览';
 
   @override
-  String get rename => 'Rename';
+  String get rename => '重命名';
 
   @override
-  String get move => 'Move';
+  String get move => '移动';
 
   @override
-  String get download => 'Download';
+  String get download => '下载';
 
   @override
-  String get downloadStarted => 'Download started';
+  String get downloadStarted => '下载已开始';
 
   @override
-  String get confirmDeleteDocument =>
-      'Are you sure you want to delete this document?';
+  String get confirmDeleteDocument => '确定要删除此文档吗？';
 
   @override
-  String get confirmDeleteFolder =>
-      'Are you sure you want to delete this folder? It must be empty.';
+  String get confirmDeleteFolder => '确定要删除此文件夹吗？它必须为空。';
 
   @override
-  String get documentDeleted => 'Document deleted successfully';
+  String get documentDeleted => '文档删除成功';
 
   @override
-  String get folderDeleted => 'Folder deleted successfully';
+  String get folderDeleted => '文件夹删除成功';
 
   @override
-  String get documentName => 'Document Name';
+  String get documentName => '文档名称';
 
   @override
-  String get documentNameRequired => 'Document name is required';
+  String get documentNameRequired => '文档名称为必填项';
 
   @override
-  String get folderRenamed => 'Folder renamed successfully';
+  String get folderRenamed => '文件夹重命名成功';
 
   @override
-  String get documentRenamed => 'Document renamed successfully';
+  String get documentRenamed => '文档重命名成功';
 
   @override
-  String get moveToFolder => 'Move to Folder';
+  String get moveToFolder => '移动到文件夹';
 
   @override
-  String get rootFolder => 'Root Folder';
+  String get rootFolder => '根文件夹';
 
   @override
-  String get noFoldersAvailable => 'No folders available';
+  String get noFoldersAvailable => '没有可用的文件夹';
 
   @override
-  String get folderMoved => 'Folder moved successfully';
+  String get folderMoved => '文件夹移动成功';
 
   @override
-  String get documentMoved => 'Document moved successfully';
+  String get documentMoved => '文档移动成功';
 
   @override
-  String get nameTooLong => 'Name is too long (max 200 characters)';
+  String get nameTooLong => '名称过长（最多200个字符）';
 
   @override
-  String get noWorkspaceSelected => 'No workspace selected';
+  String get noWorkspaceSelected => '未选择工作区';
 
   @override
-  String get close => 'Close';
+  String get close => '关闭';
 
   @override
-  String get documentSaved => 'Document saved';
+  String get documentSaved => '文档已保存';
 
   @override
   String savedAt(String time) {
-    return 'Saved $time';
+    return '保存于 $time';
   }
 
   @override
-  String get openWithSystemApp => 'Open with System App';
+  String get openWithSystemApp => '使用系统应用打开';
 
   @override
-  String get errorLoadingFile => 'Error loading file';
+  String get errorLoadingFile => '加载文件出错';
 
   @override
-  String get downloading => 'Downloading...';
+  String get downloading => '下载中...';
 
   @override
-  String get errorLoadingImage => 'Error loading image';
+  String get errorLoadingImage => '加载图像出错';
 
   @override
-  String get pdfDocument => 'PDF Document';
+  String get pdfDocument => 'PDF 文档';
 
   @override
-  String get fileDocument => 'File';
+  String get fileDocument => '文件';
 
   @override
-  String get attachFile => 'Attach File';
+  String get attachFile => '附加文件';
 
   @override
-  String get attachments => 'Attachments';
+  String get attachments => '附件';
 
   @override
-  String get noAttachments => 'No attachments';
+  String get noAttachments => '无附件';
 
   @override
-  String get attachmentAdded => 'Attachment added';
+  String get attachmentAdded => '已添加附件';
 
   @override
-  String get attachmentRemoved => 'Attachment removed';
+  String get attachmentRemoved => '已删除附件';
 
   @override
-  String get offlineUploadsDisabled =>
-      'File uploads are disabled while offline';
+  String get offlineUploadsDisabled => '离线时禁用文件上传';
 
   @override
-  String get notificationTaskAssigned => 'Task Assigned';
+  String get notificationTaskAssigned => '任务已分配';
 
   @override
-  String get notificationTaskUpdated => 'Task Updated';
+  String get notificationTaskUpdated => '任务已更新';
 
   @override
-  String get notificationTaskComment => 'New Comment';
+  String get notificationTaskComment => '新评论';
 
   @override
-  String get notificationDeadlineApproaching => 'Deadline Approaching';
+  String get notificationDeadlineApproaching => '截止日期临近';
 
   @override
-  String get notificationTaskOverdue => 'Task Overdue';
+  String get notificationTaskOverdue => '任务逾期';
 
   @override
-  String get notificationMention => 'You were mentioned';
+  String get notificationMention => '提及了你';
 
   @override
-  String get notificationChatMessage => 'New Message';
+  String get notificationChatMessage => '新消息';
 
   @override
-  String get notificationEventReminder => 'Event Reminder';
+  String get notificationEventReminder => '活动提醒';
 
   @override
-  String get notificationWorkspaceInvite => 'Workspace Invite';
+  String get notificationWorkspaceInvite => '工作区邀请';
 
   @override
-  String get notificationTaskAssignedBody => 'A task has been assigned to you';
+  String get notificationTaskAssignedBody => '已向你分配任务';
 
   @override
-  String get notificationTaskUpdatedBody => 'A task has been updated';
+  String get notificationTaskUpdatedBody => '任务已更新';
 
   @override
-  String get notificationTaskCommentBody => 'Someone commented on a task';
+  String get notificationTaskCommentBody => '有人在任务中发表了评论';
 
   @override
-  String get notificationDeadlineApproachingBody =>
-      'A task deadline is approaching';
+  String get notificationDeadlineApproachingBody => '任务截止日期临近';
 
   @override
-  String get notificationTaskOverdueBody => 'A task is overdue';
+  String get notificationTaskOverdueBody => '任务已逾期';
 
   @override
-  String get notificationMentionBody => 'Someone mentioned you';
+  String get notificationMentionBody => '有人提及了你';
 
   @override
-  String get notificationChatMessageBody => 'You have a new message';
+  String get notificationChatMessageBody => '你有新消息';
 
   @override
-  String get notificationEventReminderBody => 'You have an upcoming event';
+  String get notificationEventReminderBody => '你有即将开始的活动';
+
+  @override
+  String get fieldRequired => '此字段为必填项';
+
+  @override
+  String get workspaceInviteCodeHint => '例如：ABC123';
+
+  @override
+  String get or => '或';
+
+  @override
+  String get workspaceNameTaken => '工作区名称已被占用';
 }

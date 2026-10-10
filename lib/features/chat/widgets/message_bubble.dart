@@ -144,8 +144,9 @@ class MessageBubble extends ConsumerWidget {
           if (isMe && showSender) const SizedBox(width: 32),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 
   String _getInitials(String userId) {
     // Extract first letter, or use # for unknown

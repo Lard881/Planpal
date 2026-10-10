@@ -436,7 +436,6 @@ class _DocumentsScreenDesktopState extends ConsumerState<DocumentsScreenDesktop>
                       ],
                     ),
                   ),
-                        ),
                         
                         // Drag overlay
                         if (_isDragging)

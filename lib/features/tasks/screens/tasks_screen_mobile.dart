@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import '../../../core/theme/app_colors.dart';
 import '../providers/task_providers.dart';
+import '../../workspaces/providers/workspace_providers.dart';
 import '../models/task.dart' show TaskView;
 import '../widgets/task_tile.dart';
 import 'task_detail_screen.dart';
@@ -41,11 +42,13 @@ class _TasksScreenMobileState extends ConsumerState<TasksScreenMobile> {
       );
     }
 
-    final tasksAsync = ref.watch(filteredTasksProvider(
+    final tasksAsync = ref.watch(filteredTasksProvider((
       workspaceId: workspaceId,
       view: _selectedView,
       searchQuery: _searchQuery.isEmpty ? null : _searchQuery,
-    ));
+      status: null,
+      assigneeId: null,
+    )));
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
@@ -133,11 +136,13 @@ class _TasksScreenMobileState extends ConsumerState<TasksScreenMobile> {
                   return RefreshIndicator(
                     onRefresh: () async {
                       // Pull to refresh triggers sync
-                      ref.invalidate(filteredTasksProvider(
+                      ref.invalidate(filteredTasksProvider((
                         workspaceId: workspaceId,
                         view: _selectedView,
                         searchQuery: _searchQuery.isEmpty ? null : _searchQuery,
-                      ));
+                        status: null,
+                        assigneeId: null,
+                      )));
                       await Future.delayed(const Duration(seconds: 1));
                     },
                     child: ListView.separated(

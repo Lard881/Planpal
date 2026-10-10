@@ -41,7 +41,6 @@
   "syncing": "Syncing...",
   "noData": "No data available",
   "noResults": "No results found",
-  
   "@_NOTIFICATION_TITLES": {},
   "notificationTitleTaskAssigned": "Task Assigned",
   "notificationTitleTaskCompleted": "Task Completed",
@@ -62,179 +61,244 @@
   "notificationTitleWorkspaceRoleChanged": "Role Changed",
   "notificationTitleSystem": "System Notification",
   "notificationTitleDefault": "Notification",
-  
   "@_NOTIFICATION_BODIES": {},
   "notificationBodyTaskAssigned": "{actor} assigned you to \"{task}\"",
   "@notificationBodyTaskAssigned": {
     "placeholders": {
-      "actor": {"type": "String"},
-      "task": {"type": "String"}
+      "actor": {
+        "type": "String"
+      },
+      "task": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyTaskAssignedGeneric": "You have been assigned to a new task",
   "notificationBodyTaskCompleted": "{actor} completed \"{task}\"",
   "@notificationBodyTaskCompleted": {
     "placeholders": {
-      "actor": {"type": "String"},
-      "task": {"type": "String"}
+      "actor": {
+        "type": "String"
+      },
+      "task": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyTaskCompletedGeneric": "A task has been completed",
   "notificationBodyTaskOverdue": "\"{task}\" is overdue",
   "@notificationBodyTaskOverdue": {
     "placeholders": {
-      "task": {"type": "String"}
+      "task": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyTaskOverdueGeneric": "You have overdue tasks",
   "notificationBodyTaskDueSoon": "\"{task}\" is due {time}",
   "@notificationBodyTaskDueSoon": {
     "placeholders": {
-      "task": {"type": "String"},
-      "time": {"type": "String"}
+      "task": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyTaskDueSoonGeneric": "You have tasks due soon",
   "notificationBodyTaskCommented": "{actor} commented on \"{task}\"",
   "@notificationBodyTaskCommented": {
     "placeholders": {
-      "actor": {"type": "String"},
-      "task": {"type": "String"}
+      "actor": {
+        "type": "String"
+      },
+      "task": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyTaskCommentedGeneric": "New comment on a task",
   "notificationBodyTaskStatusChanged": "\"{task}\" status changed to {status}",
   "@notificationBodyTaskStatusChanged": {
     "placeholders": {
-      "task": {"type": "String"},
-      "status": {"type": "String"}
+      "task": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyTaskStatusChangedGeneric": "Task status has changed",
   "notificationBodyProjectInvite": "{actor} invited you to join \"{project}\"",
   "@notificationBodyProjectInvite": {
     "placeholders": {
-      "actor": {"type": "String"},
-      "project": {"type": "String"}
+      "actor": {
+        "type": "String"
+      },
+      "project": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyProjectInviteGeneric": "You have been invited to a project",
   "notificationBodyProjectUpdated": "\"{project}\" has been updated",
   "@notificationBodyProjectUpdated": {
     "placeholders": {
-      "project": {"type": "String"}
+      "project": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyProjectUpdatedGeneric": "A project has been updated",
   "notificationBodyProjectDeadline": "\"{project}\" deadline is {time}",
   "@notificationBodyProjectDeadline": {
     "placeholders": {
-      "project": {"type": "String"},
-      "time": {"type": "String"}
+      "project": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyProjectDeadlineGeneric": "Project deadline approaching",
   "notificationBodyEventReminder": "Reminder: \"{event}\" starts {time}",
   "@notificationBodyEventReminder": {
     "placeholders": {
-      "event": {"type": "String"},
-      "time": {"type": "String"}
+      "event": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyEventReminderGeneric": "You have an upcoming event",
   "notificationBodyEventStartingSoon": "\"{event}\" starts {time}",
   "@notificationBodyEventStartingSoon": {
     "placeholders": {
-      "event": {"type": "String"},
-      "time": {"type": "String"}
+      "event": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyEventStartingSoonGeneric": "An event is starting soon",
   "notificationBodyEventUpdated": "\"{event}\" has been updated",
   "@notificationBodyEventUpdated": {
     "placeholders": {
-      "event": {"type": "String"}
+      "event": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyEventUpdatedGeneric": "An event has been updated",
   "notificationBodyEventCancelled": "\"{event}\" has been cancelled",
   "@notificationBodyEventCancelled": {
     "placeholders": {
-      "event": {"type": "String"}
+      "event": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyEventCancelledGeneric": "An event has been cancelled",
   "notificationBodyChatMessage": "{actor} sent you a message",
   "@notificationBodyChatMessage": {
     "placeholders": {
-      "actor": {"type": "String"}
+      "actor": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyChatMessageGeneric": "You have a new message",
   "notificationBodyChatMention": "{actor} mentioned you in a chat",
   "@notificationBodyChatMention": {
     "placeholders": {
-      "actor": {"type": "String"}
+      "actor": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyChatMentionGeneric": "You were mentioned in a chat",
   "notificationBodyWorkspaceInvite": "{actor} invited you to join \"{workspace}\"",
   "@notificationBodyWorkspaceInvite": {
     "placeholders": {
-      "actor": {"type": "String"},
-      "workspace": {"type": "String"}
+      "actor": {
+        "type": "String"
+      },
+      "workspace": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyWorkspaceInviteGeneric": "You have been invited to a workspace",
   "notificationBodyWorkspaceRoleChanged": "Your role in \"{workspace}\" changed to {role}",
   "@notificationBodyWorkspaceRoleChanged": {
     "placeholders": {
-      "workspace": {"type": "String"},
-      "role": {"type": "String"}
+      "workspace": {
+        "type": "String"
+      },
+      "role": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyWorkspaceRoleChangedGeneric": "Your workspace role has changed",
   "notificationBodySystemGeneric": "System notification",
   "notificationBodyDefault": "You have a new notification",
-  
   "@_TIME_FORMATTING": {},
   "timeRemainingDays": "in {days} {days, plural, =1{day} other{days}}",
   "@timeRemainingDays": {
     "placeholders": {
-      "days": {"type": "int"}
+      "days": {
+        "type": "int"
+      }
     }
   },
   "timeRemainingHours": "in {hours} {hours, plural, =1{hour} other{hours}}",
   "@timeRemainingHours": {
     "placeholders": {
-      "hours": {"type": "int"}
+      "hours": {
+        "type": "int"
+      }
     }
   },
   "timeRemainingMinutes": "in {minutes} {minutes, plural, =1{minute} other{minutes}}",
   "@timeRemainingMinutes": {
     "placeholders": {
-      "minutes": {"type": "int"}
+      "minutes": {
+        "type": "int"
+      }
     }
   },
   "timeOverdueDays": "{days} {days, plural, =1{day} other{days}} overdue",
   "@timeOverdueDays": {
     "placeholders": {
-      "days": {"type": "int"}
+      "days": {
+        "type": "int"
+      }
     }
   },
   "timeOverdueHours": "{hours} {hours, plural, =1{hour} other{hours}} overdue",
   "@timeOverdueHours": {
     "placeholders": {
-      "hours": {"type": "int"}
+      "hours": {
+        "type": "int"
+      }
     }
   },
   "timeOverdueMinutes": "{minutes} {minutes, plural, =1{minute} other{minutes}} overdue",
   "@timeOverdueMinutes": {
     "placeholders": {
-      "minutes": {"type": "int"}
+      "minutes": {
+        "type": "int"
+      }
     }
   },
-  
   "@_ERROR_MESSAGES": {},
   "errorNoNetwork": "No network connection. Please check your device's network settings.",
   "errorNoInternet": "No internet connection. Please check your Wi-Fi or mobile data.",
@@ -262,7 +326,9 @@
   "errorNotFoundWithResource": "{resource} not found.",
   "@errorNotFoundWithResource": {
     "placeholders": {
-      "resource": {"type": "String"}
+      "resource": {
+        "type": "String"
+      }
     }
   },
   "errorTaskNotFound": "Task not found.",
@@ -276,7 +342,6 @@
   "errorMessageNotFound": "Message not found.",
   "errorUnknown": "Something went wrong. Please try again.",
   "errorServerError": "Server error. Please try again later.",
-  
   "@_ERROR_TITLES": {},
   "errorTitleNetwork": "Connection Error",
   "errorTitleServer": "Server Error",
@@ -289,13 +354,11 @@
   "errorTitleValidation": "Validation Error",
   "errorTitleSync": "Sync Error",
   "errorTitleChat": "Chat Error",
-  
   "@_ERROR_DIALOG": {},
   "errorDetails": "Error Details",
   "technicalDetails": "Technical Details",
   "copyToClipboard": "Copy to Clipboard",
   "copiedToClipboard": "Error details copied to clipboard",
-  
   "@_AUTH_VALIDATION": {},
   "validationEmailRequired": "Email is required",
   "validationEmailInvalid": "Please enter a valid email address",
@@ -303,13 +366,14 @@
   "validationPasswordMinLength": "Password must be at least {minLength} characters",
   "@validationPasswordMinLength": {
     "placeholders": {
-      "minLength": {"type": "int"}
+      "minLength": {
+        "type": "int"
+      }
     }
   },
   "validationPasswordMatch": "Passwords must match",
   "validationNameRequired": "Name is required",
   "validationTermsRequired": "You must agree to the Terms of Service and Privacy Policy",
-  
   "@_AUTH_SCREENS": {},
   "authWelcomeBack": "Welcome back",
   "authSignInToContinue": "Sign in to continue to PlanPal",
@@ -323,8 +387,12 @@
   "authAgreeToTerms": "I agree to the {terms} and {privacy}",
   "@authAgreeToTerms": {
     "placeholders": {
-      "terms": {"type": "String"},
-      "privacy": {"type": "String"}
+      "terms": {
+        "type": "String"
+      },
+      "privacy": {
+        "type": "String"
+      }
     }
   },
   "authTermsOfService": "Terms of Service",
@@ -334,14 +402,18 @@
   "authVerifyEmailDesc": "Enter the 6-digit code sent to {email}",
   "@authVerifyEmailDesc": {
     "placeholders": {
-      "email": {"type": "String"}
+      "email": {
+        "type": "String"
+      }
     }
   },
   "authResendCode": "Resend Code",
   "authResendCodeIn": "Resend code in {seconds}s",
   "@authResendCodeIn": {
     "placeholders": {
-      "seconds": {"type": "int"}
+      "seconds": {
+        "type": "int"
+      }
     }
   },
   "authVerifyButton": "Verify",
@@ -358,20 +430,17 @@
   "authSigningUp": "Creating account...",
   "authVerifying": "Verifying...",
   "authResetting": "Resetting password...",
-  
   "@_AUTH_SUCCESS": {},
   "authLoginSuccess": "Signed in successfully",
   "authSignupSuccess": "Account created successfully",
   "authVerificationSuccess": "Email verified successfully",
   "authPasswordResetSuccess": "Password reset successfully",
   "authCodeSent": "Verification code sent to your email",
-  
   "@_SESSION": {},
   "sessionExpired": "Your session has expired. Please sign in again.",
   "sessionExpiredTitle": "Session Expired",
   "sessionRestoring": "Restoring your session...",
   "sessionCheckingAuth": "Checking authentication...",
-  
   "@_WORKSPACES": {},
   "workspaceCreateTitle": "Create Workspace",
   "workspaceCreateDescription": "Create a new workspace for your team",
@@ -383,19 +452,18 @@
   "workspaceCreateSuccess": "Workspace created successfully",
   "workspaceCreateError": "Failed to create workspace",
   "workspaceJoinTitle": "Join Workspace",
-  "workspaceJoinDescription": "Enter the invite code to join a workspace",
+  "workspaceJoinDescription": "Enter an invite code to join an existing workspace",
   "workspaceJoinButton": "Join Workspace",
   "workspaceInviteCode": "Invite Code",
-  "workspaceCodeHelper": "Get this code from a team member",
-  "workspaceCodeLength": "Code must be 6 characters",
-  "workspaceCodeFormat": "Code must contain only letters and numbers",
+  "workspaceCodeHelper": "Ask your workspace admin for an invite code",
+  "workspaceCodeLength": "Invite code must be 6 characters",
+  "workspaceCodeFormat": "Code must be alphanumeric",
   "workspaceCodeInvalid": "Invalid invite code",
   "workspaceCodeExpired": "This invite code has expired",
   "workspaceAlreadyMember": "You are already a member of this workspace",
   "workspaceJoinSuccess": "Joined workspace successfully",
   "workspaceJoinError": "Failed to join workspace",
-  "workspaceCreateNew": "Create New Workspace",
-  
+  "workspaceCreateNew": "Create a new workspace instead",
   "@_WORKSPACE_MEMBERS": {},
   "workspaceMembers": "Members",
   "noMembersYet": "No members yet",
@@ -405,7 +473,9 @@
   "memberRemoveConfirmMessage": "Are you sure you want to remove {name} from this workspace?",
   "@memberRemoveConfirmMessage": {
     "placeholders": {
-      "name": {"type": "String"}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "memberRemoved": "Member removed successfully",
@@ -423,7 +493,6 @@
   "roleMemberDescription": "Can view and create content",
   "you": "You",
   "errorLoadingMembers": "Failed to load members",
-  
   "@_INVITE_CODES": {},
   "inviteCodes": "Invite Codes",
   "noInviteCodesYet": "No invite codes yet",
@@ -450,11 +519,12 @@
   "daysCount": "{count} days",
   "@daysCount": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "errorLoadingInviteCodes": "Failed to load invite codes",
-  
   "@_WORKSPACE_SETTINGS": {},
   "workspaceSettings": "Workspace Settings",
   "workspaceUpdated": "Workspace updated successfully",
@@ -475,7 +545,6 @@
   "workspaceDeleteError": "Failed to delete workspace",
   "workspaceNotFound": "Workspace not found",
   "errorLoadingWorkspace": "Failed to load workspace",
-  
   "@_SYNC": {},
   "syncStatus": "Sync Status",
   "lastSync": "Last sync",
@@ -498,7 +567,9 @@
   "uploadStarted": "Upload started for {count} file(s)",
   "@uploadStarted": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "clearCompleted": "Clear Completed",
@@ -544,7 +615,9 @@
   "savedAt": "Saved {time}",
   "@savedAt": {
     "placeholders": {
-      "time": {"type": "String"}
+      "time": {
+        "type": "String"
+      }
     }
   },
   "openWithSystemApp": "Open with System App",
@@ -575,5 +648,45 @@
   "notificationTaskOverdueBody": "A task is overdue",
   "notificationMentionBody": "Someone mentioned you",
   "notificationChatMessageBody": "You have a new message",
-  "notificationEventReminderBody": "You have an upcoming event"
+  "notificationEventReminderBody": "You have an upcoming event",
+  "fieldRequired": "This field is required",
+  "@fieldRequired": {
+    "description": "fieldRequired"
+  },
+  "@workspaceCodeLength": {
+    "description": "workspaceCodeLength"
+  },
+  "@workspaceCodeFormat": {
+    "description": "workspaceCodeFormat"
+  },
+  "@workspaceJoinTitle": {
+    "description": "workspaceJoinTitle"
+  },
+  "@workspaceJoinDescription": {
+    "description": "workspaceJoinDescription"
+  },
+  "@workspaceInviteCode": {
+    "description": "workspaceInviteCode"
+  },
+  "workspaceInviteCodeHint": "e.g. ABC123",
+  "@workspaceInviteCodeHint": {
+    "description": "workspaceInviteCodeHint"
+  },
+  "@workspaceCodeHelper": {
+    "description": "workspaceCodeHelper"
+  },
+  "@workspaceJoinButton": {
+    "description": "workspaceJoinButton"
+  },
+  "or": "or",
+  "@or": {
+    "description": "or"
+  },
+  "@workspaceCreateNew": {
+    "description": "workspaceCreateNew"
+  },
+  "workspaceNameTaken": "Workspace name already taken",
+  "@workspaceNameTaken": {
+    "description": "workspaceNameTaken"
+  }
 }

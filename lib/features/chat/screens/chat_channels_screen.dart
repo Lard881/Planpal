@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/db/app_database.dart';
 import '../../../core/providers/app_providers.dart';
 import '../repositories/chat_repository.dart';
-import '../providers/chat_providers.dart';
+import '../presentation/chat_providers.dart';
 
 class ChatChannelsScreen extends ConsumerStatefulWidget {
   const ChatChannelsScreen({super.key});

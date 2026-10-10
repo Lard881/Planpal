@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../../core/db/app_database.dart';
 import '../providers/calendar_providers.dart';
+import '../../workspaces/providers/workspace_providers.dart';
 import 'schedule_event_dialog.dart';
 import 'package:intl/intl.dart';
 
@@ -294,11 +295,3 @@ class _CalendarScreenDesktopState extends ConsumerState<CalendarScreenDesktop> {
     );
   }
 }
-
-// Placeholder providers
-final currentWorkspaceIdProvider = Provider<String?>((ref) => null);
-final eventsInRangeProvider = StreamProvider.autoDispose.family<
-    List<Event>,
-    ({String workspaceId, DateTime from, DateTime to})>((ref, params) {
-  return Stream.value([]);
-});

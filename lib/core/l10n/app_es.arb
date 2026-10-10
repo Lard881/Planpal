@@ -41,7 +41,6 @@
   "syncing": "Sincronizando...",
   "noData": "No hay datos disponibles",
   "noResults": "No se encontraron resultados",
-  
   "@_NOTIFICATION_TITLES": {},
   "notificationTitleTaskAssigned": "Tarea Asignada",
   "notificationTitleTaskCompleted": "Tarea Completada",
@@ -62,179 +61,244 @@
   "notificationTitleWorkspaceRoleChanged": "Rol Cambiado",
   "notificationTitleSystem": "Notificación del Sistema",
   "notificationTitleDefault": "Notificación",
-  
   "@_NOTIFICATION_BODIES": {},
   "notificationBodyTaskAssigned": "{actor} te asignó a \"{task}\"",
   "@notificationBodyTaskAssigned": {
     "placeholders": {
-      "actor": {"type": "String"},
-      "task": {"type": "String"}
+      "actor": {
+        "type": "String"
+      },
+      "task": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyTaskAssignedGeneric": "Te han asignado una nueva tarea",
   "notificationBodyTaskCompleted": "{actor} completó \"{task}\"",
   "@notificationBodyTaskCompleted": {
     "placeholders": {
-      "actor": {"type": "String"},
-      "task": {"type": "String"}
+      "actor": {
+        "type": "String"
+      },
+      "task": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyTaskCompletedGeneric": "Una tarea ha sido completada",
   "notificationBodyTaskOverdue": "\"{task}\" está atrasada",
   "@notificationBodyTaskOverdue": {
     "placeholders": {
-      "task": {"type": "String"}
+      "task": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyTaskOverdueGeneric": "Tienes tareas atrasadas",
   "notificationBodyTaskDueSoon": "\"{task}\" vence {time}",
   "@notificationBodyTaskDueSoon": {
     "placeholders": {
-      "task": {"type": "String"},
-      "time": {"type": "String"}
+      "task": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyTaskDueSoonGeneric": "Tienes tareas próximas a vencer",
   "notificationBodyTaskCommented": "{actor} comentó en \"{task}\"",
   "@notificationBodyTaskCommented": {
     "placeholders": {
-      "actor": {"type": "String"},
-      "task": {"type": "String"}
+      "actor": {
+        "type": "String"
+      },
+      "task": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyTaskCommentedGeneric": "Nuevo comentario en una tarea",
   "notificationBodyTaskStatusChanged": "El estado de \"{task}\" cambió a {status}",
   "@notificationBodyTaskStatusChanged": {
     "placeholders": {
-      "task": {"type": "String"},
-      "status": {"type": "String"}
+      "task": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyTaskStatusChangedGeneric": "El estado de una tarea ha cambiado",
   "notificationBodyProjectInvite": "{actor} te invitó a unirte a \"{project}\"",
   "@notificationBodyProjectInvite": {
     "placeholders": {
-      "actor": {"type": "String"},
-      "project": {"type": "String"}
+      "actor": {
+        "type": "String"
+      },
+      "project": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyProjectInviteGeneric": "Has sido invitado a un proyecto",
   "notificationBodyProjectUpdated": "\"{project}\" ha sido actualizado",
   "@notificationBodyProjectUpdated": {
     "placeholders": {
-      "project": {"type": "String"}
+      "project": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyProjectUpdatedGeneric": "Un proyecto ha sido actualizado",
   "notificationBodyProjectDeadline": "La fecha límite de \"{project}\" es {time}",
   "@notificationBodyProjectDeadline": {
     "placeholders": {
-      "project": {"type": "String"},
-      "time": {"type": "String"}
+      "project": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyProjectDeadlineGeneric": "Fecha límite del proyecto próxima",
   "notificationBodyEventReminder": "Recordatorio: \"{event}\" comienza {time}",
   "@notificationBodyEventReminder": {
     "placeholders": {
-      "event": {"type": "String"},
-      "time": {"type": "String"}
+      "event": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyEventReminderGeneric": "Tienes un evento próximo",
   "notificationBodyEventStartingSoon": "\"{event}\" comienza {time}",
   "@notificationBodyEventStartingSoon": {
     "placeholders": {
-      "event": {"type": "String"},
-      "time": {"type": "String"}
+      "event": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyEventStartingSoonGeneric": "Un evento está por comenzar",
   "notificationBodyEventUpdated": "\"{event}\" ha sido actualizado",
   "@notificationBodyEventUpdated": {
     "placeholders": {
-      "event": {"type": "String"}
+      "event": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyEventUpdatedGeneric": "Un evento ha sido actualizado",
   "notificationBodyEventCancelled": "\"{event}\" ha sido cancelado",
   "@notificationBodyEventCancelled": {
     "placeholders": {
-      "event": {"type": "String"}
+      "event": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyEventCancelledGeneric": "Un evento ha sido cancelado",
   "notificationBodyChatMessage": "{actor} te envió un mensaje",
   "@notificationBodyChatMessage": {
     "placeholders": {
-      "actor": {"type": "String"}
+      "actor": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyChatMessageGeneric": "Tienes un nuevo mensaje",
   "notificationBodyChatMention": "{actor} te mencionó en un chat",
   "@notificationBodyChatMention": {
     "placeholders": {
-      "actor": {"type": "String"}
+      "actor": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyChatMentionGeneric": "Te mencionaron en un chat",
   "notificationBodyWorkspaceInvite": "{actor} te invitó a unirte a \"{workspace}\"",
   "@notificationBodyWorkspaceInvite": {
     "placeholders": {
-      "actor": {"type": "String"},
-      "workspace": {"type": "String"}
+      "actor": {
+        "type": "String"
+      },
+      "workspace": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyWorkspaceInviteGeneric": "Has sido invitado a un espacio de trabajo",
   "notificationBodyWorkspaceRoleChanged": "Tu rol en \"{workspace}\" cambió a {role}",
   "@notificationBodyWorkspaceRoleChanged": {
     "placeholders": {
-      "workspace": {"type": "String"},
-      "role": {"type": "String"}
+      "workspace": {
+        "type": "String"
+      },
+      "role": {
+        "type": "String"
+      }
     }
   },
   "notificationBodyWorkspaceRoleChangedGeneric": "Tu rol en el espacio de trabajo ha cambiado",
   "notificationBodySystemGeneric": "Notificación del sistema",
   "notificationBodyDefault": "Tienes una nueva notificación",
-  
   "@_TIME_FORMATTING": {},
   "timeRemainingDays": "en {days} {days, plural, =1{día} other{días}}",
   "@timeRemainingDays": {
     "placeholders": {
-      "days": {"type": "int"}
+      "days": {
+        "type": "int"
+      }
     }
   },
   "timeRemainingHours": "en {hours} {hours, plural, =1{hora} other{horas}}",
   "@timeRemainingHours": {
     "placeholders": {
-      "hours": {"type": "int"}
+      "hours": {
+        "type": "int"
+      }
     }
   },
   "timeRemainingMinutes": "en {minutes} {minutes, plural, =1{minuto} other{minutos}}",
   "@timeRemainingMinutes": {
     "placeholders": {
-      "minutes": {"type": "int"}
+      "minutes": {
+        "type": "int"
+      }
     }
   },
   "timeOverdueDays": "{days} {days, plural, =1{día} other{días}} de retraso",
   "@timeOverdueDays": {
     "placeholders": {
-      "days": {"type": "int"}
+      "days": {
+        "type": "int"
+      }
     }
   },
   "timeOverdueHours": "{hours} {hours, plural, =1{hora} other{horas}} de retraso",
   "@timeOverdueHours": {
     "placeholders": {
-      "hours": {"type": "int"}
+      "hours": {
+        "type": "int"
+      }
     }
   },
   "timeOverdueMinutes": "{minutes} {minutes, plural, =1{minuto} other{minutos}} de retraso",
   "@timeOverdueMinutes": {
     "placeholders": {
-      "minutes": {"type": "int"}
+      "minutes": {
+        "type": "int"
+      }
     }
   },
-  
   "@_ERROR_MESSAGES": {},
   "errorNoNetwork": "Sin conexión de red. Por favor verifica la configuración de red de tu dispositivo.",
   "errorNoInternet": "Sin conexión a internet. Por favor verifica tu Wi-Fi o datos móviles.",
@@ -262,7 +326,9 @@
   "errorNotFoundWithResource": "{resource} no encontrado.",
   "@errorNotFoundWithResource": {
     "placeholders": {
-      "resource": {"type": "String"}
+      "resource": {
+        "type": "String"
+      }
     }
   },
   "errorTaskNotFound": "Tarea no encontrada.",
@@ -276,7 +342,6 @@
   "errorMessageNotFound": "Mensaje no encontrado.",
   "errorUnknown": "Algo salió mal. Por favor intenta de nuevo.",
   "errorServerError": "Error del servidor. Por favor intenta más tarde.",
-  
   "@_ERROR_TITLES": {},
   "errorTitleNetwork": "Error de Conexión",
   "errorTitleServer": "Error del Servidor",
@@ -289,13 +354,11 @@
   "errorTitleValidation": "Error de Validación",
   "errorTitleSync": "Error de Sincronización",
   "errorTitleChat": "Error de Chat",
-  
   "@_ERROR_DIALOG": {},
   "errorDetails": "Detalles del Error",
   "technicalDetails": "Detalles Técnicos",
   "copyToClipboard": "Copiar al Portapapeles",
   "copiedToClipboard": "Detalles del error copiados al portapapeles",
-  
   "@_AUTH_VALIDATION": {},
   "validationEmailRequired": "El correo electrónico es obligatorio",
   "validationEmailInvalid": "Por favor ingrese un correo electrónico válido",
@@ -303,13 +366,14 @@
   "validationPasswordMinLength": "La contraseña debe tener al menos {minLength} caracteres",
   "@validationPasswordMinLength": {
     "placeholders": {
-      "minLength": {"type": "int"}
+      "minLength": {
+        "type": "int"
+      }
     }
   },
   "validationPasswordMatch": "Las contraseñas deben coincidir",
   "validationNameRequired": "El nombre es obligatorio",
   "validationTermsRequired": "Debe aceptar los Términos de Servicio y la Política de Privacidad",
-  
   "@_AUTH_SCREENS": {},
   "authWelcomeBack": "Bienvenido de nuevo",
   "authSignInToContinue": "Inicia sesión para continuar a PlanPal",
@@ -323,8 +387,12 @@
   "authAgreeToTerms": "Acepto los {terms} y la {privacy}",
   "@authAgreeToTerms": {
     "placeholders": {
-      "terms": {"type": "String"},
-      "privacy": {"type": "String"}
+      "terms": {
+        "type": "String"
+      },
+      "privacy": {
+        "type": "String"
+      }
     }
   },
   "authTermsOfService": "Términos de Servicio",
@@ -334,14 +402,18 @@
   "authVerifyEmailDesc": "Ingresa el código de 6 dígitos enviado a {email}",
   "@authVerifyEmailDesc": {
     "placeholders": {
-      "email": {"type": "String"}
+      "email": {
+        "type": "String"
+      }
     }
   },
   "authResendCode": "Reenviar Código",
   "authResendCodeIn": "Reenviar código en {seconds}s",
   "@authResendCodeIn": {
     "placeholders": {
-      "seconds": {"type": "int"}
+      "seconds": {
+        "type": "int"
+      }
     }
   },
   "authVerifyButton": "Verificar",
@@ -358,20 +430,17 @@
   "authSigningUp": "Creando cuenta...",
   "authVerifying": "Verificando...",
   "authResetting": "Restableciendo contraseña...",
-  
   "@_AUTH_SUCCESS": {},
   "authLoginSuccess": "Sesión iniciada exitosamente",
   "authSignupSuccess": "Cuenta creada exitosamente",
   "authVerificationSuccess": "Correo electrónico verificado exitosamente",
   "authPasswordResetSuccess": "Contraseña restablecida exitosamente",
   "authCodeSent": "Código de verificación enviado a tu correo electrónico",
-  
   "@_SESSION": {},
   "sessionExpired": "Tu sesión ha expirado. Por favor inicia sesión nuevamente.",
   "sessionExpiredTitle": "Sesión Expirada",
   "sessionRestoring": "Restaurando tu sesión...",
   "sessionCheckingAuth": "Verificando autenticación...",
-  
   "@_WORKSPACES": {},
   "workspaceCreateTitle": "Crear Espacio de Trabajo",
   "workspaceCreateDescription": "Crea un nuevo espacio de trabajo para tu equipo",
@@ -382,20 +451,19 @@
   "workspaceDescriptionHint": "¿Para qué es este espacio de trabajo?",
   "workspaceCreateSuccess": "Espacio de trabajo creado exitosamente",
   "workspaceCreateError": "Error al crear el espacio de trabajo",
-  "workspaceJoinTitle": "Unirse al Espacio de Trabajo",
-  "workspaceJoinDescription": "Ingresa el código de invitación para unirte a un espacio de trabajo",
-  "workspaceJoinButton": "Unirse al Espacio de Trabajo",
-  "workspaceInviteCode": "Código de Invitación",
-  "workspaceCodeHelper": "Obtén este código de un miembro del equipo",
-  "workspaceCodeLength": "El código debe tener 6 caracteres",
-  "workspaceCodeFormat": "El código debe contener solo letras y números",
+  "workspaceJoinTitle": "Unirse al espacio de trabajo",
+  "workspaceJoinDescription": "Introduce un código de invitación para unirte a un espacio de trabajo existente",
+  "workspaceJoinButton": "Unirse al espacio de trabajo",
+  "workspaceInviteCode": "Código de invitación",
+  "workspaceCodeHelper": "Pídele a tu administrador un código de invitación",
+  "workspaceCodeLength": "El código de invitación debe tener 6 caracteres",
+  "workspaceCodeFormat": "El código debe ser alfanumérico",
   "workspaceCodeInvalid": "Código de invitación inválido",
   "workspaceCodeExpired": "Este código de invitación ha expirado",
   "workspaceAlreadyMember": "Ya eres miembro de este espacio de trabajo",
   "workspaceJoinSuccess": "Te uniste al espacio de trabajo exitosamente",
   "workspaceJoinError": "Error al unirse al espacio de trabajo",
-  "workspaceCreateNew": "Crear Nuevo Espacio de Trabajo",
-  
+  "workspaceCreateNew": "Crear un nuevo espacio de trabajo en su lugar",
   "@_WORKSPACE_MEMBERS": {},
   "workspaceMembers": "Miembros",
   "noMembersYet": "Aún no hay miembros",
@@ -405,7 +473,9 @@
   "memberRemoveConfirmMessage": "¿Estás seguro de que quieres eliminar a {name} de este espacio de trabajo?",
   "@memberRemoveConfirmMessage": {
     "placeholders": {
-      "name": {"type": "String"}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "memberRemoved": "Miembro eliminado exitosamente",
@@ -423,7 +493,6 @@
   "roleMemberDescription": "Puede ver y crear contenido",
   "you": "Tú",
   "errorLoadingMembers": "Error al cargar miembros",
-  
   "@_INVITE_CODES": {},
   "inviteCodes": "Códigos de Invitación",
   "noInviteCodesYet": "Aún no hay códigos de invitación",
@@ -450,7 +519,9 @@
   "daysCount": "{count} días",
   "@daysCount": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "errorLoadingInviteCodes": "Error al cargar códigos de invitación",
@@ -484,5 +555,87 @@
   "discardAll": "Descartar Todo",
   "discardChange": "¿Descartar Cambio?",
   "discardAllChanges": "¿Descartar Todos los Cambios?",
-  "discardAllWarning": "Esto descartará permanentemente todos los cambios fallidos. No se puede deshacer."
+  "discardAllWarning": "Esto descartará permanentemente todos los cambios fallidos. No se puede deshacer.",
+  "fieldRequired": "Este campo es obligatorio",
+  "workspaceInviteCodeHint": "p. ej. ABC123",
+  "or": "o",
+  "workspaceNameTaken": "El nombre del espacio de trabajo ya está en uso",
+  "uploadFile": "Subir archivo",
+  "uploads": "Cargas",
+  "noUploads": "Sin cargas",
+  "uploading": "Subiendo",
+  "uploadCompleted": "Carga completada",
+  "uploadFailed": "Error de carga",
+  "uploadCancelled": "Carga cancelada",
+  "uploadStarted": "Carga iniciada para {count} archivo(s)",
+  "clearCompleted": "Borrar completados",
+  "clearFailed": "Borrar fallidos",
+  "waiting": "Esperando",
+  "recent": "Reciente",
+  "noRecentDocuments": "Sin documentos recientes",
+  "noDocuments": "Sin documentos",
+  "uploadFileToGetStarted": "Sube un archivo para comenzar",
+  "errorLoadingData": "Error al cargar datos",
+  "createFolder": "Crear carpeta",
+  "folderName": "Nombre de la carpeta",
+  "enterFolderName": "Introduce el nombre de la carpeta",
+  "folderNameRequired": "El nombre de la carpeta es obligatorio",
+  "folderNameTooLong": "El nombre es demasiado largo (máx. 200 caracteres)",
+  "folderCreated": "Carpeta creada con éxito",
+  "selectFilesToUpload": "Seleccionar archivos para subir",
+  "browseFiles": "Explorar archivos",
+  "dragAndDropFiles": "Arrastra y suelta archivos aquí",
+  "dropFilesHere": "Suelta los archivos aquí",
+  "orClickToBrowse": "o haz clic para explorar",
+  "rename": "Renombrar",
+  "move": "Mover",
+  "download": "Descargar",
+  "downloadStarted": "Descarga iniciada",
+  "confirmDeleteDocument": "¿Estás seguro de que deseas eliminar este documento?",
+  "confirmDeleteFolder": "¿Estás seguro de que deseas eliminar esta carpeta? Debe estar vacía.",
+  "documentDeleted": "Documento eliminado con éxito",
+  "folderDeleted": "Carpeta eliminada con éxito",
+  "documentName": "Nombre del documento",
+  "documentNameRequired": "El nombre del documento es obligatorio",
+  "folderRenamed": "Carpeta renombrada con éxito",
+  "documentRenamed": "Documento renombrado con éxito",
+  "moveToFolder": "Mover a la carpeta",
+  "rootFolder": "Carpeta raíz",
+  "noFoldersAvailable": "No hay carpetas disponibles",
+  "folderMoved": "Carpeta movida con éxito",
+  "documentMoved": "Documento movido con éxito",
+  "nameTooLong": "El nombre es demasiado largo (máx. 200 caracteres)",
+  "noWorkspaceSelected": "Ningún espacio de trabajo seleccionado",
+  "close": "Cerrar",
+  "documentSaved": "Documento guardado",
+  "savedAt": "Guardado a las {time}",
+  "openWithSystemApp": "Abrir con aplicación del sistema",
+  "errorLoadingFile": "Error al cargar el archivo",
+  "downloading": "Descargando...",
+  "errorLoadingImage": "Error al cargar la imagen",
+  "pdfDocument": "Documento PDF",
+  "fileDocument": "Archivo",
+  "attachFile": "Adjuntar archivo",
+  "attachments": "Archivos adjuntos",
+  "noAttachments": "Sin archivos adjuntos",
+  "attachmentAdded": "Archivo adjunto añadido",
+  "attachmentRemoved": "Archivo adjunto eliminado",
+  "offlineUploadsDisabled": "Las cargas de archivos están deshabilitadas sin conexión",
+  "notificationTaskAssigned": "Tarea asignada",
+  "notificationTaskUpdated": "Tarea actualizada",
+  "notificationTaskComment": "Nuevo comentario",
+  "notificationDeadlineApproaching": "Fecha límite próxima",
+  "notificationTaskOverdue": "Tarea vencida",
+  "notificationMention": "Te han mencionado",
+  "notificationChatMessage": "Nuevo mensaje",
+  "notificationEventReminder": "Recordatorio de evento",
+  "notificationWorkspaceInvite": "Invitación al espacio de trabajo",
+  "notificationTaskAssignedBody": "Se te ha asignado una tarea",
+  "notificationTaskUpdatedBody": "Se ha actualizado una tarea",
+  "notificationTaskCommentBody": "Alguien comentó en una tarea",
+  "notificationDeadlineApproachingBody": "Se acerca la fecha límite de una tarea",
+  "notificationTaskOverdueBody": "Una tarea está vencida",
+  "notificationMentionBody": "Alguien te mencionó",
+  "notificationChatMessageBody": "Tienes un nuevo mensaje",
+  "notificationEventReminderBody": "Tienes un próximo evento"
 }

@@ -8,6 +8,8 @@ import '../../../core/db/app_database.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/providers/app_providers.dart';
 import '../../../core/providers/theme_provider.dart';
+export '../../../core/providers/app_providers.dart'
+    show currentUserProvider, authStateProvider, isAuthenticatedProvider;
 
 /// Auth repository provider
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
@@ -27,12 +29,6 @@ final signOutServiceProvider = Provider<SignOutService>((ref) {
   );
 });
 
-/// Current user provider (Supabase User)
-final currentUserProvider = StateProvider<User?>((ref) {
-  // This will be updated by auth state listener
-  return null;
-});
-
 /// Current user profile provider
 final currentUserProfileProvider = FutureProvider<UserProfile?>((ref) async {
   final authRepo = ref.watch(authRepositoryProvider);
@@ -42,18 +38,6 @@ final currentUserProfileProvider = FutureProvider<UserProfile?>((ref) async {
   }
   
   return await authRepo.getUserProfile();
-});
-
-/// Auth state stream provider
-final authStateProvider = StreamProvider<AuthState>((ref) {
-  final authRepo = ref.watch(authRepositoryProvider);
-  return authRepo.authStateChanges;
-});
-
-/// Is authenticated provider
-final isAuthenticatedProvider = Provider<bool>((ref) {
-  final authRepo = ref.watch(authRepositoryProvider);
-  return authRepo.isAuthenticated;
 });
 
 /// Access token provider

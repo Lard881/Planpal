@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:planpal/core/db/app_database.dart';
 import 'package:planpal/core/network/api_client.dart';
 import 'package:planpal/core/services/supabase_service.dart';
+import 'package:planpal/core/providers/app_providers.dart';
 import 'package:planpal/features/chat/data/chat_repository.dart';
 
 /// Chat repository provider
@@ -46,7 +47,7 @@ final messagesProvider = StreamProvider.family<List<Message>, String>((ref, chan
 });
 
 /// Unread count for a channel
-final unreadCountProvider = StreamProvider.family<int, String>((ref, channelId) {
+final channelUnreadCountProvider = StreamProvider.family<int, String>((ref, channelId) {
   final repo = ref.watch(chatRepositoryProvider);
   return repo.watchUnreadCount(channelId);
 });
@@ -102,12 +103,3 @@ class SendMessageController {
   }
 }
 
-/// API client provider (from core)
-final apiClientProvider = Provider<ApiClient>((ref) {
-  throw UnimplementedError('ApiClient provider must be overridden');
-});
-
-/// Supabase service provider (from core)
-final supabaseServiceProvider = Provider<SupabaseService>((ref) {
-  return SupabaseService();
-});

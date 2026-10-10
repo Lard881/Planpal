@@ -7,14 +7,7 @@ import '../models/workspace_member.dart';
 import '../models/invite_code.dart';
 import '../utils/workspace_permissions.dart';
 import '../../../core/db/app_database.dart' hide WorkspaceMember;
-
-/// Workspace repository provider
-final workspaceRepositoryProvider = Provider<WorkspaceRepository>((ref) {
-  final db = ref.watch(databaseProvider);
-  final api = ref.watch(apiClientProvider);
-  return WorkspaceRepository(database: db, apiClient: api);
-});
-
+export '../../../core/providers/app_providers.dart' show workspaceRepositoryProvider;
 /// Current workspace ID provider
 /// Persisted in SharedPreferences
 class CurrentWorkspaceNotifier extends StateNotifier<String?> {

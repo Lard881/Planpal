@@ -195,7 +195,7 @@ class _NotificationsTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final notificationsAsync = ref.watch(notificationsProvider(filter));
+    final notificationsAsync = ref.watch(_centerNotificationsProvider(filter));
 
     return notificationsAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
@@ -208,7 +208,7 @@ class _NotificationsTab extends ConsumerWidget {
             Text('Error: $error'),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () => ref.invalidate(notificationsProvider(filter)),
+              onPressed: () => ref.invalidate(_centerNotificationsProvider(filter)),
               child: const Text('Retry'),
             ),
           ],
@@ -509,7 +509,7 @@ class _NotificationItem extends ConsumerWidget {
 // Enums and Providers
 enum NotificationFilter { all, unread, mentions }
 
-final notificationsProvider =
+final _centerNotificationsProvider =
     StreamProvider.family<List<AppNotification>, NotificationFilter>(
   (ref, filter) {
     final repository = ref.watch(notificationRepositoryProvider);

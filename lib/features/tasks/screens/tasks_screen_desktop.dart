@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
 import '../providers/task_providers.dart';
+import '../../workspaces/providers/workspace_providers.dart';
 import '../models/task.dart' show TaskView;
 import '../../../core/db/app_database.dart';
 import 'task_detail_screen.dart';
@@ -48,12 +49,13 @@ class _TasksScreenDesktopState extends ConsumerState<TasksScreenDesktop> {
       );
     }
 
-    final tasksAsync = ref.watch(filteredTasksProvider(
+    final tasksAsync = ref.watch(filteredTasksProvider((
       workspaceId: workspaceId,
       view: _selectedView,
       searchQuery: _searchQuery.isEmpty ? null : _searchQuery,
       status: _selectedStatus,
-    ));
+      assigneeId: null,
+    )));
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
