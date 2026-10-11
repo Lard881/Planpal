@@ -4,6 +4,9 @@ import '../../../core/db/app_database.dart';
 import '../../../core/providers/app_providers.dart';
 import '../repositories/chat_repository.dart';
 import '../presentation/chat_providers.dart';
+import '../../../shared/widgets/loading_skeleton.dart';
+import '../../../shared/widgets/empty_state.dart';
+import '../../../shared/widgets/error_state.dart';
 
 class ChatChannelsScreen extends ConsumerStatefulWidget {
   const ChatChannelsScreen({super.key});
@@ -109,21 +112,10 @@ class _ChannelsTab extends ConsumerWidget {
     final channelsAsync = ref.watch(chatChannelsProvider(workspaceId));
 
     return channelsAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.error_outline, size: 64, color: Colors.red),
-            const SizedBox(height: 16),
-            Text('Error loading channels: $error'),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () => ref.invalidate(chatChannelsProvider),
-              child: const Text('Retry'),
-            ),
-          ],
-        ),
+      loading: () => const SkeletonList(itemHeight: 72),
+      error: (error, stack) => ErrorState(
+        message: '$error',
+        onRetry: () => ref.invalidate(chatChannelsProvider(workspaceId)),
       ),
       data: (channels) {
         if (channels.isEmpty) {
@@ -177,16 +169,10 @@ class _DirectMessagesTab extends ConsumerWidget {
     final dmsAsync = ref.watch(directMessagesProvider);
 
     return dmsAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.error_outline, size: 64, color: Colors.red),
-            const SizedBox(height: 16),
-            Text('Error loading messages: $error'),
-          ],
-        ),
+      loading: () => const SkeletonList(itemHeight: 72),
+      error: (error, stack) => ErrorState(
+        message: '$error',
+        onRetry: () => ref.invalidate(directMessagesProvider),
       ),
       data: (conversations) {
         if (conversations.isEmpty) {

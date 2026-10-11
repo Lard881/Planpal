@@ -23,6 +23,14 @@ import '../../features/calendar/screens/calendar_screen.dart';
 import '../../features/chat/screens/chat_screen.dart';
 import '../../features/settings/screens/settings_screen.dart';
 import '../../features/profile/screens/profile_screen.dart';
+import '../../features/documents/screens/documents_screen.dart';
+import '../../features/documents/screens/document_editor_screen.dart';
+import '../../features/analytics/presentation/screens/analytics_screen.dart';
+import '../../features/team/screens/team_screen.dart';
+import '../../features/search/presentation/screens/search_screen.dart';
+import '../../features/labels/screens/labels_screen.dart';
+import '../../features/reminders/screens/reminders_screen.dart';
+import '../../features/chat/screens/chat_conversation_screen.dart';
 import 'router_guards.dart';
 
 /// App routing configuration using GoRouter
@@ -51,6 +59,12 @@ class AppRouter {
         '/settings',
         '/profile',
         '/onboarding',
+        '/documents',
+        '/analytics',
+        '/team',
+        '/search',
+        '/labels',
+        '/reminders',
       ];
       
       if (protectedRoutes.any((route) => path.startsWith(route))) {
@@ -214,6 +228,72 @@ class AppRouter {
         path: '/chat',
         name: 'chat',
         builder: (context, state) => const ChatScreen(),
+        routes: [
+          GoRoute(
+            path: ':channelId',
+            name: 'chat-channel',
+            builder: (context, state) {
+              final channelId = int.tryParse(state.pathParameters['channelId'] ?? '');
+              final channelName = state.uri.queryParameters['name'];
+              return ChatConversationScreen(
+                channelId: channelId,
+                channelName: channelName,
+              );
+            },
+          ),
+        ],
+      ),
+      
+      GoRoute(
+        path: '/documents',
+        name: 'documents',
+        builder: (context, state) => const DocumentsScreen(),
+        routes: [
+          GoRoute(
+            path: 'editor',
+            name: 'document-editor',
+            builder: (context, state) {
+              final docId = state.uri.queryParameters['id'];
+              final title = state.uri.queryParameters['title'];
+              final folderId = state.uri.queryParameters['folderId'];
+              return DocumentEditorScreen(
+                documentId: docId,
+                initialTitle: title,
+                folderId: folderId,
+              );
+            },
+          ),
+        ],
+      ),
+      
+      GoRoute(
+        path: '/analytics',
+        name: 'analytics',
+        builder: (context, state) => const AnalyticsScreen(),
+      ),
+      
+      GoRoute(
+        path: '/team',
+        name: 'team',
+        builder: (context, state) => const TeamScreen(),
+      ),
+      
+      GoRoute(
+        path: '/search',
+        name: 'search',
+        builder: (context, state) => const SearchScreen(),
+      ),
+      
+      GoRoute(
+        path: '/labels',
+        name: 'labels',
+        builder: (context, state) => const LabelsScreen(),
+      ),
+      
+      GoRoute(
+        path: '/reminders',
+        name: 'reminders',
+        builder: (context, state) => const RemindersScreen(),
       ),
       
       GoRoute(

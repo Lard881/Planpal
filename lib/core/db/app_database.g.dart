@@ -9329,6 +9329,894 @@ class MessagesCompanion extends UpdateCompanion<Message> {
   }
 }
 
+class $SubtasksTable extends Subtasks with TableInfo<$SubtasksTable, Subtask> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SubtasksTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _taskIdMeta = const VerificationMeta('taskId');
+  @override
+  late final GeneratedColumn<String> taskId = GeneratedColumn<String>(
+      'task_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+      'title', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _isDoneMeta = const VerificationMeta('isDone');
+  @override
+  late final GeneratedColumn<bool> isDone = GeneratedColumn<bool>(
+      'is_done', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("is_done" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _positionMeta =
+      const VerificationMeta('position');
+  @override
+  late final GeneratedColumn<int> position = GeneratedColumn<int>(
+      'position', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _deletedAtMeta =
+      const VerificationMeta('deletedAt');
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+      'deleted_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _syncStatusMeta =
+      const VerificationMeta('syncStatus');
+  @override
+  late final GeneratedColumn<String> syncStatus = GeneratedColumn<String>(
+      'sync_status', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('synced'));
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        taskId,
+        title,
+        isDone,
+        position,
+        createdAt,
+        updatedAt,
+        deletedAt,
+        syncStatus
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'subtasks';
+  @override
+  VerificationContext validateIntegrity(Insertable<Subtask> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('task_id')) {
+      context.handle(_taskIdMeta,
+          taskId.isAcceptableOrUnknown(data['task_id']!, _taskIdMeta));
+    } else if (isInserting) {
+      context.missing(_taskIdMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+          _titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('is_done')) {
+      context.handle(_isDoneMeta,
+          isDone.isAcceptableOrUnknown(data['is_done']!, _isDoneMeta));
+    }
+    if (data.containsKey('position')) {
+      context.handle(_positionMeta,
+          position.isAcceptableOrUnknown(data['position']!, _positionMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(_deletedAtMeta,
+          deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta));
+    }
+    if (data.containsKey('sync_status')) {
+      context.handle(
+          _syncStatusMeta,
+          syncStatus.isAcceptableOrUnknown(
+              data['sync_status']!, _syncStatusMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Subtask map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Subtask(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      taskId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}task_id'])!,
+      title: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
+      isDone: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_done'])!,
+      position: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}position'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+      deletedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_at']),
+      syncStatus: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}sync_status'])!,
+    );
+  }
+
+  @override
+  $SubtasksTable createAlias(String alias) {
+    return $SubtasksTable(attachedDatabase, alias);
+  }
+}
+
+class Subtask extends DataClass implements Insertable<Subtask> {
+  final String id;
+  final String taskId;
+  final String title;
+  final bool isDone;
+  final int position;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? deletedAt;
+  final String syncStatus;
+  const Subtask(
+      {required this.id,
+      required this.taskId,
+      required this.title,
+      required this.isDone,
+      required this.position,
+      required this.createdAt,
+      required this.updatedAt,
+      this.deletedAt,
+      required this.syncStatus});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['task_id'] = Variable<String>(taskId);
+    map['title'] = Variable<String>(title);
+    map['is_done'] = Variable<bool>(isDone);
+    map['position'] = Variable<int>(position);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    map['sync_status'] = Variable<String>(syncStatus);
+    return map;
+  }
+
+  SubtasksCompanion toCompanion(bool nullToAbsent) {
+    return SubtasksCompanion(
+      id: Value(id),
+      taskId: Value(taskId),
+      title: Value(title),
+      isDone: Value(isDone),
+      position: Value(position),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      syncStatus: Value(syncStatus),
+    );
+  }
+
+  factory Subtask.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Subtask(
+      id: serializer.fromJson<String>(json['id']),
+      taskId: serializer.fromJson<String>(json['taskId']),
+      title: serializer.fromJson<String>(json['title']),
+      isDone: serializer.fromJson<bool>(json['isDone']),
+      position: serializer.fromJson<int>(json['position']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      syncStatus: serializer.fromJson<String>(json['syncStatus']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'taskId': serializer.toJson<String>(taskId),
+      'title': serializer.toJson<String>(title),
+      'isDone': serializer.toJson<bool>(isDone),
+      'position': serializer.toJson<int>(position),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'syncStatus': serializer.toJson<String>(syncStatus),
+    };
+  }
+
+  Subtask copyWith(
+          {String? id,
+          String? taskId,
+          String? title,
+          bool? isDone,
+          int? position,
+          DateTime? createdAt,
+          DateTime? updatedAt,
+          Value<DateTime?> deletedAt = const Value.absent(),
+          String? syncStatus}) =>
+      Subtask(
+        id: id ?? this.id,
+        taskId: taskId ?? this.taskId,
+        title: title ?? this.title,
+        isDone: isDone ?? this.isDone,
+        position: position ?? this.position,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+        deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+        syncStatus: syncStatus ?? this.syncStatus,
+      );
+  Subtask copyWithCompanion(SubtasksCompanion data) {
+    return Subtask(
+      id: data.id.present ? data.id.value : this.id,
+      taskId: data.taskId.present ? data.taskId.value : this.taskId,
+      title: data.title.present ? data.title.value : this.title,
+      isDone: data.isDone.present ? data.isDone.value : this.isDone,
+      position: data.position.present ? data.position.value : this.position,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      syncStatus:
+          data.syncStatus.present ? data.syncStatus.value : this.syncStatus,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Subtask(')
+          ..write('id: $id, ')
+          ..write('taskId: $taskId, ')
+          ..write('title: $title, ')
+          ..write('isDone: $isDone, ')
+          ..write('position: $position, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncStatus: $syncStatus')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, taskId, title, isDone, position,
+      createdAt, updatedAt, deletedAt, syncStatus);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Subtask &&
+          other.id == this.id &&
+          other.taskId == this.taskId &&
+          other.title == this.title &&
+          other.isDone == this.isDone &&
+          other.position == this.position &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.syncStatus == this.syncStatus);
+}
+
+class SubtasksCompanion extends UpdateCompanion<Subtask> {
+  final Value<String> id;
+  final Value<String> taskId;
+  final Value<String> title;
+  final Value<bool> isDone;
+  final Value<int> position;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  final Value<String> syncStatus;
+  final Value<int> rowid;
+  const SubtasksCompanion({
+    this.id = const Value.absent(),
+    this.taskId = const Value.absent(),
+    this.title = const Value.absent(),
+    this.isDone = const Value.absent(),
+    this.position = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncStatus = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SubtasksCompanion.insert({
+    required String id,
+    required String taskId,
+    required String title,
+    this.isDone = const Value.absent(),
+    this.position = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.deletedAt = const Value.absent(),
+    this.syncStatus = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        taskId = Value(taskId),
+        title = Value(title),
+        createdAt = Value(createdAt),
+        updatedAt = Value(updatedAt);
+  static Insertable<Subtask> custom({
+    Expression<String>? id,
+    Expression<String>? taskId,
+    Expression<String>? title,
+    Expression<bool>? isDone,
+    Expression<int>? position,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? deletedAt,
+    Expression<String>? syncStatus,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (taskId != null) 'task_id': taskId,
+      if (title != null) 'title': title,
+      if (isDone != null) 'is_done': isDone,
+      if (position != null) 'position': position,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (syncStatus != null) 'sync_status': syncStatus,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SubtasksCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? taskId,
+      Value<String>? title,
+      Value<bool>? isDone,
+      Value<int>? position,
+      Value<DateTime>? createdAt,
+      Value<DateTime>? updatedAt,
+      Value<DateTime?>? deletedAt,
+      Value<String>? syncStatus,
+      Value<int>? rowid}) {
+    return SubtasksCompanion(
+      id: id ?? this.id,
+      taskId: taskId ?? this.taskId,
+      title: title ?? this.title,
+      isDone: isDone ?? this.isDone,
+      position: position ?? this.position,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      syncStatus: syncStatus ?? this.syncStatus,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (taskId.present) {
+      map['task_id'] = Variable<String>(taskId.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (isDone.present) {
+      map['is_done'] = Variable<bool>(isDone.value);
+    }
+    if (position.present) {
+      map['position'] = Variable<int>(position.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (syncStatus.present) {
+      map['sync_status'] = Variable<String>(syncStatus.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SubtasksCompanion(')
+          ..write('id: $id, ')
+          ..write('taskId: $taskId, ')
+          ..write('title: $title, ')
+          ..write('isDone: $isDone, ')
+          ..write('position: $position, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncStatus: $syncStatus, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TaskCommentsTable extends TaskComments
+    with TableInfo<$TaskCommentsTable, TaskComment> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TaskCommentsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _taskIdMeta = const VerificationMeta('taskId');
+  @override
+  late final GeneratedColumn<String> taskId = GeneratedColumn<String>(
+      'task_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _authorIdMeta =
+      const VerificationMeta('authorId');
+  @override
+  late final GeneratedColumn<String> authorId = GeneratedColumn<String>(
+      'author_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _bodyMeta = const VerificationMeta('body');
+  @override
+  late final GeneratedColumn<String> body = GeneratedColumn<String>(
+      'body', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _deletedAtMeta =
+      const VerificationMeta('deletedAt');
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+      'deleted_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _syncStatusMeta =
+      const VerificationMeta('syncStatus');
+  @override
+  late final GeneratedColumn<String> syncStatus = GeneratedColumn<String>(
+      'sync_status', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('synced'));
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, taskId, authorId, body, createdAt, updatedAt, deletedAt, syncStatus];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'task_comments';
+  @override
+  VerificationContext validateIntegrity(Insertable<TaskComment> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('task_id')) {
+      context.handle(_taskIdMeta,
+          taskId.isAcceptableOrUnknown(data['task_id']!, _taskIdMeta));
+    } else if (isInserting) {
+      context.missing(_taskIdMeta);
+    }
+    if (data.containsKey('author_id')) {
+      context.handle(_authorIdMeta,
+          authorId.isAcceptableOrUnknown(data['author_id']!, _authorIdMeta));
+    } else if (isInserting) {
+      context.missing(_authorIdMeta);
+    }
+    if (data.containsKey('body')) {
+      context.handle(
+          _bodyMeta, body.isAcceptableOrUnknown(data['body']!, _bodyMeta));
+    } else if (isInserting) {
+      context.missing(_bodyMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(_deletedAtMeta,
+          deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta));
+    }
+    if (data.containsKey('sync_status')) {
+      context.handle(
+          _syncStatusMeta,
+          syncStatus.isAcceptableOrUnknown(
+              data['sync_status']!, _syncStatusMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TaskComment map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TaskComment(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      taskId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}task_id'])!,
+      authorId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}author_id'])!,
+      body: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}body'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+      deletedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_at']),
+      syncStatus: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}sync_status'])!,
+    );
+  }
+
+  @override
+  $TaskCommentsTable createAlias(String alias) {
+    return $TaskCommentsTable(attachedDatabase, alias);
+  }
+}
+
+class TaskComment extends DataClass implements Insertable<TaskComment> {
+  final String id;
+  final String taskId;
+  final String authorId;
+  final String body;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? deletedAt;
+  final String syncStatus;
+  const TaskComment(
+      {required this.id,
+      required this.taskId,
+      required this.authorId,
+      required this.body,
+      required this.createdAt,
+      required this.updatedAt,
+      this.deletedAt,
+      required this.syncStatus});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['task_id'] = Variable<String>(taskId);
+    map['author_id'] = Variable<String>(authorId);
+    map['body'] = Variable<String>(body);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    map['sync_status'] = Variable<String>(syncStatus);
+    return map;
+  }
+
+  TaskCommentsCompanion toCompanion(bool nullToAbsent) {
+    return TaskCommentsCompanion(
+      id: Value(id),
+      taskId: Value(taskId),
+      authorId: Value(authorId),
+      body: Value(body),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      syncStatus: Value(syncStatus),
+    );
+  }
+
+  factory TaskComment.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TaskComment(
+      id: serializer.fromJson<String>(json['id']),
+      taskId: serializer.fromJson<String>(json['taskId']),
+      authorId: serializer.fromJson<String>(json['authorId']),
+      body: serializer.fromJson<String>(json['body']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      syncStatus: serializer.fromJson<String>(json['syncStatus']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'taskId': serializer.toJson<String>(taskId),
+      'authorId': serializer.toJson<String>(authorId),
+      'body': serializer.toJson<String>(body),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'syncStatus': serializer.toJson<String>(syncStatus),
+    };
+  }
+
+  TaskComment copyWith(
+          {String? id,
+          String? taskId,
+          String? authorId,
+          String? body,
+          DateTime? createdAt,
+          DateTime? updatedAt,
+          Value<DateTime?> deletedAt = const Value.absent(),
+          String? syncStatus}) =>
+      TaskComment(
+        id: id ?? this.id,
+        taskId: taskId ?? this.taskId,
+        authorId: authorId ?? this.authorId,
+        body: body ?? this.body,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+        deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+        syncStatus: syncStatus ?? this.syncStatus,
+      );
+  TaskComment copyWithCompanion(TaskCommentsCompanion data) {
+    return TaskComment(
+      id: data.id.present ? data.id.value : this.id,
+      taskId: data.taskId.present ? data.taskId.value : this.taskId,
+      authorId: data.authorId.present ? data.authorId.value : this.authorId,
+      body: data.body.present ? data.body.value : this.body,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      syncStatus:
+          data.syncStatus.present ? data.syncStatus.value : this.syncStatus,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TaskComment(')
+          ..write('id: $id, ')
+          ..write('taskId: $taskId, ')
+          ..write('authorId: $authorId, ')
+          ..write('body: $body, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncStatus: $syncStatus')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id, taskId, authorId, body, createdAt, updatedAt, deletedAt, syncStatus);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TaskComment &&
+          other.id == this.id &&
+          other.taskId == this.taskId &&
+          other.authorId == this.authorId &&
+          other.body == this.body &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.syncStatus == this.syncStatus);
+}
+
+class TaskCommentsCompanion extends UpdateCompanion<TaskComment> {
+  final Value<String> id;
+  final Value<String> taskId;
+  final Value<String> authorId;
+  final Value<String> body;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  final Value<String> syncStatus;
+  final Value<int> rowid;
+  const TaskCommentsCompanion({
+    this.id = const Value.absent(),
+    this.taskId = const Value.absent(),
+    this.authorId = const Value.absent(),
+    this.body = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncStatus = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TaskCommentsCompanion.insert({
+    required String id,
+    required String taskId,
+    required String authorId,
+    required String body,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.deletedAt = const Value.absent(),
+    this.syncStatus = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        taskId = Value(taskId),
+        authorId = Value(authorId),
+        body = Value(body),
+        createdAt = Value(createdAt),
+        updatedAt = Value(updatedAt);
+  static Insertable<TaskComment> custom({
+    Expression<String>? id,
+    Expression<String>? taskId,
+    Expression<String>? authorId,
+    Expression<String>? body,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? deletedAt,
+    Expression<String>? syncStatus,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (taskId != null) 'task_id': taskId,
+      if (authorId != null) 'author_id': authorId,
+      if (body != null) 'body': body,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (syncStatus != null) 'sync_status': syncStatus,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TaskCommentsCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? taskId,
+      Value<String>? authorId,
+      Value<String>? body,
+      Value<DateTime>? createdAt,
+      Value<DateTime>? updatedAt,
+      Value<DateTime?>? deletedAt,
+      Value<String>? syncStatus,
+      Value<int>? rowid}) {
+    return TaskCommentsCompanion(
+      id: id ?? this.id,
+      taskId: taskId ?? this.taskId,
+      authorId: authorId ?? this.authorId,
+      body: body ?? this.body,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      syncStatus: syncStatus ?? this.syncStatus,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (taskId.present) {
+      map['task_id'] = Variable<String>(taskId.value);
+    }
+    if (authorId.present) {
+      map['author_id'] = Variable<String>(authorId.value);
+    }
+    if (body.present) {
+      map['body'] = Variable<String>(body.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (syncStatus.present) {
+      map['sync_status'] = Variable<String>(syncStatus.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TaskCommentsCompanion(')
+          ..write('id: $id, ')
+          ..write('taskId: $taskId, ')
+          ..write('authorId: $authorId, ')
+          ..write('body: $body, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncStatus: $syncStatus, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -9354,6 +10242,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $ChannelsTable channels = $ChannelsTable(this);
   late final $ChannelMembersTable channelMembers = $ChannelMembersTable(this);
   late final $MessagesTable messages = $MessagesTable(this);
+  late final $SubtasksTable subtasks = $SubtasksTable(this);
+  late final $TaskCommentsTable taskComments = $TaskCommentsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -9378,7 +10268,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         documents,
         channels,
         channelMembers,
-        messages
+        messages,
+        subtasks,
+        taskComments
       ];
 }
 
@@ -13889,6 +14781,449 @@ typedef $$MessagesTableProcessedTableManager = ProcessedTableManager<
     (Message, BaseReferences<_$AppDatabase, $MessagesTable, Message>),
     Message,
     PrefetchHooks Function()>;
+typedef $$SubtasksTableCreateCompanionBuilder = SubtasksCompanion Function({
+  required String id,
+  required String taskId,
+  required String title,
+  Value<bool> isDone,
+  Value<int> position,
+  required DateTime createdAt,
+  required DateTime updatedAt,
+  Value<DateTime?> deletedAt,
+  Value<String> syncStatus,
+  Value<int> rowid,
+});
+typedef $$SubtasksTableUpdateCompanionBuilder = SubtasksCompanion Function({
+  Value<String> id,
+  Value<String> taskId,
+  Value<String> title,
+  Value<bool> isDone,
+  Value<int> position,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+  Value<DateTime?> deletedAt,
+  Value<String> syncStatus,
+  Value<int> rowid,
+});
+
+class $$SubtasksTableFilterComposer
+    extends Composer<_$AppDatabase, $SubtasksTable> {
+  $$SubtasksTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get taskId => $composableBuilder(
+      column: $table.taskId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get title => $composableBuilder(
+      column: $table.title, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get isDone => $composableBuilder(
+      column: $table.isDone, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get position => $composableBuilder(
+      column: $table.position, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get syncStatus => $composableBuilder(
+      column: $table.syncStatus, builder: (column) => ColumnFilters(column));
+}
+
+class $$SubtasksTableOrderingComposer
+    extends Composer<_$AppDatabase, $SubtasksTable> {
+  $$SubtasksTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get taskId => $composableBuilder(
+      column: $table.taskId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get title => $composableBuilder(
+      column: $table.title, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get isDone => $composableBuilder(
+      column: $table.isDone, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get position => $composableBuilder(
+      column: $table.position, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get syncStatus => $composableBuilder(
+      column: $table.syncStatus, builder: (column) => ColumnOrderings(column));
+}
+
+class $$SubtasksTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SubtasksTable> {
+  $$SubtasksTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get taskId =>
+      $composableBuilder(column: $table.taskId, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<bool> get isDone =>
+      $composableBuilder(column: $table.isDone, builder: (column) => column);
+
+  GeneratedColumn<int> get position =>
+      $composableBuilder(column: $table.position, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get syncStatus => $composableBuilder(
+      column: $table.syncStatus, builder: (column) => column);
+}
+
+class $$SubtasksTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $SubtasksTable,
+    Subtask,
+    $$SubtasksTableFilterComposer,
+    $$SubtasksTableOrderingComposer,
+    $$SubtasksTableAnnotationComposer,
+    $$SubtasksTableCreateCompanionBuilder,
+    $$SubtasksTableUpdateCompanionBuilder,
+    (Subtask, BaseReferences<_$AppDatabase, $SubtasksTable, Subtask>),
+    Subtask,
+    PrefetchHooks Function()> {
+  $$SubtasksTableTableManager(_$AppDatabase db, $SubtasksTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SubtasksTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SubtasksTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SubtasksTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> taskId = const Value.absent(),
+            Value<String> title = const Value.absent(),
+            Value<bool> isDone = const Value.absent(),
+            Value<int> position = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime> updatedAt = const Value.absent(),
+            Value<DateTime?> deletedAt = const Value.absent(),
+            Value<String> syncStatus = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              SubtasksCompanion(
+            id: id,
+            taskId: taskId,
+            title: title,
+            isDone: isDone,
+            position: position,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            syncStatus: syncStatus,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String taskId,
+            required String title,
+            Value<bool> isDone = const Value.absent(),
+            Value<int> position = const Value.absent(),
+            required DateTime createdAt,
+            required DateTime updatedAt,
+            Value<DateTime?> deletedAt = const Value.absent(),
+            Value<String> syncStatus = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              SubtasksCompanion.insert(
+            id: id,
+            taskId: taskId,
+            title: title,
+            isDone: isDone,
+            position: position,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            syncStatus: syncStatus,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$SubtasksTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $SubtasksTable,
+    Subtask,
+    $$SubtasksTableFilterComposer,
+    $$SubtasksTableOrderingComposer,
+    $$SubtasksTableAnnotationComposer,
+    $$SubtasksTableCreateCompanionBuilder,
+    $$SubtasksTableUpdateCompanionBuilder,
+    (Subtask, BaseReferences<_$AppDatabase, $SubtasksTable, Subtask>),
+    Subtask,
+    PrefetchHooks Function()>;
+typedef $$TaskCommentsTableCreateCompanionBuilder = TaskCommentsCompanion
+    Function({
+  required String id,
+  required String taskId,
+  required String authorId,
+  required String body,
+  required DateTime createdAt,
+  required DateTime updatedAt,
+  Value<DateTime?> deletedAt,
+  Value<String> syncStatus,
+  Value<int> rowid,
+});
+typedef $$TaskCommentsTableUpdateCompanionBuilder = TaskCommentsCompanion
+    Function({
+  Value<String> id,
+  Value<String> taskId,
+  Value<String> authorId,
+  Value<String> body,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+  Value<DateTime?> deletedAt,
+  Value<String> syncStatus,
+  Value<int> rowid,
+});
+
+class $$TaskCommentsTableFilterComposer
+    extends Composer<_$AppDatabase, $TaskCommentsTable> {
+  $$TaskCommentsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get taskId => $composableBuilder(
+      column: $table.taskId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get authorId => $composableBuilder(
+      column: $table.authorId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get body => $composableBuilder(
+      column: $table.body, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get syncStatus => $composableBuilder(
+      column: $table.syncStatus, builder: (column) => ColumnFilters(column));
+}
+
+class $$TaskCommentsTableOrderingComposer
+    extends Composer<_$AppDatabase, $TaskCommentsTable> {
+  $$TaskCommentsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get taskId => $composableBuilder(
+      column: $table.taskId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get authorId => $composableBuilder(
+      column: $table.authorId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get body => $composableBuilder(
+      column: $table.body, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get syncStatus => $composableBuilder(
+      column: $table.syncStatus, builder: (column) => ColumnOrderings(column));
+}
+
+class $$TaskCommentsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $TaskCommentsTable> {
+  $$TaskCommentsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get taskId =>
+      $composableBuilder(column: $table.taskId, builder: (column) => column);
+
+  GeneratedColumn<String> get authorId =>
+      $composableBuilder(column: $table.authorId, builder: (column) => column);
+
+  GeneratedColumn<String> get body =>
+      $composableBuilder(column: $table.body, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get syncStatus => $composableBuilder(
+      column: $table.syncStatus, builder: (column) => column);
+}
+
+class $$TaskCommentsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $TaskCommentsTable,
+    TaskComment,
+    $$TaskCommentsTableFilterComposer,
+    $$TaskCommentsTableOrderingComposer,
+    $$TaskCommentsTableAnnotationComposer,
+    $$TaskCommentsTableCreateCompanionBuilder,
+    $$TaskCommentsTableUpdateCompanionBuilder,
+    (
+      TaskComment,
+      BaseReferences<_$AppDatabase, $TaskCommentsTable, TaskComment>
+    ),
+    TaskComment,
+    PrefetchHooks Function()> {
+  $$TaskCommentsTableTableManager(_$AppDatabase db, $TaskCommentsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TaskCommentsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TaskCommentsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TaskCommentsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> taskId = const Value.absent(),
+            Value<String> authorId = const Value.absent(),
+            Value<String> body = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime> updatedAt = const Value.absent(),
+            Value<DateTime?> deletedAt = const Value.absent(),
+            Value<String> syncStatus = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              TaskCommentsCompanion(
+            id: id,
+            taskId: taskId,
+            authorId: authorId,
+            body: body,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            syncStatus: syncStatus,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String taskId,
+            required String authorId,
+            required String body,
+            required DateTime createdAt,
+            required DateTime updatedAt,
+            Value<DateTime?> deletedAt = const Value.absent(),
+            Value<String> syncStatus = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              TaskCommentsCompanion.insert(
+            id: id,
+            taskId: taskId,
+            authorId: authorId,
+            body: body,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            syncStatus: syncStatus,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$TaskCommentsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $TaskCommentsTable,
+    TaskComment,
+    $$TaskCommentsTableFilterComposer,
+    $$TaskCommentsTableOrderingComposer,
+    $$TaskCommentsTableAnnotationComposer,
+    $$TaskCommentsTableCreateCompanionBuilder,
+    $$TaskCommentsTableUpdateCompanionBuilder,
+    (
+      TaskComment,
+      BaseReferences<_$AppDatabase, $TaskCommentsTable, TaskComment>
+    ),
+    TaskComment,
+    PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -13933,4 +15268,8 @@ class $AppDatabaseManager {
       $$ChannelMembersTableTableManager(_db, _db.channelMembers);
   $$MessagesTableTableManager get messages =>
       $$MessagesTableTableManager(_db, _db.messages);
+  $$SubtasksTableTableManager get subtasks =>
+      $$SubtasksTableTableManager(_db, _db.subtasks);
+  $$TaskCommentsTableTableManager get taskComments =>
+      $$TaskCommentsTableTableManager(_db, _db.taskComments);
 }

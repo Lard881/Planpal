@@ -131,3 +131,28 @@ class SkeletonCard extends StatelessWidget {
     );
   }
 }
+
+class SkeletonList extends StatelessWidget {
+  final int itemCount;
+  final double itemHeight;
+  final EdgeInsetsGeometry padding;
+
+  const SkeletonList({
+    super.key,
+    this.itemCount = 6,
+    this.itemHeight = 72,
+    this.padding = const EdgeInsets.all(16),
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.separated(
+      padding: padding,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: itemCount,
+      separatorBuilder: (_, __) => const SizedBox(height: 12),
+      itemBuilder: (_, __) => SkeletonCard(height: itemHeight),
+    );
+  }
+}
+

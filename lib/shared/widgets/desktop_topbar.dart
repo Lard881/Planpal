@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../features/auth/presentation/auth_providers.dart';
 import '../../core/providers/app_providers.dart';
@@ -39,8 +40,10 @@ class DesktopTopBar extends ConsumerWidget {
                   border: InputBorder.none,
                   contentPadding: const EdgeInsets.symmetric(vertical: 10),
                 ),
-                onChanged: (value) {
-                  // TODO: Implement search
+                onSubmitted: (value) {
+                  if (value.trim().isNotEmpty) {
+                    context.push('/search?q=${Uri.encodeComponent(value.trim())}');
+                  }
                 },
               ),
             ),
@@ -63,7 +66,7 @@ class DesktopTopBar extends ConsumerWidget {
                       )
                     : const Icon(Icons.notifications_outlined),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/notifications');
+                  context.push('/notifications');
                 },
               );
             },
@@ -79,7 +82,7 @@ class DesktopTopBar extends ConsumerWidget {
 
               return InkWell(
                 onTap: () {
-                  Navigator.pushNamed(context, '/profile');
+                  context.push('/profile');
                 },
                 borderRadius: BorderRadius.circular(8),
                 child: Padding(

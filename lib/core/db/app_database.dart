@@ -330,6 +330,39 @@ class Messages extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+/// Subtasks table
+class Subtasks extends Table {
+  TextColumn get id => text()();
+  TextColumn get taskId => text()();
+  TextColumn get title => text()();
+  BoolColumn get isDone => boolean().withDefault(const Constant(false))();
+  IntColumn get position => integer().withDefault(const Constant(0))();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+  DateTimeColumn get deletedAt => dateTime().nullable()();
+  TextColumn get syncStatus =>
+      text().withDefault(const Constant('synced'))();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+/// Task comments table
+class TaskComments extends Table {
+  TextColumn get id => text()();
+  TextColumn get taskId => text()();
+  TextColumn get authorId => text()();
+  TextColumn get body => text()();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+  DateTimeColumn get deletedAt => dateTime().nullable()();
+  TextColumn get syncStatus =>
+      text().withDefault(const Constant('synced'))();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 /// Main database class
 @DriftDatabase(tables: [
   Profiles,
@@ -352,12 +385,14 @@ class Messages extends Table {
   Channels,
   ChannelMembers,
   Messages,
+  Subtasks,
+  TaskComments,
 ])
 class AppDatabase extends _$AppDatabase {
-  AppDatabase() : super(_openConnection());
+  AppDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -394,6 +429,17 @@ class AppDatabase extends _$AppDatabase {
             await m.createTable(files);
             await m.createTable(folders);
             await m.createTable(documents);
+          }
+          if (from < 8) {
+            // Add Channels, ChannelMembers, Messages tables in version 8
+            await m.createTable(channels);
+            await m.createTable(channelMembers);
+            await m.createTable(messages);
+          }
+          if (from < 9) {
+            // Add Subtasks and TaskComments tables in version 9
+            await m.createTable(subtasks);
+            await m.createTable(taskComments);
           }
         },
       );

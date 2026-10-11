@@ -202,6 +202,15 @@ class OutboxService {
       case 'event':
         await _executeEventOperation(entityId, operation, payload);
         break;
+
+      case 'subtask':
+        await _executeSubtaskOperation(entityId, operation, payload);
+        break;
+
+      case 'comment':
+      case 'task_comment':
+        await _executeCommentOperation(entityId, operation, payload);
+        break;
         
       // TODO: Add more entity types as they're implemented
         
@@ -312,6 +321,76 @@ class OutboxService {
 
       case 'delete':
         await _apiClient.delete('/workspaces/$workspaceId/events/$entityId');
+        break;
+
+      default:
+        throw UnsupportedError('Unknown operation: $operation');
+    }
+  }
+
+  /// Execute subtask operation
+  Future<void> _executeSubtaskOperation(
+    String entityId,
+    String operation,
+    Map<String, dynamic> payload,
+  ) async {
+    final taskId = payload['task_id'] as String? ?? payload['taskId'] as String?;
+
+    switch (operation) {
+      case 'create':
+        await _apiClient.post(
+          '/tasks/$taskId/subtasks',
+          data: {
+            'id': entityId,
+            ...payload,
+          },
+        );
+        break;
+
+      case 'update':
+        await _apiClient.patch(
+          '/subtasks/$entityId',
+          data: payload,
+        );
+        break;
+
+      case 'delete':
+        await _apiClient.delete('/subtasks/$entityId');
+        break;
+
+      default:
+        throw UnsupportedError('Unknown operation: $operation');
+    }
+  }
+
+  /// Execute comment operation
+  Future<void> _executeCommentOperation(
+    String entityId,
+    String operation,
+    Map<String, dynamic> payload,
+  ) async {
+    final taskId = payload['task_id'] as String? ?? payload['taskId'] as String?;
+
+    switch (operation) {
+      case 'create':
+        await _apiClient.post(
+          '/tasks/$taskId/comments',
+          data: {
+            'id': entityId,
+            ...payload,
+          },
+        );
+        break;
+
+      case 'update':
+        await _apiClient.patch(
+          '/comments/$entityId',
+          data: payload,
+        );
+        break;
+
+      case 'delete':
+        await _apiClient.delete('/comments/$entityId');
         break;
 
       default:

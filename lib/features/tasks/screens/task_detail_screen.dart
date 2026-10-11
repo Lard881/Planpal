@@ -6,6 +6,8 @@ import '../../../core/db/app_database.dart';
 import '../providers/task_providers.dart';
 import '../../../features/sync/providers/sync_providers.dart';
 import 'package:intl/intl.dart';
+import '../../comments/widgets/comments_section.dart';
+import '../../activities/widgets/activity_timeline.dart';
 
 /// S7.17: Task Detail Screen
 /// Status change, inline edit with autosave, "Saved / Waiting to sync" indicator
@@ -93,20 +95,31 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
       orElse: () => false,
     );
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Task Details'),
-        actions: [
-          // Sync status indicator
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: Center(
-              child: _buildSyncStatus(hasPendingSync, theme),
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Task Details'),
+          actions: [
+            // Sync status indicator
+            Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: Center(
+                child: _buildSyncStatus(hasPendingSync, theme),
+              ),
             ),
+          ],
+          bottom: const TabBar(
+            tabs: [
+              Tab(icon: Icon(Icons.info_outline), text: 'Details'),
+              Tab(icon: Icon(Icons.comment_outlined), text: 'Comments'),
+              Tab(icon: Icon(Icons.history), text: 'Activity'),
+            ],
           ),
-        ],
-      ),
-      body: taskAsync.when(
+        ),
+        body: TabBarView(
+          children: [
+            taskAsync.when(
         data: (task) {
           if (task == null) {
             return const Center(child: Text('Task not found'));
@@ -308,7 +321,12 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
           child: Text('Error: $error'),
         ),
       ),
-    );
+      CommentsSection(taskId: widget.taskId),
+      ActivityTimeline(taskId: widget.taskId),
+    ],
+  ),
+),
+);
   }
 
   Widget _buildSyncStatus(bool hasPendingSync, ThemeData theme) {

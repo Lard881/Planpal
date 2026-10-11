@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/providers/app_providers.dart';
 import '../models/task.dart' show TaskView;
+import '../../../shared/widgets/loading_skeleton.dart';
+import '../../../shared/widgets/empty_state.dart';
+import '../../../shared/widgets/error_state.dart';
 
 /// Tasks Screen - Mobile Design
 /// Shows task list with search, filter tabs (All, Today, This Week, Overdue)
@@ -158,36 +161,26 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
                       stream: _getTasksStream(workspaceId),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const Center(child: CircularProgressIndicator());
+                          return const SkeletonList(itemHeight: 72);
                         }
 
                         if (snapshot.hasError) {
-                          return Center(child: Text('Error: ${snapshot.error}'));
+                          return ErrorState(
+                            message: '${snapshot.error}',
+                            onRetry: () => setState(() {}),
+                          );
                         }
 
                         final allTasks = snapshot.data ?? [];
                         final tasks = _filterTasks(allTasks);
 
                         if (tasks.isEmpty) {
-                          return Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.task_alt,
-                                  size: 64,
-                                  color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
-                                ),
-                                const SizedBox(height: 16),
-                                Text(
-                                  _getEmptyMessage(),
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                                  ),
-                                ),
-                              ],
-                            ),
+                          return EmptyState(
+                            icon: Icons.task_alt,
+                            title: 'No tasks found',
+                            message: _getEmptyMessage(),
+                            actionLabel: 'New Task',
+                            onAction: () => Navigator.pushNamed(context, '/tasks/new'),
                           );
                         }
 

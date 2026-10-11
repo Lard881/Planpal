@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/providers/app_providers.dart';
 import '../../../core/providers/theme_provider.dart';
@@ -60,6 +61,41 @@ class SettingsScreen extends ConsumerWidget {
               // Workspace Section
               _buildSectionHeader('WORKSPACE'),
               _buildWorkspaceSection(context, ref),
+
+              const SizedBox(height: 16),
+
+              // Tools & Features Section
+              _buildSectionHeader('TOOLS & FEATURES'),
+              _buildSettingsTile(
+                context,
+                icon: Icons.description_outlined,
+                title: 'Documents',
+                onTap: () => context.push('/documents'),
+              ),
+              _buildSettingsTile(
+                context,
+                icon: Icons.bar_chart_outlined,
+                title: 'Analytics',
+                onTap: () => context.push('/analytics'),
+              ),
+              _buildSettingsTile(
+                context,
+                icon: Icons.people_outline,
+                title: 'Team Directory',
+                onTap: () => context.push('/team'),
+              ),
+              _buildSettingsTile(
+                context,
+                icon: Icons.label_outline,
+                title: 'Labels',
+                onTap: () => context.push('/labels'),
+              ),
+              _buildSettingsTile(
+                context,
+                icon: Icons.notifications_active_outlined,
+                title: 'Reminders',
+                onTap: () => context.push('/reminders'),
+              ),
 
               const SizedBox(height: 16),
 

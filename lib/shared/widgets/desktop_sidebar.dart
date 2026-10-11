@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../core/theme/app_colors.dart';
 
 /// Desktop Sidebar Navigation
 /// Matches the design mockup with PlanPal logo, navigation items, and upgrade button
 class DesktopSidebar extends StatelessWidget {
   final String currentRoute;
+  final ValueChanged<String>? onDestinationSelected;
 
   const DesktopSidebar({
     super.key,
     required this.currentRoute,
+    this.onDestinationSelected,
   });
 
   @override
@@ -117,7 +120,7 @@ class DesktopSidebar extends StatelessWidget {
     String label,
     String route,
   ) {
-    final isActive = currentRoute == route;
+    final isActive = currentRoute == route || (route != '/' && currentRoute.startsWith('$route/'));
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -140,7 +143,11 @@ class DesktopSidebar extends StatelessWidget {
           ),
         ),
         onTap: () {
-          Navigator.pushNamed(context, route);
+          if (onDestinationSelected != null) {
+            onDestinationSelected!(route);
+          } else {
+            context.go(route);
+          }
         },
       ),
     );

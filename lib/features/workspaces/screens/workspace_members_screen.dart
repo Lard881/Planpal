@@ -7,6 +7,7 @@ import '../../../shared/widgets/planpal_button.dart';
 import '../../../shared/widgets/app_snackbar.dart';
 import '../../../shared/widgets/loading_overlay.dart';
 import '../../../shared/widgets/empty_state.dart';
+import '../../../shared/widgets/loading_skeleton.dart';
 import '../models/workspace_member.dart';
 import '../providers/workspace_providers.dart';
 import '../../auth/presentation/auth_providers.dart';
@@ -390,7 +391,7 @@ class _WorkspaceMembersScreenState extends ConsumerState<WorkspaceMembersScreen>
             },
           );
         },
-        loading: () => const Center(child: LoadingIndicator()),
+        loading: () => const SkeletonList(itemHeight: 72),
         error: (error, stack) => Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

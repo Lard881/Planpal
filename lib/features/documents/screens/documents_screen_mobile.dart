@@ -6,6 +6,8 @@ import '../widgets/document_grid_item.dart';
 import '../widgets/document_list_item.dart';
 import '../widgets/folder_item.dart';
 import '../widgets/upload_progress_sheet.dart';
+import '../../../shared/widgets/loading_skeleton.dart';
+import '../../../shared/widgets/empty_state.dart';
 import 'file_picker_screen.dart';
 import 'create_folder_dialog.dart';
 import 'document_editor_screen.dart';
@@ -137,8 +139,10 @@ class DocumentsScreenMobile extends ConsumerWidget {
                                   ),
                                 );
                               },
-                              loading: () => const Center(
-                                  child: CircularProgressIndicator()),
+                              loading: () => const SizedBox(
+                                height: 120,
+                                child: SkeletonCard(height: 120),
+                              ),
                               error: (_, __) => Text(l10n.errorLoadingData),
                             ),
                             const Divider(height: 32),
@@ -172,7 +176,11 @@ class DocumentsScreenMobile extends ConsumerWidget {
                       );
                     },
                     loading: () => const SliverToBoxAdapter(
-                        child: Center(child: CircularProgressIndicator())),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        child: SkeletonCard(height: 60),
+                      ),
+                    ),
                     error: (_, __) => SliverToBoxAdapter(
                         child: Center(child: Text(l10n.errorLoadingData))),
                   ),
@@ -182,27 +190,10 @@ class DocumentsScreenMobile extends ConsumerWidget {
                     data: (documents) {
                       if (documents.isEmpty && foldersAsync.value?.isEmpty == true) {
                         return SliverFillRemaining(
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.folder_open,
-                                  size: 64,
-                                  color: Colors.grey[400],
-                                ),
-                                const SizedBox(height: 16),
-                                Text(
-                                  l10n.noDocuments,
-                                  style: Theme.of(context).textTheme.titleMedium,
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  l10n.uploadFileToGetStarted,
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                ),
-                              ],
-                            ),
+                          child: EmptyState(
+                            icon: Icons.folder_open,
+                            title: l10n.noDocuments,
+                            message: l10n.uploadFileToGetStarted,
                           ),
                         );
                       }
@@ -241,7 +232,11 @@ class DocumentsScreenMobile extends ConsumerWidget {
                       }
                     },
                     loading: () => const SliverToBoxAdapter(
-                        child: Center(child: CircularProgressIndicator())),
+                      child: Padding(
+                        padding: EdgeInsets.all(16),
+                        child: SkeletonList(itemCount: 4, itemHeight: 64),
+                      ),
+                    ),
                     error: (_, __) => SliverToBoxAdapter(
                         child: Center(child: Text(l10n.errorLoadingData))),
                   ),

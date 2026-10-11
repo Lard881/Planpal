@@ -6,6 +6,9 @@ import 'package:planpal/core/theme/app_colors.dart';
 import 'package:planpal/core/providers/app_providers.dart';
 import 'package:planpal/features/notifications/presentation/notification_providers.dart';
 import 'package:planpal/features/notifications/widgets/notification_tile.dart';
+import 'package:planpal/shared/widgets/loading_skeleton.dart';
+import 'package:planpal/shared/widgets/empty_state.dart';
+import 'package:planpal/shared/widgets/error_state.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 /// Notifications screen with tabs
@@ -109,25 +112,10 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen>
     return notificationsAsync.when(
       data: (notifications) {
         if (notifications.isEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.notifications_none, size: 64, color: Colors.grey[400]),
-                const SizedBox(height: 16),
-                Text(
-                  'No notifications',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'You\'re all caught up!',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey[600],
-                      ),
-                ),
-              ],
-            ),
+          return const EmptyState(
+            icon: Icons.notifications_none,
+            title: 'No notifications',
+            message: "You're all caught up!",
           );
         }
 
@@ -147,20 +135,10 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen>
           ),
         );
       },
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.error_outline, size: 48, color: Colors.red),
-            const SizedBox(height: 16),
-            Text('Error loading notifications'),
-            TextButton(
-              onPressed: () => ref.invalidate(notificationsProvider),
-              child: const Text('Retry'),
-            ),
-          ],
-        ),
+      loading: () => const SkeletonList(itemHeight: 72),
+      error: (error, stack) => ErrorState(
+        message: '$error',
+        onRetry: () => ref.invalidate(notificationsProvider),
       ),
     );
   }

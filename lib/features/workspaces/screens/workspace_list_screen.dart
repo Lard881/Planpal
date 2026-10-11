@@ -5,6 +5,9 @@ import '../providers/workspace_providers.dart';
 import 'create_workspace_screen.dart';
 import 'join_workspace_screen.dart';
 import 'workspace_detail_screen.dart';
+import '../../../shared/widgets/loading_skeleton.dart';
+import '../../../shared/widgets/empty_state.dart';
+import '../../../shared/widgets/error_state.dart';
 
 /// Screen showing all user's workspaces with ability to switch between them
 class WorkspaceListScreen extends ConsumerWidget {
@@ -31,38 +34,12 @@ class WorkspaceListScreen extends ConsumerWidget {
       body: workspacesAsync.when(
         data: (workspaces) {
           if (workspaces.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.workspaces_outline,
-                    size: 64,
-                    color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'No workspaces',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Create your first workspace to get started',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withOpacity(0.6),
-                        ),
-                  ),
-                  const SizedBox(height: 24),
-                  ElevatedButton.icon(
-                    onPressed: () => _showCreateOrJoinDialog(context),
-                    icon: const Icon(Icons.add),
-                    label: const Text('Create Workspace'),
-                  ),
-                ],
-              ),
+            return EmptyState(
+              icon: Icons.workspaces_outline,
+              title: 'No workspaces',
+              message: 'Create your first workspace to get started.',
+              actionLabel: 'Create Workspace',
+              onAction: () => _showCreateOrJoinDialog(context),
             );
           }
 
@@ -149,35 +126,10 @@ class WorkspaceListScreen extends ConsumerWidget {
             },
           );
         },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.error_outline,
-                size: 64,
-                color: Theme.of(context).colorScheme.error,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Failed to load workspaces',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                error.toString(),
-                style: Theme.of(context).textTheme.bodyMedium,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton.icon(
-                onPressed: () => ref.invalidate(workspacesProvider),
-                icon: const Icon(Icons.refresh),
-                label: const Text('Retry'),
-              ),
-            ],
-          ),
+        loading: () => const SkeletonList(itemHeight: 72),
+        error: (error, stack) => ErrorState(
+          message: '$error',
+          onRetry: () => ref.invalidate(workspacesProvider),
         ),
       ),
     );

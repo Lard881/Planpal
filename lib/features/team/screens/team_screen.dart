@@ -4,6 +4,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../workspaces/providers/workspace_providers.dart';
 import '../../auth/presentation/auth_providers.dart';
 import '../../../core/l10n/app_localizations.dart';
+import '../../../shared/widgets/loading_skeleton.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 /// Team Directory Screen (S15.1-S15.5)
@@ -63,7 +64,7 @@ class _TeamScreenState extends ConsumerState<TeamScreen> {
               ? _buildDesktopLayout(filteredMembers, currentUser?.id)
               : _buildMobileLayout(filteredMembers, currentUser?.id);
         },
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const SkeletonList(itemHeight: 72),
         error: (error, _) => Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

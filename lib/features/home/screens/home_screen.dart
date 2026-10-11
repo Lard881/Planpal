@@ -11,6 +11,7 @@ import '../presentation/home_providers.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
 import '../../../shared/widgets/empty_state.dart';
+import '../../../shared/widgets/loading_skeleton.dart';
 import '../../../core/l10n/l10n_extension.dart';
 
 /// Home Dashboard Screen - Supports both Mobile and Desktop layouts
@@ -60,7 +61,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             data: (userProfile) => isDesktop 
                 ? _buildDesktopContent(context, userProfile, workspaceId)
                 : _buildMobileContent(context, userProfile, workspaceId),
-            loading: () => const Center(child: CircularProgressIndicator()),
+            loading: () => const Padding(
+              padding: EdgeInsets.all(16.0),
+              child: SkeletonList(itemCount: 5, itemHeight: 80),
+            ),
             error: (error, stack) => Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -222,6 +226,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           StreamBuilder<List<Task>>(
             stream: taskRepository.watchTasksFiltered(workspaceId: workspaceId, view: TaskView.today),
             builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        SkeletonCard(height: 64),
+                        SizedBox(height: 8),
+                        SkeletonCard(height: 64),
+                      ],
+                    ),
+                  ),
+                );
+              }
               final tasks = (snapshot.data ?? <Task>[]).take(3).toList();
               if (tasks.isEmpty) {
                 return SliverToBoxAdapter(

@@ -4,6 +4,9 @@ import 'package:table_calendar/table_calendar.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/providers/app_providers.dart';
 import '../../../core/db/app_database.dart';
+import '../../../shared/widgets/loading_skeleton.dart';
+import '../../../shared/widgets/empty_state.dart';
+import '../../../shared/widgets/error_state.dart';
 
 /// Calendar Screen - Mobile Design
 /// Shows month view with today's schedule
@@ -185,7 +188,14 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                               stream: taskRepository.watchTasks(workspaceId),
                               builder: (context, snapshot) {
                                 if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return const Center(child: CircularProgressIndicator());
+                                  return const SkeletonList(itemHeight: 64);
+                                }
+
+                                if (snapshot.hasError) {
+                                  return ErrorState(
+                                    message: '${snapshot.error}',
+                                    onRetry: () => setState(() {}),
+                                  );
                                 }
 
                                 final allTasks = snapshot.data ?? <Task>[];
@@ -203,25 +213,12 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                                 });
 
                                 if (todaysTasks.isEmpty) {
-                                  return Center(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.event_available,
-                                          size: 64,
-                                          color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
-                                        ),
-                                        const SizedBox(height: 16),
-                                        Text(
-                                          'No tasks scheduled',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                  return EmptyState(
+                                    icon: Icons.event_available,
+                                    title: 'No tasks scheduled',
+                                    message: 'Enjoy your free day or schedule a new task.',
+                                    actionLabel: 'Add Task',
+                                    onAction: () => Navigator.pushNamed(context, '/tasks/new'),
                                   );
                                 }
 

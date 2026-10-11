@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../features/main/screens/main_navigation_screen.dart';
 
-/// Main shell widget with bottom navigation
-/// TODO: Implement full bottom navigation in later stage
+/// Main shell widget wrapping content with adaptive navigation
 class MainShell extends StatelessWidget {
   final Widget child;
 
@@ -12,8 +12,6 @@ class MainShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Placeholder - just shows the child without bottom nav for now
-    // This will be fully implemented when the main navigation is built
-    return child;
+    return MainNavigationScreen(child: child);
   }
 }
