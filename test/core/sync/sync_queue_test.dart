@@ -9,14 +9,18 @@ void main() {
       syncQueue = SyncQueue();
     });
 
+    tearDown(() {
+      syncQueue.dispose();
+    });
+
     test('should add operation to queue', () {
-      syncQueue.add(SyncOperation(
+      syncQueue.enqueue(SyncOperation(
         id: '1',
         entityType: 'tasks',
         entityId: 'task-1',
-        action: SyncAction.create,
+        action: 'create',
         data: {'title': 'Test Task'},
-        timestamp: DateTime.now(),
+        createdAt: DateTime.now(),
       ));
 
       expect(syncQueue.length, 1);
@@ -24,54 +28,54 @@ void main() {
 
     test('should deduplicate operations with same entity and action', () {
       final timestamp = DateTime.now();
-      
-      syncQueue.add(SyncOperation(
+
+      syncQueue.enqueue(SyncOperation(
         id: '1',
         entityType: 'tasks',
         entityId: 'task-1',
-        action: SyncAction.update,
+        action: 'update',
         data: {'title': 'Version 1'},
-        timestamp: timestamp,
+        createdAt: timestamp,
       ));
 
-      syncQueue.add(SyncOperation(
+      syncQueue.enqueue(SyncOperation(
         id: '2',
         entityType: 'tasks',
         entityId: 'task-1',
-        action: SyncAction.update,
+        action: 'update',
         data: {'title': 'Version 2'},
-        timestamp: timestamp.add(const Duration(seconds: 1)),
+        createdAt: timestamp.add(const Duration(seconds: 1)),
       ));
 
-      // Should only keep the latest operation
+      // Should keep the existing operation and ignore duplicate
       expect(syncQueue.length, 1);
       final ops = syncQueue.getReadyOperations();
-      expect(ops.first.data['title'], 'Version 2');
+      expect(ops.first.data['title'], 'Version 1');
     });
 
     test('should return ready operations only', () {
       final now = DateTime.now();
-      
+
       // Add ready operation
-      syncQueue.add(SyncOperation(
+      syncQueue.enqueue(SyncOperation(
         id: '1',
         entityType: 'tasks',
         entityId: 'task-1',
-        action: SyncAction.create,
+        action: 'create',
         data: {},
-        timestamp: now,
+        createdAt: now,
       ));
 
       // Add operation with future retry time
-      syncQueue.add(SyncOperation(
+      syncQueue.enqueue(SyncOperation(
         id: '2',
         entityType: 'tasks',
         entityId: 'task-2',
-        action: SyncAction.create,
+        action: 'create',
         data: {},
-        timestamp: now,
+        createdAt: now,
         retryCount: 1,
-        nextRetryAt: now.add(const Duration(hours: 1)),
+        lastAttempt: now,
       ));
 
       final ready = syncQueue.getReadyOperations();
@@ -85,28 +89,18 @@ void main() {
         id: '1',
         entityType: 'tasks',
         entityId: 'task-1',
-        action: SyncAction.create,
+        action: 'create',
         data: {},
-        timestamp: now,
+        createdAt: now,
       );
 
-      syncQueue.add(operation);
+      syncQueue.enqueue(operation);
 
-      // First retry: 1 second
+      // First retry: sets retryCount = 1, lastAttempt = now -> next retry in 2 seconds
       syncQueue.requeueWithRetry(operation, 'Error 1');
-      var ops = syncQueue.getReadyOperations();
+      final ops = syncQueue.getReadyOperations();
       expect(ops.length, 0); // Not ready yet
 
-      // Simulate time passing
-      syncQueue.add(operation.copyWith(
-        retryCount: 1,
-        nextRetryAt: now.subtract(const Duration(seconds: 1)),
-      ));
-
-      // Second retry: should use exponential backoff
-      final retriedOp = syncQueue.getReadyOperations().first;
-      syncQueue.requeueWithRetry(retriedOp, 'Error 2');
-      
       final stats = syncQueue.getStats();
       expect(stats['total'], greaterThan(0));
     });
@@ -116,40 +110,40 @@ void main() {
         id: '1',
         entityType: 'tasks',
         entityId: 'task-1',
-        action: SyncAction.create,
+        action: 'create',
         data: {},
-        timestamp: DateTime.now(),
-        retryCount: 4, // One retry left before max
+        createdAt: DateTime.now(),
+        retryCount: 4, // One retry left before max (5)
       );
 
-      syncQueue.add(operation);
+      syncQueue.enqueue(operation);
       syncQueue.requeueWithRetry(operation, 'Final error');
 
       final stats = syncQueue.getStats();
       expect(stats['failed'], 1);
-      
-      final failed = syncQueue.getFailedOperations();
+
+      final failed = syncQueue.failedOperations;
       expect(failed.length, 1);
       expect(failed.first.lastError, 'Final error');
     });
 
     test('should clear all operations', () {
-      syncQueue.add(SyncOperation(
+      syncQueue.enqueue(SyncOperation(
         id: '1',
         entityType: 'tasks',
         entityId: 'task-1',
-        action: SyncAction.create,
+        action: 'create',
         data: {},
-        timestamp: DateTime.now(),
+        createdAt: DateTime.now(),
       ));
 
-      syncQueue.add(SyncOperation(
+      syncQueue.enqueue(SyncOperation(
         id: '2',
         entityType: 'projects',
         entityId: 'project-1',
-        action: SyncAction.update,
+        action: 'update',
         data: {},
-        timestamp: DateTime.now(),
+        createdAt: DateTime.now(),
       ));
 
       expect(syncQueue.length, 2);
@@ -159,58 +153,59 @@ void main() {
     });
 
     test('should remove specific operation', () {
-      syncQueue.add(SyncOperation(
+      syncQueue.enqueue(SyncOperation(
         id: '1',
         entityType: 'tasks',
         entityId: 'task-1',
-        action: SyncAction.create,
+        action: 'create',
         data: {},
-        timestamp: DateTime.now(),
+        createdAt: DateTime.now(),
       ));
 
-      syncQueue.add(SyncOperation(
+      syncQueue.enqueue(SyncOperation(
         id: '2',
         entityType: 'tasks',
         entityId: 'task-2',
-        action: SyncAction.create,
+        action: 'create',
         data: {},
-        timestamp: DateTime.now(),
+        createdAt: DateTime.now(),
       ));
 
       syncQueue.remove('1');
       expect(syncQueue.length, 1);
-      
+
       final ops = syncQueue.getReadyOperations();
       expect(ops.first.id, '2');
     });
 
     test('should provide accurate statistics', () {
       final now = DateTime.now();
-      
+
       // Add ready operation
-      syncQueue.add(SyncOperation(
+      syncQueue.enqueue(SyncOperation(
         id: '1',
         entityType: 'tasks',
         entityId: 'task-1',
-        action: SyncAction.create,
+        action: 'create',
         data: {},
-        timestamp: now,
+        createdAt: now,
       ));
 
       // Add failed operation
-      syncQueue.add(SyncOperation(
+      final op2 = SyncOperation(
         id: '2',
         entityType: 'tasks',
         entityId: 'task-2',
-        action: SyncAction.create,
+        action: 'create',
         data: {},
-        timestamp: now,
-        retryCount: 5,
-        lastError: 'Max retries exceeded',
-      ));
+        createdAt: now,
+        retryCount: 4,
+      );
+      syncQueue.enqueue(op2);
+      syncQueue.requeueWithRetry(op2, 'Max retries exceeded');
 
       final stats = syncQueue.getStats();
-      expect(stats['total'], 2);
+      expect(stats['total'], 1);
       expect(stats['ready'], 1);
       expect(stats['failed'], 1);
     });

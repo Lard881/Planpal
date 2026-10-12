@@ -149,6 +149,11 @@ class SyncLogger {
     );
   }
 
+  void d(SyncLogType type, String message, {String? entityType, String? entityId, String? workspaceId, Map<String, dynamic>? metadata}) => debug(type, message, entityType: entityType, entityId: entityId, workspaceId: workspaceId, metadata: metadata);
+  void i(SyncLogType type, String message, {String? entityType, String? entityId, String? workspaceId, Map<String, dynamic>? metadata}) => info(type, message, entityType: entityType, entityId: entityId, workspaceId: workspaceId, metadata: metadata);
+  void w(SyncLogType type, String message, {String? entityType, String? entityId, String? workspaceId, String? errorDetails, Map<String, dynamic>? metadata}) => warning(type, message, entityType: entityType, entityId: entityId, workspaceId: workspaceId, errorDetails: errorDetails, metadata: metadata);
+  void e(SyncLogType type, String message, {String? entityType, String? entityId, String? workspaceId, String? errorDetails, Map<String, dynamic>? metadata}) => error(type, message, entityType: entityType, entityId: entityId, workspaceId: workspaceId, errorDetails: errorDetails, metadata: metadata);
+
   /// Get all logs
   List<SyncLog> getAllLogs() => _logs.toList();
 

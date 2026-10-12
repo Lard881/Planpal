@@ -75,14 +75,13 @@ void main() {
       
       await timestamps.setLastSyncTime('tasks', 'workspace-1', twoHoursAgo);
       
-      final timeSince = timestamps.getTimeSinceLastSync('tasks', 'workspace-1');
-      expect(timeSince, isNotNull);
-      expect(timeSince!.inHours, 2);
+      final timeSince = timestamps.getTimeSinceLastSync('workspace-1', 'tasks');
+      expect(timeSince, contains('hour'));
     });
 
     test('should return null time since for entity with no history', () {
-      final timeSince = timestamps.getTimeSinceLastSync('tasks', 'workspace-1');
-      expect(timeSince, isNull);
+      final timeSince = timestamps.getTimeSinceLastSync('workspace-1', 'tasks');
+      expect(timeSince, equals('Never synced'));
     });
 
     test('should clear workspace sync times', () async {

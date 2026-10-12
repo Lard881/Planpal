@@ -3,23 +3,16 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:planpal/core/db/app_database.dart';
 import 'package:planpal/core/network/api_client.dart';
-import 'package:planpal/core/sync/outbox_service.dart';
+import 'package:dio/dio.dart';
 
 import 'outbox_service_test.mocks.dart';
 
 @GenerateMocks([AppDatabase, ApiClient])
 void main() {
-  late OutboxService service;
-  late MockAppDatabase mockDatabase;
   late MockApiClient mockApiClient;
 
   setUp(() {
-    mockDatabase = MockAppDatabase();
     mockApiClient = MockApiClient();
-    service = OutboxService(
-      database: mockDatabase,
-      apiClient: mockApiClient,
-    );
   });
 
   group('OutboxService - Order preservation', () {
@@ -139,14 +132,18 @@ void main() {
       when(mockApiClient.post(
         '/workspaces/ws1/labels',
         data: anyNamed('data'),
-      )).thenAnswer((_) async => {
-            'label': {
-              'id': clientId,
-              'workspace_id': 'ws1',
-              'name': 'Test Label',
-              'color': '#FF0000',
-            }
-          });
+      )).thenAnswer((_) async => Response(
+            data: {
+              'label': {
+                'id': clientId,
+                'workspace_id': 'ws1',
+                'name': 'Test Label',
+                'color': '#FF0000',
+              }
+            },
+            statusCode: 200,
+            requestOptions: RequestOptions(path: '/workspaces/ws1/labels'),
+          ));
 
       // The client ID ensures the server can detect duplicate
       expect(payload['id'], equals(clientId));
@@ -194,7 +191,7 @@ void main() {
       for (final error in permanentErrors) {
         // These errors indicate a problem that requires user action
         // Should not waste time with exponential backoff
-        expect(error['code']! >= 400 && error['code']! < 500, isTrue,
+        expect((error['code'] as int) >= 400 && (error['code'] as int) < 500, isTrue,
                reason: '4xx errors are client errors, not retriable');
       }
     });

@@ -31,12 +31,11 @@ void main() {
   group('Event Repository', () {
     test('creates event and queues for sync', () async {
       when(mockOutbox.enqueue(
-        entity: anyNamed('entity'),
+        entityType: anyNamed('entityType'),
         entityId: anyNamed('entityId'),
-        action: anyNamed('action'),
-        workspaceId: anyNamed('workspaceId'),
+        operation: anyNamed('operation'),
         payload: anyNamed('payload'),
-      )).thenAnswer((_) async => {});
+      )).thenAnswer((_) async {});
 
       expect(repository, isNotNull);
       // TODO: Full test with in-memory DB

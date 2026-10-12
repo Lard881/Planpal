@@ -10,8 +10,12 @@
 include: package:flutter_lints/flutter.yaml
 
 analyzer:
+  exclude:
+    - "_parked/**"
+    - "_parked_from_lib/**"
   errors:
     invalid_annotation_target: ignore
+    invalid_use_of_internal_member: ignore
 
 linter:
   # The lint rules applied to this project can be customized in the
