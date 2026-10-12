@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/attachment.dart';
 import '../repositories/attachment_repository.dart';
-import '../../core/providers/app_providers.dart';
+import '../../../core/providers/app_providers.dart';
 import 'file_icon.dart';
 
 /// Card widget that displays a single attachment with preview, name, size, and actions

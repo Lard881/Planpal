@@ -3,6 +3,7 @@ import '../../../core/db/app_database.dart';
 import '../../../features/workspaces/providers/workspace_providers.dart';
 import '../repositories/document_repository.dart';
 import '../services/file_upload_service.dart';
+import '../../../core/providers/app_providers.dart';
 
 /// Current folder ID provider (for navigation)
 final currentFolderIdProvider = StateProvider<String?>((ref) => null);
@@ -85,7 +86,7 @@ final folderBreadcrumbProvider = FutureProvider.autoDispose<List<Folder>>((ref) 
   if (currentFolderId == null) return [];
 
   final repo = ref.watch(documentRepositoryProvider);
-  final breadcrumb = <FolderData>[];
+  final breadcrumb = <Folder>[];
 
   String? folderId = currentFolderId;
   while (folderId != null) {

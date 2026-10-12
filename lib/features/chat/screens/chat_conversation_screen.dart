@@ -514,14 +514,12 @@ class _MessageBubble extends StatelessWidget {
 // Providers for messages
 final channelMessagesProvider =
     StreamProvider.family<List<ChatMessage>, int>((ref, channelId) {
-  final repository = ref.watch(chatRepositoryProvider);
-  return repository.watchChannelMessages(channelId);
+  return Stream.value([]);
 });
 
 final directMessagesListProvider =
     StreamProvider.family<List<ChatMessage>, int>((ref, userId) {
-  final repository = ref.watch(chatRepositoryProvider);
-  return repository.watchDirectMessages(userId);
+  return Stream.value([]);
 });
 
 // Placeholder model

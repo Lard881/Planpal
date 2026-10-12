@@ -79,12 +79,13 @@ class NotificationRepository {
   }
 
   /// Get unread notification count
-  Stream<int> watchUnreadCount([String? userId, String? workspaceId]) {
+  Stream<int> watchUnreadCount([String? workspaceIdOrUserId, String? workspaceId]) {
+    final wsId = workspaceId ?? workspaceIdOrUserId;
     final query = _db.notifications.count(
       where: (n) {
         Expression<bool> condition = n.readAt.isNull();
-        if (workspaceId != null && workspaceId.isNotEmpty) {
-          condition = condition & n.workspaceId.equals(workspaceId);
+        if (wsId != null && wsId.isNotEmpty) {
+          condition = condition & n.workspaceId.equals(wsId);
         }
         return condition;
       },
@@ -216,6 +217,9 @@ class NotificationRepository {
   Future<void> clearAllLocal() {
     return _db.delete(_db.notifications).go();
   }
+
+  /// Clear all notifications
+  Future<void> clearAll() => clearAllLocal();
 
   // ========================================================================
   // API operations (with local sync)
@@ -400,6 +404,24 @@ class NotificationRepository {
       createdAt: n.createdAt,
       updatedAt: n.updatedAt,
     );
+  }
+
+  /// Watch all notifications as AppNotification stream
+  Stream<List<AppNotification>> watchAllNotifications({String? workspaceId}) {
+    return watchNotifications(workspaceId: workspaceId)
+        .map((list) => list.map(_notificationToModel).toList());
+  }
+
+  /// Watch unread notifications as AppNotification stream
+  Stream<List<AppNotification>> watchUnreadNotifications({String? workspaceId}) {
+    return watchNotifications(workspaceId: workspaceId, read: false)
+        .map((list) => list.map(_notificationToModel).toList());
+  }
+
+  /// Watch mention notifications as AppNotification stream
+  Stream<List<AppNotification>> watchMentions({String? workspaceId}) {
+    return watchNotifications(workspaceId: workspaceId, type: 'mention')
+        .map((list) => list.map(_notificationToModel).toList());
   }
 
   Future<void> syncNotifications({String? filter, String? cursor}) async {

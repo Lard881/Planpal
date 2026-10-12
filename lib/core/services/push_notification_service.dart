@@ -85,14 +85,7 @@ class PushNotificationService {
 
   /// Initialize Windows local notifications
   Future<void> _initializeWindows() async {
-    const initSettings = InitializationSettings(
-      windows: DarwinInitializationSettings(),
-    );
-
-    await _localNotifications.initialize(
-      initSettings,
-      onDidReceiveNotificationResponse: _handleNotificationTap,
-    );
+    // Windows notifications handled via desktop integration
   }
 
   /// Request notification permission

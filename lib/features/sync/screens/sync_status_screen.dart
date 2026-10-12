@@ -23,8 +23,11 @@ class SyncStatusScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final syncState = ref.watch(syncSummaryProvider);
-    final failedItems = ref.watch(failedSyncItemsProvider);
+    final syncStateAsync = ref.watch(syncSummaryProvider);
+    final failedItemsAsync = ref.watch(failedSyncItemsProvider);
+    final syncState = syncStateAsync.value ??
+        const SyncState(isSyncing: false, pendingCount: 0, failedCount: 0);
+    final failedItems = failedItemsAsync.value ?? const <OutboxData>[];
 
     return Scaffold(
       appBar: AppBar(
@@ -116,8 +119,8 @@ class SyncStatusScreen extends ConsumerWidget {
             ] else if (syncState.pendingCount == 0) ...[
               const EmptyState(
                 icon: Icons.cloud_done,
-                message: 'All synced!',
-                description: 'Your changes are up to date',
+                title: 'All synced!',
+                message: 'Your changes are up to date',
               ),
             ],
           ],

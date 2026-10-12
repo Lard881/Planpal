@@ -280,7 +280,6 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   }
 
   Widget _buildScheduleItem(BuildContext context, dynamic task) {
-    final theme = Theme.of(context);
     
     // Determine color based on priority
     Color leftBorderColor;

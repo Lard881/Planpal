@@ -1318,4 +1318,16 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get workspaceNameTaken => 'Nom de l\'espace de travail déjà pris';
+
+  @override
+  String get language => 'Langue';
+
+  @override
+  String get errorLoadingProfile => 'Échec du chargement du profil';
+
+  @override
+  String get reminders => 'Rappels';
+
+  @override
+  String get labels => 'Étiquettes';
 }

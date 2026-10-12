@@ -2365,6 +2365,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Workspace name already taken'**
   String get workspaceNameTaken;
+
+  /// No description provided for @language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language;
+
+  /// No description provided for @errorLoadingProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load profile'**
+  String get errorLoadingProfile;
+
+  /// No description provided for @reminders.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders'**
+  String get reminders;
+
+  /// No description provided for @labels.
+  ///
+  /// In en, this message translates to:
+  /// **'Labels'**
+  String get labels;
 }
 
 class _AppLocalizationsDelegate

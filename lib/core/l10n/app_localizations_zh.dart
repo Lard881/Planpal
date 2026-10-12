@@ -1203,4 +1203,16 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get workspaceNameTaken => '工作区名称已被占用';
+
+  @override
+  String get language => '语言';
+
+  @override
+  String get errorLoadingProfile => '加载个人资料失败';
+
+  @override
+  String get reminders => '提醒';
+
+  @override
+  String get labels => '标签';
 }

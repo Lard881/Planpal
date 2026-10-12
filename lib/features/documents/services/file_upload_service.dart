@@ -117,6 +117,27 @@ class FileUploadService {
     return taskId;
   }
 
+  /// Direct upload helper
+  Future<String?> uploadFile({
+    required String workspaceId,
+    required File file,
+    required String fileName,
+    String? mimeType,
+    String? folderId,
+    void Function(double)? onProgress,
+  }) async {
+    final size = await file.length();
+    final taskId = addFile(
+      filePath: file.path,
+      fileName: fileName,
+      fileSize: size,
+      mimeType: mimeType ?? 'application/octet-stream',
+      workspaceId: workspaceId,
+      folderId: folderId,
+    );
+    return startUpload(taskId);
+  }
+
   /// Start upload
   Future<String?> startUpload(String taskId) async {
     final task = _tasks[taskId];

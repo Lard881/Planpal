@@ -36,11 +36,11 @@ class _CalendarScreenDesktopState extends ConsumerState<CalendarScreenDesktop> {
     final from = DateTime(_focusedDay.year, _focusedDay.month, 1);
     final to = DateTime(_focusedDay.year, _focusedDay.month + 1, 0);
 
-    final eventsAsync = ref.watch(eventsInRangeProvider(
+    final eventsAsync = ref.watch(eventsInRangeProvider((
       workspaceId: workspaceId,
       from: from,
       to: to,
-    ));
+    )));
 
     return Scaffold(
       appBar: AppBar(
@@ -214,11 +214,11 @@ class _CalendarScreenDesktopState extends ConsumerState<CalendarScreenDesktop> {
   Widget _buildRightPanel(ThemeData theme) {
     final dayEvents = _getEventsForDay(
       _selectedDay!,
-      ref.watch(eventsInRangeProvider(
+      ref.watch(eventsInRangeProvider((
         workspaceId: ref.watch(currentWorkspaceIdProvider)!,
         from: DateTime(_selectedDay!.year, _selectedDay!.month, 1),
         to: DateTime(_selectedDay!.year, _selectedDay!.month + 1, 0),
-      )).value ?? [],
+      ))).value ?? [],
     );
 
     return Column(
@@ -255,11 +255,11 @@ class _CalendarScreenDesktopState extends ConsumerState<CalendarScreenDesktop> {
         leading: Container(
           width: 4,
           height: 40,
-          color: event.color != null ? _parseColor(event.color!) : Colors.blue,
+          color: Colors.blue,
         ),
         title: Text(event.title),
         subtitle: Text(
-          '${DateFormat('h:mm a').format(event.startsAt)} - ${DateFormat('h:mm a').format(event.endsAt)}',
+          '${DateFormat('h:mm a').format(event.startTime)} - ${DateFormat('h:mm a').format(event.endTime)}',
         ),
         trailing: IconButton(
           icon: const Icon(Icons.more_vert),
@@ -273,16 +273,8 @@ class _CalendarScreenDesktopState extends ConsumerState<CalendarScreenDesktop> {
 
   List<Event> _getEventsForDay(DateTime day, List<Event> allEvents) {
     return allEvents.where((event) {
-      return isSameDay(event.startsAt, day);
+      return isSameDay(event.startTime, day);
     }).toList();
-  }
-
-  Color _parseColor(String colorString) {
-    try {
-      return Color(int.parse(colorString.substring(1), radix: 16) + 0xFF000000);
-    } catch (e) {
-      return Colors.blue;
-    }
   }
 
   void _scheduleEvent(BuildContext context, String workspaceId) {

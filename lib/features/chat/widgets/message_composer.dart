@@ -8,6 +8,7 @@ import 'package:planpal/core/theme/app_theme.dart';
 import 'package:planpal/features/chat/presentation/chat_providers.dart';
 import 'package:planpal/features/documents/services/file_upload_service.dart';
 import 'package:planpal/features/workspaces/providers/workspace_providers.dart';
+import 'package:planpal/core/providers/app_providers.dart';
 
 /// Message composer widget with retry logic and file/image support
 class MessageComposer extends ConsumerStatefulWidget {

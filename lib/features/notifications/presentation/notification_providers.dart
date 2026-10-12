@@ -25,6 +25,12 @@ final unreadCountProvider = StreamProvider<int>((ref) {
   return repo.watchUnreadCount();
 });
 
+/// Unread count provider with workspace filter
+final unreadNotificationCountProvider = StreamProvider.family<int, String?>((ref, workspaceId) {
+  final repo = ref.watch(notificationRepositoryProvider);
+  return repo.watchUnreadCount(workspaceId);
+});
+
 /// Notification actions controller
 final notificationActionsProvider = Provider<NotificationActions>((ref) {
   final repo = ref.watch(notificationRepositoryProvider);

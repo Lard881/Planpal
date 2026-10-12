@@ -3,6 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:desktop_drop/desktop_drop.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../providers/document_providers.dart';
+import '../repositories/document_repository.dart';
+import '../services/file_upload_service.dart';
+import '../../workspaces/providers/workspace_providers.dart';
+import '../../../core/providers/app_providers.dart';
 import '../widgets/document_grid_item.dart';
 import '../widgets/document_list_item.dart';
 import '../widgets/folder_item.dart';
@@ -243,15 +247,23 @@ class _DocumentsScreenDesktopState extends ConsumerState<DocumentsScreenDesktop>
                     onDragDone: (details) async {
                       setState(() => _isDragging = false);
                       
+                      final workspaceId = ref.read(currentWorkspaceIdProvider);
+                      if (workspaceId == null) return;
                       final currentFolderId = ref.read(currentFolderIdProvider);
-                      final documentRepo = ref.read(documentRepositoryProvider);
+                      final uploadService = ref.read(fileUploadServiceProvider);
                       
                       for (final file in details.files) {
                         try {
-                          await documentRepo.uploadFile(
+                          final length = await file.length();
+                          final taskId = uploadService.addFile(
                             filePath: file.path,
+                            fileName: file.name,
+                            fileSize: length,
+                            mimeType: file.mimeType ?? 'application/octet-stream',
+                            workspaceId: workspaceId,
                             folderId: currentFolderId,
                           );
+                          uploadService.startUpload(taskId);
                         } catch (e) {
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(

@@ -658,5 +658,9 @@
   "errorTitleInviteCode": "유효하지 않은 초대 코드",
   "errorTitleFile": "파일 오류",
   "errorTitleSync": "동기화 오류",
-  "errorTitleChat": "채팅 오류"
+  "errorTitleChat": "채팅 오류",
+  "language": "언어",
+  "errorLoadingProfile": "프로필을 불러오지 못했습니다",
+  "reminders": "알림",
+  "labels": "라벨"
 }

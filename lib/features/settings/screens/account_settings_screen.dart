@@ -77,7 +77,7 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
               children: [
                 ListTile(
                   leading: const Icon(Icons.logout),
-                  title: Text(l10n.signOut),
+                  title: Text(l10n.logout),
                   subtitle: const Text('Sign out from this device'),
                   onTap: _confirmSignOut,
                 ),

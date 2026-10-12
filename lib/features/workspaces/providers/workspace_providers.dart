@@ -4,6 +4,7 @@ import '../../../core/providers/app_providers.dart';
 import '../../../core/utils/logger.dart';
 import '../repositories/workspace_repository.dart';
 import '../models/workspace_member.dart';
+export '../models/workspace_member.dart';
 import '../models/invite_code.dart';
 import '../utils/workspace_permissions.dart';
 import '../../../core/db/app_database.dart' hide WorkspaceMember;

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Notification;
 import 'package:planpal/core/l10n/app_localizations.dart';
 import 'package:planpal/core/db/app_database.dart';
 

@@ -96,7 +96,7 @@ class AnalyticsScreen extends ConsumerWidget {
             const SizedBox(height: 8),
 
             // Last updated indicator
-            _buildLastUpdated(ref),
+            _buildLastUpdated(context, ref),
             const SizedBox(height: 24),
 
             // Stat cards
@@ -433,7 +433,7 @@ class AnalyticsScreen extends ConsumerWidget {
     }
   }
 
-  Widget _buildLastUpdated(WidgetRef ref) {
+  Widget _buildLastUpdated(BuildContext context, WidgetRef ref) {
     final lastUpdated = ref.watch(analyticsLastUpdatedProvider);
     
     if (lastUpdated == null) return const SizedBox.shrink();

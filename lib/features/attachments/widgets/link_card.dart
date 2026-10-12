@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models/task_link.dart';
 import '../repositories/attachment_repository.dart';
-import '../../core/providers/app_providers.dart';
+import '../../../core/providers/app_providers.dart';
 
 /// Card widget that displays a task link with favicon, title, description, and actions
 class LinkCard extends ConsumerStatefulWidget {

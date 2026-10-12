@@ -637,5 +637,9 @@
   "notificationTaskOverdueBody": "Una tarea está vencida",
   "notificationMentionBody": "Alguien te mencionó",
   "notificationChatMessageBody": "Tienes un nuevo mensaje",
-  "notificationEventReminderBody": "Tienes un próximo evento"
+  "notificationEventReminderBody": "Tienes un próximo evento",
+  "language": "Idioma",
+  "errorLoadingProfile": "Error al cargar el perfil",
+  "reminders": "Recordatorios",
+  "labels": "Etiquetas"
 }

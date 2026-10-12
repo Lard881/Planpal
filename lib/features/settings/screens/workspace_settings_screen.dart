@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../workspaces/providers/workspace_provider.dart';
+import '../../workspaces/providers/workspace_providers.dart';
 
 class WorkspaceSettingsScreen extends ConsumerStatefulWidget {
   const WorkspaceSettingsScreen({super.key});

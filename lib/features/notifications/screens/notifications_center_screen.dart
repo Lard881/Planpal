@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/db/app_database.dart';
-import '../repositories/notification_repository.dart';
+import '../../../core/providers/app_providers.dart';
+import '../models/notification.dart';
 
 class NotificationsCenterScreen extends ConsumerStatefulWidget {
   const NotificationsCenterScreen({super.key});
@@ -350,7 +350,7 @@ class _NotificationItem extends ConsumerWidget {
         child: Container(
           color: notification.isRead
               ? null
-              : Theme.of(context).colorScheme.primaryContainer.withOpacity(0.1),
+              : Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.1),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -359,7 +359,7 @@ class _NotificationItem extends ConsumerWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: _getNotificationColor(notification.type).withOpacity(0.1),
+                  color: _getNotificationColor(notification.type).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
@@ -432,57 +432,72 @@ class _NotificationItem extends ConsumerWidget {
     // Navigate based on notification type
     if (context.mounted) {
       switch (notification.type) {
-        case 'task':
-          Navigator.pushNamed(context, '/tasks/detail',
-              arguments: notification.relatedId);
+        case NotificationType.taskAssigned:
+        case NotificationType.taskUpdated:
+        case NotificationType.taskComment:
+        case NotificationType.deadlineApproaching:
+        case NotificationType.taskOverdue:
+          if (notification.entityId != null) {
+            Navigator.pushNamed(context, '/tasks/detail',
+                arguments: notification.entityId);
+          }
           break;
-        case 'comment':
-          Navigator.pushNamed(context, '/tasks/detail',
-              arguments: notification.relatedId);
+        case NotificationType.mention:
+        case NotificationType.chatMessage:
+          if (notification.entityId != null) {
+            Navigator.pushNamed(context, '/chat/conversation',
+                arguments: {'channelId': notification.entityId});
+          }
           break;
-        case 'mention':
-          Navigator.pushNamed(context, '/chat/conversation',
-              arguments: {'channelId': notification.relatedId});
-          break;
-        case 'workspace':
+        case NotificationType.memberJoined:
           Navigator.pushNamed(context, '/workspaces');
           break;
         default:
-          // Do nothing
           break;
       }
     }
   }
 
-  IconData _getNotificationIcon(String type) {
+  IconData _getNotificationIcon(NotificationType type) {
     switch (type) {
-      case 'task':
+      case NotificationType.taskAssigned:
+      case NotificationType.taskUpdated:
+      case NotificationType.taskOverdue:
+      case NotificationType.deadlineApproaching:
         return Icons.task_alt;
-      case 'comment':
+      case NotificationType.taskComment:
         return Icons.comment;
-      case 'mention':
+      case NotificationType.mention:
         return Icons.alternate_email;
-      case 'workspace':
+      case NotificationType.memberJoined:
         return Icons.workspaces;
-      case 'reminder':
+      case NotificationType.eventReminder:
         return Icons.alarm;
+      case NotificationType.chatMessage:
+        return Icons.chat;
       default:
         return Icons.notifications;
     }
   }
 
-  Color _getNotificationColor(String type) {
+  Color _getNotificationColor(NotificationType type) {
     switch (type) {
-      case 'task':
+      case NotificationType.taskAssigned:
+      case NotificationType.taskUpdated:
         return Colors.blue;
-      case 'comment':
+      case NotificationType.taskComment:
         return Colors.green;
-      case 'mention':
+      case NotificationType.mention:
         return Colors.orange;
-      case 'workspace':
+      case NotificationType.memberJoined:
         return Colors.purple;
-      case 'reminder':
+      case NotificationType.taskOverdue:
+      case NotificationType.deadlineApproaching:
         return Colors.red;
+      case NotificationType.eventReminder:
+        return Colors.amber;
+      case NotificationType.chatMessage:
+        return Colors.teal;
       default:
         return Colors.grey;
     }
@@ -528,24 +543,3 @@ final unreadNotificationsCountProvider = StreamProvider<int>((ref) {
   final repository = ref.watch(notificationRepositoryProvider);
   return repository.watchUnreadCount();
 });
-
-// Placeholder model
-class AppNotification {
-  final int id;
-  final String title;
-  final String body;
-  final String type;
-  final bool isRead;
-  final int? relatedId;
-  final DateTime createdAt;
-
-  AppNotification({
-    required this.id,
-    required this.title,
-    required this.body,
-    required this.type,
-    required this.isRead,
-    this.relatedId,
-    required this.createdAt,
-  });
-}

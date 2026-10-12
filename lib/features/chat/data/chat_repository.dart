@@ -5,7 +5,7 @@ import 'package:planpal/core/network/api_client.dart';
 import 'package:planpal/core/services/supabase_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as sp;
 import 'package:uuid/uuid.dart';
-import 'package:rxdart/rxdart.dart' as Rx;
+import 'package:rxdart/rxdart.dart';
 
 /// Repository for chat channels and messages
 class ChatRepository {
@@ -122,7 +122,7 @@ class ChatRepository {
     final channel = _channelFromJson(response.data['channel']);
     await _db.into(_db.channels).insert(channel, mode: InsertMode.insertOrReplace);
 
-    return channel.id;
+    return channel.id.value;
   }
 
   /// Get or create a DM channel with another user
@@ -138,7 +138,7 @@ class ChatRepository {
     final channel = _channelFromJson(response.data['channel']);
     await _db.into(_db.channels).insert(channel, mode: InsertMode.insertOrReplace);
 
-    return channel.id;
+    return channel.id.value;
   }
 
   // ===== MESSAGES =====
@@ -383,7 +383,7 @@ class ChatRepository {
   final Map<String, sp.RealtimeChannel> _presenceChannels = {};
 
   /// Subscribe to presence in a channel
-  Stream<Map<String, dynamic>> subscribeToPresence(String channelId) {
+  Stream<List<sp.SinglePresenceState>> subscribeToPresence(String channelId) {
     final channel = _supabase.client.channel('presence:$channelId');
     
     channel.onPresenceSync((payload) {

@@ -74,8 +74,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     // Name field
                     PlanPalTextField(
                       controller: _nameController,
-                      labelText: 'Full Name',
-                      hintText: 'Enter your full name',
+                      label: 'Full Name',
+                      hint: 'Enter your full name',
                       textInputAction: TextInputAction.next,
                       enabled: !_isLoading,
                       validator: _validateName,
@@ -85,8 +85,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     // Email field
                     PlanPalTextField(
                       controller: _emailController,
-                      labelText: 'Email',
-                      hintText: 'Enter your email',
+                      label: 'Email',
+                      hint: 'Enter your email',
                       keyboardType: TextInputType.emailAddress,
                       textInputAction: TextInputAction.next,
                       enabled: !_isLoading,
@@ -97,8 +97,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     // Password field
                     PlanPalTextField(
                       controller: _passwordController,
-                      labelText: 'Password',
-                      hintText: 'Create a password (min 8 characters)',
+                      label: 'Password',
+                      hint: 'Create a password (min 8 characters)',
                       obscureText: _obscurePassword,
                       textInputAction: TextInputAction.next,
                       enabled: !_isLoading,
@@ -117,8 +117,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     // Confirm password field
                     PlanPalTextField(
                       controller: _confirmPasswordController,
-                      labelText: 'Confirm Password',
-                      hintText: 'Re-enter your password',
+                      label: 'Confirm Password',
+                      hint: 'Re-enter your password',
                       obscureText: _obscureConfirmPassword,
                       textInputAction: TextInputAction.done,
                       enabled: !_isLoading,
@@ -146,7 +146,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     PlanPalButton(
                       onPressed: _isLoading ? null : _handleRegister,
                       isLoading: _isLoading,
-                      child: const Text('Create Account'),
+                      text: 'Create Account',
                     ),
                     const SizedBox(height: 24),
 
@@ -417,7 +417,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   }
 
   String _getErrorMessage(AppFailure failure) {
-    return failure.when(
+    return failure.maybeWhen(
       emailAlreadyInUse: () => 'This email is already registered',
       weakPassword: () => 'Password is too weak. Please use a stronger password',
       networkError: () => 'No internet connection',

@@ -26,6 +26,8 @@ class WorkspaceMember {
 
   String? get name => userName;
   String get email => userEmail;
+  String? get userFullName => userName;
+  String? get userAvatarUrl => userAvatar;
 
   factory WorkspaceMember.fromJson(Map<String, dynamic> json) =>
       _$WorkspaceMemberFromJson(json);

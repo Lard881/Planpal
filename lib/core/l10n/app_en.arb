@@ -688,5 +688,9 @@
   "workspaceNameTaken": "Workspace name already taken",
   "@workspaceNameTaken": {
     "description": "workspaceNameTaken"
-  }
+  },
+  "language": "Language",
+  "errorLoadingProfile": "Failed to load profile",
+  "reminders": "Reminders",
+  "labels": "Labels"
 }

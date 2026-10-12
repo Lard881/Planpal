@@ -53,6 +53,9 @@ class SupabaseService {
   /// Get user ID
   String? get userId => currentUser?.id;
 
+  /// Get current user ID alias
+  String? get currentUserId => userId;
+
   /// Stream of auth state changes
   Stream<AuthState> get authStateChanges => auth.onAuthStateChange;
 }

@@ -1284,4 +1284,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get workspaceNameTaken => 'Workspace name already taken';
+
+  @override
+  String get language => 'Language';
+
+  @override
+  String get errorLoadingProfile => 'Failed to load profile';
+
+  @override
+  String get reminders => 'Reminders';
+
+  @override
+  String get labels => 'Labels';
 }

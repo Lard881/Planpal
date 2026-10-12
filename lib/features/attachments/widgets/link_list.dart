@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/task_link.dart';
 import '../repositories/attachment_repository.dart';
-import '../../core/providers/app_providers.dart';
+import '../../../core/providers/app_providers.dart';
 import 'link_card.dart';
 
 /// List widget that displays all links for a task

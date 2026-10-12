@@ -5,6 +5,7 @@ import '../../../features/auth/presentation/auth_providers.dart';
 import '../../../features/workspaces/providers/workspace_providers.dart';
 import '../providers/document_providers.dart';
 import '../repositories/document_repository.dart';
+import '../../../core/providers/app_providers.dart';
 
 class CreateFolderDialog extends ConsumerStatefulWidget {
   const CreateFolderDialog({super.key});

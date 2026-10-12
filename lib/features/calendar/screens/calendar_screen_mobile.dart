@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../../core/db/app_database.dart';
 import '../providers/calendar_providers.dart';
+import '../../workspaces/providers/workspace_providers.dart';
 import 'schedule_event_dialog.dart';
 import 'package:intl/intl.dart';
 
@@ -32,11 +33,11 @@ class _CalendarScreenMobileState extends ConsumerState<CalendarScreenMobile> {
     final from = DateTime(_focusedDay.year, _focusedDay.month, 1);
     final to = DateTime(_focusedDay.year, _focusedDay.month + 1, 0);
 
-    final eventsAsync = ref.watch(eventsInRangeProvider(
+    final eventsAsync = ref.watch(eventsInRangeProvider((
       workspaceId: workspaceId,
       from: from,
       to: to,
-    ));
+    )));
 
     return Scaffold(
       appBar: AppBar(
@@ -157,7 +158,7 @@ class _CalendarScreenMobileState extends ConsumerState<CalendarScreenMobile> {
   }
 
   Widget _buildEventCard(Event event, ThemeData theme) {
-    final eventColor = event.color != null ? _parseColor(event.color!) : Colors.blue;
+    final eventColor = Colors.blue;
 
     return Card(
       elevation: 2,
@@ -202,7 +203,7 @@ class _CalendarScreenMobileState extends ConsumerState<CalendarScreenMobile> {
                         Icon(Icons.access_time, size: 16, color: Colors.grey[600]),
                         const SizedBox(width: 4),
                         Text(
-                          '${DateFormat('h:mm a').format(event.startsAt)} - ${DateFormat('h:mm a').format(event.endsAt)}',
+                          '${DateFormat('h:mm a').format(event.startTime)} - ${DateFormat('h:mm a').format(event.endTime)}',
                           style: TextStyle(
                             fontSize: 13,
                             color: Colors.grey[600],
@@ -210,10 +211,10 @@ class _CalendarScreenMobileState extends ConsumerState<CalendarScreenMobile> {
                         ),
                       ],
                     ),
-                    if (event.description != null && event.description!.isNotEmpty) ...[
+                    if (event.description.isNotEmpty) ...[
                       const SizedBox(height: 4),
                       Text(
-                        event.description!,
+                        event.description,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -234,17 +235,9 @@ class _CalendarScreenMobileState extends ConsumerState<CalendarScreenMobile> {
 
   List<Event> _getEventsForDay(DateTime day, List<Event> allEvents) {
     return allEvents.where((event) {
-      return isSameDay(event.startsAt, day);
+      return isSameDay(event.startTime, day);
     }).toList()
-      ..sort((a, b) => a.startsAt.compareTo(b.startsAt));
-  }
-
-  Color _parseColor(String colorString) {
-    try {
-      return Color(int.parse(colorString.substring(1), radix: 16) + 0xFF000000);
-    } catch (e) {
-      return Colors.blue;
-    }
+      ..sort((a, b) => a.startTime.compareTo(b.startTime));
   }
 
   void _scheduleEvent(BuildContext context, String workspaceId) {

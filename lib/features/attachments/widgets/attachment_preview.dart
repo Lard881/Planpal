@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models/attachment.dart';
 import '../repositories/attachment_repository.dart';
-import '../../core/providers/app_providers.dart';
+import '../../../core/providers/app_providers.dart';
 import 'file_icon.dart';
 
 /// Full-screen preview for attachments (images, PDFs, and other files)

@@ -31,13 +31,13 @@ class EventRepository {
       ..where((e) => e.deletedAt.isNull());
 
     if (from != null) {
-      query.where((e) => e.startsAt.isBiggerOrEqualValue(from));
+      query.where((e) => e.startTime.isBiggerOrEqualValue(from));
     }
     if (to != null) {
-      query.where((e) => e.startsAt.isSmallerOrEqualValue(to));
+      query.where((e) => e.startTime.isSmallerOrEqualValue(to));
     }
 
-    query.orderBy([(e) => OrderingTerm.asc(e.startsAt)]);
+    query.orderBy([(e) => OrderingTerm.asc(e.startTime)]);
     return query.watch();
   }
 
@@ -60,32 +60,28 @@ class EventRepository {
       id: eventId,
       workspaceId: workspaceId,
       title: title,
-      startsAt: startsAt,
-      endsAt: endsAt,
+      startTime: startsAt,
+      endTime: endsAt,
       createdBy: 'current-user',
       createdAt: now,
       updatedAt: now,
-      allDay: Value(allDay ?? false),
-      description: Value(description),
-      color: Value(color),
+      description: Value(description ?? ''),
     );
 
     await _db.into(_db.events).insert(event);
 
     // Queue for sync
     await _outbox.enqueue(
-      entity: 'event',
+      entityType: 'event',
       entityId: eventId,
-      action: 'create',
-      workspaceId: workspaceId,
+      operation: 'create',
       payload: {
         'id': eventId,
         'title': title,
-        'starts_at': startsAt.toIso8601String(),
-        'ends_at': endsAt.toIso8601String(),
-        'all_day': allDay,
+        'workspace_id': workspaceId,
+        'start_time': startsAt.toIso8601String(),
+        'end_time': endsAt.toIso8601String(),
         'description': description,
-        'color': color,
         'attendee_ids': attendeeIds,
       },
     );
@@ -103,21 +99,20 @@ class EventRepository {
 
     final payload = <String, dynamic>{};
     if (updates.title.present) payload['title'] = updates.title.value;
-    if (updates.startsAt.present) {
-      payload['starts_at'] = updates.startsAt.value.toIso8601String();
+    if (updates.startTime.present) {
+      payload['start_time'] = updates.startTime.value.toIso8601String();
     }
-    if (updates.endsAt.present) {
-      payload['ends_at'] = updates.endsAt.value.toIso8601String();
+    if (updates.endTime.present) {
+      payload['end_time'] = updates.endTime.value.toIso8601String();
     }
     if (updates.description.present) {
       payload['description'] = updates.description.value;
     }
 
     await _outbox.enqueue(
-      entity: 'event',
+      entityType: 'event',
       entityId: eventId,
-      action: 'update',
-      workspaceId: event.workspaceId,
+      operation: 'update',
       payload: payload,
     );
   }
@@ -138,39 +133,30 @@ class EventRepository {
     if (event == null) return;
 
     await _outbox.enqueue(
-      entity: 'event',
+      entityType: 'event',
       entityId: eventId,
-      action: 'delete',
-      workspaceId: event.workspaceId,
-      payload: {},
+      operation: 'delete',
+      payload: {'id': eventId},
     );
   }
 
   /// Get single event
   Future<Event?> getEvent(String id) {
-    return (_db.select(_db.events)
-          ..where((e) => e.id.equals(id))
-          ..where((e) => e.deletedAt.isNull()))
+    return (_db.select(_db.events)..where((e) => e.id.equals(id)))
         .getSingleOrNull();
   }
 
-  /// Sync events from server
-  Future<void> syncEvents(String workspaceId, DateTime from, DateTime to) async {
+  /// Sync events with server
+  Future<void> syncEvents(String workspaceId) async {
     try {
-      final response = await _api.get(
-        '/workspaces/$workspaceId/events',
-        queryParameters: {
-          'from': from.toIso8601String(),
-          'to': to.toIso8601String(),
-        },
-      );
+      final response = await _api.get('/workspaces/$workspaceId/events');
+      final eventsJson = response.data['events'] as List<dynamic>;
 
-      final eventsJson = response.data['events'] as List;
       for (final eventJson in eventsJson) {
         await _mergeEventFromServer(eventJson as Map<String, dynamic>);
       }
     } catch (e) {
-      print('Event sync failed: $e');
+      // ignore
     }
   }
 
@@ -179,14 +165,12 @@ class EventRepository {
       id: json['id'] as String,
       workspaceId: json['workspace_id'] as String,
       title: json['title'] as String,
-      startsAt: DateTime.parse(json['starts_at'] as String),
-      endsAt: DateTime.parse(json['ends_at'] as String),
-      createdBy: json['created_by'] as String,
-      createdAt: DateTime.parse(json['created_at'] as String),
-      updatedAt: DateTime.parse(json['updated_at'] as String),
-      allDay: Value(json['all_day'] as bool? ?? false),
-      description: Value(json['description'] as String?),
-      color: Value(json['color'] as String?),
+      startTime: DateTime.parse((json['starts_at'] ?? json['start_time']) as String),
+      endTime: DateTime.parse((json['ends_at'] ?? json['end_time']) as String),
+      createdBy: (json['created_by'] ?? 'server') as String,
+      createdAt: DateTime.parse((json['created_at'] ?? DateTime.now().toIso8601String()) as String),
+      updatedAt: DateTime.parse((json['updated_at'] ?? DateTime.now().toIso8601String()) as String),
+      description: Value((json['description'] as String?) ?? ''),
       deletedAt: Value(json['deleted_at'] != null
           ? DateTime.parse(json['deleted_at'] as String)
           : null),

@@ -637,5 +637,9 @@
   "notificationTaskOverdueBody": "任务已逾期",
   "notificationMentionBody": "有人提及了你",
   "notificationChatMessageBody": "你有新消息",
-  "notificationEventReminderBody": "你有即将开始的活动"
+  "notificationEventReminderBody": "你有即将开始的活动",
+  "language": "语言",
+  "errorLoadingProfile": "加载个人资料失败",
+  "reminders": "提醒",
+  "labels": "标签"
 }

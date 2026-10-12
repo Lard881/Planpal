@@ -10,6 +10,7 @@ import '../../../features/workspaces/providers/workspace_providers.dart';
 import '../providers/document_providers.dart';
 import '../services/file_upload_service.dart';
 import '../repositories/document_repository.dart';
+import '../../../core/providers/app_providers.dart';
 
 class FilePickerScreen extends ConsumerStatefulWidget {
   const FilePickerScreen({super.key});

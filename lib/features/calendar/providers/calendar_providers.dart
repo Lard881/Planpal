@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/providers/app_providers.dart';
 import '../../../core/db/app_database.dart';
+import '../../sync/providers/sync_providers.dart';
 import '../repositories/event_repository.dart';
 
 /// S8.9-S8.10: Calendar providers with timezone handling

@@ -1211,4 +1211,16 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get workspaceNameTaken => '이미 사용 중인 워크스페이스 이름입니다';
+
+  @override
+  String get language => '언어';
+
+  @override
+  String get errorLoadingProfile => '프로필을 불러오지 못했습니다';
+
+  @override
+  String get reminders => '알림';
+
+  @override
+  String get labels => '라벨';
 }

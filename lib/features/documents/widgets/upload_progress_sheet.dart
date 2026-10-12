@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../providers/document_providers.dart';
 import '../services/file_upload_service.dart';
+import '../../../core/providers/app_providers.dart';
 
 class UploadProgressSheet extends ConsumerWidget {
   const UploadProgressSheet({super.key});

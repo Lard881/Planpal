@@ -637,5 +637,9 @@
   "notificationTaskOverdueBody": "Une tâche est en retard",
   "notificationMentionBody": "Quelqu'un vous a mentionné",
   "notificationChatMessageBody": "Vous avez un nouveau message",
-  "notificationEventReminderBody": "Vous avez un événement à venir"
+  "notificationEventReminderBody": "Vous avez un événement à venir",
+  "language": "Langue",
+  "errorLoadingProfile": "Échec du chargement du profil",
+  "reminders": "Rappels",
+  "labels": "Étiquettes"
 }
