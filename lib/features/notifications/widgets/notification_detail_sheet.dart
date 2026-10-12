@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../../core/db/app_database.dart';
 import '../models/notification.dart';
 import '../data/notification_navigation_service.dart';
 import 'notification_actions.dart';
@@ -210,7 +209,7 @@ class NotificationDetailSheet extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         shape: BoxShape.circle,
       ),
       child: Icon(
@@ -264,7 +263,7 @@ class NotificationDetailSheet extends StatelessWidget {
               _buildMetadataRow(
                 context,
                 'Workspace',
-                notification.workspaceId.substring(0, 8) + '...',
+                '${notification.workspaceId.substring(0, 8)}...',
                 Icons.workspaces,
               ),
             ],

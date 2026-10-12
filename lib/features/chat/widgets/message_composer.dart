@@ -6,7 +6,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:planpal/core/theme/app_theme.dart';
 import 'package:planpal/features/chat/presentation/chat_providers.dart';
-import 'package:planpal/features/documents/services/file_upload_service.dart';
 import 'package:planpal/features/workspaces/providers/workspace_providers.dart';
 import 'package:planpal/core/providers/app_providers.dart';
 
@@ -105,7 +104,7 @@ class _MessageComposerState extends ConsumerState<MessageComposer> {
       final after = text.substring(cursorPos);
       final mention = '@[$userName](user:$userId)';
       
-      _controller.text = before + mention + ' ' + after;
+      _controller.text = '$before$mention $after';
       _controller.selection = TextSelection.collapsed(
         offset: before.length + mention.length + 1,
       );
@@ -277,7 +276,7 @@ class _MessageComposerState extends ConsumerState<MessageComposer> {
         color: Theme.of(context).scaffoldBackgroundColor,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             offset: const Offset(0, -1),
             blurRadius: 4,
           ),
@@ -313,7 +312,7 @@ class _MessageComposerState extends ConsumerState<MessageComposer> {
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
+                        color: Colors.black.withValues(alpha: 0.1),
                         blurRadius: 8,
                         offset: const Offset(0, -2),
                       ),
@@ -380,7 +379,7 @@ class _MessageComposerState extends ConsumerState<MessageComposer> {
                           width: 60,
                           height: 60,
                           decoration: BoxDecoration(
-                            color: AppTheme.primaryColor.withOpacity(0.1),
+                            color: AppTheme.primaryColor.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: const Icon(Icons.insert_drive_file, size: 32),

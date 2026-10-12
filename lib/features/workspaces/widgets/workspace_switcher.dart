@@ -158,7 +158,7 @@ class WorkspaceSwitcher extends ConsumerWidget {
         vertical: isMobile ? 8 : 12,
       ),
       decoration: BoxDecoration(
-        color: isMobile ? Colors.transparent : AppColors.grey800.withOpacity(0.5),
+        color: isMobile ? Colors.transparent : AppColors.grey800.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color: isMobile ? AppColors.grey300 : AppColors.grey700,

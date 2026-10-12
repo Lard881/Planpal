@@ -236,7 +236,7 @@ class _ChannelTile extends ConsumerWidget {
       leading: Stack(
         children: [
           CircleAvatar(
-            backgroundColor: AppTheme.primaryColor.withOpacity(0.1),
+            backgroundColor: AppTheme.primaryColor.withValues(alpha: 0.1),
             child: Icon(
               channel.kind == 'dm' ? Icons.person : Icons.tag,
               color: AppTheme.primaryColor,

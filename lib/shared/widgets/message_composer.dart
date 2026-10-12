@@ -60,7 +60,7 @@ class _MessageComposerState extends State<MessageComposer> {
         color: theme.colorScheme.surface,
         border: Border(
           top: BorderSide(
-            color: theme.colorScheme.outline.withOpacity(0.2),
+            color: theme.colorScheme.outline.withValues(alpha: 0.2),
           ),
         ),
       ),
@@ -82,7 +82,7 @@ class _MessageComposerState extends State<MessageComposer> {
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.surfaceVariant.withOpacity(0.5),
+                  color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(24),
                 ),
                 child: TextField(
@@ -94,7 +94,7 @@ class _MessageComposerState extends State<MessageComposer> {
                   decoration: InputDecoration(
                     hintText: widget.hintText ?? 'Type a message...',
                     hintStyle: TextStyle(
-                      color: theme.colorScheme.onSurface.withOpacity(0.5),
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
                       fontSize: 14,
                     ),
                     border: InputBorder.none,
@@ -115,7 +115,7 @@ class _MessageComposerState extends State<MessageComposer> {
               decoration: BoxDecoration(
                 color: _hasText && !widget.isLoading
                     ? theme.colorScheme.primary
-                    : theme.colorScheme.surfaceVariant,
+                    : theme.colorScheme.surfaceContainerHighest,
                 shape: BoxShape.circle,
               ),
               child: IconButton(
@@ -132,7 +132,7 @@ class _MessageComposerState extends State<MessageComposer> {
                         Icons.send,
                         color: _hasText
                             ? Colors.white
-                            : theme.colorScheme.onSurface.withOpacity(0.5),
+                            : theme.colorScheme.onSurface.withValues(alpha: 0.5),
                       ),
                 onPressed:
                     _hasText && !widget.isLoading ? _send : null,

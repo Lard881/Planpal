@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/task_link.dart';
-import '../repositories/attachment_repository.dart';
 import '../../../core/providers/app_providers.dart';
 import 'link_card.dart';
 
@@ -12,11 +11,11 @@ class LinkList extends ConsumerStatefulWidget {
   final VoidCallback? onAddPressed;
 
   const LinkList({
-    Key? key,
+    super.key,
     required this.taskId,
     this.showAddButton = true,
     this.onAddPressed,
-  }) : super(key: key);
+  });
 
   @override
   ConsumerState<LinkList> createState() => _LinkListState();
@@ -93,7 +92,7 @@ class _LinkListState extends ConsumerState<LinkList> {
               Text(
                 _error!,
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurface.withOpacity(0.6),
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -119,20 +118,20 @@ class _LinkListState extends ConsumerState<LinkList> {
               Icon(
                 Icons.link,
                 size: 48,
-                color: theme.colorScheme.onSurface.withOpacity(0.3),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
               ),
               const SizedBox(height: 16),
               Text(
                 'No links',
                 style: theme.textTheme.titleMedium?.copyWith(
-                  color: theme.colorScheme.onSurface.withOpacity(0.6),
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 'Add links to reference external resources',
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurface.withOpacity(0.4),
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
                 ),
               ),
               if (widget.showAddButton && widget.onAddPressed != null) ...[

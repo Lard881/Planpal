@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models/attachment.dart';
-import '../repositories/attachment_repository.dart';
 import '../../../core/providers/app_providers.dart';
 import 'file_icon.dart';
 
@@ -12,9 +11,9 @@ class AttachmentPreview extends ConsumerStatefulWidget {
   final Attachment attachment;
 
   const AttachmentPreview({
-    Key? key,
+    super.key,
     required this.attachment,
-  }) : super(key: key);
+  });
 
   @override
   ConsumerState<AttachmentPreview> createState() => _AttachmentPreviewState();
@@ -52,13 +51,12 @@ class _AttachmentPreviewState extends ConsumerState<AttachmentPreview> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final isImage = widget.attachment.mimeType.startsWith('image/');
 
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.black.withOpacity(0.5),
+        backgroundColor: Colors.black.withValues(alpha: 0.5),
         iconTheme: const IconThemeData(color: Colors.white),
         title: Text(
           widget.attachment.fileName,
@@ -131,15 +129,6 @@ class _AttachmentPreviewState extends ConsumerState<AttachmentPreview> {
     // Use thumbnail or storage path
     final imagePath =
         widget.attachment.thumbnailPath ?? widget.attachment.storagePath;
-
-    if (imagePath == null) {
-      return const Center(
-        child: Text(
-          'No image available',
-          style: TextStyle(color: Colors.white70),
-        ),
-      );
-    }
 
     return InteractiveViewer(
       minScale: 0.5,

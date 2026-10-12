@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'priority_chip.dart';
-import 'status_chip.dart';
 
 /// Task card component for Home screen
 /// Compact card showing task overview
@@ -86,7 +85,7 @@ class TaskCard extends StatelessWidget {
                           Icon(
                             Icons.schedule,
                             size: 14,
-                            color: theme.colorScheme.onSurface.withOpacity(0.6),
+                            color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                           ),
                           const SizedBox(width: 4),
                           Text(
@@ -94,7 +93,7 @@ class TaskCard extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 12,
                               color:
-                                  theme.colorScheme.onSurface.withOpacity(0.6),
+                                  theme.colorScheme.onSurface.withValues(alpha: 0.6),
                             ),
                           ),
                         ],

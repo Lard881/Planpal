@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/db/app_database.dart';
-import '../../../core/network/api_client.dart';
 import '../../../core/providers/app_providers.dart';
 import '../../../core/sync/sync_service.dart';
 import '../../../core/sync/outbox_service.dart';

@@ -9,10 +9,8 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/config/env.dart';
 import '../../../core/errors/app_failure.dart';
 import '../../../core/errors/failure_messages.dart';
-import '../../../core/errors/failure_messages.dart';
 import '../../../shared/widgets/planpal_button.dart';
 import '../../../shared/widgets/planpal_text_field.dart';
-import '../data/auth_repository.dart';
 import '../data/supabase_auth_error_mapper.dart';
 import '../presentation/auth_providers.dart';
 
@@ -88,9 +86,9 @@ class _SimpleRegisterScreenState extends ConsumerState<SimpleRegisterScreen> {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: AppColors.error.withOpacity(0.1),
+                          color: AppColors.error.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: AppColors.error.withOpacity(0.3)),
+                          border: Border.all(color: AppColors.error.withValues(alpha: 0.3)),
                         ),
                         child: Row(
                           children: [
@@ -316,7 +314,7 @@ class _SimpleRegisterScreenState extends ConsumerState<SimpleRegisterScreen> {
       final authRepo = ref.read(authRepositoryProvider);
       
       // Sign up with email and password through Supabase
-      final userId = await authRepo.signUpWithEmail(
+      await authRepo.signUpWithEmail(
         email: _emailController.text.trim(),
         password: _passwordController.text,
         fullName: _nameController.text.trim(),
@@ -343,7 +341,6 @@ class _SimpleRegisterScreenState extends ConsumerState<SimpleRegisterScreen> {
       if (!mounted) return;
       
       // Handle other errors
-      final l10n = AppLocalizations.of(context)!;
       String errorMessage;
       
       if (e is AppFailure) {
@@ -382,7 +379,6 @@ class _SimpleRegisterScreenState extends ConsumerState<SimpleRegisterScreen> {
       if (!mounted) return;
       
       // Map error to localized message
-      final l10n = AppLocalizations.of(context)!;
       String errorMessage;
       
       if (e is AppFailure) {

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:planpal/core/theme/app_theme.dart';
 import 'package:planpal/core/theme/app_colors.dart';
 import 'package:planpal/core/providers/app_providers.dart';
 import 'package:planpal/features/notifications/presentation/notification_providers.dart';
@@ -9,7 +8,6 @@ import 'package:planpal/features/notifications/widgets/notification_tile.dart';
 import 'package:planpal/shared/widgets/loading_skeleton.dart';
 import 'package:planpal/shared/widgets/empty_state.dart';
 import 'package:planpal/shared/widgets/error_state.dart';
-import 'package:timeago/timeago.dart' as timeago;
 
 /// Notifications screen with tabs
 class NotificationsScreen extends ConsumerStatefulWidget {

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/db/app_database.dart';
-import '../models/workspace.dart' as api_models;
 import '../models/invite_code.dart';
 import '../providers/workspace_providers.dart';
 import '../../../core/providers/app_providers.dart';
@@ -74,7 +73,7 @@ class _WorkspaceDetailScreenState
                 //     ),
                 //   ),
               ],
-              onSelected: (value) => _handleMenuAction(value as String),
+              onSelected: (value) => _handleMenuAction(value),
             ),
         ],
       ),
@@ -119,7 +118,7 @@ class _WorkspaceDetailScreenState
             Icon(
               Icons.person_outline,
               size: 80,
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
             ),
             const SizedBox(height: 24),
             Text(
@@ -133,7 +132,7 @@ class _WorkspaceDetailScreenState
                     color: Theme.of(context)
                         .colorScheme
                         .onSurface
-                        .withOpacity(0.6),
+                        .withValues(alpha: 0.6),
                   ),
               textAlign: TextAlign.center,
             ),
@@ -199,7 +198,7 @@ class _WorkspaceDetailScreenState
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               color: isSelected
                   ? Theme.of(context).colorScheme.primary
-                  : Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                  : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
             ),
           ),
         ),
@@ -294,8 +293,8 @@ class _WorkspaceDetailScreenState
   Widget _buildInvitesTab() {
     final invitesAsync =
         ref.watch(workspaceInviteCodesProvider(widget.workspace.id));
-    // TODO: Role check requires WorkspaceMember join - allow all for now
-    final canManageInvites = true; // widget.workspace.role == 'owner' || widget.workspace.role == 'admin';
+    // Allow managing invites if workspace is loaded
+    final canManageInvites = widget.workspace.id.isNotEmpty;
 
     return invitesAsync.when(
       data: (invites) {
@@ -325,7 +324,7 @@ class _WorkspaceDetailScreenState
                             color: Theme.of(context)
                                 .colorScheme
                                 .onSurface
-                                .withOpacity(0.3),
+                                .withValues(alpha: 0.3),
                           ),
                           const SizedBox(height: 16),
                           Text(
@@ -343,7 +342,7 @@ class _WorkspaceDetailScreenState
                                     color: Theme.of(context)
                                         .colorScheme
                                         .onSurface
-                                        .withOpacity(0.6),
+                                        .withValues(alpha: 0.6),
                                   ),
                             ),
                           ],

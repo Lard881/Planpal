@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:timeago/timeago.dart' as timeago;
 import '../../../core/theme/app_colors.dart';
 import '../../../core/providers/app_providers.dart';
 
@@ -16,7 +15,6 @@ class ChatScreen extends ConsumerStatefulWidget {
 
 class _ChatScreenState extends ConsumerState<ChatScreen> {
   final _searchController = TextEditingController();
-  String _searchQuery = '';
 
   @override
   void dispose() {
@@ -75,11 +73,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.symmetric(vertical: 14),
                   ),
-                  onChanged: (value) {
-                    setState(() {
-                      _searchQuery = value;
-                    });
-                  },
+                  onChanged: (value) {},
                 ),
               ),
             ),
@@ -134,145 +128,5 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       ),
     );
   }
-
-  Widget _buildConversationTile(_ConversationItem conversation) {
-    final initials = conversation.channel
-        .split(' ')
-        .take(2)
-        .map((word) => word[0])
-        .join()
-        .toUpperCase();
-
-    return InkWell(
-      onTap: () {
-        // Open conversation
-        // Navigator.pushNamed(context, '/chat/${conversation.channel}');
-      },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        child: Row(
-          children: [
-            // Avatar with online indicator
-            Stack(
-              children: [
-                CircleAvatar(
-                  radius: 24,
-                  backgroundColor: conversation.avatarColor,
-                  child: Text(
-                    initials,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                if (conversation.isOnline)
-                  Positioned(
-                    right: 0,
-                    bottom: 0,
-                    child: Container(
-                      width: 14,
-                      height: 14,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF10B981),
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 2),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-            const SizedBox(width: 12),
-            // Message content
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        conversation.channel,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: conversation.unreadCount > 0
-                              ? FontWeight.w600
-                              : FontWeight.w500,
-                        ),
-                      ),
-                      Text(
-                        conversation.time,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          conversation.lastMessage,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: conversation.unreadCount > 0
-                                ? Colors.black87
-                                : Colors.grey[600],
-                            fontWeight: conversation.unreadCount > 0
-                                ? FontWeight.w500
-                                : FontWeight.normal,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      if (conversation.unreadCount > 0) ...[
-                        const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: AppColors.primary,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Text(
-                            '${conversation.unreadCount}',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
 
-class _ConversationItem {
-  final String channel;
-  final String lastMessage;
-  final String time;
-  final int unreadCount;
-  final bool isOnline;
-  final Color avatarColor;
-
-  _ConversationItem({
-    required this.channel,
-    required this.lastMessage,
-    required this.time,
-    required this.unreadCount,
-    required this.isOnline,
-    required this.avatarColor,
-  });
-}

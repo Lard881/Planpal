@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/theme/app_colors.dart';
 import '../providers/task_providers.dart';
 import '../../workspaces/providers/workspace_providers.dart';
 import '../models/task.dart' show TaskView;
@@ -137,7 +136,7 @@ class _TasksScreenDesktopState extends ConsumerState<TasksScreenDesktop> {
   Widget _buildFilterBar(ThemeData theme) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      color: theme.colorScheme.surfaceVariant.withOpacity(0.3),
+      color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
       child: Row(
         children: [
           // View filter
@@ -163,7 +162,7 @@ class _TasksScreenDesktopState extends ConsumerState<TasksScreenDesktop> {
           SizedBox(
             width: 150,
             child: DropdownButtonFormField<String?>(
-              value: _selectedStatus,
+              initialValue: _selectedStatus,
               decoration: const InputDecoration(
                 labelText: 'Status',
                 border: OutlineInputBorder(),
@@ -190,7 +189,7 @@ class _TasksScreenDesktopState extends ConsumerState<TasksScreenDesktop> {
           SizedBox(
             width: 150,
             child: DropdownButtonFormField<String?>(
-              value: _selectedPriority,
+              initialValue: _selectedPriority,
               decoration: const InputDecoration(
                 labelText: 'Priority',
                 border: OutlineInputBorder(),
@@ -394,7 +393,7 @@ class _TasksScreenDesktopState extends ConsumerState<TasksScreenDesktop> {
 
     return Chip(
       label: Text(label, style: const TextStyle(fontSize: 11)),
-      backgroundColor: color.withOpacity(0.1),
+      backgroundColor: color.withValues(alpha: 0.1),
       side: BorderSide(color: color, width: 1),
       labelStyle: TextStyle(color: color, fontWeight: FontWeight.w600),
       padding: EdgeInsets.zero,
@@ -408,7 +407,7 @@ class _TasksScreenDesktopState extends ConsumerState<TasksScreenDesktop> {
 
     return Chip(
       label: Text(label, style: const TextStyle(fontSize: 11)),
-      backgroundColor: color.withOpacity(0.1),
+      backgroundColor: color.withValues(alpha: 0.1),
       side: BorderSide(color: color, width: 1),
       labelStyle: TextStyle(color: color, fontWeight: FontWeight.w600),
       padding: EdgeInsets.zero,

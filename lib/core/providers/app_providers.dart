@@ -19,13 +19,12 @@ import '../../features/tasks/repositories/task_repository.dart';
 import '../../features/workspaces/repositories/workspace_repository.dart';
 import '../../features/comments/repositories/comment_repository.dart';
 import '../../features/notifications/repositories/notification_repository.dart';
-import '../services/local_notifications_service.dart';
 import '../../features/documents/services/file_upload_service.dart';
 import '../../features/attachments/services/thumbnail_service.dart';
 import '../../features/attachments/repositories/attachment_repository.dart';
 import '../../features/sync/providers/sync_providers.dart';
 import '../../features/workspaces/providers/workspace_providers.dart'
-    show currentWorkspaceIdProvider, currentWorkspaceProvider;
+    show currentWorkspaceIdProvider;
 export 'theme_provider.dart' show sharedPreferencesProvider;
 export 'locale_provider.dart' show localeProvider;
 export '../../features/workspaces/providers/workspace_providers.dart'

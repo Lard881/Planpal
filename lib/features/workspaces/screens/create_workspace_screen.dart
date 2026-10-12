@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:planpal/core/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/layout/breakpoints.dart';
 import '../../../core/errors/app_failure.dart';
@@ -35,7 +34,6 @@ class _CreateWorkspaceScreenState extends ConsumerState<CreateWorkspaceScreen> {
   Widget build(BuildContext context) {
     final breakpoint = Breakpoints.getBreakpoint(context);
     final isMobile = breakpoint == BreakpointType.mobile;
-    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
@@ -62,7 +60,7 @@ class _CreateWorkspaceScreenState extends ConsumerState<CreateWorkspaceScreen> {
                         width: 80,
                         height: 80,
                         decoration: BoxDecoration(
-                          color: AppColors.success.withOpacity(0.1),
+                          color: AppColors.success.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Icon(
@@ -101,10 +99,10 @@ class _CreateWorkspaceScreenState extends ConsumerState<CreateWorkspaceScreen> {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: AppColors.error.withOpacity(0.1),
+                          color: AppColors.error.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
-                            color: AppColors.error.withOpacity(0.3),
+                            color: AppColors.error.withValues(alpha: 0.3),
                           ),
                         ),
                         child: Row(
@@ -202,7 +200,6 @@ class _CreateWorkspaceScreenState extends ConsumerState<CreateWorkspaceScreen> {
     } on AppFailure catch (e) {
       if (!mounted) return;
 
-      final l10n = AppLocalizations.of(context)!;
       setState(() {
         _isLoading = false;
         _errorMessage = FailureMessages.getMessage(context, e);

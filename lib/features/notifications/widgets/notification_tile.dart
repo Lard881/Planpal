@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart' hide Notification;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:planpal/core/db/app_database.dart';
-import 'package:planpal/core/theme/app_theme.dart';
 import 'package:planpal/core/theme/app_colors.dart';
 import 'package:planpal/features/notifications/presentation/notification_providers.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -37,10 +36,10 @@ class NotificationTile extends ConsumerWidget {
         );
       },
       child: Container(
-        color: isUnread ? AppColors.primary.withOpacity(0.05) : null,
+        color: isUnread ? AppColors.primary.withValues(alpha: 0.05) : null,
         child: ListTile(
           leading: CircleAvatar(
-            backgroundColor: _getIconColor(notification.type).withOpacity(0.1),
+            backgroundColor: _getIconColor(notification.type).withValues(alpha: 0.1),
             child: Icon(
               _getIcon(notification.type),
               color: _getIconColor(notification.type),

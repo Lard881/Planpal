@@ -5,7 +5,6 @@ import '../../../core/db/app_database.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/providers/app_providers.dart';
 import '../../../core/sync/outbox_service.dart';
-import '../../../core/errors/app_failure.dart';
 import '../../sync/providers/sync_providers.dart';
 
 const uuid = Uuid();

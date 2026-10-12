@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/db/app_database.dart';
-import '../repositories/chat_repository.dart';
 
 class ChatConversationScreen extends ConsumerStatefulWidget {
   final int? channelId;
@@ -183,7 +181,7 @@ class _ChatConversationScreenState
               color: Theme.of(context).colorScheme.surface,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withValues(alpha: 0.05),
                   blurRadius: 10,
                   offset: const Offset(0, -2),
                 ),
@@ -420,7 +418,7 @@ class _MessageBubble extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: isMe
                         ? Theme.of(context).colorScheme.primary
-                        : Theme.of(context).colorScheme.surfaceVariant,
+                        : Theme.of(context).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(18),
                   ),
                   child: Column(
@@ -455,7 +453,7 @@ class _MessageBubble extends StatelessWidget {
                               ? Theme.of(context)
                                   .colorScheme
                                   .onPrimary
-                                  .withOpacity(0.7)
+                                  .withValues(alpha: 0.7)
                               : Colors.grey[600],
                         ),
                       ),

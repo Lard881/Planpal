@@ -102,7 +102,7 @@ class SearchRepository {
         final workspace = row.readTableOrNull(_database.workspaces);
 
         if (task.title.toLowerCase().contains(lowerQuery) ||
-            (task.description?.toLowerCase().contains(lowerQuery) ?? false)) {
+            task.description.toLowerCase().contains(lowerQuery)) {
           results.add(SearchResult(
             entityId: task.id,
             entityType: 'task',
@@ -113,7 +113,7 @@ class SearchRepository {
             matchRank: _calculateLocalMatchRank(
               query: lowerQuery,
               title: task.title.toLowerCase(),
-              content: task.description?.toLowerCase(),
+              content: task.description.toLowerCase(),
             ),
           ));
         }

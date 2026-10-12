@@ -95,7 +95,7 @@ class _NewDirectMessageScreenState extends ConsumerState<NewDirectMessageScreen>
                     final member = filtered[index];
                     return ListTile(
                       leading: CircleAvatar(
-                        backgroundColor: AppTheme.primaryColor.withOpacity(0.1),
+                        backgroundColor: AppTheme.primaryColor.withValues(alpha: 0.1),
                         backgroundImage: member.userAvatarUrl != null
                             ? NetworkImage(member.userAvatarUrl!)
                             : null,
@@ -119,7 +119,7 @@ class _NewDirectMessageScreenState extends ConsumerState<NewDirectMessageScreen>
                                 'Admin',
                                 style: TextStyle(fontSize: 11),
                               ),
-                              backgroundColor: AppTheme.primaryColor.withOpacity(0.1),
+                              backgroundColor: AppTheme.primaryColor.withValues(alpha: 0.1),
                               padding: EdgeInsets.zero,
                             )
                           : null,

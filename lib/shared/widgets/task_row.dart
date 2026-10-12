@@ -52,11 +52,11 @@ class TaskRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           color: isSelected
-              ? theme.colorScheme.primary.withOpacity(0.1)
+              ? theme.colorScheme.primary.withValues(alpha: 0.1)
               : null,
           border: Border(
             bottom: BorderSide(
-              color: theme.colorScheme.outline.withOpacity(0.2),
+              color: theme.colorScheme.outline.withValues(alpha: 0.2),
               width: 1,
             ),
           ),
@@ -201,7 +201,7 @@ class TaskRow extends StatelessWidget {
                           Icon(
                             Icons.schedule,
                             size: 14,
-                            color: theme.colorScheme.onSurface.withOpacity(0.6),
+                            color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                           ),
                           const SizedBox(width: 4),
                           Text(
@@ -209,7 +209,7 @@ class TaskRow extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 12,
                               color:
-                                  theme.colorScheme.onSurface.withOpacity(0.6),
+                                  theme.colorScheme.onSurface.withValues(alpha: 0.6),
                             ),
                           ),
                         ],

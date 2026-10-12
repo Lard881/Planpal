@@ -59,7 +59,7 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
                     title: const Text('Member since'),
                     subtitle: Text(
                       userProfile?.createdAt != null
-                          ? '${userProfile!.createdAt!.year}-${userProfile.createdAt!.month.toString().padLeft(2, '0')}-${userProfile.createdAt!.day.toString().padLeft(2, '0')}'
+                          ? '${userProfile!.createdAt.year}-${userProfile.createdAt.month.toString().padLeft(2, '0')}-${userProfile.createdAt.day.toString().padLeft(2, '0')}'
                           : 'Unknown',
                     ),
                     contentPadding: EdgeInsets.zero,

@@ -5,10 +5,8 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../shared/widgets/planpal_button.dart';
 import '../../../shared/widgets/app_snackbar.dart';
-import '../../../shared/widgets/loading_overlay.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/loading_skeleton.dart';
-import '../models/workspace_member.dart';
 import '../providers/workspace_providers.dart';
 import '../../auth/presentation/auth_providers.dart';
 
@@ -332,7 +330,7 @@ class _WorkspaceMembersScreenState extends ConsumerState<WorkspaceMembersScreen>
                                 vertical: 2,
                               ),
                               decoration: BoxDecoration(
-                                color: AppColors.primary.withOpacity(0.1),
+                                color: AppColors.primary.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: Text(

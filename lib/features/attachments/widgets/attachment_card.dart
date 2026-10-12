@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/attachment.dart';
-import '../repositories/attachment_repository.dart';
 import '../../../core/providers/app_providers.dart';
 import 'file_icon.dart';
 
@@ -14,12 +13,12 @@ class AttachmentCard extends ConsumerStatefulWidget {
   final bool showDelete;
 
   const AttachmentCard({
-    Key? key,
+    super.key,
     required this.attachment,
     this.onTap,
     this.onDelete,
     this.showDelete = true,
-  }) : super(key: key);
+  });
 
   @override
   ConsumerState<AttachmentCard> createState() => _AttachmentCardState();
@@ -63,7 +62,7 @@ class _AttachmentCardState extends ConsumerState<AttachmentCard> {
                     Text(
                       _formatFileSize(widget.attachment.fileSize),
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurface.withOpacity(0.6),
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                       ),
                     ),
                   ],

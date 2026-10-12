@@ -61,7 +61,7 @@ class TaskTile extends StatelessWidget {
                         decoration:
                             isCompleted ? TextDecoration.lineThrough : null,
                         color: isCompleted
-                            ? theme.colorScheme.onSurface.withOpacity(0.5)
+                            ? theme.colorScheme.onSurface.withValues(alpha: 0.5)
                             : null,
                         fontWeight: FontWeight.w500,
                       ),
@@ -74,7 +74,7 @@ class TaskTile extends StatelessWidget {
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurface.withOpacity(0.6),
+                          color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                         ),
                       ),
                     ],
@@ -130,7 +130,7 @@ class TaskTile extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(4),
         border: Border.all(color: color, width: 1),
       ),
@@ -152,7 +152,7 @@ class TaskTile extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(4),
       ),
       child: Text(

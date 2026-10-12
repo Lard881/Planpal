@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../data/search_repository.dart';
 import '../search_providers.dart';
 import '../widgets/search_results_list.dart';
 import '../widgets/search_type_chips.dart';

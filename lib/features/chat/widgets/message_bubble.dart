@@ -33,7 +33,7 @@ class MessageBubble extends ConsumerWidget {
           if (!isMe && showSender)
             CircleAvatar(
               radius: 16,
-              backgroundColor: AppTheme.primaryColor.withOpacity(0.1),
+              backgroundColor: AppTheme.primaryColor.withValues(alpha: 0.1),
               child: Text(
                 _getInitials(message.senderId),
                 style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
@@ -311,8 +311,7 @@ class _FileAttachment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: Fetch actual file metadata from Files table
-    // For now, show placeholder
-    final isImage = false; // Check mime type when file data available
+    final isImage = fileId.endsWith('.png') || fileId.endsWith('.jpg') || fileId.endsWith('.jpeg');
     
     if (isImage) {
       return ClipRRect(

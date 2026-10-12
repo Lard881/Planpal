@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:planpal/core/l10n/app_localizations.dart';
 import 'dart:async';
 import '../../../core/theme/app_colors.dart';
-import '../../../core/services/supabase_service.dart';
 import '../../../core/utils/logger.dart';
 import '../../../shared/widgets/planpal_button.dart';
 import '../../../core/errors/app_failure.dart';
@@ -84,7 +83,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                     width: 80,
                     height: 80,
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.1),
+                      color: AppColors.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Icon(
@@ -205,9 +204,9 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.error.withOpacity(0.1),
+        color: AppColors.error.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: AppColors.error.withOpacity(0.3)),
+        border: Border.all(color: AppColors.error.withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [

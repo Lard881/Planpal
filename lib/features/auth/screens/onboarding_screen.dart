@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:planpal/core/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/layout/breakpoints.dart';
-import '../../../shared/widgets/planpal_button.dart';
 
 /// Onboarding screen
 /// Shown after first login to help user choose between:
@@ -25,7 +23,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   Widget build(BuildContext context) {
     final breakpoint = Breakpoints.getBreakpoint(context);
     final isMobile = breakpoint == BreakpointType.mobile;
-    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: SafeArea(
@@ -176,7 +173,7 @@ class _OptionCard extends StatelessWidget {
           border: Border.all(color: AppColors.grey300),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.04),
+              color: Colors.black.withValues(alpha: 0.04),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -188,7 +185,7 @@ class _OptionCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: iconColor.withOpacity(0.1),
+                color: iconColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(

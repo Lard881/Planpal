@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/db/app_database.dart' hide Label;
 import '../models/label.dart';
 
 /// Label repository provider (stub for now)

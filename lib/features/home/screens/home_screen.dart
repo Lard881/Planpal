@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../auth/presentation/auth_providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/providers/app_providers.dart';
-import '../../../core/providers/theme_provider.dart';
 import '../../../core/db/app_database.dart' show Task;
 import '../../tasks/models/task.dart' show TaskView;
 import '../../workspaces/providers/workspace_providers.dart';
@@ -717,8 +716,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildDesktopTaskCard(BuildContext context, dynamic task) {
-    final theme = Theme.of(context);
-    final isPriorityHigh = task.priority == 'high' || task.priority == 'urgent';
     final priorityColor = task.priority == 'high' ? Colors.red : task.priority == 'medium' ? Colors.orange : Colors.green;
     final priorityLabel = task.priority == 'high' ? 'High Priority' : task.priority == 'medium' ? 'Med Priority' : 'Low Priority';
 

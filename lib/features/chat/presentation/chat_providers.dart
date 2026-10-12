@@ -1,10 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:planpal/core/db/app_database.dart' hide WorkspaceMember;
-import 'package:planpal/core/network/api_client.dart';
-import 'package:planpal/core/services/supabase_service.dart';
 import 'package:planpal/core/providers/app_providers.dart';
 import 'package:planpal/features/chat/data/chat_repository.dart';
-import 'package:planpal/features/workspaces/models/workspace_member.dart';
 export 'package:planpal/features/workspaces/models/workspace_member.dart';
 
 /// Chat repository provider

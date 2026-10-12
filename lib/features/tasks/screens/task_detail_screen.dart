@@ -379,7 +379,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
 
     return Chip(
       label: Text(label),
-      backgroundColor: color.withOpacity(0.1),
+      backgroundColor: color.withValues(alpha: 0.1),
       side: BorderSide(color: color, width: 1),
       labelStyle: TextStyle(color: color, fontWeight: FontWeight.w600),
     );
@@ -392,7 +392,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
     return Chip(
       avatar: Icon(Icons.flag, size: 16, color: color),
       label: Text(label),
-      backgroundColor: color.withOpacity(0.1),
+      backgroundColor: color.withValues(alpha: 0.1),
       side: BorderSide(color: color, width: 1),
       labelStyle: TextStyle(color: color, fontWeight: FontWeight.w600),
     );
@@ -406,7 +406,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
     return Chip(
       avatar: Icon(Icons.calendar_today, size: 16, color: color),
       label: Text(DateFormat('MMM d').format(task.dueDate!)),
-      backgroundColor: color.withOpacity(0.1),
+      backgroundColor: color.withValues(alpha: 0.1),
       side: BorderSide(color: color, width: 1),
       labelStyle: TextStyle(color: color, fontWeight: FontWeight.w600),
     );

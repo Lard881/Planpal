@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../models/reminder_type.dart';
-import '../../../core/theme/app_colors.dart';
 
 /// Reminder picker widget
 class ReminderPicker extends StatefulWidget {
@@ -18,14 +17,6 @@ class ReminderPicker extends StatefulWidget {
 }
 
 class _ReminderPickerState extends State<ReminderPicker> {
-  late ReminderType _selectedType;
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedType = widget.initialReminder.type;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Padding(

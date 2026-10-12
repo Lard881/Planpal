@@ -5,9 +5,7 @@ import 'package:planpal/features/chat/presentation/chat_providers.dart';
 import 'package:planpal/features/chat/widgets/message_composer.dart';
 import 'package:planpal/features/chat/widgets/message_bubble.dart';
 import 'package:planpal/features/workspaces/providers/workspace_providers.dart';
-import 'package:planpal/core/services/supabase_service.dart';
 import 'package:planpal/core/providers/app_providers.dart';
-import 'package:timeago/timeago.dart' as timeago;
 
 /// Desktop chat screen with split view (channels on left, conversation on right)
 class ChatScreenDesktop extends ConsumerStatefulWidget {

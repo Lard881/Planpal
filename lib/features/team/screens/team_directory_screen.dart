@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../workspaces/repositories/workspace_repository.dart';
-import '../../../core/providers/app_providers.dart';
 
 class TeamDirectoryScreen extends ConsumerStatefulWidget {
   const TeamDirectoryScreen({super.key});

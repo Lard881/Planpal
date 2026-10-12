@@ -129,7 +129,7 @@ class _WorkspaceSettingsScreenState
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: AppColors.error.withOpacity(0.1),
+                color: AppColors.error.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
@@ -245,6 +245,7 @@ class _WorkspaceSettingsScreenState
                   PlanPalTextField(
                     label: context.l10n.workspaceName,
                     controller: _nameController,
+                    validator: _validateName,
                     enabled: canEdit && !_isLoading,
                     prefixIcon: const Icon(Icons.workspaces),
                   ),
@@ -286,7 +287,7 @@ class _WorkspaceSettingsScreenState
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: AppColors.warning.withOpacity(0.1),
+                        color: AppColors.warning.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../models/notification.dart';
-import '../../../core/db/app_database.dart';
 
 /// Service for handling notification navigation to target screens
 class NotificationNavigationService {

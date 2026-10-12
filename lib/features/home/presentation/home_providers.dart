@@ -2,7 +2,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/home_repository.dart';
 import '../models/dashboard_overview.dart';
 import '../../../core/providers/app_providers.dart';
-import '../../workspaces/providers/workspace_providers.dart';
 
 /// Home repository provider
 final homeRepositoryProvider = Provider<HomeRepository>((ref) {

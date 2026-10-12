@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/attachment.dart';
-import '../repositories/attachment_repository.dart';
 import '../../../core/providers/app_providers.dart';
 import 'attachment_card.dart';
 import 'attachment_preview.dart';
@@ -13,11 +12,11 @@ class AttachmentList extends ConsumerStatefulWidget {
   final VoidCallback? onAddPressed;
 
   const AttachmentList({
-    Key? key,
+    super.key,
     required this.taskId,
     this.showAddButton = true,
     this.onAddPressed,
-  }) : super(key: key);
+  });
 
   @override
   ConsumerState<AttachmentList> createState() => _AttachmentListState();
@@ -94,7 +93,7 @@ class _AttachmentListState extends ConsumerState<AttachmentList> {
               Text(
                 _error!,
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurface.withOpacity(0.6),
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -120,20 +119,20 @@ class _AttachmentListState extends ConsumerState<AttachmentList> {
               Icon(
                 Icons.attach_file,
                 size: 48,
-                color: theme.colorScheme.onSurface.withOpacity(0.3),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
               ),
               const SizedBox(height: 16),
               Text(
                 'No attachments',
                 style: theme.textTheme.titleMedium?.copyWith(
-                  color: theme.colorScheme.onSurface.withOpacity(0.6),
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 'Add files or links to this task',
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurface.withOpacity(0.4),
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
                 ),
               ),
               if (widget.showAddButton && widget.onAddPressed != null) ...[

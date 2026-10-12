@@ -103,7 +103,7 @@ class DateTimePickerField extends StatelessWidget {
               border: Border.all(
                 color: errorText != null
                     ? theme.colorScheme.error
-                    : theme.colorScheme.outline.withOpacity(0.3),
+                    : theme.colorScheme.outline.withValues(alpha: 0.3),
               ),
               borderRadius: BorderRadius.circular(10),
             ),
@@ -112,7 +112,7 @@ class DateTimePickerField extends StatelessWidget {
                 Icon(
                   includeTime ? Icons.event : Icons.calendar_today,
                   size: 20,
-                  color: theme.colorScheme.onSurface.withOpacity(0.6),
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -126,7 +126,7 @@ class DateTimePickerField extends StatelessWidget {
                       fontSize: 14,
                       color: value != null
                           ? theme.colorScheme.onSurface
-                          : theme.colorScheme.onSurface.withOpacity(0.5),
+                          : theme.colorScheme.onSurface.withValues(alpha: 0.5),
                     ),
                   ),
                 ),
@@ -136,7 +136,7 @@ class DateTimePickerField extends StatelessWidget {
                     child: Icon(
                       Icons.clear,
                       size: 20,
-                      color: theme.colorScheme.onSurface.withOpacity(0.6),
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                     ),
                   ),
               ],

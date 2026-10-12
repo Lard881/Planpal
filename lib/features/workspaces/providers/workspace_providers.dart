@@ -13,11 +13,10 @@ export '../../../core/providers/app_providers.dart' show workspaceRepositoryProv
 /// Persisted in SharedPreferences
 class CurrentWorkspaceNotifier extends StateNotifier<String?> {
   final SharedPreferences _prefs;
-  final WorkspaceRepository _repository;
   
   static const String _key = 'current_workspace_id';
 
-  CurrentWorkspaceNotifier(this._prefs, this._repository) : super(null) {
+  CurrentWorkspaceNotifier(this._prefs, [WorkspaceRepository? repository]) : super(null) {
     _loadSaved();
   }
 

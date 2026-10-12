@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../../core/db/app_database.dart';
 import '../models/notification.dart';
 import 'notification_detail_sheet.dart';
 
@@ -55,7 +54,7 @@ class NotificationListTile extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           color: isUnread
-              ? Theme.of(context).colorScheme.primaryContainer.withOpacity(0.1)
+              ? Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.1)
               : null,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -182,7 +181,7 @@ class NotificationListTile extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha: 0.1),
             shape: BoxShape.circle,
           ),
           child: Icon(

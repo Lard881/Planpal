@@ -1,6 +1,5 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/utils/logger.dart';
-import '../../../core/errors/app_failure.dart';
 
 /// Session expiry handler
 /// Handles session refresh and expiry logic

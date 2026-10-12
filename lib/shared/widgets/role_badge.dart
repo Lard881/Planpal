@@ -14,8 +14,6 @@ class RoleBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     Color getColor() {
       switch (role.toLowerCase()) {
         case 'admin':
@@ -62,7 +60,7 @@ class RoleBadge extends StatelessWidget {
         vertical: compact ? 2 : 4,
       ),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
+        color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(compact ? 4 : 6),
       ),
       child: Row(

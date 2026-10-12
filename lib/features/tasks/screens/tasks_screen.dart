@@ -296,7 +296,6 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
 
   Widget _buildTaskCard(BuildContext context, dynamic task) {
     final theme = Theme.of(context);
-    final taskRepository = ref.watch(taskRepositoryProvider);
     
     // Determine priority color and label
     Color priorityColor;

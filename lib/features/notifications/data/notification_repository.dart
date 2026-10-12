@@ -3,7 +3,6 @@ import 'package:drift/drift.dart';
 import 'package:planpal/core/db/app_database.dart';
 import 'package:planpal/core/network/api_client.dart';
 import 'package:planpal/core/services/supabase_service.dart';
-import 'package:supabase_flutter/supabase_flutter.dart' as sp;
 
 /// Repository for notifications
 class NotificationRepository {

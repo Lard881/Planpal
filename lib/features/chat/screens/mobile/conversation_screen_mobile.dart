@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:planpal/core/theme/app_theme.dart';
 import 'package:planpal/features/chat/presentation/chat_providers.dart';
 import 'package:planpal/features/chat/widgets/message_composer.dart';
 import 'package:planpal/features/chat/widgets/message_bubble.dart';
-import 'package:planpal/core/services/supabase_service.dart';
 import 'package:planpal/core/providers/app_providers.dart';
 
 /// Mobile conversation screen - shows messages in a channel

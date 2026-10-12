@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/planpal_chip.dart';
-import '../../../core/db/app_database.dart';
 import '../models/task_data.dart'; // Add TaskData typedef
 
 /// Task list item widget
@@ -20,7 +19,7 @@ class TaskListTile extends StatelessWidget {
   });
 
   Color get _priorityColor {
-    switch (task.priority?.toLowerCase()) {
+    switch (task.priority.toLowerCase()) {
       case 'urgent':
         return AppColors.error;
       case 'high':
@@ -50,7 +49,7 @@ class TaskListTile extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(
-          color: _isOverdue ? AppColors.error.withOpacity(0.3) : Colors.transparent,
+          color: _isOverdue ? AppColors.error.withValues(alpha: 0.3) : Colors.transparent,
           width: 2,
         ),
       ),
@@ -99,26 +98,25 @@ class TaskListTile extends StatelessWidget {
                   ),
 
                   // Priority indicator
-                  if (task.priority != null)
-                    Container(
-                      width: 4,
-                      height: 24,
-                      margin: const EdgeInsets.only(left: 8),
-                      decoration: BoxDecoration(
-                        color: _priorityColor,
-                        borderRadius: BorderRadius.circular(2),
-                      ),
+                  Container(
+                    width: 4,
+                    height: 24,
+                    margin: const EdgeInsets.only(left: 8),
+                    decoration: BoxDecoration(
+                      color: _priorityColor,
+                      borderRadius: BorderRadius.circular(2),
                     ),
+                  ),
                 ],
               ),
 
               // Description
-              if (task.description != null && task.description!.isNotEmpty) ...[
+              if (task.description.isNotEmpty) ...[
                 const SizedBox(height: 8),
                 Padding(
                   padding: const EdgeInsets.only(left: 36),
                   child: Text(
-                    task.description!,
+                    task.description,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: AppColors.grey600,
                       decoration: _isCompleted ? TextDecoration.lineThrough : null,
@@ -172,7 +170,7 @@ class TaskListTile extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
                             color: _isOverdue
-                                ? AppColors.error.withOpacity(0.1)
+                                ? AppColors.error.withValues(alpha: 0.1)
                                 : AppColors.grey100,
                             borderRadius: BorderRadius.circular(4),
                           ),

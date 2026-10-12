@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models/task_link.dart';
-import '../repositories/attachment_repository.dart';
 import '../../../core/providers/app_providers.dart';
 
 /// Card widget that displays a task link with favicon, title, description, and actions
@@ -13,12 +12,12 @@ class LinkCard extends ConsumerStatefulWidget {
   final bool showDelete;
 
   const LinkCard({
-    Key? key,
+    super.key,
     required this.link,
     this.onTap,
     this.onDelete,
     this.showDelete = true,
-  }) : super(key: key);
+  });
 
   @override
   ConsumerState<LinkCard> createState() => _LinkCardState();
@@ -65,7 +64,7 @@ class _LinkCardState extends ConsumerState<LinkCard> {
                       Text(
                         widget.link.description!,
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurface.withOpacity(0.6),
+                          color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -77,7 +76,7 @@ class _LinkCardState extends ConsumerState<LinkCard> {
                     Text(
                       widget.link.url,
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.primary.withOpacity(0.8),
+                        color: theme.colorScheme.primary.withValues(alpha: 0.8),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

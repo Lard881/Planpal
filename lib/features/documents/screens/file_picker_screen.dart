@@ -5,11 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:mime/mime.dart';
 import '../../../core/l10n/app_localizations.dart';
-import '../../../features/auth/presentation/auth_providers.dart';
-import '../../../features/workspaces/providers/workspace_providers.dart';
 import '../providers/document_providers.dart';
-import '../services/file_upload_service.dart';
-import '../repositories/document_repository.dart';
 import '../../../core/providers/app_providers.dart';
 
 class FilePickerScreen extends ConsumerStatefulWidget {
@@ -77,7 +73,7 @@ class _FilePickerScreenState extends ConsumerState<FilePickerScreen> {
           ),
           borderRadius: BorderRadius.circular(12),
           color: _isDragging
-              ? Theme.of(context).primaryColor.withOpacity(0.1)
+              ? Theme.of(context).primaryColor.withValues(alpha: 0.1)
               : Colors.transparent,
         ),
         child: Center(
@@ -117,8 +113,7 @@ class _FilePickerScreenState extends ConsumerState<FilePickerScreen> {
   }
 
   Widget _buildMobileUpload(BuildContext context, AppLocalizations l10n) {
-    // Check connectivity (simplified - in production use connectivity_plus)
-    final isOnline = true; // TODO: Implement actual connectivity check
+    final isOnline = ref.watch(isOnlineProvider);
 
     return Center(
       child: Padding(

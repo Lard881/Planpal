@@ -105,7 +105,9 @@ class _ProfileSettingsScreenState extends ConsumerState<ProfileSettingsScreen> {
                                   : null,
                               child: userProfile.avatarUrl == null
                                   ? Text(
-                                      (userProfile.fullName ?? 'U')[0]
+                                      (userProfile.fullName.isNotEmpty
+                                              ? userProfile.fullName[0]
+                                              : 'U')
                                           .toUpperCase(),
                                       style: const TextStyle(
                                         color: Colors.white,
@@ -187,7 +189,7 @@ class _ProfileSettingsScreenState extends ConsumerState<ProfileSettingsScreen> {
 
                   // Timezone
                   DropdownButtonFormField<String>(
-                    value: _selectedTimezone,
+                    initialValue: _selectedTimezone,
                     decoration: InputDecoration(
                       labelText: 'Timezone',
                       prefixIcon: const Icon(Icons.access_time),
@@ -212,7 +214,7 @@ class _ProfileSettingsScreenState extends ConsumerState<ProfileSettingsScreen> {
 
                   // Language
                   DropdownButtonFormField<String>(
-                    value: _selectedLanguage,
+                    initialValue: _selectedLanguage,
                     decoration: InputDecoration(
                       labelText: l10n.language,
                       prefixIcon: const Icon(Icons.language),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import '../../../core/theme/app_colors.dart';
 import '../providers/task_providers.dart';
 import '../../workspaces/providers/workspace_providers.dart';
 import '../models/task.dart' show TaskView;
@@ -81,7 +80,7 @@ class _TasksScreenMobileState extends ConsumerState<TasksScreenMobile> {
               child: Container(
                 height: 48,
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.surfaceVariant,
+                  color: theme.colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: TextField(

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../workspaces/providers/workspace_providers.dart';
 
 class WorkspaceSettingsScreen extends ConsumerStatefulWidget {
   const WorkspaceSettingsScreen({super.key});
@@ -27,15 +26,11 @@ class _WorkspaceSettingsScreenState
 
   @override
   Widget build(BuildContext context) {
-    final workspaceAsync = ref.watch(currentWorkspaceProvider);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Workspace Settings'),
       ),
-      body: workspaceAsync == null
-          ? const Center(child: Text('No workspace selected'))
-          : ListView(
+      body: ListView(
               padding: const EdgeInsets.all(16),
               children: [
                 // Basic info

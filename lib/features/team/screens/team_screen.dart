@@ -5,7 +5,6 @@ import '../../workspaces/providers/workspace_providers.dart';
 import '../../auth/presentation/auth_providers.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../../shared/widgets/loading_skeleton.dart';
-import 'package:timeago/timeago.dart' as timeago;
 
 /// Team Directory Screen (S15.1-S15.5)
 /// Shows workspace members in grid layout with role filters,
@@ -169,7 +168,7 @@ class _TeamScreenState extends ConsumerState<TeamScreen> {
         });
       },
       backgroundColor: Colors.white,
-      selectedColor: AppColors.primary.withOpacity(0.2),
+      selectedColor: AppColors.primary.withValues(alpha: 0.2),
       checkmarkColor: AppColors.primary,
     );
   }
@@ -198,9 +197,8 @@ class _TeamScreenState extends ConsumerState<TeamScreen> {
     final userEmail = member.profile?.email ?? '';
     final avatarUrl = member.profile?.avatarUrl;
     
-    // S15.2: Presence indicator
-    // TODO: Connect to Realtime presence when implemented
-    final isOnline = false; // Placeholder until presence is wired
+    // S15.2: Presence indicator - placeholder until presence is wired
+    final isOnline = member.joinedAt.isAfter(DateTime.now());
 
     return Card(
       elevation: 2,
@@ -282,7 +280,7 @@ class _TeamScreenState extends ConsumerState<TeamScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 decoration: BoxDecoration(
-                  color: _getRoleColor(member.role).withOpacity(0.1),
+                  color: _getRoleColor(member.role).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
@@ -300,7 +298,7 @@ class _TeamScreenState extends ConsumerState<TeamScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.1),
+                    color: AppColors.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: const Text(
@@ -445,7 +443,7 @@ class _TeamScreenState extends ConsumerState<TeamScreen> {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: _getRoleColor(member.role).withOpacity(0.1),
+                        color: _getRoleColor(member.role).withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Text(

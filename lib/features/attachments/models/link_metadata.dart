@@ -1,4 +1,3 @@
-import '../../../core/db/app_database.dart';
 
 /// Link metadata from URL preview
 class LinkMetadata {

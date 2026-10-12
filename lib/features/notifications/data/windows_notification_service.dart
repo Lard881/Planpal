@@ -90,18 +90,8 @@ class WindowsNotificationService {
       // Build payload for tap handling
       final payload = '${notification.id}|${notification.entityType ?? ''}|${notification.entityId ?? ''}';
 
-      const windowsDetails = DarwinNotificationDetails(
-        presentAlert: true,
-        presentBadge: true,
-        presentSound: true,
-        subtitle: null,
-        threadIdentifier: 'planpal_notifications',
-      );
-
-      // TODO: NotificationDetails doesn't have 'windows' parameter
-      const details = NotificationDetails(
-        // windows: windowsDetails, // Not supported
-      );
+      // NotificationDetails doesn't have Windows-specific parameters in this package version
+      const details = NotificationDetails();
 
       await _localNotifications.show(
         notification.id.hashCode,

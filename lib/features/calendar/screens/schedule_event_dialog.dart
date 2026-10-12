@@ -129,7 +129,7 @@ class _ScheduleEventDialogState extends ConsumerState<ScheduleEventDialog> {
 
                 // Reminder
                 DropdownButtonFormField<int?>(
-                  value: _reminderMinutes,
+                  initialValue: _reminderMinutes,
                   decoration: const InputDecoration(
                     labelText: 'Reminder',
                     border: OutlineInputBorder(),
@@ -252,7 +252,7 @@ class _ScheduleEventDialogState extends ConsumerState<ScheduleEventDialog> {
             endsAt: _endsAt,
             allDay: _allDay,
             description: _descriptionController.text.trim(),
-            color: '#${_color.value.toRadixString(16).substring(2, 8)}',
+            color: '#${_color.toARGB32().toRadixString(16).substring(2, 8)}',
             attendeeIds: _attendeeIds,
           );
 

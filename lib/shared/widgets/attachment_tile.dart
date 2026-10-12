@@ -80,7 +80,7 @@ class AttachmentTile extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           border: Border.all(
-            color: theme.colorScheme.outline.withOpacity(0.2),
+            color: theme.colorScheme.outline.withValues(alpha: 0.2),
           ),
           borderRadius: BorderRadius.circular(8),
         ),
@@ -90,7 +90,7 @@ class AttachmentTile extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: fileColor.withOpacity(0.1),
+                color: fileColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Icon(fileIcon, color: fileColor, size: 20),
@@ -119,7 +119,7 @@ class AttachmentTile extends StatelessWidget {
                       fileSize,
                       style: TextStyle(
                         fontSize: 12,
-                        color: theme.colorScheme.onSurface.withOpacity(0.6),
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                       ),
                     ),
                 ],

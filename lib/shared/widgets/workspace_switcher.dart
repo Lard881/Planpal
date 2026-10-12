@@ -26,7 +26,7 @@ class WorkspaceSwitcher extends StatelessWidget {
           vertical: compact ? 6 : 8,
         ),
         decoration: BoxDecoration(
-          color: theme.colorScheme.surfaceVariant.withOpacity(0.5),
+          color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Row(
@@ -72,7 +72,7 @@ class WorkspaceSwitcher extends StatelessWidget {
             Icon(
               Icons.arrow_drop_down,
               size: compact ? 18 : 20,
-              color: theme.colorScheme.onSurface.withOpacity(0.6),
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
             ),
           ],
         ),

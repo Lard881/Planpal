@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -25,7 +24,6 @@ class _FilePreviewScreenState extends ConsumerState<FilePreviewScreen> {
   bool _isLoading = true;
   bool _isDownloading = false;
   String? _downloadUrl;
-  String? _localFilePath;
   String? _error;
   double _downloadProgress = 0.0;
 
@@ -87,7 +85,6 @@ class _FilePreviewScreenState extends ConsumerState<FilePreviewScreen> {
       );
 
       setState(() {
-        _localFilePath = filePath;
         _isDownloading = false;
       });
 
@@ -131,8 +128,7 @@ class _FilePreviewScreenState extends ConsumerState<FilePreviewScreen> {
   }
 
   bool _isImageFile() {
-    final mimeType = widget.document.fileId; // We'd need to get actual mime from Files table
-    // For now, check by extension from title
+    // Check by extension from title
     final title = widget.document.title.toLowerCase();
     return title.endsWith('.jpg') ||
         title.endsWith('.jpeg') ||

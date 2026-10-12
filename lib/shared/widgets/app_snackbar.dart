@@ -19,7 +19,6 @@ class AppSnackbar {
         case SnackbarType.error:
           return const Color(0xFFEF4444);
         case SnackbarType.info:
-        default:
           return const Color(0xFF3B82F6);
       }
     }
@@ -31,7 +30,6 @@ class AppSnackbar {
         case SnackbarType.error:
           return Icons.error;
         case SnackbarType.info:
-        default:
           return Icons.info;
       }
     }

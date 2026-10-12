@@ -29,7 +29,7 @@ class StatCard extends StatelessWidget {
         color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: theme.colorScheme.outline.withOpacity(0.2),
+          color: theme.colorScheme.outline.withValues(alpha: 0.2),
         ),
       ),
       child: Row(
@@ -38,7 +38,7 @@ class StatCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(icon, color: color, size: 24),
@@ -68,8 +68,8 @@ class StatCard extends StatelessWidget {
                         ),
                         decoration: BoxDecoration(
                           color: isPositive
-                              ? const Color(0xFF10B981).withOpacity(0.1)
-                              : const Color(0xFFEF4444).withOpacity(0.1),
+                              ? const Color(0xFF10B981).withValues(alpha: 0.1)
+                              : const Color(0xFFEF4444).withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
@@ -91,7 +91,7 @@ class StatCard extends StatelessWidget {
                   label,
                   style: TextStyle(
                     fontSize: 12,
-                    color: theme.colorScheme.onSurface.withOpacity(0.6),
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
                 ),
               ],

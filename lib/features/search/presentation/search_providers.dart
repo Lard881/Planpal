@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../sync/providers/sync_providers.dart';
 import '../../../core/providers/app_providers.dart';
 import '../../../core/network/connectivity_service.dart';
 import '../../../features/auth/presentation/auth_providers.dart';

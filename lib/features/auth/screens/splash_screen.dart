@@ -150,7 +150,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         logger.i('🎉 Initialization complete, navigating to app');
         context.go('/today');
       }
-    } catch (e, stack) {
+    } catch (e) {
       // If /me fails but session exists, still let user in (offline mode)
       logger.w('⚠️ Failed to fetch user data, continuing in offline mode', error: e);
       

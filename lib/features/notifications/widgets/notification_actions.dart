@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../core/db/app_database.dart';
 import '../models/notification.dart'; // Add NotificationData typedef
 import '../data/notification_navigation_service.dart';
 
@@ -102,7 +101,7 @@ class NotificationActionBar extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+        color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
         border: Border(
           top: BorderSide(
             color: Theme.of(context).dividerColor,

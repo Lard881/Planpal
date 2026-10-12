@@ -1,7 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:planpal/core/db/app_database.dart';
-import 'package:planpal/core/network/api_client.dart';
-import 'package:planpal/core/services/supabase_service.dart';
 import 'package:planpal/core/providers/app_providers.dart';
 import 'package:planpal/features/notifications/repositories/notification_repository.dart';
 

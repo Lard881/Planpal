@@ -144,7 +144,7 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
 
               // Status
               DropdownButtonFormField<String>(
-                value: _status,
+                initialValue: _status,
                 decoration: const InputDecoration(
                   labelText: 'Status',
                   border: OutlineInputBorder(),
@@ -167,7 +167,7 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
 
               // Priority
               DropdownButtonFormField<String>(
-                value: _priority,
+                initialValue: _priority,
                 decoration: const InputDecoration(
                   labelText: 'Priority',
                   border: OutlineInputBorder(),
@@ -262,8 +262,8 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
               // Attachments (disabled offline)
               Card(
                 color: _isOnline
-                    ? theme.colorScheme.surfaceVariant
-                    : theme.colorScheme.errorContainer.withOpacity(0.1),
+                    ? theme.colorScheme.surfaceContainerHighest
+                    : theme.colorScheme.errorContainer.withValues(alpha: 0.1),
                 child: ListTile(
                   leading: Icon(
                     Icons.attach_file,
@@ -301,10 +301,10 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.errorContainer.withOpacity(0.1),
+                    color: theme.colorScheme.errorContainer.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                      color: theme.colorScheme.error.withOpacity(0.3),
+                      color: theme.colorScheme.error.withValues(alpha: 0.3),
                     ),
                   ),
                   child: Row(

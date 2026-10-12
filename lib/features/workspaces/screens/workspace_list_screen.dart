@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/providers/app_providers.dart';
 import '../providers/workspace_providers.dart';
 import 'create_workspace_screen.dart';
 import 'join_workspace_screen.dart';
@@ -88,7 +87,7 @@ class WorkspaceListScreen extends ConsumerWidget {
                       color: Theme.of(context)
                           .colorScheme
                           .onSurface
-                          .withOpacity(0.6),
+                          .withValues(alpha: 0.6),
                     ),
                   ),
                   trailing: isSelected

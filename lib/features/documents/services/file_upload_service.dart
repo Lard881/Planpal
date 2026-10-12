@@ -1,11 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/network/api_client.dart';
-import '../../../core/providers/app_providers.dart';
-import '../../../core/errors/app_failure.dart';
 
 const uuid = Uuid();
 

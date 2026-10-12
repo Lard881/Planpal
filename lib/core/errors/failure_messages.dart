@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../l10n/app_localizations.dart';
 import 'app_failure.dart';
 
 /// Maps AppFailure to localized user-friendly messages

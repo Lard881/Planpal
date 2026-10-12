@@ -216,7 +216,7 @@ class _AnimatedNotificationBellIconState
                             color: Theme.of(context)
                                 .colorScheme
                                 .error
-                                .withOpacity(0.5),
+                                .withValues(alpha: 0.5),
                             blurRadius: 8,
                             spreadRadius: 1,
                           ),

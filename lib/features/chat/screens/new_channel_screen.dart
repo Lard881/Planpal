@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/db/app_database.dart';
-import '../repositories/chat_repository.dart';
-import '../../workspaces/providers/workspace_providers.dart';
 
 class NewChannelScreen extends ConsumerStatefulWidget {
   const NewChannelScreen({super.key});
@@ -208,11 +205,6 @@ class _NewChannelScreenState extends ConsumerState<NewChannelScreen> {
     });
 
     try {
-      final currentWorkspace = ref.read(currentWorkspaceProvider);
-      if (currentWorkspace == null) {
-        throw Exception('No workspace selected');
-      }
-
       // Create channel logic here
       await Future.delayed(const Duration(seconds: 1)); // Simulate network
 

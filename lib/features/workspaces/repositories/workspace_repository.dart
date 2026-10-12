@@ -1,7 +1,6 @@
 import 'package:drift/drift.dart';
 import '../../../core/db/app_database.dart';
 import '../../../core/network/api_client.dart';
-import '../models/workspace.dart' as models;
 import '../models/workspace_member.dart' as api_models;
 import '../models/invite_code.dart';
 

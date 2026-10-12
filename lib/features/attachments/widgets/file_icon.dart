@@ -8,12 +8,12 @@ class FileIcon extends StatelessWidget {
   final Color? color;
 
   const FileIcon({
-    Key? key,
+    super.key,
     this.mimeType,
     this.fileName,
     this.size = 40.0,
     this.color,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -138,6 +138,6 @@ class FileIcon extends StatelessWidget {
     }
 
     // Default color
-    return theme.colorScheme.onSurface.withOpacity(0.6);
+    return theme.colorScheme.onSurface.withValues(alpha: 0.6);
   }
 }

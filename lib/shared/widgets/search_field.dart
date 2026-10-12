@@ -66,7 +66,7 @@ class _SearchFieldState extends State<SearchField> {
     return Container(
       height: 48,
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceVariant.withOpacity(0.5),
+        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(12),
       ),
       child: TextField(
@@ -77,19 +77,19 @@ class _SearchFieldState extends State<SearchField> {
         decoration: InputDecoration(
           hintText: widget.hintText ?? 'Search...',
           hintStyle: TextStyle(
-            color: theme.colorScheme.onSurface.withOpacity(0.5),
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
             fontSize: 14,
           ),
           prefixIcon: Icon(
             Icons.search,
-            color: theme.colorScheme.onSurface.withOpacity(0.5),
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
             size: 20,
           ),
           suffixIcon: _hasText
               ? IconButton(
                   icon: Icon(
                     Icons.clear,
-                    color: theme.colorScheme.onSurface.withOpacity(0.5),
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
                     size: 20,
                   ),
                   onPressed: _clear,

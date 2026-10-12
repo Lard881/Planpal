@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/db/app_database.dart';
 import '../../../core/providers/app_providers.dart';
-import '../repositories/chat_repository.dart';
 import '../presentation/chat_providers.dart';
 import '../../../shared/widgets/loading_skeleton.dart';
-import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/error_state.dart';
 
 class ChatChannelsScreen extends ConsumerStatefulWidget {

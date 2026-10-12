@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import '../../../core/providers/app_providers.dart';
 import 'firebase_messaging_service.dart';
 
