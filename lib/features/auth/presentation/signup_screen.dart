@@ -12,6 +12,7 @@ import 'auth_notifier.dart';
 import 'widgets/auth_logo.dart';
 import 'widgets/auth_divider.dart';
 import 'widgets/google_button.dart';
+import '../../../core/services/google_sign_in_service.dart';
 
 class SignupScreen extends ConsumerStatefulWidget {
   const SignupScreen({super.key});
@@ -260,7 +261,16 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
         const SizedBox(height: 16),
         const AuthDivider(),
         const SizedBox(height: 16),
-        GoogleButton(onPressed: () {}),
+        GoogleButton(onPressed: () async {
+                  final (ok, err) = await GoogleSignInService.signIn();
+                  if (!mounted) return;
+                  if (err != null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(err.message)));
+                  } else if (ok) {
+                    context.go('/home');
+                  }
+                }),
       ],
     );
   }

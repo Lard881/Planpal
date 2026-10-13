@@ -60,8 +60,12 @@ dependencies:
   # Icons (Lucide style)
   lucide_icons_flutter: ^3.1.14
 
-  # Google Fonts (Inter + Noto Sans, downloaded at runtime, cached locally)
-  google_fonts: ^6.2.1
+  # Firebase (FCM push notifications)
+  firebase_core: ^3.15.2
+  firebase_messaging: ^15.2.10
+
+  # Google Fonts
+  google_fonts: ^6.3.3
 
   # Calendar
   table_calendar: ^3.2.0

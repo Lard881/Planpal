@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "932008798155",
+    "project_id": "planpal-4fa67",
+    "storage_bucket": "planpal-4fa67.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:932008798155:android:12e553b7efd4050b7d784e",
+        "android_client_info": {
+          "package_name": "com.planpal.planpal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0PBsTWRa9L8ts0H_3YRk4horSi0l7Ywk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

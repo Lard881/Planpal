@@ -1,4 +1,5 @@
 // app/lib/main.dart
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -13,14 +14,19 @@ import 'core/platform/platform_info.dart';
 import 'core/sync/sync_engine.dart';
 import 'core/connectivity/connectivity_service.dart';
 import 'core/widgets/empty_state.dart';
+import 'core/services/fcm_service.dart';
 import 'core/l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Allow Google Fonts to use cached fonts (no runtime download needed
-  // if fonts are pre-cached; safe to call without network in tests).
+  // Initialize Firebase (needed for FCM on Android)
+  if (PlatformInfo.isAndroid) {
+    await Firebase.initializeApp();
+  }
+
+  // Allow Google Fonts runtime fetch
   GoogleFonts.config.allowRuntimeFetching = true;
 
   // Init Supabase (only if env vars are provided).
@@ -70,6 +76,13 @@ class PlanPalApp extends ConsumerWidget {
         ref.read(syncEngineProvider.notifier).sync();
       }
     });
+
+    // Initialize FCM on Android after the first frame
+    if (PlatformInfo.isAndroid) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await FcmService.initialize(ref);
+      });
+    }
 
     return MaterialApp.router(
       title: 'PlanPal',
