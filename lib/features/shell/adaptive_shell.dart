@@ -307,7 +307,9 @@ class _DesktopTopBar extends ConsumerWidget {
         children: [
           // Search field
           Expanded(
-            child: Container(
+            child: GestureDetector(
+              onTap: () => context.push('/search'),
+              child: Container(
               height: 40,
               constraints: const BoxConstraints(maxWidth: 448),
               decoration: BoxDecoration(
@@ -340,6 +342,7 @@ class _DesktopTopBar extends ConsumerWidget {
                   ),
                 ],
               ),
+            ),
             ),
           ),
           const Spacer(),
