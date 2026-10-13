@@ -38,6 +38,7 @@ class AnalyticsNotifier extends StateNotifier<AnalyticsState> {
   }
 
   Future<void> load({String? range}) async {
+    if (workspaceId.isEmpty) return; // Guard: no API call with empty ID
     final r = range ?? state.range;
     state = state.copyWith(loading: true, clearError: true, range: r);
     final (data, err) = await _repo.getAnalytics(workspaceId, r);

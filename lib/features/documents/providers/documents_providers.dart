@@ -42,6 +42,7 @@ class DocumentsNotifier extends StateNotifier<DocumentsState> {
   }
 
   Future<void> load({String? folderId}) async {
+    if (workspaceId.isEmpty) return; // Guard
     state = state.copyWith(loading: true, clearError: true,
         currentFolderId: folderId);
     final (folders, fErr) = await _repo.getFolders(workspaceId,

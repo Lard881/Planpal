@@ -86,6 +86,7 @@ class TaskListNotifier extends StateNotifier<TaskListState> {
   }
 
   Future<void> load({bool refresh = false}) async {
+    if (workspaceId.isEmpty) return; // Guard
     if (refresh) {
       state = state.copyWith(loading: true, clearError: true, clearCursor: true);
     } else {

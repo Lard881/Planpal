@@ -28,13 +28,13 @@ class ChatRepository {
   }
 
   Future<(List<MessageModel>, AppFailure?)> getMessages(
-      String channelId, {String? cursor}) async {
+      String workspaceId, String channelId, {String? cursor}) async {
     try {
       final params = <String, dynamic>{'limit': 50};
       if (cursor != null) params['cursor'] = cursor;
-      final res = await _dio.get('/workspaces/0/channels/$channelId/messages',
+      final res = await _dio.get(
+          '/workspaces/$workspaceId/channels/$channelId/messages',
           queryParameters: params);
-      // The actual endpoint uses workspace-nested path
       final list = (res.data['messages'] as List)
           .map((m) => MessageModel.fromJson(m as Map<String, dynamic>))
           .toList();

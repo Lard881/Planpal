@@ -9,6 +9,7 @@ import '../../workspaces/providers/workspace_providers.dart';
 final channelsProvider =
     FutureProvider.autoDispose.family<List<ChannelModel>, String>(
   (ref, workspaceId) async {
+    if (workspaceId.isEmpty) return []; // Guard
     final (list, _) =
         await ref.watch(chatRepositoryProvider).getChannels(workspaceId);
     return list;
@@ -29,7 +30,7 @@ class MessagesNotifier extends StateNotifier<List<MessageModel>> {
   }
 
   Future<void> _load() async {
-    final (msgs, _) = await _repo.getMessages(channelId);
+    final (msgs, _) = await _repo.getMessages(workspaceId, channelId);
     // Messages come newest-first from API, reverse for display
     state = msgs.reversed.toList();
   }

@@ -13,6 +13,7 @@ import 'widgets/auth_logo.dart';
 import 'widgets/auth_divider.dart';
 import 'widgets/google_button.dart';
 import '../../../core/services/google_sign_in_service.dart';
+import '../../../core/providers/user_profile_provider.dart';
 
 class SignupScreen extends ConsumerStatefulWidget {
   const SignupScreen({super.key});
@@ -268,6 +269,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                     ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text(err.message)));
                   } else if (ok) {
+                    await loadMeAndApply(ref);
                     context.go('/home');
                   }
                 }),

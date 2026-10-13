@@ -56,6 +56,7 @@ class CalendarNotifier extends StateNotifier<CalendarState> {
   }
 
   Future<void> loadMonth() async {
+    if (workspaceId.isEmpty) return; // Guard
     state = state.copyWith(loading: true, clearError: true);
     final from = DateTime(state.focusedMonth.year, state.focusedMonth.month, 1);
     final to = DateTime(state.focusedMonth.year, state.focusedMonth.month + 1, 0, 23, 59);

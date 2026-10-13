@@ -15,6 +15,7 @@ import 'widgets/auth_divider.dart';
 import 'widgets/google_button.dart';
 import 'widgets/login_showcase.dart';
 import '../../../core/services/google_sign_in_service.dart';
+import '../../../core/providers/user_profile_provider.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -49,7 +50,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     if (!_validate()) return;
     final ok = await ref.read(authNotifierProvider.notifier)
         .signIn(_emailCtrl.text.trim(), _passCtrl.text);
-    if (ok && mounted) context.go('/home');
+    if (ok && mounted) {
+      await loadMeAndApply(ref);
+      context.go('/home');
+    }
   }
 
   @override
@@ -211,6 +215,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text(err.message)));
                   } else if (ok) {
+                    await loadMeAndApply(ref);
                     context.go('/home');
                   }
                 }),

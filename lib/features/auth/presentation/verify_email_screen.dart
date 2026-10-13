@@ -8,6 +8,7 @@ import '../../../core/theme/app_text.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/layout/breakpoints.dart';
 import '../../../core/widgets/planpal_button.dart';
+import '../../../core/providers/user_profile_provider.dart';
 import 'auth_notifier.dart';
 import 'widgets/auth_logo.dart';
 import 'widgets/otp_field.dart';
@@ -43,7 +44,10 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
     if (_otp.length < 6) return;
     final email = widget.email ?? '';
     final ok = await ref.read(authNotifierProvider.notifier).verifyOtp(email, _otp);
-    if (ok && mounted) context.go('/onboarding/workspace');
+    if (ok && mounted) {
+      await loadMeAndApply(ref);
+      context.go('/onboarding/workspace');
+    }
   }
 
   Future<void> _resend() async {

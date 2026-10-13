@@ -37,6 +37,7 @@ class HomeNotifier extends StateNotifier<HomeState> {
   }
 
   Future<void> load({String? range}) async {
+    if (workspaceId.isEmpty) return; // Guard: don't call API with empty ID
     final r = range ?? state.range;
     state = state.copyWith(loading: true, clearError: true, range: r);
     final (overview, err) = await _repo.getOverview(workspaceId, r);
