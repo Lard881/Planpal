@@ -10,6 +10,9 @@ import 'core/providers/theme_provider.dart';
 import 'core/providers/locale_provider.dart';
 import 'core/router/app_router.dart';
 import 'core/platform/platform_info.dart';
+import 'core/sync/sync_engine.dart';
+import 'core/connectivity/connectivity_service.dart';
+import 'core/widgets/empty_state.dart';
 import 'core/l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -59,6 +62,14 @@ class PlanPalApp extends ConsumerWidget {
     final themeMode = ref.watch(themeModeProvider);
     final locale = ref.watch(localeProvider);
     final router = ref.watch(routerProvider);
+
+    // Trigger sync when connectivity comes back online
+    ref.listen(connectivityServiceProvider, (prev, next) {
+      if (prev != ConnectivityState.online &&
+          next == ConnectivityState.online) {
+        ref.read(syncEngineProvider.notifier).sync();
+      }
+    });
 
     return MaterialApp.router(
       title: 'PlanPal',

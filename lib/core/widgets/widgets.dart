@@ -5,3 +5,4 @@ export 'chips.dart';
 export 'avatar.dart';
 export 'empty_state.dart';
 export 'app_card.dart';
+export 'sync_status_chip.dart';

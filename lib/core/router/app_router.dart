@@ -22,6 +22,7 @@ import '../../features/workspaces/presentation/create_workspace_screen.dart';
 import '../../features/workspaces/presentation/join_workspace_screen.dart';
 import '../../features/workspaces/presentation/workspace_settings_screen.dart';
 import '../providers/auth_provider.dart';
+import '../../features/settings/presentation/sync_status_screen.dart';
 
 final _rootKey = GlobalKey<NavigatorState>();
 final _shellKey = GlobalKey<NavigatorState>();
@@ -113,7 +114,7 @@ final routerProvider = Provider<GoRouter>((ref) {
               workspaceId: state.pathParameters['id']!,
               showInvites: true),
           ),
-          GoRoute(path: '/settings', builder: (_, __) => const SettingsScreen()),
+          GoRoute(path: '/settings/sync', builder: (_, __) => const SyncStatusScreen()),
           GoRoute(path: '/settings/profile', builder: (_, __) => const SettingsScreen()),
           GoRoute(
             path: '/settings/appearance',
