@@ -124,7 +124,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: '/settings/appearance',
             builder: (_, __) => const SettingsScreen(section: 'appearance'),
           ),
-          GoRoute(path: '/profile', builder: (_, __) => const SettingsScreen()),
+          GoRoute(path: '/profile', builder: (_, __) => const SettingsScreen(section: 'profile_tab')),
         ],
       ),
     ],
