@@ -27,11 +27,9 @@ class AdaptiveShell extends ConsumerWidget {
     final size = MediaQuery.sizeOf(context);
     final layout = Breakpoints.of(size.width);
 
-    return switch (layout) {
-      LayoutSize.desktop => _DesktopShell(child: child),
-      LayoutSize.tablet => _TabletShell(child: child),
-      LayoutSize.mobile => _MobileShell(child: child),
-    };
+    if (layout == LayoutSize.desktop) return _DesktopShell(child: child);
+    if (layout == LayoutSize.tablet) return _TabletShell(child: child);
+    return _MobileShell(child: child);
   }
 }
 

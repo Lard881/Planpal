@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:window_manager/window_manager.dart';
 import 'core/config/env.dart';
 import 'core/theme/app_theme.dart';
 import 'core/providers/theme_provider.dart';
 import 'core/providers/locale_provider.dart';
 import 'core/router/app_router.dart';
+import 'core/platform/platform_info.dart';
 import 'core/l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -25,11 +27,25 @@ void main() async {
       anonKey: Env.supabaseAnonKey,
     );
   } else {
-    // Dev/CI mode: initialize with placeholder so the app can start.
     await Supabase.initialize(
       url: 'https://placeholder.supabase.co',
       anonKey: 'placeholder',
     );
+  }
+
+  // Windows: set minimum window size and remember position
+  if (PlatformInfo.isWindows) {
+    await windowManager.ensureInitialized();
+    const options = WindowOptions(
+      minimumSize: Size(900, 600),
+      size: Size(1280, 800),
+      center: true,
+      title: 'PlanPal',
+    );
+    await windowManager.waitUntilReadyToShow(options, () async {
+      await windowManager.show();
+      await windowManager.focus();
+    });
   }
 
   runApp(const ProviderScope(child: PlanPalApp()));

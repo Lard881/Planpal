@@ -139,29 +139,25 @@ class ConnectivityBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
-    final (bg, fg, msg) = switch (state) {
-      ConnectivityState.offline => (
-          const Color(0xFFFEF3C7),
-          const Color(0xFFD97706),
-          'You\'re offline. Your changes are saved on this device and will sync when you\'re back online.',
-        ),
-      ConnectivityState.serverUnreachable => (
-          c.dangerSoft,
-          c.danger,
-          'Can\'t reach the server. Check your connection.',
-        ),
-      ConnectivityState.wakingUp => (
-          c.primarySoft,
-          c.primary,
-          'Waking up the server, this can take up to a minute.',
-        ),
-      ConnectivityState.backOnline => (
-          c.successSoft,
-          c.success,
-          'Back online. Syncing...',
-        ),
-      ConnectivityState.online => (c.surface, c.textPrimary, ''),
-    };
+    Color bg;
+    Color fg;
+    String msg;
+    if (state == ConnectivityState.offline) {
+      bg = const Color(0xFFFEF3C7);
+      fg = const Color(0xFFD97706);
+      msg = "You're offline. Your changes are saved on this device and will sync when you're back online.";
+    } else if (state == ConnectivityState.serverUnreachable) {
+      bg = c.dangerSoft; fg = c.danger;
+      msg = "Can't reach the server. Check your connection.";
+    } else if (state == ConnectivityState.wakingUp) {
+      bg = c.primarySoft; fg = c.primary;
+      msg = 'Waking up the server, this can take up to a minute.';
+    } else if (state == ConnectivityState.backOnline) {
+      bg = c.successSoft; fg = c.success;
+      msg = 'Back online. Syncing...';
+    } else {
+      bg = c.surface; fg = c.textPrimary; msg = '';
+    }
 
     if (state == ConnectivityState.online) return const SizedBox.shrink();
 
