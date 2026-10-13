@@ -23,6 +23,9 @@ import '../../features/workspaces/presentation/join_workspace_screen.dart';
 import '../../features/workspaces/presentation/workspace_settings_screen.dart';
 import '../providers/auth_provider.dart';
 import '../../features/settings/presentation/sync_status_screen.dart';
+import '../../features/tasks/presentation/tasks_screen.dart';
+import '../../features/tasks/presentation/new_task_screen.dart';
+import '../../features/tasks/presentation/task_detail_screen.dart';
 
 final _rootKey = GlobalKey<NavigatorState>();
 final _shellKey = GlobalKey<NavigatorState>();
@@ -74,11 +77,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/tasks/new',
-        builder: (_, __) => const TasksScreen(showNewTask: true),
+        builder: (_, __) => const NewTaskScreen(),
       ),
       GoRoute(
         path: '/tasks/:id',
-        builder: (context, state) => TasksScreen(taskId: state.pathParameters['id']),
+        builder: (context, state) =>
+            TaskDetailScreen(taskId: state.pathParameters['id']!),
       ),
 
       // Shell routes
