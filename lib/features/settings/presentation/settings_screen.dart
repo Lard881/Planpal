@@ -11,6 +11,8 @@ import '../../../core/layout/breakpoints.dart';
 import '../../../core/widgets/avatar.dart';
 import '../../../core/widgets/planpal_button.dart';
 import '../../../core/widgets/chips.dart';
+import '../../../core/services/avatar_upload_service.dart';
+import '../../../core/widgets/avatar_crop_dialog.dart';
 import '../../../core/providers/theme_provider.dart';
 import '../../../core/providers/locale_provider.dart';
 import '../../workspaces/providers/workspace_providers.dart';
@@ -251,8 +253,26 @@ class _ProfileSectionState extends ConsumerState<_ProfileSection> {
                       decoration: BoxDecoration(
                         color: c.primarySoft,
                         borderRadius: BorderRadius.circular(20)),
-                      child: Text('Upload New',
-                        style: AppText.caption.copyWith(color: c.primary)),
+                      child: GestureDetector(
+                        onTap: () async {
+                          final result = await pickAndCropAvatar(context);
+                          if (result == null) return;
+                          final (file, mime) = result;
+                          final (_, err) = await ref
+                              .read(avatarUploadServiceProvider)
+                              .upload(file, mime);
+                          if (err != null && context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(err.message)));
+                          } else if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Avatar updated!')));
+                          }
+                        },
+                        child: Text('Upload New',
+                          style: AppText.caption.copyWith(color: c.primary)),
+                      ),
                     ),
                     const SizedBox(width: 8),
                     Container(
@@ -261,8 +281,19 @@ class _ProfileSectionState extends ConsumerState<_ProfileSection> {
                       decoration: BoxDecoration(
                         color: c.surfaceAlt,
                         borderRadius: BorderRadius.circular(20)),
-                      child: Text('Remove',
-                        style: AppText.caption.copyWith(color: c.textMuted)),
+                      child: GestureDetector(
+                        onTap: () async {
+                          final err = await ref
+                              .read(avatarUploadServiceProvider)
+                              .removeAvatar();
+                          if (err != null && context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(err.message)));
+                          }
+                        },
+                        child: Text('Remove',
+                          style: AppText.caption.copyWith(color: c.textMuted)),
+                      ),
                     ),
                   ],
                 ),
