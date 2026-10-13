@@ -1,6 +1,342 @@
+// app/lib/features/notifications/presentation/notifications_screen.dart
 import 'package:flutter/material.dart';
-class NotificationsScreen extends StatelessWidget {
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../core/layout/breakpoints.dart';
+import '../../../core/widgets/empty_state.dart';
+import '../models/notification_model.dart';
+import '../providers/notifications_providers.dart';
+
+class NotificationsScreen extends ConsumerWidget {
   const NotificationsScreen({super.key});
+
   @override
-  Widget build(BuildContext context) => const Scaffold(body: Center(child: Text('Notifications — Stage 11')));
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isDesktop = context.isDesktopLayout;
+    return isDesktop
+        ? const _DesktopNotifications()
+        : const _MobileNotifications();
+  }
+}
+
+// ── DESKTOP ───────────────────────────────────────────────────────────────────
+class _DesktopNotifications extends ConsumerWidget {
+  const _DesktopNotifications();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final c = context.colors;
+    final state = ref.watch(notificationsProvider);
+    final notifier = ref.read(notificationsProvider.notifier);
+
+    return Scaffold(
+      backgroundColor: c.background,
+      body: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text('Notifications',
+                  style: AppText.pageTitle.copyWith(color: c.textPrimary)),
+                const Spacer(),
+                TextButton(
+                  onPressed: notifier.markAllRead,
+                  child: Text('Mark all as read',
+                    style: AppText.bodyMedium.copyWith(color: c.primary)),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            _FilterChips(filter: state.filter, onChanged: (f) => notifier.load(filter: f)),
+            const SizedBox(height: 16),
+            Expanded(
+              child: state.loading
+                  ? const Center(child: CircularProgressIndicator())
+                  : state.notifications.isEmpty
+                      ? const EmptyState(
+                          icon: LucideIcons.bell,
+                          title: "You're all caught up")
+                      : Container(
+                          decoration: BoxDecoration(
+                            color: c.surface,
+                            borderRadius: BorderRadius.circular(AppRadius.card),
+                            border: Border.all(color: c.border),
+                          ),
+                          child: ListView.separated(
+                            itemCount: state.notifications.length,
+                            separatorBuilder: (_, __) =>
+                                Divider(height: 1, color: c.border),
+                            itemBuilder: (ctx, i) => _NotificationRow(
+                              notification: state.notifications[i],
+                              desktop: true,
+                            ),
+                          ),
+                        ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── MOBILE ────────────────────────────────────────────────────────────────────
+class _MobileNotifications extends ConsumerWidget {
+  const _MobileNotifications();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final c = context.colors;
+    final state = ref.watch(notificationsProvider);
+    final notifier = ref.read(notificationsProvider.notifier);
+
+    return Scaffold(
+      backgroundColor: c.background,
+      body: SafeArea(
+        child: RefreshIndicator(
+          onRefresh: () => notifier.load(),
+          child: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                  child: Row(
+                    children: [
+                      Text('Notifications',
+                        style: AppText.pageTitleMobile.copyWith(
+                          color: c.textPrimary)),
+                      const Spacer(),
+                      TextButton(
+                        onPressed: notifier.markAllRead,
+                        child: Text('Mark all as read',
+                          style: AppText.caption.copyWith(color: c.primary)),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: _FilterChips(
+                    filter: state.filter,
+                    onChanged: (f) => notifier.load(filter: f)),
+                ),
+              ),
+              const SliverToBoxAdapter(child: SizedBox(height: 12)),
+              if (state.loading)
+                const SliverFillRemaining(
+                  child: Center(child: CircularProgressIndicator()))
+              else if (state.notifications.isEmpty)
+                const SliverFillRemaining(
+                  child: EmptyState(
+                    icon: LucideIcons.bell,
+                    title: "You're all caught up"))
+              else
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (_, i) => Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: _NotificationRow(
+                          notification: state.notifications[i],
+                          desktop: false,
+                        ),
+                      ),
+                      childCount: state.notifications.length,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ── Filter chips (fix F16 — no counts) ───────────────────────────────────────
+class _FilterChips extends StatelessWidget {
+  final String filter;
+  final ValueChanged<String> onChanged;
+  const _FilterChips({required this.filter, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    const options = [
+      ('all', 'All'),
+      ('unread', 'Unread'),
+      ('tasks', 'Tasks'),
+      ('mentions', 'Mentions'),
+    ];
+    return Row(
+      children: options.map(((String val, String label) opt) {
+        final selected = filter == opt.$1;
+        return Padding(
+          padding: const EdgeInsets.only(right: 8),
+          child: GestureDetector(
+            onTap: () => onChanged(opt.$1),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: selected ? c.primary : c.surfaceAlt,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(opt.$2,
+                style: AppText.bodyMedium.copyWith(
+                  color: selected ? Colors.white : c.textMuted)),
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
+
+// ── Notification row ──────────────────────────────────────────────────────────
+class _NotificationRow extends ConsumerWidget {
+  final NotificationModel notification;
+  final bool desktop;
+  const _NotificationRow({required this.notification, required this.desktop});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final c = context.colors;
+    final n = notification;
+    final notifier = ref.read(notificationsProvider.notifier);
+
+    Widget row = Container(
+      color: n.isUnread
+          ? c.primarySoft.withOpacity(0.3)
+          : Colors.transparent,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Icon tile
+          Container(
+            width: 36, height: 36,
+            decoration: BoxDecoration(
+              color: n.iconBg(c),
+              borderRadius: BorderRadius.circular(AppRadius.control),
+            ),
+            child: Icon(n.icon, size: 18, color: n.iconFg(c)),
+          ),
+          const SizedBox(width: 12),
+          // Text
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(n.title,
+                  style: AppText.bodyMedium.copyWith(
+                    color: c.textPrimary,
+                    fontWeight: n.isUnread
+                        ? FontWeight.w600 : FontWeight.w400)),
+                if (n.body.isNotEmpty)
+                  Text(n.body,
+                    style: AppText.caption.copyWith(color: c.textMuted),
+                    maxLines: 1, overflow: TextOverflow.ellipsis),
+                Text(n.relativeTime,
+                  style: AppText.caption.copyWith(color: c.textMuted)),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          // Unread dot + menu
+          Column(
+            children: [
+              if (n.isUnread)
+                Container(
+                  width: 8, height: 8,
+                  decoration: BoxDecoration(
+                    color: c.primary, shape: BoxShape.circle),
+                ),
+              const SizedBox(height: 4),
+              GestureDetector(
+                onTap: () => _showMenu(context, ref, notifier),
+                child: Icon(LucideIcons.moreHorizontal,
+                  size: 16, color: c.textMuted),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
+    if (!desktop) {
+      row = Container(
+        decoration: BoxDecoration(
+          color: n.isUnread ? c.primarySoft.withOpacity(0.15) : c.surface,
+          borderRadius: BorderRadius.circular(AppRadius.card),
+          border: Border.all(color: c.border),
+        ),
+        child: row,
+      );
+    }
+
+    return GestureDetector(
+      onTap: () => _navigate(context, ref, notifier),
+      child: row,
+    );
+  }
+
+  void _navigate(BuildContext context, WidgetRef ref,
+      NotificationsNotifier notifier) {
+    notifier.markRead(notification.id);
+    final type = notification.entityType;
+    final id = notification.entityId;
+    if (type == 'task' && id != null) {
+      context.push('/tasks/$id');
+    } else if (type == 'channel' && id != null) {
+      context.push('/chat/$id');
+    } else if (type == 'document' && id != null) {
+      context.push('/documents/$id');
+    }
+  }
+
+  void _showMenu(BuildContext context, WidgetRef ref,
+      NotificationsNotifier notifier) {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: Icon(notification.isUnread
+                  ? LucideIcons.checkCheck : LucideIcons.circle),
+              title: Text(notification.isUnread
+                  ? 'Mark as read' : 'Mark as unread'),
+              onTap: () {
+                Navigator.pop(context);
+                if (notification.isUnread) {
+                  notifier.markRead(notification.id);
+                } else {
+                  notifier.markUnread(notification.id);
+                }
+              },
+            ),
+            ListTile(
+              leading: Icon(LucideIcons.trash2, color: Colors.red),
+              title: const Text('Delete',
+                style: TextStyle(color: Colors.red)),
+              onTap: () {
+                Navigator.pop(context);
+                notifier.delete(notification.id);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

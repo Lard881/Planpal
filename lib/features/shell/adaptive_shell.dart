@@ -12,6 +12,7 @@ import '../../core/layout/breakpoints.dart';
 import '../../core/l10n/app_localizations.dart';
 import '../workspaces/presentation/workspace_switcher.dart';
 import '../workspaces/providers/workspace_providers.dart';
+import '../notifications/providers/notifications_providers.dart';
 
 // Routes that should HIDE the bottom bar on mobile
 const _fullScreenRoutes = {
@@ -293,10 +294,11 @@ class _SidebarNavItem extends StatelessWidget {
   }
 }
 
-class _DesktopTopBar extends StatelessWidget {
+class _DesktopTopBar extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
+    final unreadCount = ref.watch(unreadCountProvider);
     return Container(
       height: 64,
       padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -344,7 +346,8 @@ class _DesktopTopBar extends StatelessWidget {
           // Bell button
           _TopBarIconButton(
             icon: LucideIcons.bell,
-            hasUnread: false,
+            hasUnread: unreadCount > 0,
+            onTap: () => context.push('/notifications'),
           ),
           const SizedBox(width: 8),
           // User chip
@@ -358,7 +361,8 @@ class _DesktopTopBar extends StatelessWidget {
 class _TopBarIconButton extends StatelessWidget {
   final IconData icon;
   final bool hasUnread;
-  const _TopBarIconButton({required this.icon, this.hasUnread = false});
+  final VoidCallback? onTap;
+  const _TopBarIconButton({required this.icon, this.hasUnread = false, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -366,14 +370,17 @@ class _TopBarIconButton extends StatelessWidget {
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        Container(
-          width: 40, height: 40,
-          decoration: BoxDecoration(
-            color: c.surface,
-            border: Border.all(color: c.border),
-            borderRadius: BorderRadius.circular(AppRadius.control),
+        GestureDetector(
+          onTap: onTap,
+          child: Container(
+            width: 40, height: 40,
+            decoration: BoxDecoration(
+              color: c.surface,
+              border: Border.all(color: c.border),
+              borderRadius: BorderRadius.circular(AppRadius.control),
+            ),
+            child: Icon(icon, size: 20, color: c.textMuted),
           ),
-          child: Icon(icon, size: 20, color: c.textMuted),
         ),
         if (hasUnread)
           Positioned(
