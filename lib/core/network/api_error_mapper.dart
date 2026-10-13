@@ -22,9 +22,10 @@ AppFailure _mapResponse(Response? response) {
   if (response == null) return const ServerUnreachableFailure();
 
   final data = response.data;
-  final String? code = data is Map ? data['error']?['code'] as String? : null;
-  final String? msg = data is Map ? data['error']?['message'] as String? : null;
-  final String? requestId = data is Map ? data['error']?['requestId'] as String? : null;
+  final Map? errorMap = (data is Map) ? data['error'] as Map? : null;
+  final String? code = errorMap?['code'] as String?;
+  final String? msg = errorMap?['message'] as String?;
+  final String? requestId = errorMap?['requestId'] as String?;
 
   if (response.statusCode == 400) {
     return ValidationFailure(msg ?? 'Invalid request.', requestId: requestId);

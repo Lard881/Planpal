@@ -46,7 +46,8 @@ class _AuthInterceptor extends Interceptor {
     // Retry once on 401 AUTH_EXPIRED — refresh the session first
     if (err.response?.statusCode == 401) {
       final data = err.response?.data;
-      final code = data is Map ? data['error']?['code'] : null;
+      final Map? errorMap = (data is Map) ? data['error'] as Map? : null;
+      final code = errorMap?['code'];
       if (code == 'AUTH_EXPIRED') {
         try {
           await Supabase.instance.client.auth.refreshSession();

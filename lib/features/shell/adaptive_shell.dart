@@ -10,6 +10,8 @@ import '../../core/theme/app_text.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/layout/breakpoints.dart';
 import '../../core/l10n/app_localizations.dart';
+import '../workspaces/presentation/workspace_switcher.dart';
+import '../workspaces/providers/workspace_providers.dart';
 
 // Routes that should HIDE the bottom bar on mobile
 const _fullScreenRoutes = {
@@ -106,7 +108,10 @@ class _DesktopSidebar extends ConsumerWidget {
           // Workspace switcher card
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: _WorkspaceSwitcherCard(),
+            child: GestureDetector(
+              onTap: () => showWorkspaceSwitcherPopover(context, ref),
+              child: _WorkspaceSwitcherCard(),
+            ),
           ),
 
           const SizedBox(height: 4),

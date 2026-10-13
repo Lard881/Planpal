@@ -20,6 +20,7 @@ import '../../features/notifications/presentation/notifications_screen.dart';
 import '../../features/search/presentation/search_screen.dart';
 import '../../features/workspaces/presentation/create_workspace_screen.dart';
 import '../../features/workspaces/presentation/join_workspace_screen.dart';
+import '../../features/workspaces/presentation/workspace_settings_screen.dart';
 import '../providers/auth_provider.dart';
 
 final _rootKey = GlobalKey<NavigatorState>();
@@ -103,13 +104,14 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(path: '/team', builder: (_, __) => const TeamScreen()),
           GoRoute(
             path: '/workspace/:id/members',
-            builder: (context, state) =>
-                TeamScreen(workspaceId: state.pathParameters['id']),
+            builder: (context, state) => WorkspaceSettingsScreen(
+              workspaceId: state.pathParameters['id']!),
           ),
           GoRoute(
             path: '/workspace/:id/invites',
-            builder: (context, state) =>
-                TeamScreen(workspaceId: state.pathParameters['id'], showInvites: true),
+            builder: (context, state) => WorkspaceSettingsScreen(
+              workspaceId: state.pathParameters['id']!,
+              showInvites: true),
           ),
           GoRoute(path: '/settings', builder: (_, __) => const SettingsScreen()),
           GoRoute(path: '/settings/profile', builder: (_, __) => const SettingsScreen()),
