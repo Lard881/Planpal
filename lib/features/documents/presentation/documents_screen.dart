@@ -1,5 +1,6 @@
 // app/lib/features/documents/presentation/documents_screen.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -609,57 +610,84 @@ class DocumentEditorScreen extends ConsumerWidget {
       data: (doc) {
         if (doc == null) return const Scaffold(
           body: EmptyState(icon: LucideIcons.fileX, title: 'Document not found'));
-        return _EditorContent(doc: doc, ref: ref);
+        return _QuillEditorContent(doc: doc, widgetRef: ref);
       },
     );
   }
 }
 
-class _EditorContent extends StatefulWidget {
+
+// ── Document Editor with flutter_quill ───────────────────────────────────────
+class _QuillEditorContent extends StatefulWidget {
   final DocumentModel doc;
-  final WidgetRef ref;
-  const _EditorContent({required this.doc, required this.ref});
+  final WidgetRef widgetRef;
+  const _QuillEditorContent({required this.doc, required this.widgetRef});
   @override
-  State<_EditorContent> createState() => _EditorContentState();
+  State<_QuillEditorContent> createState() => _QuillEditorContentState();
 }
 
-class _EditorContentState extends State<_EditorContent> {
+class _QuillEditorContentState extends State<_QuillEditorContent> {
   late TextEditingController _titleCtrl;
+  late quill.QuillController _quillCtrl;
   bool _saving = false;
   String _saveStatus = 'Saved';
+  final _focusNode = FocusNode();
+  final _scrollCtrl = ScrollController();
 
   @override
   void initState() {
     super.initState();
     _titleCtrl = TextEditingController(text: widget.doc.title);
+    final content = widget.doc.content;
+    if (content != null && content['ops'] != null) {
+      try {
+        _quillCtrl = quill.QuillController(
+          document: quill.Document.fromJson(content['ops'] as List),
+          selection: const TextSelection.collapsed(offset: 0),
+        );
+      } catch (_) {
+        _quillCtrl = quill.QuillController.basic();
+      }
+    } else {
+      _quillCtrl = quill.QuillController.basic();
+    }
+    _quillCtrl.document.changes.listen((_) {
+      if (mounted) setState(() => _saveStatus = 'Waiting to sync');
+    });
   }
 
   @override
   void dispose() {
     _titleCtrl.dispose();
+    _quillCtrl.dispose();
+    _focusNode.dispose();
+    _scrollCtrl.dispose();
     super.dispose();
   }
 
   Future<void> _save() async {
     setState(() { _saving = true; _saveStatus = 'Saving...'; });
-    await widget.ref.read(documentsRepositoryProvider).updateDocument(
+    final deltaJson = _quillCtrl.document.toDelta().toJson();
+    final plainText = _quillCtrl.document.toPlainText();
+    await widget.widgetRef.read(documentsRepositoryProvider).updateDocument(
       widget.doc.id,
       title: _titleCtrl.text.trim(),
+      content: {'ops': deltaJson},
+      contentText: plainText,
     );
-    setState(() { _saving = false; _saveStatus = 'Saved'; });
+    if (mounted) setState(() { _saving = false; _saveStatus = 'Saved'; });
   }
 
   @override
   Widget build(BuildContext context) {
     final doc = widget.doc;
     final c = context.colors;
-
     return Scaffold(
       backgroundColor: c.background,
       body: SafeArea(
         child: Column(
           children: [
-            // Header (no top bar — own header, fix F11 — no Share)
+            // Header (fix F11 — no Share)
             Container(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
               color: c.surface,
@@ -674,35 +702,26 @@ class _EditorContentState extends State<_EditorContent> {
                         borderRadius: BorderRadius.circular(AppRadius.control),
                         border: Border.all(color: c.border),
                       ),
-                      child: Icon(LucideIcons.arrowLeft,
-                        size: 18, color: c.textPrimary),
+                      child: Icon(LucideIcons.arrowLeft, size: 18, color: c.textPrimary),
                     ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: Text(
-                      'Documents / ${doc.title}',
+                    child: Text('Documents / ${doc.title}',
                       style: AppText.body.copyWith(color: c.textMuted),
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                      overflow: TextOverflow.ellipsis),
                   ),
-                  const SizedBox(width: 12),
-                  Text(_saveStatus,
-                    style: AppText.caption.copyWith(color: c.textMuted)),
                   const SizedBox(width: 8),
-                  PlanPalButton(
-                    label: 'Save',
-                    toolbar: true,
-                    loading: _saving,
-                    onPressed: _save,
-                  ),
+                  Text(_saveStatus,
+                    style: AppText.caption.copyWith(
+                      color: _saveStatus == 'Saved' ? c.success : c.textMuted)),
+                  const SizedBox(width: 8),
+                  PlanPalButton(label: 'Save', toolbar: true, loading: _saving, onPressed: _save),
                 ],
               ),
             ),
-            // Toolbar
+            // Quill toolbar
             Container(
-              height: 44,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
                 color: c.surface,
                 border: Border(
@@ -710,26 +729,31 @@ class _EditorContentState extends State<_EditorContent> {
                   top: BorderSide(color: c.border),
                 ),
               ),
-              child: Row(
-                children: [
-                  _ToolbarBtn(label: 'B', bold: true),
-                  _ToolbarBtn(label: 'I', italic: true),
-                  _ToolbarBtn(label: 'U', underline: true),
-                  _ToolbarDivider(),
-                  _ToolbarBtn(label: 'H1'),
-                  _ToolbarBtn(label: 'H2'),
-                  _ToolbarDivider(),
-                  Icon(LucideIcons.list, size: 18, color: c.textMuted),
-                  const SizedBox(width: 12),
-                  Icon(LucideIcons.listOrdered, size: 18, color: c.textMuted),
-                  const SizedBox(width: 12),
-                  Icon(LucideIcons.link, size: 18, color: c.textMuted),
-                ],
+              child: quill.QuillSimpleToolbar(
+                controller: _quillCtrl,
+                config: const quill.QuillSimpleToolbarConfig(
+                  showFontFamily: false,
+                  showFontSize: false,
+                  showBackgroundColorButton: false,
+                  showColorButton: false,
+                  showAlignmentButtons: false,
+                  showIndent: false,
+                  showSubscript: false,
+                  showSuperscript: false,
+                  showClipboardPaste: false,
+                  showClipboardCopy: false,
+                  showClipboardCut: false,
+                  showSearchButton: false,
+                  showInlineCode: false,
+                  showCodeBlock: false,
+                  showSmallButton: false,
+                ),
               ),
             ),
-            // Editor area
+            // Editor
             Expanded(
               child: SingleChildScrollView(
+                controller: _scrollCtrl,
                 padding: const EdgeInsets.all(24),
                 child: Center(
                   child: ConstrainedBox(
@@ -743,16 +767,12 @@ class _EditorContentState extends State<_EditorContent> {
                           decoration: InputDecoration(
                             hintText: 'Untitled',
                             hintStyle: AppText.pageTitle.copyWith(color: c.textMuted),
-                            border: InputBorder.none,
-                            filled: false,
-                          ),
+                            border: InputBorder.none, filled: false),
                           onChanged: (_) => setState(() => _saveStatus = 'Waiting to sync'),
                         ),
                         const SizedBox(height: 4),
-                        Text(
-                          '${doc.relativeTime()} · ${doc.createdByName ?? ''}',
-                          style: AppText.caption.copyWith(color: c.textMuted),
-                        ),
+                        Text('${doc.relativeTime()} · ${doc.createdByName ?? ''}',
+                          style: AppText.caption.copyWith(color: c.textMuted)),
                         const SizedBox(height: 24),
                         Container(
                           constraints: const BoxConstraints(minHeight: 300),
@@ -761,18 +781,18 @@ class _EditorContentState extends State<_EditorContent> {
                             borderRadius: BorderRadius.circular(AppRadius.card),
                             border: Border.all(color: c.border),
                           ),
-                          padding: const EdgeInsets.all(20),
-                          child: TextField(
-                            maxLines: null,
-                            decoration: InputDecoration(
-                              hintText: 'Start writing...',
-                              hintStyle: AppText.body.copyWith(color: c.textMuted),
-                              border: InputBorder.none,
-                              filled: false,
+                          padding: const EdgeInsets.all(16),
+                          child: quill.QuillEditor(
+                            controller: _quillCtrl,
+                            focusNode: _focusNode,
+                            scrollController: _scrollCtrl,
+                            config: quill.QuillEditorConfig(
+                              placeholder: 'Start writing...',
+                              scrollable: false,
+                              autoFocus: false,
+                              expands: false,
+                              padding: EdgeInsets.zero,
                             ),
-                            style: AppText.body.copyWith(color: c.textPrimary),
-                            onChanged: (_) =>
-                                setState(() => _saveStatus = 'Waiting to sync'),
                           ),
                         ),
                       ],
@@ -784,48 +804,6 @@ class _EditorContentState extends State<_EditorContent> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _ToolbarBtn extends StatelessWidget {
-  final String label;
-  final bool bold;
-  final bool italic;
-  final bool underline;
-  const _ToolbarBtn({
-    required this.label,
-    this.bold = false,
-    this.italic = false,
-    this.underline = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final c = context.colors;
-    return Padding(
-      padding: const EdgeInsets.only(right: 4),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        child: Text(label,
-          style: TextStyle(
-            color: c.textMuted,
-            fontWeight: bold ? FontWeight.w700 : FontWeight.w400,
-            fontStyle: italic ? FontStyle.italic : FontStyle.normal,
-            decoration: underline ? TextDecoration.underline : null,
-            fontSize: 14,
-          )),
-      ),
-    );
-  }
-}
-
-class _ToolbarDivider extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 1, height: 20, margin: const EdgeInsets.symmetric(horizontal: 8),
-      color: context.colors.border,
     );
   }
 }
