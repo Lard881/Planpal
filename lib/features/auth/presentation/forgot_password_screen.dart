@@ -1,6 +1,316 @@
+// app/lib/features/auth/presentation/forgot_password_screen.dart
+// 3-step: Step1=email, Step2=OTP, Step3=new password
+import 'dart:async';
 import 'package:flutter/material.dart';
-class ForgotPasswordScreen extends StatelessWidget {
-  const ForgotPasswordScreen({super.key});
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../core/layout/breakpoints.dart';
+import '../../../core/widgets/planpal_button.dart';
+import '../../../core/widgets/planpal_text_field.dart';
+import 'auth_notifier.dart';
+import 'widgets/auth_logo.dart';
+import 'widgets/otp_field.dart';
+
+class ForgotPasswordScreen extends ConsumerStatefulWidget {
+  final int initialStep;
+  const ForgotPasswordScreen({super.key, this.initialStep = 1});
+
   @override
-  Widget build(BuildContext context) => const Scaffold(body: Center(child: Text('Forgot Password — Stage 4')));
+  ConsumerState<ForgotPasswordScreen> createState() =>
+      _ForgotPasswordScreenState();
+}
+
+class _ForgotPasswordScreenState
+    extends ConsumerState<ForgotPasswordScreen> {
+  late int _step;
+  final _emailCtrl = TextEditingController();
+  final _passCtrl = TextEditingController();
+  final _confirmCtrl = TextEditingController();
+  String _otp = '';
+  String? _emailError, _passError, _confirmError;
+  int _resendCooldown = 0;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _step = widget.initialStep;
+  }
+
+  @override
+  void dispose() {
+    _emailCtrl.dispose();
+    _passCtrl.dispose();
+    _confirmCtrl.dispose();
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void _startCooldown() {
+    setState(() => _resendCooldown = 30);
+    _timer = Timer.periodic(const Duration(seconds: 1), (t) {
+      setState(() => _resendCooldown--);
+      if (_resendCooldown <= 0) t.cancel();
+    });
+  }
+
+  Future<void> _step1Submit() async {
+    setState(() {
+      _emailError = _emailCtrl.text.trim().isEmpty
+          ? 'Email is required.'
+          : (!_emailCtrl.text.contains('@') ? 'Enter a valid email.' : null);
+    });
+    if (_emailError != null) return;
+    final ok = await ref.read(authNotifierProvider.notifier)
+        .sendPasswordReset(_emailCtrl.text.trim());
+    if (ok && mounted) setState(() => _step = 2);
+  }
+
+  Future<void> _step2Submit() async {
+    if (_otp.length < 6) return;
+    final ok = await ref.read(authNotifierProvider.notifier)
+        .verifyPasswordResetOtp(_emailCtrl.text.trim(), _otp);
+    if (ok && mounted) setState(() => _step = 3);
+  }
+
+  Future<void> _step3Submit() async {
+    setState(() {
+      _passError = _passCtrl.text.length < 8
+          ? 'Password must be at least 8 characters.' : null;
+      _confirmError = _passCtrl.text != _confirmCtrl.text
+          ? 'Passwords do not match.' : null;
+    });
+    if (_passError != null || _confirmError != null) return;
+    final ok = await ref.read(authNotifierProvider.notifier)
+        .setNewPassword(_passCtrl.text);
+    if (ok && mounted) context.go('/login');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(authNotifierProvider);
+    final c = context.colors;
+    final isDesktop = context.isDesktopLayout;
+
+    Widget body = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (!isDesktop) ...[
+          const SizedBox(height: 48),
+          const Center(child: AuthLogo()),
+          const SizedBox(height: 24),
+        ],
+        _buildStepIndicator(c, isDesktop),
+        const SizedBox(height: 28),
+        if (state.error != null) ...[
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: c.dangerSoft,
+              borderRadius: BorderRadius.circular(AppRadius.control),
+            ),
+            child: Text(state.error!.message,
+              style: AppText.body.copyWith(color: c.danger)),
+          ),
+          const SizedBox(height: 16),
+        ],
+        if (_step == 1) _buildStep1(state, c),
+        if (_step == 2) _buildStep2(state, c),
+        if (_step == 3) _buildStep3(state, c),
+      ],
+    );
+
+    if (isDesktop) {
+      return Scaffold(
+        backgroundColor: c.background,
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const AuthLogo(),
+              const SizedBox(height: 32),
+              Container(
+                width: 440,
+                padding: const EdgeInsets.all(40),
+                decoration: BoxDecoration(
+                  color: c.surface,
+                  borderRadius: BorderRadius.circular(AppRadius.panel),
+                  border: Border.all(color: c.border),
+                  boxShadow: AppShadows.card(Brightness.light),
+                ),
+                child: body,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Scaffold(
+      backgroundColor: c.background,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: body,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStepIndicator(PlanPalColors c, bool isDesktop) {
+    if (isDesktop) {
+      return Row(
+        children: List.generate(3, (i) {
+          final active = _step == i + 1;
+          return Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              decoration: BoxDecoration(
+                color: active ? c.primarySoft : c.surfaceAlt,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text('Step ${i + 1} of 3',
+                style: AppText.chip.copyWith(
+                  color: active ? c.primary : c.textMuted)),
+            ),
+          );
+        }),
+      );
+    }
+    // Mobile: show only current step centered
+    return Center(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        decoration: BoxDecoration(
+          color: c.primarySoft,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Text('Step $_step of 3',
+          style: AppText.chip.copyWith(color: c.primary)),
+      ),
+    );
+  }
+
+  Widget _buildStep1(AuthState state, PlanPalColors c) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text('Reset password',
+          style: AppText.sectionTitle.copyWith(color: c.textPrimary)),
+        const SizedBox(height: 8),
+        Text('Enter the email linked to your account.',
+          style: AppText.body.copyWith(color: c.textMuted)),
+        const SizedBox(height: 24),
+        PlanPalTextField(
+          label: 'Email',
+          hint: 'maya.chen@planpal.io',
+          controller: _emailCtrl,
+          errorText: _emailError,
+          keyboardType: TextInputType.emailAddress,
+          textInputAction: TextInputAction.done,
+          onEditingComplete: _step1Submit,
+          onChanged: (_) => setState(() => _emailError = null),
+        ),
+        const SizedBox(height: 20),
+        PlanPalButton(
+          label: 'Send Code',
+          onPressed: _step1Submit,
+          loading: state.loading,
+          width: double.infinity,
+        ),
+        const SizedBox(height: 12),
+        Center(
+          child: TextButton(
+            onPressed: () => context.go('/login'),
+            child: Text('Back to log in',
+              style: AppText.bodyMedium.copyWith(color: c.primary)),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStep2(AuthState state, PlanPalColors c) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text('Enter code',
+          style: AppText.sectionTitle.copyWith(color: c.textPrimary)),
+        const SizedBox(height: 8),
+        Text('6-digit code sent to your email.',
+          style: AppText.body.copyWith(color: c.textMuted)),
+        const SizedBox(height: 24),
+        OtpField(
+          length: 6,
+          onCompleted: (v) => setState(() => _otp = v),
+          onChanged: (v) => setState(() => _otp = v),
+        ),
+        const SizedBox(height: 24),
+        PlanPalButton(
+          label: 'Continue',
+          onPressed: _otp.length == 6 ? _step2Submit : null,
+          loading: state.loading,
+          width: double.infinity,
+        ),
+        const SizedBox(height: 12),
+        Center(
+          child: TextButton(
+            onPressed: _resendCooldown > 0 ? null : () async {
+              await ref.read(authNotifierProvider.notifier)
+                  .sendPasswordReset(_emailCtrl.text.trim());
+              _startCooldown();
+            },
+            child: Text(
+              _resendCooldown > 0
+                  ? "Didn't get it? Resend in ${_resendCooldown}s"
+                  : "Didn't get it? Resend code",
+              style: AppText.bodyMedium.copyWith(
+                color: _resendCooldown > 0 ? c.textMuted : c.primary)),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStep3(AuthState state, PlanPalColors c) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text('Set new password',
+          style: AppText.sectionTitle.copyWith(color: c.textPrimary)),
+        const SizedBox(height: 24),
+        PlanPalTextField(
+          label: 'New password',
+          hint: '••••••••••',
+          controller: _passCtrl,
+          errorText: _passError,
+          isPassword: true,
+          textInputAction: TextInputAction.next,
+          onChanged: (_) => setState(() => _passError = null),
+        ),
+        const SizedBox(height: 16),
+        PlanPalTextField(
+          label: 'Confirm new password',
+          hint: '••••••••••',
+          controller: _confirmCtrl,
+          errorText: _confirmError,
+          isPassword: true,
+          textInputAction: TextInputAction.done,
+          onEditingComplete: _step3Submit,
+          onChanged: (_) => setState(() => _confirmError = null),
+        ),
+        const SizedBox(height: 20),
+        PlanPalButton(
+          label: 'Save New Password',
+          onPressed: _step3Submit,
+          loading: state.loading,
+          width: double.infinity,
+        ),
+      ],
+    );
+  }
 }

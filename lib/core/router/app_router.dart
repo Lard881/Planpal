@@ -47,10 +47,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       // Auth routes (no shell)
       GoRoute(path: '/login', builder: (_, __) => const LoginScreen()),
       GoRoute(path: '/signup', builder: (_, __) => const SignupScreen()),
-      GoRoute(path: '/verify-email', builder: (_, __) => const VerifyEmailScreen()),
+      GoRoute(path: '/verify-email', builder: (context, state) {
+        final email = state.extra as String?;
+        return VerifyEmailScreen(email: email);
+      }),
       GoRoute(path: '/forgot-password', builder: (_, __) => const ForgotPasswordScreen()),
-      GoRoute(path: '/verify-code', builder: (_, __) => const ForgotPasswordScreen()),
-      GoRoute(path: '/new-password', builder: (_, __) => const ForgotPasswordScreen()),
+      GoRoute(path: '/verify-code', builder: (_, __) => const ForgotPasswordScreen(initialStep: 2)),
+      GoRoute(path: '/new-password', builder: (_, __) => const ForgotPasswordScreen(initialStep: 3)),
       GoRoute(path: '/onboarding/workspace', builder: (_, __) => const OnboardingScreen()),
 
       // Standalone routes (no shell, with back button)
