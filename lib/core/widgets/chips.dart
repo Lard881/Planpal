@@ -85,7 +85,6 @@ class FileTypeBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = context.colors;
     final ext = extension.toLowerCase().replaceAll('.', '');
     Color bg;
     String label;

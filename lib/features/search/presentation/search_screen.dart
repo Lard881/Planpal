@@ -8,7 +8,6 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/layout/breakpoints.dart';
-import '../../../core/widgets/chips.dart';
 import '../../../core/widgets/avatar.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../models/search_models.dart';
@@ -346,8 +345,6 @@ class _DocumentResultCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.colors;
     final pct = results.scorePercent(result);
-    final ext = result.title.contains('.')
-        ? result.title.split('.').last : 'doc';
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: GestureDetector(

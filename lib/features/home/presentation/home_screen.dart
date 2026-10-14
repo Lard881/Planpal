@@ -11,12 +11,10 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/layout/breakpoints.dart';
 import '../../../core/widgets/chips.dart';
 import '../../../core/widgets/avatar.dart';
-import '../../../core/widgets/app_card.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../../workspaces/providers/workspace_providers.dart';
 import '../../workspaces/presentation/workspace_switcher.dart';
 import '../../notifications/providers/notifications_providers.dart';
-import '../../tasks/data/task_repository.dart';
 import '../../tasks/providers/task_providers.dart';
 import '../../tasks/models/task_model.dart';
 import '../../calendar/providers/calendar_providers.dart';
@@ -119,8 +117,6 @@ class _MobileHome extends ConsumerWidget {
     final user = Supabase.instance.client.auth.currentUser;
     final firstName = (user?.userMetadata?['full_name'] as String? ?? 'there')
         .split(' ').first;
-    final userId = user?.id ?? '';
-
     return Scaffold(
       backgroundColor: c.background,
       floatingActionButton: FloatingActionButton(

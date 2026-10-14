@@ -124,10 +124,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   Widget _buildMobile(BuildContext context) {
     final c = context.colors;
-    final user = Supabase.instance.client.auth.currentUser;
     final workspace = ref.watch(currentWorkspaceProvider);
     final isPersonal = workspace?.isPersonal ?? true;
-    final perms = ref.watch(currentRolePermissionsProvider);
 
     // Profile tab
     if (_section == 'profile_tab') {

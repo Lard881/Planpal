@@ -1,6 +1,5 @@
 // app/lib/core/services/google_sign_in_service.dart
 // Handles Google Sign-In for Android (native token flow).
-import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../network/app_failure.dart';

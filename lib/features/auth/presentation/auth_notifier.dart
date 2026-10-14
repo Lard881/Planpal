@@ -2,7 +2,10 @@
 // Handles sign-in, sign-up, password reset, Google sign-in, sign-out.
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../../core/network/app_failure.dart';
+import '../../../core/db/app_database.dart';
+import '../../../core/services/fcm_service.dart';
 
 class AuthState {
   final bool loading;
@@ -133,33 +136,57 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  Future<void> signOut() async {
+  Future<void> signOut(WidgetRef ref) async {
+    state = state.copyWith(loading: true, clearError: true);
     try {
+      // A1.6: unregister FCM token first (non-fatal)
+      try { await FcmService.unregister(ref); } catch (_) {}
+      // A1.6: clear Drift database
+      try { await ref.read(appDatabaseProvider).close(); } catch (_) {}
+      // A1.6: clear all secure storage
+      try {
+        const storage = FlutterSecureStorage();
+        await storage.deleteAll();
+      } catch (_) {}
+      // Sign out from Supabase last
       await _client.auth.signOut();
-    } catch (_) {}
+    } catch (_) {} finally {
+      state = state.copyWith(loading: false);
+    }
   }
 
   AppFailure _mapAuthError(AuthException e) {
+    // A1.8: map by code first (stable), fall back to message substring
+    final code = e.code ?? '';
     final msg = e.message.toLowerCase();
-    if (msg.contains('invalid login') || msg.contains('invalid credentials')) {
+    if (code == 'invalid_credentials' ||
+        msg.contains('invalid login') ||
+        msg.contains('invalid credentials')) {
       return const ServerFailure('Incorrect email or password. Please try again.');
     }
-    if (msg.contains('email not confirmed')) {
+    if (code == 'email_not_confirmed' || msg.contains('email not confirmed')) {
       return const ServerFailure('Please verify your email before logging in.');
     }
-    if (msg.contains('user already registered')) {
+    if (code == 'user_already_exists' || msg.contains('user already registered')) {
       return const ConflictFailure('An account with this email already exists.');
     }
-    if (msg.contains('password should be at least')) {
+    if (code == 'weak_password' || msg.contains('password should be at least')) {
       return const ValidationFailure('Password must be at least 8 characters.');
     }
-    if (msg.contains('rate limit')) {
-      return const ServerFailure('Too many attempts. Please wait a moment and try again.', code: 'RATE_LIMITED');
+    if (code == 'over_request_rate_limit' || msg.contains('rate limit')) {
+      return const ServerFailure(
+          'Too many attempts. Please wait a moment and try again.',
+          code: 'RATE_LIMITED');
     }
-    if (msg.contains('network') || msg.contains('connection')) {
+    if (code == 'network_failure' ||
+        msg.contains('network') ||
+        msg.contains('connection')) {
       return const NetworkFailure();
     }
-    if (msg.contains('token') || msg.contains('otp')) {
+    if (code == 'otp_expired' ||
+        code == 'token_expired' ||
+        msg.contains('token') ||
+        msg.contains('otp')) {
       return const ServerFailure('Invalid or expired code. Please try again.');
     }
     return ServerFailure(e.message);

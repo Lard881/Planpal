@@ -277,6 +277,23 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
     );
   }
 
+  // A1.11: placeholder pages for legal docs (coming soon)
+  void _showLegalDialog(BuildContext context, String title) {
+    showDialog<void>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(title),
+        content: const Text('These documents are coming soon.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildTermsRow(PlanPalColors c) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -294,13 +311,13 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
         const SizedBox(width: 4),
         Text('I agree to the ', style: AppText.body.copyWith(color: c.textMuted)),
         GestureDetector(
-          onTap: () {},
+          onTap: () => _showLegalDialog(context, 'Terms of Service'),
           child: Text('Terms',
             style: AppText.bodyMedium.copyWith(color: c.primary)),
         ),
         Text(' and ', style: AppText.body.copyWith(color: c.textMuted)),
         GestureDetector(
-          onTap: () {},
+          onTap: () => _showLegalDialog(context, 'Privacy Policy'),
           child: Text('Privacy Policy',
             style: AppText.bodyMedium.copyWith(color: c.primary)),
         ),

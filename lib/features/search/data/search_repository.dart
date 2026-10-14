@@ -25,7 +25,6 @@ class SearchRepository {
       // Handle known backend issue — results may use 'results' or 'data' key
       final raw = res.data['results'] as List? ??
           res.data['data'] as List? ?? [];
-      final counts = res.data['counts'] as Map? ?? {};
 
       final all = raw
           .map((r) => SearchResult.fromJson(r as Map<String, dynamic>))

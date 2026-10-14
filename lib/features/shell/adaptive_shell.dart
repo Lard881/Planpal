@@ -11,7 +11,6 @@ import '../../core/theme/app_theme.dart';
 import '../../core/layout/breakpoints.dart';
 import '../../core/l10n/app_localizations.dart';
 import '../workspaces/presentation/workspace_switcher.dart';
-import '../workspaces/providers/workspace_providers.dart';
 import '../notifications/providers/notifications_providers.dart';
 
 // Routes that should HIDE the bottom bar on mobile

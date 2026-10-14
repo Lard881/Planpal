@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text.dart';
-import '../theme/app_theme.dart';
 
 class PlanPalTextField extends StatefulWidget {
   final String? label;

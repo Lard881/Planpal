@@ -11,7 +11,6 @@ import '../../../core/layout/breakpoints.dart';
 import '../../../core/widgets/chips.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../../../core/widgets/planpal_button.dart';
-import '../../../core/widgets/app_card.dart';
 import '../../workspaces/providers/workspace_providers.dart';
 import '../models/document_models.dart';
 import '../providers/documents_providers.dart';
@@ -601,7 +600,6 @@ class DocumentEditorScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final docAsync = ref.watch(documentDetailProvider(documentId));
-    final c = context.colors;
 
     return docAsync.when(
       loading: () => const Scaffold(

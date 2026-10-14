@@ -44,6 +44,7 @@ class _ScheduleEventDialogState extends State<_ScheduleEventDialog> {
   DateTime _endsAt = DateTime.now().add(const Duration(hours: 2));
   bool _allDay = false;
   String _color = '#4F46E5';
+  int _reminderMinutes = 15;
   bool _loading = false;
 
   @override
@@ -63,6 +64,7 @@ class _ScheduleEventDialogState extends State<_ScheduleEventDialog> {
       endsAt: _endsAt,
       allDay: _allDay,
       color: _color,
+      reminderMinutesBefore: _reminderMinutes,
     );
     if (mounted) Navigator.of(context).pop();
   }
@@ -189,7 +191,7 @@ class _ScheduleEventDialogState extends State<_ScheduleEventDialog> {
           ),
           child: DropdownButtonHideUnderline(
             child: DropdownButton<int>(
-              value: 15,
+              value: _reminderMinutes,
               items: const [
                 DropdownMenuItem(value: 0, child: Text('None')),
                 DropdownMenuItem(value: 5, child: Text('5 minutes before')),
@@ -197,7 +199,7 @@ class _ScheduleEventDialogState extends State<_ScheduleEventDialog> {
                 DropdownMenuItem(value: 30, child: Text('30 minutes before')),
                 DropdownMenuItem(value: 60, child: Text('1 hour before')),
               ],
-              onChanged: (_) {},
+              onChanged: (v) => setState(() => _reminderMinutes = v ?? 15),
             ),
           ),
         ),
@@ -229,6 +231,7 @@ class _ScheduleEventPageState extends State<ScheduleEventPage> {
   DateTime _endsAt = DateTime.now().add(const Duration(hours: 2));
   bool _allDay = false;
   String _color = '#4F46E5';
+  int _reminderMinutes = 15;
   bool _loading = false;
 
   @override
@@ -248,6 +251,7 @@ class _ScheduleEventPageState extends State<ScheduleEventPage> {
       endsAt: _endsAt,
       allDay: _allDay,
       color: _color,
+      reminderMinutesBefore: _reminderMinutes,
     );
     if (mounted) Navigator.of(context).pop();
   }

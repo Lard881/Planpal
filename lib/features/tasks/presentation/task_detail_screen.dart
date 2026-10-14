@@ -21,7 +21,6 @@ class TaskDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final taskAsync = ref.watch(taskDetailProvider(taskId));
-    final c = context.colors;
 
     return taskAsync.when(
       loading: () => const Scaffold(

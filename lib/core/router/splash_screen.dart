@@ -1,0 +1,62 @@
+// app/lib/core/router/splash_screen.dart
+// A1.5: Restores session, loads GET /me, applies theme/language, then navigates.
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import '../config/env.dart';
+import '../providers/auth_provider.dart';
+import '../providers/user_profile_provider.dart';
+
+class SplashScreen extends ConsumerStatefulWidget {
+  const SplashScreen({super.key});
+
+  @override
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends ConsumerState<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _init();
+  }
+
+  Future<void> _init() async {
+    // A1.9: if not configured, send to error screen immediately
+    if (!Env.isConfigured) {
+      if (mounted) context.go('/not-configured');
+      return;
+    }
+
+    // Wait for auth to settle (Supabase restores session from secure storage)
+    await Future.doWhile(() async {
+      final state = ref.read(authStateProvider);
+      if (state.isLoading) {
+        await Future.delayed(const Duration(milliseconds: 50));
+        return true;
+      }
+      return false;
+    });
+
+    if (!mounted) return;
+
+    final isLoggedIn = ref.read(authStateProvider).valueOrNull != null;
+    if (isLoggedIn) {
+      // Load profile, apply theme & language
+      await loadMeAndApply(ref);
+      if (mounted) context.go('/home');
+    } else {
+      if (mounted) context.go('/login');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      backgroundColor: Color(0xFFF9FAFB),
+      body: Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
+}

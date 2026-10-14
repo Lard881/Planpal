@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../db/app_database.dart';
 import '../network/api_client.dart';
-import '../connectivity/connectivity_service.dart';
 
 const _storage = FlutterSecureStorage();
 const _kLastSyncPrefix = 'planpal_last_sync_';

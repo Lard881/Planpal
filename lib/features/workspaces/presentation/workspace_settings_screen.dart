@@ -7,7 +7,6 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/avatar.dart';
-import '../../../core/widgets/chips.dart';
 import '../../../core/widgets/planpal_button.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../data/workspace_repository.dart';

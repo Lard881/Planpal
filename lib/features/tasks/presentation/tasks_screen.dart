@@ -11,7 +11,6 @@ import '../../../core/widgets/chips.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../../../core/widgets/avatar.dart';
 import '../../../core/widgets/planpal_button.dart';
-import '../../../core/widgets/app_card.dart';
 import '../../workspaces/providers/workspace_providers.dart';
 import '../models/task_model.dart';
 import '../providers/task_providers.dart';

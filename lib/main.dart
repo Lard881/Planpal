@@ -2,7 +2,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' show Supabase, User;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:window_manager/window_manager.dart';
 import 'core/config/env.dart';
@@ -16,6 +16,7 @@ import 'core/connectivity/connectivity_service.dart';
 import 'core/widgets/empty_state.dart';
 import 'core/services/fcm_service.dart';
 import 'core/providers/user_profile_provider.dart';
+import 'core/providers/auth_provider.dart';
 import 'core/l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -23,20 +24,27 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize Firebase (needed for FCM on Android)
+  // A1.10: wrap in try/catch so the app runs without push if Firebase is misconfigured
   if (PlatformInfo.isAndroid) {
-    await Firebase.initializeApp();
+    try {
+      await Firebase.initializeApp();
+    } catch (e) {
+      debugPrint('Firebase init failed — push notifications unavailable: $e');
+    }
   }
 
-  // Allow Google Fonts runtime fetch
-  GoogleFonts.config.allowRuntimeFetching = true;
+  // A4: Disable runtime font fetching — fonts are bundled as assets.
+  GoogleFonts.config.allowRuntimeFetching = false;
 
-  // Init Supabase (only if env vars are provided).
+  // Init Supabase. If not configured, SplashScreen will route to /not-configured.
   if (Env.isConfigured) {
     await Supabase.initialize(
       url: Env.supabaseUrl,
       anonKey: Env.supabaseAnonKey,
     );
   } else {
+    // Still call initialize with placeholder so the SDK doesn't crash;
+    // the splash screen checks Env.isConfigured and redirects accordingly.
     await Supabase.initialize(
       url: 'https://placeholder.supabase.co',
       anonKey: 'placeholder',
@@ -79,7 +87,7 @@ class PlanPalApp extends ConsumerWidget {
     });
 
     // On session restore (cold start with existing session) — load profile
-    ref.listen(authStateProvider, (prev, next) {
+    ref.listen<AsyncValue<User?>>(authStateProvider, (prev, next) {
       if (prev?.valueOrNull == null && next.valueOrNull != null) {
         // User just became logged in (either fresh login or session restore)
         loadMeAndApply(ref);

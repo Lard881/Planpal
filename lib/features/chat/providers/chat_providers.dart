@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../data/chat_repository.dart';
 import '../models/chat_models.dart';
-import '../../workspaces/providers/workspace_providers.dart';
 
 // Channels list
 final channelsProvider =
