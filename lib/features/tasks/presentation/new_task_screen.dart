@@ -474,11 +474,6 @@ class _LabelPicker extends ConsumerWidget {
                 style: AppText.body.copyWith(color: c.textMuted))));
         }
 
-        final selected = labels.firstWhere(
-          (l) => l.id == selectedId,
-          orElse: () => labels.first,
-        );
-
         return Container(
           height: 44,
           padding: const EdgeInsets.symmetric(horizontal: 12),

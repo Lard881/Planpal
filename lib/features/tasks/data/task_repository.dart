@@ -1,6 +1,6 @@
 // app/lib/features/tasks/data/task_repository.dart
 import 'package:dio/dio.dart';
-import 'package:drift/drift.dart' show Value;
+import 'package:drift/drift.dart' show Value, Expression, OrderingTerm;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -28,28 +28,28 @@ class TaskRepository {
     String? priority,
     String? view,
   }) {
+    final now = DateTime.now();
+    final todayStart = DateTime(now.year, now.month, now.day);
+    final todayEnd = todayStart.add(const Duration(days: 1));
+    final weekEnd = now.add(const Duration(days: 7));
+
     return (_db.select(_db.tasks)
           ..where((t) {
-            var expr = t.workspaceId.equals(workspaceId) &
+            Expression<bool> expr = t.workspaceId.equals(workspaceId) &
                 t.deletedAt.isNull();
             if (status != null) expr = expr & t.status.equals(status);
             if (priority != null) expr = expr & t.priority.equals(priority);
             if (view == 'today') {
-              final today = DateTime.now();
-              final start = DateTime(today.year, today.month, today.day);
-              final end = start.add(const Duration(days: 1));
               expr = expr &
-                  t.dueAt.isBiggerOrEqualValue(start) &
-                  t.dueAt.isSmallerThanValue(end);
+                  t.dueAt.isBiggerOrEqualValue(todayStart) &
+                  t.dueAt.isSmallerThanValue(todayEnd);
             } else if (view == 'week') {
-              final now = DateTime.now();
-              final weekEnd = now.add(const Duration(days: 7));
               expr = expr &
                   t.dueAt.isBiggerOrEqualValue(now) &
                   t.dueAt.isSmallerThanValue(weekEnd);
             } else if (view == 'overdue') {
               expr = expr &
-                  t.dueAt.isSmallerThanValue(DateTime.now()) &
+                  t.dueAt.isSmallerThanValue(now) &
                   t.status.equals('completed').not();
             }
             return expr;
@@ -103,7 +103,6 @@ class TaskRepository {
       // Merge into Drift so offline reads are up to date
       await _db.transaction(() async {
         for (final task in tasks) {
-          final now = task.updatedAt ?? DateTime.now();
           await _db.into(_db.tasks).insertOnConflictUpdate(TasksCompanion(
             id: Value(task.id),
             workspaceId: Value(task.workspaceId),
@@ -116,8 +115,8 @@ class TaskRepository {
             labelId: Value(task.labelId),
             createdBy: Value(task.createdBy),
             completedAt: Value(task.completedAt),
-            createdAt: Value(task.createdAt ?? now),
-            updatedAt: Value(now),
+            createdAt: Value(task.createdAt),
+            updatedAt: Value(task.updatedAt),
           ));
         }
       });
