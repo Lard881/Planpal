@@ -5,8 +5,12 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../network/app_failure.dart';
 
-const _webClientId =
-    '28214564202-3kl2pndsjss9ihti1lkmsi1mtdcs05gl.apps.googleusercontent.com';
+// Google OAuth Web Client ID — passed via --dart-define=GOOGLE_CLIENT_ID=...
+// Falls back to the development client ID if not provided.
+const _webClientId = String.fromEnvironment(
+  'GOOGLE_CLIENT_ID',
+  defaultValue: '28214564202-3kl2pndsjss9ihti1lkmsi1mtdcs05gl.apps.googleusercontent.com',
+);
 
 class GoogleSignInService {
   static final _googleSignIn = GoogleSignIn(

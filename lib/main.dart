@@ -15,6 +15,7 @@ import 'core/sync/sync_engine.dart';
 import 'core/connectivity/connectivity_service.dart';
 import 'core/widgets/empty_state.dart';
 import 'core/services/fcm_service.dart';
+import 'core/providers/user_profile_provider.dart';
 import 'core/l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -74,6 +75,14 @@ class PlanPalApp extends ConsumerWidget {
       if (prev != ConnectivityState.online &&
           next == ConnectivityState.online) {
         ref.read(syncEngineProvider.notifier).sync();
+      }
+    });
+
+    // On session restore (cold start with existing session) — load profile
+    ref.listen(authStateProvider, (prev, next) {
+      if (prev?.valueOrNull == null && next.valueOrNull != null) {
+        // User just became logged in (either fresh login or session restore)
+        loadMeAndApply(ref);
       }
     });
 

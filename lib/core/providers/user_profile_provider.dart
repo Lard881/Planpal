@@ -39,7 +39,8 @@ class UserProfile {
       timezone: profile['timezone'] as String? ?? 'UTC',
       language: profile['language'] as String? ?? 'en',
       theme: profile['theme'] as String? ?? 'system',
-      personalWorkspaceId: profile['personal_workspace_id'] as String?,
+      // personalWorkspaceId is at TOP level of response, not inside profile
+      personalWorkspaceId: j['personalWorkspaceId'] as String?,
     );
   }
 }

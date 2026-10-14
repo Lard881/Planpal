@@ -37,6 +37,9 @@ final routerProvider = Provider<GoRouter>((ref) {
     navigatorKey: _rootKey,
     initialLocation: '/home',
     redirect: (context, state) {
+      // While session is loading, don't redirect — prevents login flicker
+      if (authState.isLoading) return null;
+
       final isLoggedIn = authState.valueOrNull != null;
       final isAuthRoute = state.matchedLocation.startsWith('/login') ||
           state.matchedLocation.startsWith('/signup') ||
