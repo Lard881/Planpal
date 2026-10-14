@@ -2,6 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/task_repository.dart';
 import '../models/task_model.dart';
+import '../../../core/network/api_client.dart';
 import '../../workspaces/providers/workspace_providers.dart';
 
 class TaskFilter {
@@ -177,4 +178,33 @@ final taskDetailProvider =
     FutureProvider.family.autoDispose<TaskModel?, String>((ref, taskId) async {
   final (task, _) = await ref.watch(taskRepositoryProvider).getTask(taskId);
   return task;
+});
+
+// Labels provider — loads workspace labels for the label picker
+class LabelModel {
+  final String id;
+  final String name;
+  final String color;
+  const LabelModel({required this.id, required this.name, required this.color});
+
+  factory LabelModel.fromJson(Map<String, dynamic> j) => LabelModel(
+    id: j['id'] as String,
+    name: j['name'] as String,
+    color: j['color'] as String? ?? '#3B82F6',
+  );
+}
+
+final labelsProvider = FutureProvider.family
+    .autoDispose<List<LabelModel>, String>((ref, workspaceId) async {
+  if (workspaceId.isEmpty) return [];
+  try {
+    final dio = ref.watch(apiClientProvider).dio;
+    final res = await dio.get('/workspaces/$workspaceId/labels');
+    final list = (res.data['labels'] as List)
+        .map((l) => LabelModel.fromJson(l as Map<String, dynamic>))
+        .toList();
+    return list;
+  } catch (_) {
+    return [];
+  }
 });

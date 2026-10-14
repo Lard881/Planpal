@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/network/api_error_mapper.dart';
 import '../../../core/network/app_failure.dart';
@@ -20,6 +21,59 @@ class TaskRepository {
   TaskRepository(this._dio, this._db, this._sync);
 
   // ── List ──────────────────────────────────────────────────────────────────
+  /// Stream from Drift for offline-first display — shows cached data instantly.
+  Stream<List<TaskModel>> watchTasks(
+    String workspaceId, {
+    String? status,
+    String? priority,
+    String? view,
+  }) {
+    return (_db.select(_db.tasks)
+          ..where((t) {
+            var expr = t.workspaceId.equals(workspaceId) &
+                t.deletedAt.isNull();
+            if (status != null) expr = expr & t.status.equals(status);
+            if (priority != null) expr = expr & t.priority.equals(priority);
+            if (view == 'today') {
+              final today = DateTime.now();
+              final start = DateTime(today.year, today.month, today.day);
+              final end = start.add(const Duration(days: 1));
+              expr = expr &
+                  t.dueAt.isBiggerOrEqualValue(start) &
+                  t.dueAt.isSmallerThanValue(end);
+            } else if (view == 'week') {
+              final now = DateTime.now();
+              final weekEnd = now.add(const Duration(days: 7));
+              expr = expr &
+                  t.dueAt.isBiggerOrEqualValue(now) &
+                  t.dueAt.isSmallerThanValue(weekEnd);
+            } else if (view == 'overdue') {
+              expr = expr &
+                  t.dueAt.isSmallerThanValue(DateTime.now()) &
+                  t.status.equals('completed').not();
+            }
+            return expr;
+          })
+          ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)]))
+        .watch()
+        .map((rows) => rows.map((r) => TaskModel(
+              id: r.id,
+              workspaceId: r.workspaceId,
+              title: r.title,
+              description: r.description,
+              status: r.status,
+              priority: r.priority,
+              dueAt: r.dueAt,
+              assigneeId: r.assigneeId,
+              labelId: r.labelId,
+              createdBy: r.createdBy,
+              completedAt: r.completedAt,
+              createdAt: r.createdAt,
+              updatedAt: r.updatedAt,
+            )).toList());
+  }
+
+  // ── Fetch from API and merge into Drift ───────────────────────────────────
   Future<(List<TaskModel>, String? cursor, AppFailure?)> getTasks(
     String workspaceId, {
     String? status,
@@ -46,6 +100,27 @@ class TaskRepository {
           .map((t) => TaskModel.fromJson(t as Map<String, dynamic>))
           .toList();
       final nextCursor = res.data['nextCursor'] as String?;
+      // Merge into Drift so offline reads are up to date
+      await _db.transaction(() async {
+        for (final task in tasks) {
+          final now = task.updatedAt ?? DateTime.now();
+          await _db.into(_db.tasks).insertOnConflictUpdate(TasksCompanion(
+            id: Value(task.id),
+            workspaceId: Value(task.workspaceId),
+            title: Value(task.title),
+            description: Value(task.description),
+            status: Value(task.status),
+            priority: Value(task.priority),
+            dueAt: Value(task.dueAt),
+            assigneeId: Value(task.assigneeId),
+            labelId: Value(task.labelId),
+            createdBy: Value(task.createdBy),
+            completedAt: Value(task.completedAt),
+            createdAt: Value(task.createdAt ?? now),
+            updatedAt: Value(now),
+          ));
+        }
+      });
       return (tasks, nextCursor, null);
     } on DioException catch (e) {
       return (<TaskModel>[], null, mapDioError(e));
@@ -76,6 +151,8 @@ class TaskRepository {
     final clientId = _uuid.v4();
     // Write to Drift first (offline-first)
     final now = DateTime.now();
+    final currentUserId =
+        Supabase.instance.client.auth.currentUser?.id ?? 'local';
     await _db.into(_db.tasks).insertOnConflictUpdate(TasksCompanion.insert(
       id: clientId,
       workspaceId: workspaceId,
@@ -86,7 +163,7 @@ class TaskRepository {
       dueAt: Value(dueAt),
       assigneeId: Value(assigneeId),
       labelId: Value(labelId),
-      createdBy: 'local',
+      createdBy: currentUserId,
       createdAt: now,
       updatedAt: now,
     ));
@@ -146,7 +223,7 @@ class TaskRepository {
     List<String> taskIds, String action) async {
     try {
       final res = await _dio.post('/tasks/bulk',
-          data: {'taskIds': taskIds, 'action': action});
+          data: {'ids': taskIds, 'action': action});
       final succeeded = res.data['succeeded'] as int? ?? taskIds.length;
       final failed = (res.data['failed'] as List? ?? [])
           .map((e) => e.toString()).toList();
@@ -171,7 +248,7 @@ class TaskRepository {
     try {
       final data = <String, dynamic>{};
       if (title != null) data['title'] = title;
-      if (isDone != null) data['isDone'] = isDone;
+      if (isDone != null) data['done'] = isDone; // backend field name is 'done'
       await _dio.patch('/subtasks/$subtaskId', data: data);
       return null;
     } on DioException catch (e) {
@@ -217,7 +294,7 @@ String taskDateLabel(TaskModel task) {
   if (diff == 0) return 'Today · $timeStr';
   if (diff == 1) return 'Tomorrow';
   if (diff == -1) return 'Yesterday';
-  if (diff < 0) return '${_monthDay(due)}';
+  if (diff < 0) return _monthDay(due);
   return _monthDay(due);
 }
 
