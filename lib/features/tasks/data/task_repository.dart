@@ -1,6 +1,6 @@
 // app/lib/features/tasks/data/task_repository.dart
 import 'package:dio/dio.dart';
-import 'package:drift/drift.dart' show Value, Expression, OrderingTerm;
+import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
