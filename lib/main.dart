@@ -1,5 +1,4 @@
 // app/lib/main.dart
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' show Supabase, User;
@@ -14,7 +13,6 @@ import 'core/platform/platform_info.dart';
 import 'core/sync/sync_engine.dart';
 import 'core/connectivity/connectivity_service.dart';
 import 'core/widgets/empty_state.dart';
-import 'core/services/fcm_service.dart';
 import 'core/providers/user_profile_provider.dart';
 import 'core/providers/auth_provider.dart';
 import 'core/l10n/app_localizations.dart';
@@ -22,16 +20,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Initialize Firebase (needed for FCM on Android)
-  // A1.10: wrap in try/catch so the app runs without push if Firebase is misconfigured
-  if (PlatformInfo.isAndroid) {
-    try {
-      await Firebase.initializeApp();
-    } catch (e) {
-      debugPrint('Firebase init failed — push notifications unavailable: $e');
-    }
-  }
 
   // A4: Disable runtime font fetching — fonts are bundled as assets.
   GoogleFonts.config.allowRuntimeFetching = false;
@@ -93,13 +81,6 @@ class PlanPalApp extends ConsumerWidget {
         loadMeAndApply(ref);
       }
     });
-
-    // Initialize FCM on Android after the first frame
-    if (PlatformInfo.isAndroid) {
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        await FcmService.initialize(ref);
-      });
-    }
 
     return MaterialApp.router(
       title: 'PlanPal',
