@@ -1,0 +1,14 @@
+Building Windows application...                                 
+cmake -E tar: error: ZIP decompression failed (-5)
+CMake Error at C:/Users/lardg/Desktop/TASKAPP/app/build/windows/x64/extracted/firebase_cpp_sdk_windows/CMakeLists.txt:17 (cmake_minimum_required):
+  Compatibility with CMake < 3.5 has been removed from CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+
+  Or, add -DCMAKE_POLICY_VERSION_MINIMUM=3.5 to try configuring anyway.
+
+
+Building Windows application...                                    27.3s
+Unable to generate build files
