@@ -280,7 +280,7 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
                               name: task.labelName!,
                               color: task.labelColor != null
                                   ? _parseColor(task.labelColor!)
-                                  : const Color(0xFF4F46E5),
+                                  : PlanPalColors.light.primary,
                             ),
                         ],
                       ),
@@ -398,7 +398,7 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
     try {
       return Color(int.parse(hex.replaceAll('#', '0xFF')));
     } catch (_) {
-      return const Color(0xFF4F46E5);
+      return PlanPalColors.light.primary;
     }
   }
 }

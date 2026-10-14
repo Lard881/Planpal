@@ -258,7 +258,7 @@ class _MonthGrid extends StatelessWidget {
                             borderRadius: BorderRadius.circular(AppRadius.control),
                             border: isSelected
                                 ? Border.all(color: c.primary)
-                                : Border.all(color: c.border.withOpacity(0.5)),
+                                : Border.all(color: c.border.withValues(alpha: 0.5)),
                           ),
                           padding: const EdgeInsets.all(6),
                           child: Column(

@@ -185,7 +185,7 @@ class CheckCircle extends StatelessWidget {
           color: checked ? c.primary : Colors.transparent,
           border: checked
               ? null
-              : Border.all(color: c.presenceOffline, width: 1.5),
+              : Border.all(color: c.border, width: 1.5),
         ),
         child: checked
             ? const Icon(Icons.check, size: 14, color: Colors.white)

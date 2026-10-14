@@ -604,7 +604,7 @@ class _MobileChannelCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
-    final colors = [c.primary, c.violet, const Color(0xFF0EA5E9), c.success];
+    final colors = [c.primary, c.violet, c.sky, c.success];
     final color = colors[channel.name.hashCode.abs() % colors.length];
 
     return Container(

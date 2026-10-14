@@ -45,13 +45,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get searchCtrlK => 'Ctrl K';
 
   @override
-  String get searchChats => 'Search chats...';
+  String get searchChats => '채팅 검색...';
 
   @override
-  String get searchFiles => 'Search files...';
+  String get searchFiles => '파일 검색...';
 
   @override
-  String get searchTasks => 'Search tasks...';
+  String get searchTasks => '작업 검색...';
 
   @override
   String get btnSave => '저장';
@@ -75,7 +75,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get btnViewAll => '전체 보기';
 
   @override
-  String get btnViewAllTasks => 'View All Tasks';
+  String get btnViewAllTasks => '모든 작업 보기';
 
   @override
   String get btnDetails => '세부 정보';
@@ -96,187 +96,183 @@ class AppLocalizationsKo extends AppLocalizations {
   String get btnUpload => '파일 업로드';
 
   @override
-  String get btnNewDocument => '+ New Document';
+  String get btnNewDocument => '+ 새 문서';
 
   @override
-  String get btnScheduleEvent => '+ Schedule Event';
+  String get btnScheduleEvent => '+ 일정 추가';
 
   @override
-  String get btnSaveEvent => 'Save Event';
+  String get btnSaveEvent => '일정 저장';
 
   @override
-  String get btnSaveSettings => 'Save Settings';
+  String get btnSaveSettings => '설정 저장';
 
   @override
-  String get btnSignOut => 'Sign out';
+  String get btnSignOut => '로그아웃';
 
   @override
-  String get btnDeleteAccount => 'Delete account';
+  String get btnDeleteAccount => '계정 삭제';
 
   @override
-  String get btnMarkAllRead => 'Mark all as read';
+  String get btnMarkAllRead => '모두 읽음으로 표시';
 
   @override
-  String get btnMarkComplete => 'Mark Complete';
+  String get btnMarkComplete => '완료로 표시';
 
   @override
-  String get btnDeleteSelected => 'Delete Selected';
+  String get btnDeleteSelected => '선택 항목 삭제';
 
   @override
-  String get btnInviteWithCode => 'Invite with code';
+  String get btnInviteWithCode => '코드로 초대';
 
   @override
-  String get btnNewCode => '+ New code';
+  String get btnNewCode => '+ 새 코드';
 
   @override
-  String get btnJoin => 'Join';
+  String get btnJoin => '참여';
 
   @override
-  String get btnCreateWorkspace => '+ Create workspace';
+  String get btnCreateWorkspace => '+ 공간 만들기';
 
   @override
-  String get btnJoinWithCode => 'Join with code';
+  String get btnJoinWithCode => '코드로 참여';
 
   @override
-  String get btnUploadNew => 'Upload New';
+  String get btnUploadNew => '새로 업로드';
 
   @override
-  String get btnRemove => 'Remove';
+  String get btnRemove => '제거';
 
   @override
-  String get btnRevoke => 'Revoke';
+  String get btnRevoke => '취소';
 
   @override
-  String get btnAdd => 'Add';
+  String get btnAdd => '추가';
 
   @override
-  String get btnOpen => 'Open';
+  String get btnOpen => '열기';
 
   @override
-  String get btnDiscard => 'Discard';
+  String get btnDiscard => '취소';
 
   @override
-  String get btnSkipForNow => 'Skip for now';
+  String get btnSkipForNow => '지금은 건너뛰기';
 
   @override
-  String get btnContinueWith => 'Continue ->';
+  String get btnContinueWith => '계속 ->';
 
   @override
-  String get btnGetStarted => 'Get started ->';
+  String get btnGetStarted => '시작하기 ->';
 
   @override
-  String get btnCreateCode => 'Create code';
+  String get btnCreateCode => '코드 만들기';
 
   @override
-  String get emptyStateNoTasks => '작업 없음';
+  String get emptyStateNoTasks => '아직 작업이 없습니다';
 
   @override
   String get emptyStateNoTasksDesc => '첫 번째 작업을 만들어 시작하세요.';
 
   @override
-  String get emptyStateNoTasksToday => 'Nothing due today.';
+  String get emptyStateNoTasksToday => '오늘 할 일이 없습니다.';
 
   @override
-  String get emptyStateNoEvents => '이번 주 이벤트 없음';
+  String get emptyStateNoEvents => '이번 주 일정 없음';
 
   @override
-  String get emptyStateNoEventsDay => 'No events this day.';
+  String get emptyStateNoEventsDay => '이날 일정 없음.';
 
   @override
-  String get emptyStateNoMessages => '메시지 없음';
+  String get emptyStateNoMessages => '아직 메시지가 없습니다.';
 
   @override
-  String get emptyStateNoDocuments => '문서 없음';
+  String get emptyStateNoDocuments => '아직 문서가 없습니다';
 
   @override
   String get emptyStateNoNotifications => '모두 확인했습니다';
 
   @override
-  String get emptyStateNoResults => '결과 없음';
+  String get emptyStateNoResults => '결과를 찾을 수 없습니다';
 
   @override
   String emptyStateNoResultsFor(String query) {
-    return 'No results for \"$query\"';
+    return '\"$query\"에 대한 결과 없음';
   }
 
   @override
-  String get emptyStateNoInviteCodes => 'No invite codes';
+  String get emptyStateNoInviteCodes => '초대 코드 없음';
 
   @override
-  String get emptyStateNoInviteCodesDesc => 'Create one to invite teammates.';
+  String get emptyStateNoInviteCodesDesc => '팀원을 초대하려면 코드를 만드세요.';
 
   @override
-  String get emptyStateNoMembers => 'No members found';
+  String get emptyStateNoMembers => '멤버를 찾을 수 없습니다';
 
   @override
-  String get emptyStateNoAnalytics => 'No analytics yet';
+  String get emptyStateNoAnalytics => '아직 분석 데이터 없음';
 
   @override
-  String get emptyStateNoAnalyticsDesc =>
-      'Complete some tasks to see your statistics.';
+  String get emptyStateNoAnalyticsDesc => '작업을 완료하여 통계를 확인하세요.';
 
   @override
-  String get emptyStateNoChannels => 'No channels yet';
+  String get emptyStateNoChannels => '아직 채널 없음';
 
   @override
-  String get emptyStateNoChannelsDesc => 'Create a channel to get started.';
+  String get emptyStateNoChannelsDesc => '채널을 만들어 시작하세요.';
 
   @override
-  String get emptyStateSelectChannel => 'Select a channel';
+  String get emptyStateSelectChannel => '채널 선택';
 
   @override
-  String get emptyStateSelectChannelDesc =>
-      'Choose a channel to start messaging.';
+  String get emptyStateSelectChannelDesc => '메시지를 시작할 채널을 선택하세요.';
 
   @override
-  String get emptyStateChatTeamOnly => 'Chat is for teams';
+  String get emptyStateChatTeamOnly => '채팅은 팀 전용입니다';
 
   @override
-  String get emptyStateChatTeamOnlyDesc =>
-      'Chat is only available in team workspaces.';
+  String get emptyStateChatTeamOnlyDesc => '채팅은 팀 공간에서만 사용할 수 있습니다.';
 
   @override
-  String get emptyStateTeamOnly => 'Team is for team workspaces';
+  String get emptyStateTeamOnly => '팀 기능은 팀 공간 전용입니다';
 
   @override
-  String get emptyStateTeamOnlyDesc =>
-      'Create or join a team workspace to see members.';
+  String get emptyStateTeamOnlyDesc => '멤버를 보려면 팀 공간을 만들거나 참여하세요.';
 
   @override
-  String get emptyStateTaskNotFound => 'Task not found';
+  String get emptyStateTaskNotFound => '작업을 찾을 수 없습니다';
 
   @override
-  String get emptyStateDocNotFound => 'Document not found';
+  String get emptyStateDocNotFound => '문서를 찾을 수 없습니다';
 
   @override
-  String get emptyStateNothingUpcoming => 'Nothing coming up.';
+  String get emptyStateNothingUpcoming => '예정된 항목이 없습니다.';
 
   @override
-  String get errorGeneric => '문제가 발생했습니다. 다시 시도하세요.';
+  String get errorGeneric => '오류가 발생했습니다. 다시 시도해 주세요.';
 
   @override
-  String get errorNetwork => '인터넷 연결 없음. 네트워크를 확인하세요.';
+  String get errorNetwork => '인터넷 연결이 없습니다. 네트워크를 확인하고 다시 시도하세요.';
 
   @override
-  String get errorServer => '서버 오류. 잠시 후 다시 시도하세요.';
+  String get errorServer => '서버 오류입니다. 잠시 후 다시 시도하세요.';
 
   @override
   String get errorPermission => '이 작업을 수행할 권한이 없습니다.';
 
   @override
-  String get errorNotFound => '이 항목은 더 이상 존재하지 않습니다.';
+  String get errorNotFound => '이 항목이 더 이상 존재하지 않습니다.';
 
   @override
-  String get errorSessionExpired => '세션이 만료되었습니다. 다시 로그인하세요.';
+  String get errorSessionExpired => '세션이 만료되었습니다. 다시 로그인해 주세요.';
 
   @override
-  String get bannerOffline => '오프라인 상태입니다. 변경사항이 기기에 저장되며 연결 시 동기화됩니다.';
+  String get bannerOffline => '오프라인 상태입니다. 변경 사항이 기기에 저장되었으며 온라인 복구 시 동기화됩니다.';
 
   @override
-  String get bannerServerUnreachable => '서버에 연결할 수 없습니다.';
+  String get bannerServerUnreachable => '서버에 연결할 수 없습니다. 연결을 확인하세요.';
 
   @override
-  String get bannerWakingUp => '서버를 시작하는 중입니다. 최대 1분이 걸릴 수 있습니다.';
+  String get bannerWakingUp => '서버를 깨우는 중입니다. 최대 1분이 걸릴 수 있습니다.';
 
   @override
   String get bannerBackOnline => '다시 온라인 상태입니다. 동기화 중...';
@@ -287,13 +283,13 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get syncSaved => 'Saved';
+  String get syncSaved => '저장됨';
 
   @override
-  String get syncSaving => 'Saving...';
+  String get syncSaving => '저장 중...';
 
   @override
-  String get syncWaitingShort => 'Waiting to sync';
+  String get syncWaitingShort => '동기화 대기 중';
 
   @override
   String get priorityHigh => '높음';
@@ -333,53 +329,57 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String workspaceMembers(int count) {
-    return '멤버 $count명';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '멤버 $count명',
+      one: '멤버 1명',
+    );
+    return '$_temp0';
   }
 
   @override
-  String get workspaceNameLabel => 'Workspace name';
+  String get workspaceNameLabel => '공간 이름';
 
   @override
-  String get workspaceNameHint => 'Acme Studio';
+  String get workspaceNameHint => '내 팀';
 
   @override
-  String get workspaceSwitchTitle => 'Switch workspace';
+  String get workspaceSwitchTitle => '공간 전환';
 
   @override
-  String get workspaceCreateTitle => 'Create workspace';
+  String get workspaceCreateTitle => '공간 만들기';
 
   @override
-  String get workspaceCreateSubtitle => 'Give your new space a friendly name.';
+  String get workspaceCreateSubtitle => '새 공간에 친근한 이름을 지어주세요.';
 
   @override
-  String get workspaceCreateTip =>
-      'Tip: you can invite teammates right after creating it.';
+  String get workspaceCreateTip => '팁: 만든 직후 팀원을 초대할 수 있습니다.';
 
   @override
-  String get workspaceJoinTitle => 'Join with code';
+  String get workspaceJoinTitle => '코드로 참여';
 
   @override
-  String get workspaceJoinSubtitle =>
-      'Ask your teammate for the 8-character invite code.';
+  String get workspaceJoinSubtitle => '팀원에게 8자리 초대 코드를 물어보세요.';
 
   @override
   String workspaceJoinedSuccess(String name) {
-    return 'Joined $name!';
+    return '$name에 참여했습니다!';
   }
 
   @override
-  String get workspaceSettings => 'Workspace Settings';
+  String get workspaceSettings => '공간 설정';
 
   @override
   String workspaceSettingsSubtitle(String name) {
-    return '$name · Manage people and access';
+    return '$name · 사람 및 접근 관리';
   }
 
   @override
-  String get tabMembers => 'Members';
+  String get tabMembers => '멤버';
 
   @override
-  String get tabInviteCodes => 'Invite codes';
+  String get tabInviteCodes => '초대 코드';
 
   @override
   String get today => '오늘';
@@ -394,10 +394,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get all => '전체';
 
   @override
-  String get yesterday => 'Yesterday';
+  String get yesterday => '어제';
 
   @override
-  String get tomorrow => 'Tomorrow';
+  String get tomorrow => '내일';
 
   @override
   String get pageLoading => '로딩 중...';
@@ -413,27 +413,27 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get confirmDeleteTitle => '이 항목을 삭제하시겠습니까?';
+  String get confirmDeleteTitle => '이 항목을 삭제할까요?';
 
   @override
   String get confirmDeleteBody => '이 작업은 취소할 수 없습니다.';
 
   @override
-  String get confirmDeleteTasksTitle => 'Delete selected tasks?';
+  String get confirmDeleteTasksTitle => '선택한 작업을 삭제할까요?';
 
   @override
-  String get confirmRemoveMemberTitle => 'Remove member?';
+  String get confirmRemoveMemberTitle => '멤버를 제거할까요?';
 
   @override
   String confirmRemoveMemberBody(String name) {
-    return 'Remove $name from this workspace?';
+    return '이 공간에서 $name을(를) 제거할까요?';
   }
 
   @override
-  String get confirmDiscardTitle => 'Discard change?';
+  String get confirmDiscardTitle => '변경 사항을 취소할까요?';
 
   @override
-  String get confirmDiscardBody => 'This change will be permanently removed.';
+  String get confirmDiscardBody => '이 변경 사항은 영구적으로 삭제됩니다.';
 
   @override
   String get logIn => '로그인';
@@ -448,295 +448,286 @@ class AppLocalizationsKo extends AppLocalizations {
   String get forgotPassword => '비밀번호 찾기';
 
   @override
-  String get continueWithGoogle => 'Continue with Google';
+  String get continueWithGoogle => 'Google로 계속';
 
   @override
-  String get createOrJoinTeam => 'Create or join a team workspace';
+  String get createOrJoinTeam => '팀 공간 만들기 또는 참여';
 
   @override
-  String get loginTitle => 'Welcome back';
+  String get loginTitle => '다시 오신 것을 환영합니다';
 
   @override
-  String get loginSubtitleMobile => 'Log in to keep the day on track.';
+  String get loginSubtitleMobile => '로그인하여 오늘 하루를 이어가세요.';
 
   @override
-  String get loginSubtitleDesktop => 'Log in to pick up where you left off.';
+  String get loginSubtitleDesktop => '로그인하여 중단한 곳에서 계속하세요.';
 
   @override
-  String get loginForgotPassword => 'Forgot password?';
+  String get loginForgotPassword => '비밀번호를 잊으셨나요?';
 
   @override
-  String get loginNewHere => 'New here?';
+  String get loginNewHere => '처음이신가요?';
 
   @override
-  String get loginCreateAccount => 'Create account';
+  String get loginCreateAccount => '계정 만들기';
 
   @override
-  String get loginCalm => 'Calm days, done tasks.';
+  String get loginCalm => '여유로운 하루, 완료된 작업.';
 
   @override
-  String get loginCalmDesc =>
-      'PlanPal keeps tasks, calendar and chat in one friendly place.';
+  String get loginCalmDesc => 'PlanPal은 작업, 캘린더, 채팅을 친근한 한 곳에 모았습니다.';
 
   @override
-  String get signupTitle => 'Create your account';
+  String get signupTitle => '계정 만들기';
 
   @override
-  String get signupTeamworkTitle => 'Teamwork, minus the chaos.';
+  String get signupTeamworkTitle => '팀워크, 혼돈 없이.';
 
   @override
-  String get signupTeamworkDesc =>
-      'Tasks, calendar, chat, docs and insights — designed to feel calm.';
+  String get signupTeamworkDesc => '작업, 캘린더, 채팅, 문서, 인사이트 — 차분하게 설계되었습니다.';
 
   @override
-  String get signupHaveAccount => 'Have an account?';
+  String get signupHaveAccount => '계정이 있으신가요?';
 
   @override
-  String get signupTermsPrefix => 'I agree to the';
+  String get signupTermsPrefix => '에 동의합니다';
 
   @override
-  String get signupTerms => 'Terms';
+  String get signupTerms => '이용약관';
 
   @override
-  String get signupTermsAnd => 'and';
+  String get signupTermsAnd => '및';
 
   @override
-  String get signupPrivacy => 'Privacy Policy';
+  String get signupPrivacy => '개인정보 처리방침';
 
   @override
-  String get fieldFullName => 'Full name';
+  String get fieldFullName => '이름';
 
   @override
-  String get fieldFullNameHint => 'Maya Chen';
+  String get fieldFullNameHint => '홍길동';
 
   @override
-  String get fieldEmail => 'Email';
+  String get fieldEmail => '이메일';
 
   @override
-  String get fieldEmailHint => 'maya.chen@planpal.io';
+  String get fieldEmailHint => 'name@example.com';
 
   @override
-  String get fieldPassword => 'Password';
+  String get fieldPassword => '비밀번호';
 
   @override
   String get fieldPasswordHint => '••••••••••';
 
   @override
-  String get fieldConfirmPassword => 'Confirm password';
+  String get fieldConfirmPassword => '비밀번호 확인';
 
   @override
-  String get fieldNewPassword => 'New password';
+  String get fieldNewPassword => '새 비밀번호';
 
   @override
-  String get fieldConfirmNewPassword => 'Confirm new password';
+  String get fieldConfirmNewPassword => '새 비밀번호 확인';
 
   @override
-  String get fieldTaskName => 'Task Name';
+  String get fieldTaskName => '작업 이름';
 
   @override
-  String get fieldTaskNameHint => 'Plan team offsite';
+  String get fieldTaskNameHint => '팀 워크숍 계획';
 
   @override
-  String get fieldDescription => 'Description';
+  String get fieldDescription => '설명';
 
   @override
-  String get fieldDescriptionHint => 'Venue, date, agenda...';
+  String get fieldDescriptionHint => '장소, 날짜, 의제...';
 
   @override
-  String get fieldDueDate => 'Due Date';
+  String get fieldDueDate => '마감일';
 
   @override
-  String get fieldTime => 'Time';
+  String get fieldTime => '시간';
 
   @override
-  String get fieldPriority => 'Priority';
+  String get fieldPriority => '우선순위';
 
   @override
-  String get fieldAssignee => 'Assignee';
+  String get fieldAssignee => '담당자';
 
   @override
-  String get fieldAssigneeOptional => 'Assignee (optional)';
+  String get fieldAssigneeOptional => '담당자 (선택)';
 
   @override
-  String get fieldLabel => 'Label';
+  String get fieldLabel => '레이블';
 
   @override
-  String get fieldLabelOptional => 'Label (optional)';
+  String get fieldLabelOptional => '레이블 (선택)';
 
   @override
-  String get fieldTitle => 'Title';
+  String get fieldTitle => '제목';
 
   @override
-  String get fieldTitleHint => 'Design review';
+  String get fieldTitleHint => '디자인 검토';
 
   @override
-  String get fieldStarts => 'Starts';
+  String get fieldStarts => '시작';
 
   @override
-  String get fieldEnds => 'Ends';
+  String get fieldEnds => '종료';
 
   @override
-  String get fieldAllDay => 'All day';
+  String get fieldAllDay => '하루 종일';
 
   @override
-  String get fieldReminder => 'Reminder';
+  String get fieldReminder => '알림';
 
   @override
-  String get fieldChannelName => 'Channel name';
+  String get fieldChannelName => '채널 이름';
 
   @override
-  String get fieldDocTitle => 'Document title';
+  String get fieldDocTitle => '문서 제목';
 
   @override
-  String get fieldUntitled => 'Untitled';
+  String get fieldUntitled => '제목 없음';
 
   @override
-  String get fieldStartWriting => 'Start writing...';
+  String get fieldStartWriting => '작성 시작...';
 
   @override
-  String get fieldAddDetailsHint => 'Add details...';
+  String get fieldAddDetailsHint => '세부 정보 추가...';
 
   @override
-  String get fieldWriteComment => 'Write a comment...';
+  String get fieldWriteComment => '댓글 작성...';
 
   @override
-  String get fieldMessageHint => 'Message...';
+  String get fieldMessageHint => '메시지...';
 
   @override
-  String get fieldSubtaskHint => 'Subtask title';
+  String get fieldSubtaskHint => '하위 작업 제목';
 
   @override
   String fieldMessageChannelHint(String channel) {
-    return 'Message #$channel...';
+    return '#$channel 메시지...';
   }
 
   @override
-  String get validationEmailRequired => 'Email is required.';
+  String get validationEmailRequired => '이메일을 입력해 주세요.';
 
   @override
-  String get validationEmailInvalid => 'Enter a valid email.';
+  String get validationEmailInvalid => '유효한 이메일을 입력해 주세요.';
 
   @override
-  String get validationPasswordRequired => 'Password is required.';
+  String get validationPasswordRequired => '비밀번호를 입력해 주세요.';
 
   @override
-  String get validationPasswordTooShort =>
-      'Password must be at least 8 characters.';
+  String get validationPasswordTooShort => '비밀번호는 8자 이상이어야 합니다.';
 
   @override
-  String get validationPasswordsNoMatch => 'Passwords do not match.';
+  String get validationPasswordsNoMatch => '비밀번호가 일치하지 않습니다.';
 
   @override
-  String get validationNameRequired => 'Full name is required.';
+  String get validationNameRequired => '이름을 입력해 주세요.';
 
   @override
-  String get validationTermsRequired =>
-      'Please agree to the Terms and Privacy Policy.';
+  String get validationTermsRequired => '이용약관 및 개인정보 처리방침에 동의해 주세요.';
 
   @override
-  String get validationTaskNameRequired => 'Task name is required.';
+  String get validationTaskNameRequired => '작업 이름을 입력해 주세요.';
 
   @override
-  String get validationWorkspaceNameRequired => 'Workspace name is required.';
+  String get validationWorkspaceNameRequired => '공간 이름을 입력해 주세요.';
 
   @override
-  String get forgotPasswordTitle => 'Reset password';
+  String get forgotPasswordTitle => '비밀번호 재설정';
 
   @override
-  String get forgotPasswordSubtitle =>
-      'Enter the email linked to your account.';
+  String get forgotPasswordSubtitle => '계정에 연결된 이메일을 입력하세요.';
 
   @override
   String forgotPasswordStep(int current) {
-    return 'Step $current of 3';
+    return '$current단계 / 3단계';
   }
 
   @override
-  String get forgotPasswordSendCode => 'Send Code';
+  String get forgotPasswordSendCode => '코드 전송';
 
   @override
-  String get forgotPasswordBackToLogin => 'Back to log in';
+  String get forgotPasswordBackToLogin => '로그인으로 돌아가기';
 
   @override
-  String get forgotPasswordEnterCode => 'Enter code';
+  String get forgotPasswordEnterCode => '코드 입력';
 
   @override
-  String get forgotPasswordCodeSent => '6-digit code sent to your email.';
+  String get forgotPasswordCodeSent => '6자리 코드가 이메일로 전송되었습니다.';
 
   @override
-  String get forgotPasswordContinue => 'Continue';
+  String get forgotPasswordContinue => '계속';
 
   @override
-  String get forgotPasswordSetNew => 'Set new password';
+  String get forgotPasswordSetNew => '새 비밀번호 설정';
 
   @override
-  String get forgotPasswordSaveNew => 'Save New Password';
+  String get forgotPasswordSaveNew => '새 비밀번호 저장';
 
   @override
-  String get verifyEmailTitle => 'Check your inbox';
+  String get verifyEmailTitle => '받은 편지함 확인';
 
   @override
   String verifyEmailSentDesktop(String email) {
-    return 'We sent a 6-digit code to $email';
+    return '$email로 6자리 코드를 전송했습니다';
   }
 
   @override
   String verifyEmailSentMobile(String email) {
-    return 'Code sent to $email';
+    return '$email로 코드 전송';
   }
 
   @override
-  String get verifyEmailVerify => 'Verify';
+  String get verifyEmailVerify => '인증';
 
   @override
-  String get verifyEmailResend => 'Didn\'t get it? Resend code';
+  String get verifyEmailResend => '받지 못하셨나요? 코드 재전송';
 
   @override
   String verifyEmailResendCooldown(int seconds) {
-    return 'Didn\'t get it? Resend in ${seconds}s';
+    return '받지 못하셨나요? $seconds초 후 재전송';
   }
 
   @override
-  String get onboardingTitle => 'Where do you want to start?';
+  String get onboardingTitle => '어디서 시작하시겠어요?';
 
   @override
-  String get onboardingSubtitle =>
-      'You can always switch or create more later.';
+  String get onboardingSubtitle => '나중에 언제든지 전환하거나 더 만들 수 있습니다.';
 
   @override
-  String get onboardingPersonalTitle => 'My Personal workspace';
+  String get onboardingPersonalTitle => '내 개인 공간';
 
   @override
-  String get onboardingPersonalSubtitle => 'Private tasks and notes.';
+  String get onboardingPersonalSubtitle => '개인 작업과 메모.';
 
   @override
-  String get onboardingPersonalTitleDesktop =>
-      'Continue with my Personal workspace';
+  String get onboardingPersonalTitleDesktop => '내 개인 공간으로 계속';
 
   @override
-  String get onboardingPersonalSubtitleDesktop =>
-      'A calm private space for your own tasks and notes.';
+  String get onboardingPersonalSubtitleDesktop => '나만의 작업과 메모를 위한 조용한 개인 공간.';
 
   @override
-  String get onboardingTeamTitle => 'Create or join a team';
+  String get onboardingTeamTitle => '팀 만들기 또는 참여';
 
   @override
-  String get onboardingTeamSubtitle => 'Share work with others.';
+  String get onboardingTeamSubtitle => '다른 사람들과 작업 공유.';
 
   @override
-  String get onboardingTeamSubtitleDesktop =>
-      'Invite teammates, share tasks and chat together.';
+  String get onboardingTeamSubtitleDesktop => '팀원 초대, 작업 공유, 함께 채팅.';
 
   @override
-  String get tasksTitle => 'Tasks';
+  String get tasksTitle => '작업';
 
   @override
   String tasksDueToday(int count, int dueToday) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count tasks · $dueToday due today',
-      one: '1 task · 1 due today',
+      other: '작업 $count개 · 오늘 $dueToday개 마감',
+      one: '작업 1개 · 오늘 1개 마감',
     );
     return '$_temp0';
   }
@@ -746,345 +737,343 @@ class AppLocalizationsKo extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count tasks selected',
-      one: '1 task selected',
+      other: '작업 $count개 선택됨',
+      one: '작업 1개 선택됨',
     );
     return '$_temp0';
   }
 
   @override
-  String get tasksNoResultsFilters => 'No results for these filters';
+  String get tasksNoResultsFilters => '이 필터로 결과가 없습니다';
 
   @override
-  String get tasksClearFilters => 'Clear filters';
+  String get tasksClearFilters => '필터 초기화';
 
   @override
-  String get tasksAddSubtask => '+ Add Subtask';
+  String get tasksAddSubtask => '+ 하위 작업 추가';
 
   @override
-  String get tasksAddSubtaskHint => '+ Add subtask...';
+  String get tasksAddSubtaskHint => '+ 하위 작업 추가...';
 
   @override
   String tasksSubtasksLabel(int done, int total) {
-    return 'Subtasks $done/$total';
+    return '하위 작업 $done/$total';
   }
 
   @override
-  String get tasksDetailTitle => 'Task details';
+  String get tasksDetailTitle => '작업 세부 정보';
 
   @override
-  String get tasksNewTitle => 'New Task';
+  String get tasksNewTitle => '새 작업';
 
   @override
-  String get tasksDescriptionLabel => 'Description';
+  String get tasksDescriptionLabel => '설명';
 
   @override
-  String get tasksNoDescription => 'No description.';
+  String get tasksNoDescription => '설명 없음.';
 
   @override
-  String get tasksComments => 'Comments';
+  String get tasksComments => '댓글';
 
   @override
-  String get tasksAttachments => 'Attachments';
+  String get tasksAttachments => '첨부 파일';
 
   @override
-  String get tasksAssigneeLabel => 'Assignee & Label';
+  String get tasksAssigneeLabel => '담당자 및 레이블';
 
   @override
-  String get tasksUnassigned => 'Unassigned';
+  String get tasksUnassigned => '미배정';
 
   @override
   String tasksDoneDate(String date) {
-    return 'Done $date';
+    return '$date 완료';
   }
 
   @override
-  String get calendarTitle => 'Calendar';
+  String get calendarTitle => '캘린더';
 
   @override
-  String get calendarToday => 'Today';
+  String get calendarToday => '오늘';
 
   @override
-  String get calendarTodaySchedule => 'Today\'s Schedule';
+  String get calendarTodaySchedule => '오늘의 일정';
 
   @override
   String calendarScheduleFor(String date) {
-    return 'Schedule · $date';
+    return '일정 · $date';
   }
 
   @override
-  String get scheduleEventTitle => 'Schedule Event';
+  String get scheduleEventTitle => '일정 추가';
 
   @override
-  String get reminderNone => 'None';
+  String get reminderNone => '알림 없음';
 
   @override
-  String get reminderFiveMin => '5 minutes before';
+  String get reminderFiveMin => '5분 전';
 
   @override
-  String get reminderFifteenMin => '15 minutes before';
+  String get reminderFifteenMin => '15분 전';
 
   @override
-  String get reminderThirtyMin => '30 minutes before';
+  String get reminderThirtyMin => '30분 전';
 
   @override
-  String get reminderOneHour => '1 hour before';
+  String get reminderOneHour => '1시간 전';
 
   @override
-  String get documentsTitle => 'Documents';
+  String get documentsTitle => '문서';
 
   @override
-  String get documentsRecent => 'Recent';
+  String get documentsRecent => '최근';
 
   @override
-  String get documentsRecentTitle => 'Recent Documents';
+  String get documentsRecentTitle => '최근 문서';
 
   @override
-  String get documentEditorSave => 'Save';
+  String get documentEditorSave => '저장';
 
   @override
-  String get documentEditorStartWriting => 'Start writing...';
+  String get documentEditorStartWriting => '작성 시작...';
 
   @override
-  String get documentNewFolderTitle => 'New Folder';
+  String get documentNewFolderTitle => '새 폴더';
 
   @override
-  String get documentNewTitle => 'New Document';
+  String get documentNewTitle => '새 문서';
 
   @override
-  String get documentUploadFile => 'Upload File';
+  String get documentUploadFile => '파일 업로드';
 
   @override
-  String get documentNewFolder => 'New Folder';
+  String get documentNewFolder => '새 폴더';
 
   @override
-  String get chatTitle => 'Messages';
+  String get chatTitle => '메시지';
 
   @override
-  String get chatNewChannel => 'New Channel';
+  String get chatNewChannel => '새 채널';
 
   @override
-  String get notificationsTitle => 'Notifications';
+  String get notificationsTitle => '알림';
 
   @override
-  String get notificationsAll => 'All';
+  String get notificationsAll => '전체';
 
   @override
-  String get notificationsUnread => 'Unread';
+  String get notificationsUnread => '읽지 않음';
 
   @override
-  String get notificationsTasks => 'Tasks';
+  String get notificationsTasks => '작업';
 
   @override
-  String get notificationsMentions => 'Mentions';
+  String get notificationsMentions => '멘션';
 
   @override
-  String get notificationsMarkRead => 'Mark as read';
+  String get notificationsMarkRead => '읽음으로 표시';
 
   @override
-  String get notificationsMarkUnread => 'Mark as unread';
+  String get notificationsMarkUnread => '읽지 않음으로 표시';
 
   @override
-  String get analyticsTitle => 'Analytics';
+  String get analyticsTitle => '분석';
 
   @override
-  String get analyticsExportCSV => 'Export CSV';
+  String get analyticsExportCSV => 'CSV 내보내기';
 
   @override
-  String get analyticsLastSevenDays => 'Last 7 days';
+  String get analyticsLastSevenDays => '최근 7일';
 
   @override
-  String get analyticsLastThirtyDays => 'Last 30 days';
+  String get analyticsLastThirtyDays => '최근 30일';
 
   @override
-  String get analyticsLastNinetyDays => 'Last 90 days';
+  String get analyticsLastNinetyDays => '최근 90일';
 
   @override
-  String get analyticsTasksCompleted => 'Tasks Completed';
+  String get analyticsTasksCompleted => '완료된 작업';
 
   @override
-  String get analyticsAvgTime => 'Avg. Completion Time';
+  String get analyticsAvgTime => '평균 완료 시간';
 
   @override
-  String get analyticsVelocity => 'Team Velocity';
+  String get analyticsVelocity => '팀 속도';
 
   @override
-  String get analyticsStreak => 'Productive Streak';
+  String get analyticsStreak => '생산성 연속';
 
   @override
-  String get analyticsWeeklyOutput => 'Weekly Task Output';
+  String get analyticsWeeklyOutput => '주간 작업 생산량';
 
   @override
-  String get analyticsCategoryMix => 'Category Mix';
+  String get analyticsCategoryMix => '카테고리 분포';
 
   @override
-  String get homeYourTasksToday => 'Your Tasks Today';
+  String get homeYourTasksToday => '오늘의 작업';
 
   @override
-  String get homeQuickActions => 'Quick Actions';
+  String get homeQuickActions => '빠른 작업';
 
   @override
-  String get homeOverview => 'Overview';
+  String get homeOverview => '개요';
 
   @override
-  String get homeUpcoming => 'Upcoming';
+  String get homeUpcoming => '예정';
 
   @override
-  String get homeStats => 'Stats';
+  String get homeStats => '통계';
 
   @override
-  String get homeDocs => 'Docs';
+  String get homeDocs => '문서';
 
   @override
-  String get homeSevenDays => '7 days';
+  String get homeSevenDays => '7일';
 
   @override
-  String get homeThirtyDays => '30 days';
+  String get homeThirtyDays => '30일';
 
   @override
-  String get homeTasksCompleted => 'Tasks Completed';
+  String get homeTasksCompleted => '완료된 작업';
 
   @override
-  String get homeCompleted => 'Completed';
+  String get homeCompleted => '완료';
 
   @override
-  String get homeInProgress => 'In Progress';
+  String get homeInProgress => '진행 중';
 
   @override
-  String get homeOverdue => 'Overdue';
+  String get homeOverdue => '기한 초과';
 
   @override
-  String get homeProductivity => 'Productivity';
+  String get homeProductivity => '생산성';
 
   @override
-  String get teamDirectoryTitle => 'Team Directory';
+  String get teamDirectoryTitle => '팀 디렉토리';
 
   @override
-  String get teamLatestUpdates => 'Latest Updates';
+  String get teamLatestUpdates => '최근 업데이트';
 
   @override
-  String get teamNoActivity => 'No recent activity';
+  String get teamNoActivity => '최근 활동 없음';
 
   @override
-  String get teamPresenceOnline => 'Active now';
+  String get teamPresenceOnline => '지금 활성';
 
   @override
-  String get teamPresenceAway => 'Away';
+  String get teamPresenceAway => '자리 비움';
 
   @override
-  String get teamPresenceOffline => 'Offline';
+  String get teamPresenceOffline => '오프라인';
 
   @override
-  String get settingsProfile => 'Profile';
+  String get settingsProfile => '프로필';
 
   @override
-  String get settingsAccount => 'Account';
+  String get settingsAccount => '계정';
 
   @override
-  String get settingsNotifications => 'Notifications';
+  String get settingsNotifications => '알림';
 
   @override
-  String get settingsAppearance => 'Appearance';
+  String get settingsAppearance => '외관';
 
   @override
-  String get settingsSecurity => 'Security';
+  String get settingsSecurity => '보안';
 
   @override
-  String get settingsWorkspace => 'Workspace';
+  String get settingsWorkspace => '작업 공간';
 
   @override
-  String get settingsSyncStatus => 'Sync status';
+  String get settingsSyncStatus => '동기화 상태';
 
   @override
-  String get settingsTheme => 'Theme';
+  String get settingsTheme => '테마';
 
   @override
-  String get settingsThemeLight => 'Light';
+  String get settingsThemeLight => '라이트';
 
   @override
-  String get settingsThemeDark => 'Dark';
+  String get settingsThemeDark => '다크';
 
   @override
-  String get settingsThemeSystem => 'System';
+  String get settingsThemeSystem => '시스템';
 
   @override
-  String get settingsLanguage => 'Language';
+  String get settingsLanguage => '언어';
 
   @override
-  String get settingsAvatarUpdated => 'Avatar updated!';
+  String get settingsAvatarUpdated => '아바타가 업데이트되었습니다!';
 
   @override
-  String get settingsDeleteAccountTitle => 'Delete account';
+  String get settingsDeleteAccountTitle => '계정 삭제';
 
   @override
-  String get settingsDeleteAccountDesc =>
-      'This permanently deletes your account and all data.';
+  String get settingsDeleteAccountDesc => '계정과 모든 데이터를 영구적으로 삭제합니다.';
 
   @override
   String settingsComingSoon(String section) {
-    return '$section settings coming soon.';
+    return '$section 설정 출시 예정.';
   }
 
   @override
-  String get syncStatusTitle => 'Sync status';
+  String get syncStatusTitle => '동기화 상태';
 
   @override
-  String get syncConnection => 'Connection';
+  String get syncConnection => '연결';
 
   @override
-  String get syncOnline => 'Online';
+  String get syncOnline => '온라인';
 
   @override
-  String get syncOffline => 'Offline';
+  String get syncOffline => '오프라인';
 
   @override
-  String get syncServerWaking => 'Server waking up...';
+  String get syncServerWaking => '서버 시작 중...';
 
   @override
-  String get syncServerUnreachable => 'Server unreachable';
+  String get syncServerUnreachable => '서버에 연결할 수 없음';
 
   @override
   String syncLastSynced(String time) {
-    return 'Last synced: $time';
+    return '마지막 동기화: $time';
   }
 
   @override
-  String get syncPendingChanges => 'Pending changes';
+  String get syncPendingChanges => '대기 중인 변경 사항';
 
   @override
-  String get syncNoPending => 'No pending changes.';
+  String get syncNoPending => '대기 중인 변경 사항 없음.';
 
   @override
-  String get syncFailedChanges => 'Failed changes';
+  String get syncFailedChanges => '실패한 변경 사항';
 
   @override
-  String get syncNoFailed => 'No failed changes.';
+  String get syncNoFailed => '실패한 변경 사항 없음.';
 
   @override
-  String get syncRetryAll => 'Retry all';
+  String get syncRetryAll => '모두 재시도';
 
   @override
-  String get syncCouldNotSave =>
-      'Could not be saved. You may no longer have access.';
+  String get syncCouldNotSave => '저장할 수 없습니다. 더 이상 접근 권한이 없을 수 있습니다.';
 
   @override
-  String get syncJustNow => 'Just now';
+  String get syncJustNow => '방금';
 
   @override
-  String get avatarCropTitle => 'Crop your photo';
+  String get avatarCropTitle => '사진 자르기';
 
   @override
-  String get codeCopied => 'Code copied';
+  String get codeCopied => '코드 복사됨';
 
   @override
-  String get goodMorning => '좋은 아침이에요';
+  String get goodMorning => '좋은 아침입니다';
 
   @override
-  String get goodAfternoon => '좋은 오후예요';
+  String get goodAfternoon => '안녕하세요';
 
   @override
-  String get goodEvening => '좋은 저녁이에요';
+  String get goodEvening => '좋은 저녁입니다';
 
   @override
-  String get letsGetStarted => '오늘도 생산적인 하루 되세요.';
+  String get letsGetStarted => '오늘도 생산적인 하루 만들어요.';
 }

@@ -1,11 +1,16 @@
 // app/lib/core/router/splash_screen.dart
 // A1.5: Restores session, loads GET /me, applies theme/language, then navigates.
+// A1.4: Checks if onboarding has been shown; if not, routes there first.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import '../config/env.dart';
 import '../providers/auth_provider.dart';
 import '../providers/user_profile_provider.dart';
+
+const _kOnboardingKey = 'planpal_onboarding_shown';
+const _storage = FlutterSecureStorage();
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -44,7 +49,17 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     if (isLoggedIn) {
       // Load profile, apply theme & language
       await loadMeAndApply(ref);
-      if (mounted) context.go('/home');
+      if (!mounted) return;
+
+      // A1.4: Show onboarding once after the very first verified login
+      final shown = await _storage.read(key: _kOnboardingKey);
+      if (shown == null) {
+        // Mark shown immediately so a crash during onboarding doesn't loop
+        await _storage.write(key: _kOnboardingKey, value: 'true');
+        if (mounted) context.go('/onboarding');
+      } else {
+        if (mounted) context.go('/home');
+      }
     } else {
       if (mounted) context.go('/login');
     }

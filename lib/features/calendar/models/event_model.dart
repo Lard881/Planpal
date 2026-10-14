@@ -1,5 +1,6 @@
 // app/lib/features/calendar/models/event_model.dart
 import 'package:flutter/material.dart';
+import '../../../core/theme/app_colors.dart';
 
 class EventModel {
   final String id;
@@ -36,7 +37,7 @@ class EventModel {
     try {
       return Color(int.parse('FF${color.replaceAll('#', '')}', radix: 16));
     } catch (_) {
-      return const Color(0xFF4F46E5);
+      return PlanPalColors.light.primary;
     }
   }
 

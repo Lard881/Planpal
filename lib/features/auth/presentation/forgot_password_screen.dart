@@ -207,7 +207,7 @@ class _ForgotPasswordScreenState
         const SizedBox(height: 24),
         PlanPalTextField(
           label: 'Email',
-          hint: 'maya.chen@planpal.io',
+          hint: 'name@example.com',
           controller: _emailCtrl,
           errorText: _emailError,
           keyboardType: TextInputType.emailAddress,

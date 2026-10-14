@@ -298,7 +298,7 @@ class _WorkspaceAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
-    final colors = [c.primary, c.violet, const Color(0xFF0EA5E9), c.success];
+    final colors = [c.primary, c.violet, c.sky, c.success];
     final color = colors[workspace.name.hashCode.abs() % colors.length];
     return Container(
       width: 36, height: 36,

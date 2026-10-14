@@ -143,8 +143,8 @@ class ConnectivityBanner extends StatelessWidget {
     Color fg;
     String msg;
     if (state == ConnectivityState.offline) {
-      bg = const Color(0xFFFEF3C7);
-      fg = const Color(0xFFD97706);
+      bg = c.warningSoft;
+      fg = c.warningText;
       msg = "You're offline. Your changes are saved on this device and will sync when you're back online.";
     } else if (state == ConnectivityState.serverUnreachable) {
       bg = c.dangerSoft; fg = c.danger;

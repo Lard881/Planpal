@@ -12,7 +12,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appName => 'PlanPal';
 
   @override
-  String get navHome => '首页';
+  String get navHome => '主页';
 
   @override
   String get navTasks => '任务';
@@ -45,13 +45,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get searchCtrlK => 'Ctrl K';
 
   @override
-  String get searchChats => 'Search chats...';
+  String get searchChats => '搜索聊天...';
 
   @override
-  String get searchFiles => 'Search files...';
+  String get searchFiles => '搜索文件...';
 
   @override
-  String get searchTasks => 'Search tasks...';
+  String get searchTasks => '搜索任务...';
 
   @override
   String get btnSave => '保存';
@@ -75,7 +75,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get btnViewAll => '查看全部';
 
   @override
-  String get btnViewAllTasks => 'View All Tasks';
+  String get btnViewAllTasks => '查看所有任务';
 
   @override
   String get btnDetails => '详情';
@@ -96,76 +96,76 @@ class AppLocalizationsZh extends AppLocalizations {
   String get btnUpload => '上传文件';
 
   @override
-  String get btnNewDocument => '+ New Document';
+  String get btnNewDocument => '+ 新建文档';
 
   @override
-  String get btnScheduleEvent => '+ Schedule Event';
+  String get btnScheduleEvent => '+ 安排活动';
 
   @override
-  String get btnSaveEvent => 'Save Event';
+  String get btnSaveEvent => '保存活动';
 
   @override
-  String get btnSaveSettings => 'Save Settings';
+  String get btnSaveSettings => '保存设置';
 
   @override
-  String get btnSignOut => 'Sign out';
+  String get btnSignOut => '退出登录';
 
   @override
-  String get btnDeleteAccount => 'Delete account';
+  String get btnDeleteAccount => '删除账户';
 
   @override
-  String get btnMarkAllRead => 'Mark all as read';
+  String get btnMarkAllRead => '全部标为已读';
 
   @override
-  String get btnMarkComplete => 'Mark Complete';
+  String get btnMarkComplete => '标为完成';
 
   @override
-  String get btnDeleteSelected => 'Delete Selected';
+  String get btnDeleteSelected => '删除所选';
 
   @override
-  String get btnInviteWithCode => 'Invite with code';
+  String get btnInviteWithCode => '用代码邀请';
 
   @override
-  String get btnNewCode => '+ New code';
+  String get btnNewCode => '+ 新代码';
 
   @override
-  String get btnJoin => 'Join';
+  String get btnJoin => '加入';
 
   @override
-  String get btnCreateWorkspace => '+ Create workspace';
+  String get btnCreateWorkspace => '+ 创建空间';
 
   @override
-  String get btnJoinWithCode => 'Join with code';
+  String get btnJoinWithCode => '用代码加入';
 
   @override
-  String get btnUploadNew => 'Upload New';
+  String get btnUploadNew => '上传新文件';
 
   @override
-  String get btnRemove => 'Remove';
+  String get btnRemove => '移除';
 
   @override
-  String get btnRevoke => 'Revoke';
+  String get btnRevoke => '撤销';
 
   @override
-  String get btnAdd => 'Add';
+  String get btnAdd => '添加';
 
   @override
-  String get btnOpen => 'Open';
+  String get btnOpen => '打开';
 
   @override
-  String get btnDiscard => 'Discard';
+  String get btnDiscard => '放弃';
 
   @override
-  String get btnSkipForNow => 'Skip for now';
+  String get btnSkipForNow => '暂时跳过';
 
   @override
-  String get btnContinueWith => 'Continue ->';
+  String get btnContinueWith => '继续 ->';
 
   @override
-  String get btnGetStarted => 'Get started ->';
+  String get btnGetStarted => '开始 ->';
 
   @override
-  String get btnCreateCode => 'Create code';
+  String get btnCreateCode => '创建代码';
 
   @override
   String get emptyStateNoTasks => '暂无任务';
@@ -174,109 +174,105 @@ class AppLocalizationsZh extends AppLocalizations {
   String get emptyStateNoTasksDesc => '创建您的第一个任务以开始。';
 
   @override
-  String get emptyStateNoTasksToday => 'Nothing due today.';
+  String get emptyStateNoTasksToday => '今天没有待办。';
 
   @override
-  String get emptyStateNoEvents => '本周没有事件';
+  String get emptyStateNoEvents => '本周没有活动';
 
   @override
-  String get emptyStateNoEventsDay => 'No events this day.';
+  String get emptyStateNoEventsDay => '今天没有活动。';
 
   @override
-  String get emptyStateNoMessages => '暂无消息';
+  String get emptyStateNoMessages => '暂无消息。';
 
   @override
   String get emptyStateNoDocuments => '暂无文档';
 
   @override
-  String get emptyStateNoNotifications => '您已全部处理完毕';
+  String get emptyStateNoNotifications => '您已全部跟进';
 
   @override
   String get emptyStateNoResults => '未找到结果';
 
   @override
   String emptyStateNoResultsFor(String query) {
-    return 'No results for \"$query\"';
+    return '\"$query\"没有结果';
   }
 
   @override
-  String get emptyStateNoInviteCodes => 'No invite codes';
+  String get emptyStateNoInviteCodes => '没有邀请码';
 
   @override
-  String get emptyStateNoInviteCodesDesc => 'Create one to invite teammates.';
+  String get emptyStateNoInviteCodesDesc => '创建一个以邀请队友。';
 
   @override
-  String get emptyStateNoMembers => 'No members found';
+  String get emptyStateNoMembers => '未找到成员';
 
   @override
-  String get emptyStateNoAnalytics => 'No analytics yet';
+  String get emptyStateNoAnalytics => '暂无分析数据';
 
   @override
-  String get emptyStateNoAnalyticsDesc =>
-      'Complete some tasks to see your statistics.';
+  String get emptyStateNoAnalyticsDesc => '完成一些任务即可查看您的统计数据。';
 
   @override
-  String get emptyStateNoChannels => 'No channels yet';
+  String get emptyStateNoChannels => '暂无频道';
 
   @override
-  String get emptyStateNoChannelsDesc => 'Create a channel to get started.';
+  String get emptyStateNoChannelsDesc => '创建一个频道开始。';
 
   @override
-  String get emptyStateSelectChannel => 'Select a channel';
+  String get emptyStateSelectChannel => '选择一个频道';
 
   @override
-  String get emptyStateSelectChannelDesc =>
-      'Choose a channel to start messaging.';
+  String get emptyStateSelectChannelDesc => '选择一个频道开始聊天。';
 
   @override
-  String get emptyStateChatTeamOnly => 'Chat is for teams';
+  String get emptyStateChatTeamOnly => '聊天仅限团队';
 
   @override
-  String get emptyStateChatTeamOnlyDesc =>
-      'Chat is only available in team workspaces.';
+  String get emptyStateChatTeamOnlyDesc => '聊天仅在团队空间中可用。';
 
   @override
-  String get emptyStateTeamOnly => 'Team is for team workspaces';
+  String get emptyStateTeamOnly => '团队功能仅限团队空间';
 
   @override
-  String get emptyStateTeamOnlyDesc =>
-      'Create or join a team workspace to see members.';
+  String get emptyStateTeamOnlyDesc => '创建或加入团队空间以查看成员。';
 
   @override
-  String get emptyStateTaskNotFound => 'Task not found';
+  String get emptyStateTaskNotFound => '未找到任务';
 
   @override
-  String get emptyStateDocNotFound => 'Document not found';
+  String get emptyStateDocNotFound => '未找到文档';
 
   @override
-  String get emptyStateNothingUpcoming => 'Nothing coming up.';
+  String get emptyStateNothingUpcoming => '没有即将到来的事项。';
 
   @override
-  String get errorGeneric => '出了些问题，请重试。';
+  String get errorGeneric => '出现错误，请重试。';
 
   @override
-  String get errorNetwork => '无网络连接，请检查您的网络。';
+  String get errorNetwork => '无网络连接，请检查网络后重试。';
 
   @override
   String get errorServer => '服务器错误，请稍后重试。';
 
   @override
-  String get errorPermission => '您没有执行此操作的权限。';
+  String get errorPermission => '您没有权限执行此操作。';
 
   @override
-  String get errorNotFound => '此项目已不存在。';
+  String get errorNotFound => '该条目不再存在。';
 
   @override
   String get errorSessionExpired => '您的会话已过期，请重新登录。';
 
   @override
-  String get bannerOffline => '您已离线。您的更改已保存在设备上，联网后将自动同步。';
+  String get bannerOffline => '您处于离线状态。更改已保存在设备上，联网后将自动同步。';
 
   @override
-  String get bannerServerUnreachable => '无法连接到服务器。';
+  String get bannerServerUnreachable => '无法连接到服务器，请检查连接。';
 
   @override
-  String get bannerWakingUp => '正在启动服务器，最多需要一分钟。';
+  String get bannerWakingUp => '正在唤醒服务器，可能需要最多一分钟。';
 
   @override
   String get bannerBackOnline => '已重新连接，正在同步...';
@@ -287,13 +283,13 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get syncSaved => 'Saved';
+  String get syncSaved => '已保存';
 
   @override
-  String get syncSaving => 'Saving...';
+  String get syncSaving => '保存中...';
 
   @override
-  String get syncWaitingShort => 'Waiting to sync';
+  String get syncWaitingShort => '等待同步';
 
   @override
   String get priorityHigh => '高';
@@ -333,53 +329,57 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String workspaceMembers(int count) {
-    return '$count位成员';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 位成员',
+      one: '1 位成员',
+    );
+    return '$_temp0';
   }
 
   @override
-  String get workspaceNameLabel => 'Workspace name';
+  String get workspaceNameLabel => '空间名称';
 
   @override
-  String get workspaceNameHint => 'Acme Studio';
+  String get workspaceNameHint => '我的团队';
 
   @override
-  String get workspaceSwitchTitle => 'Switch workspace';
+  String get workspaceSwitchTitle => '切换空间';
 
   @override
-  String get workspaceCreateTitle => 'Create workspace';
+  String get workspaceCreateTitle => '创建空间';
 
   @override
-  String get workspaceCreateSubtitle => 'Give your new space a friendly name.';
+  String get workspaceCreateSubtitle => '为您的新空间起个好名字。';
 
   @override
-  String get workspaceCreateTip =>
-      'Tip: you can invite teammates right after creating it.';
+  String get workspaceCreateTip => '提示：创建后可以立即邀请队友。';
 
   @override
-  String get workspaceJoinTitle => 'Join with code';
+  String get workspaceJoinTitle => '用代码加入';
 
   @override
-  String get workspaceJoinSubtitle =>
-      'Ask your teammate for the 8-character invite code.';
+  String get workspaceJoinSubtitle => '向队友索取 8 位邀请码。';
 
   @override
   String workspaceJoinedSuccess(String name) {
-    return 'Joined $name!';
+    return '已加入 $name！';
   }
 
   @override
-  String get workspaceSettings => 'Workspace Settings';
+  String get workspaceSettings => '空间设置';
 
   @override
   String workspaceSettingsSubtitle(String name) {
-    return '$name · Manage people and access';
+    return '$name · 管理人员和访问权限';
   }
 
   @override
-  String get tabMembers => 'Members';
+  String get tabMembers => '成员';
 
   @override
-  String get tabInviteCodes => 'Invite codes';
+  String get tabInviteCodes => '邀请码';
 
   @override
   String get today => '今天';
@@ -388,16 +388,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get thisWeek => '本周';
 
   @override
-  String get overdue => '逾期';
+  String get overdue => '已逾期';
 
   @override
   String get all => '全部';
 
   @override
-  String get yesterday => 'Yesterday';
+  String get yesterday => '昨天';
 
   @override
-  String get tomorrow => 'Tomorrow';
+  String get tomorrow => '明天';
 
   @override
   String get pageLoading => '加载中...';
@@ -409,7 +409,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String requestId(String id) {
-    return '请求ID：$id';
+    return '请求 ID：$id';
   }
 
   @override
@@ -419,21 +419,21 @@ class AppLocalizationsZh extends AppLocalizations {
   String get confirmDeleteBody => '此操作无法撤销。';
 
   @override
-  String get confirmDeleteTasksTitle => 'Delete selected tasks?';
+  String get confirmDeleteTasksTitle => '删除所选任务？';
 
   @override
-  String get confirmRemoveMemberTitle => 'Remove member?';
+  String get confirmRemoveMemberTitle => '移除成员？';
 
   @override
   String confirmRemoveMemberBody(String name) {
-    return 'Remove $name from this workspace?';
+    return '将 $name 从此空间移除？';
   }
 
   @override
-  String get confirmDiscardTitle => 'Discard change?';
+  String get confirmDiscardTitle => '放弃更改？';
 
   @override
-  String get confirmDiscardBody => 'This change will be permanently removed.';
+  String get confirmDiscardBody => '此更改将被永久删除。';
 
   @override
   String get logIn => '登录';
@@ -448,295 +448,286 @@ class AppLocalizationsZh extends AppLocalizations {
   String get forgotPassword => '忘记密码';
 
   @override
-  String get continueWithGoogle => 'Continue with Google';
+  String get continueWithGoogle => '使用 Google 继续';
 
   @override
-  String get createOrJoinTeam => 'Create or join a team workspace';
+  String get createOrJoinTeam => '创建或加入团队空间';
 
   @override
-  String get loginTitle => 'Welcome back';
+  String get loginTitle => '欢迎回来';
 
   @override
-  String get loginSubtitleMobile => 'Log in to keep the day on track.';
+  String get loginSubtitleMobile => '登录以继续今天的工作。';
 
   @override
-  String get loginSubtitleDesktop => 'Log in to pick up where you left off.';
+  String get loginSubtitleDesktop => '登录，从上次停下的地方继续。';
 
   @override
-  String get loginForgotPassword => 'Forgot password?';
+  String get loginForgotPassword => '忘记密码？';
 
   @override
-  String get loginNewHere => 'New here?';
+  String get loginNewHere => '新用户？';
 
   @override
-  String get loginCreateAccount => 'Create account';
+  String get loginCreateAccount => '创建账户';
 
   @override
-  String get loginCalm => 'Calm days, done tasks.';
+  String get loginCalm => '平静的一天，完成的任务。';
 
   @override
-  String get loginCalmDesc =>
-      'PlanPal keeps tasks, calendar and chat in one friendly place.';
+  String get loginCalmDesc => 'PlanPal 将任务、日历和聊天整合在一个友好的地方。';
 
   @override
-  String get signupTitle => 'Create your account';
+  String get signupTitle => '创建您的账户';
 
   @override
-  String get signupTeamworkTitle => 'Teamwork, minus the chaos.';
+  String get signupTeamworkTitle => '团队合作，没有混乱。';
 
   @override
-  String get signupTeamworkDesc =>
-      'Tasks, calendar, chat, docs and insights — designed to feel calm.';
+  String get signupTeamworkDesc => '任务、日历、聊天、文档和洞察——专为平静而设计。';
 
   @override
-  String get signupHaveAccount => 'Have an account?';
+  String get signupHaveAccount => '已有账户？';
 
   @override
-  String get signupTermsPrefix => 'I agree to the';
+  String get signupTermsPrefix => '我同意';
 
   @override
-  String get signupTerms => 'Terms';
+  String get signupTerms => '服务条款';
 
   @override
-  String get signupTermsAnd => 'and';
+  String get signupTermsAnd => '和';
 
   @override
-  String get signupPrivacy => 'Privacy Policy';
+  String get signupPrivacy => '隐私政策';
 
   @override
-  String get fieldFullName => 'Full name';
+  String get fieldFullName => '全名';
 
   @override
-  String get fieldFullNameHint => 'Maya Chen';
+  String get fieldFullNameHint => '姓名';
 
   @override
-  String get fieldEmail => 'Email';
+  String get fieldEmail => '电子邮件';
 
   @override
-  String get fieldEmailHint => 'maya.chen@planpal.io';
+  String get fieldEmailHint => 'name@example.com';
 
   @override
-  String get fieldPassword => 'Password';
+  String get fieldPassword => '密码';
 
   @override
   String get fieldPasswordHint => '••••••••••';
 
   @override
-  String get fieldConfirmPassword => 'Confirm password';
+  String get fieldConfirmPassword => '确认密码';
 
   @override
-  String get fieldNewPassword => 'New password';
+  String get fieldNewPassword => '新密码';
 
   @override
-  String get fieldConfirmNewPassword => 'Confirm new password';
+  String get fieldConfirmNewPassword => '确认新密码';
 
   @override
-  String get fieldTaskName => 'Task Name';
+  String get fieldTaskName => '任务名称';
 
   @override
-  String get fieldTaskNameHint => 'Plan team offsite';
+  String get fieldTaskNameHint => '计划团队活动';
 
   @override
-  String get fieldDescription => 'Description';
+  String get fieldDescription => '描述';
 
   @override
-  String get fieldDescriptionHint => 'Venue, date, agenda...';
+  String get fieldDescriptionHint => '地点、日期、议程...';
 
   @override
-  String get fieldDueDate => 'Due Date';
+  String get fieldDueDate => '截止日期';
 
   @override
-  String get fieldTime => 'Time';
+  String get fieldTime => '时间';
 
   @override
-  String get fieldPriority => 'Priority';
+  String get fieldPriority => '优先级';
 
   @override
-  String get fieldAssignee => 'Assignee';
+  String get fieldAssignee => '负责人';
 
   @override
-  String get fieldAssigneeOptional => 'Assignee (optional)';
+  String get fieldAssigneeOptional => '负责人（可选）';
 
   @override
-  String get fieldLabel => 'Label';
+  String get fieldLabel => '标签';
 
   @override
-  String get fieldLabelOptional => 'Label (optional)';
+  String get fieldLabelOptional => '标签（可选）';
 
   @override
-  String get fieldTitle => 'Title';
+  String get fieldTitle => '标题';
 
   @override
-  String get fieldTitleHint => 'Design review';
+  String get fieldTitleHint => '设计评审';
 
   @override
-  String get fieldStarts => 'Starts';
+  String get fieldStarts => '开始';
 
   @override
-  String get fieldEnds => 'Ends';
+  String get fieldEnds => '结束';
 
   @override
-  String get fieldAllDay => 'All day';
+  String get fieldAllDay => '全天';
 
   @override
-  String get fieldReminder => 'Reminder';
+  String get fieldReminder => '提醒';
 
   @override
-  String get fieldChannelName => 'Channel name';
+  String get fieldChannelName => '频道名称';
 
   @override
-  String get fieldDocTitle => 'Document title';
+  String get fieldDocTitle => '文档标题';
 
   @override
-  String get fieldUntitled => 'Untitled';
+  String get fieldUntitled => '无标题';
 
   @override
-  String get fieldStartWriting => 'Start writing...';
+  String get fieldStartWriting => '开始写作...';
 
   @override
-  String get fieldAddDetailsHint => 'Add details...';
+  String get fieldAddDetailsHint => '添加详情...';
 
   @override
-  String get fieldWriteComment => 'Write a comment...';
+  String get fieldWriteComment => '写评论...';
 
   @override
-  String get fieldMessageHint => 'Message...';
+  String get fieldMessageHint => '消息...';
 
   @override
-  String get fieldSubtaskHint => 'Subtask title';
+  String get fieldSubtaskHint => '子任务标题';
 
   @override
   String fieldMessageChannelHint(String channel) {
-    return 'Message #$channel...';
+    return '消息 #$channel...';
   }
 
   @override
-  String get validationEmailRequired => 'Email is required.';
+  String get validationEmailRequired => '电子邮件为必填项。';
 
   @override
-  String get validationEmailInvalid => 'Enter a valid email.';
+  String get validationEmailInvalid => '请输入有效的电子邮件。';
 
   @override
-  String get validationPasswordRequired => 'Password is required.';
+  String get validationPasswordRequired => '密码为必填项。';
 
   @override
-  String get validationPasswordTooShort =>
-      'Password must be at least 8 characters.';
+  String get validationPasswordTooShort => '密码至少需要 8 个字符。';
 
   @override
-  String get validationPasswordsNoMatch => 'Passwords do not match.';
+  String get validationPasswordsNoMatch => '密码不匹配。';
 
   @override
-  String get validationNameRequired => 'Full name is required.';
+  String get validationNameRequired => '全名为必填项。';
 
   @override
-  String get validationTermsRequired =>
-      'Please agree to the Terms and Privacy Policy.';
+  String get validationTermsRequired => '请同意服务条款和隐私政策。';
 
   @override
-  String get validationTaskNameRequired => 'Task name is required.';
+  String get validationTaskNameRequired => '任务名称为必填项。';
 
   @override
-  String get validationWorkspaceNameRequired => 'Workspace name is required.';
+  String get validationWorkspaceNameRequired => '空间名称为必填项。';
 
   @override
-  String get forgotPasswordTitle => 'Reset password';
+  String get forgotPasswordTitle => '重置密码';
 
   @override
-  String get forgotPasswordSubtitle =>
-      'Enter the email linked to your account.';
+  String get forgotPasswordSubtitle => '输入与您账户关联的电子邮件。';
 
   @override
   String forgotPasswordStep(int current) {
-    return 'Step $current of 3';
+    return '第 $current 步，共 3 步';
   }
 
   @override
-  String get forgotPasswordSendCode => 'Send Code';
+  String get forgotPasswordSendCode => '发送验证码';
 
   @override
-  String get forgotPasswordBackToLogin => 'Back to log in';
+  String get forgotPasswordBackToLogin => '返回登录';
 
   @override
-  String get forgotPasswordEnterCode => 'Enter code';
+  String get forgotPasswordEnterCode => '输入验证码';
 
   @override
-  String get forgotPasswordCodeSent => '6-digit code sent to your email.';
+  String get forgotPasswordCodeSent => '6 位验证码已发送到您的电子邮件。';
 
   @override
-  String get forgotPasswordContinue => 'Continue';
+  String get forgotPasswordContinue => '继续';
 
   @override
-  String get forgotPasswordSetNew => 'Set new password';
+  String get forgotPasswordSetNew => '设置新密码';
 
   @override
-  String get forgotPasswordSaveNew => 'Save New Password';
+  String get forgotPasswordSaveNew => '保存新密码';
 
   @override
-  String get verifyEmailTitle => 'Check your inbox';
+  String get verifyEmailTitle => '查看您的收件箱';
 
   @override
   String verifyEmailSentDesktop(String email) {
-    return 'We sent a 6-digit code to $email';
+    return '我们已向 $email 发送了 6 位验证码';
   }
 
   @override
   String verifyEmailSentMobile(String email) {
-    return 'Code sent to $email';
+    return '验证码已发送至 $email';
   }
 
   @override
-  String get verifyEmailVerify => 'Verify';
+  String get verifyEmailVerify => '验证';
 
   @override
-  String get verifyEmailResend => 'Didn\'t get it? Resend code';
+  String get verifyEmailResend => '没收到？重新发送验证码';
 
   @override
   String verifyEmailResendCooldown(int seconds) {
-    return 'Didn\'t get it? Resend in ${seconds}s';
+    return '没收到？$seconds 秒后重新发送';
   }
 
   @override
-  String get onboardingTitle => 'Where do you want to start?';
+  String get onboardingTitle => '您想从哪里开始？';
 
   @override
-  String get onboardingSubtitle =>
-      'You can always switch or create more later.';
+  String get onboardingSubtitle => '您随时可以切换或创建更多。';
 
   @override
-  String get onboardingPersonalTitle => 'My Personal workspace';
+  String get onboardingPersonalTitle => '我的个人空间';
 
   @override
-  String get onboardingPersonalSubtitle => 'Private tasks and notes.';
+  String get onboardingPersonalSubtitle => '私人任务和笔记。';
 
   @override
-  String get onboardingPersonalTitleDesktop =>
-      'Continue with my Personal workspace';
+  String get onboardingPersonalTitleDesktop => '继续使用我的个人空间';
 
   @override
-  String get onboardingPersonalSubtitleDesktop =>
-      'A calm private space for your own tasks and notes.';
+  String get onboardingPersonalSubtitleDesktop => '一个平静私密的空间，用于您自己的任务和笔记。';
 
   @override
-  String get onboardingTeamTitle => 'Create or join a team';
+  String get onboardingTeamTitle => '创建或加入团队';
 
   @override
-  String get onboardingTeamSubtitle => 'Share work with others.';
+  String get onboardingTeamSubtitle => '与他人共享工作。';
 
   @override
-  String get onboardingTeamSubtitleDesktop =>
-      'Invite teammates, share tasks and chat together.';
+  String get onboardingTeamSubtitleDesktop => '邀请队友，共享任务，一起聊天。';
 
   @override
-  String get tasksTitle => 'Tasks';
+  String get tasksTitle => '任务';
 
   @override
   String tasksDueToday(int count, int dueToday) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count tasks · $dueToday due today',
-      one: '1 task · 1 due today',
+      other: '$count 个任务 · 今天 $dueToday 个到期',
+      one: '1 个任务 · 今天 1 个到期',
     );
     return '$_temp0';
   }
@@ -746,335 +737,333 @@ class AppLocalizationsZh extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count tasks selected',
-      one: '1 task selected',
+      other: '已选择 $count 个任务',
+      one: '已选择 1 个任务',
     );
     return '$_temp0';
   }
 
   @override
-  String get tasksNoResultsFilters => 'No results for these filters';
+  String get tasksNoResultsFilters => '这些筛选条件没有结果';
 
   @override
-  String get tasksClearFilters => 'Clear filters';
+  String get tasksClearFilters => '清除筛选';
 
   @override
-  String get tasksAddSubtask => '+ Add Subtask';
+  String get tasksAddSubtask => '+ 添加子任务';
 
   @override
-  String get tasksAddSubtaskHint => '+ Add subtask...';
+  String get tasksAddSubtaskHint => '+ 添加子任务...';
 
   @override
   String tasksSubtasksLabel(int done, int total) {
-    return 'Subtasks $done/$total';
+    return '子任务 $done/$total';
   }
 
   @override
-  String get tasksDetailTitle => 'Task details';
+  String get tasksDetailTitle => '任务详情';
 
   @override
-  String get tasksNewTitle => 'New Task';
+  String get tasksNewTitle => '新建任务';
 
   @override
-  String get tasksDescriptionLabel => 'Description';
+  String get tasksDescriptionLabel => '描述';
 
   @override
-  String get tasksNoDescription => 'No description.';
+  String get tasksNoDescription => '无描述。';
 
   @override
-  String get tasksComments => 'Comments';
+  String get tasksComments => '评论';
 
   @override
-  String get tasksAttachments => 'Attachments';
+  String get tasksAttachments => '附件';
 
   @override
-  String get tasksAssigneeLabel => 'Assignee & Label';
+  String get tasksAssigneeLabel => '负责人与标签';
 
   @override
-  String get tasksUnassigned => 'Unassigned';
+  String get tasksUnassigned => '未分配';
 
   @override
   String tasksDoneDate(String date) {
-    return 'Done $date';
+    return '$date 完成';
   }
 
   @override
-  String get calendarTitle => 'Calendar';
+  String get calendarTitle => '日历';
 
   @override
-  String get calendarToday => 'Today';
+  String get calendarToday => '今天';
 
   @override
-  String get calendarTodaySchedule => 'Today\'s Schedule';
+  String get calendarTodaySchedule => '今日日程';
 
   @override
   String calendarScheduleFor(String date) {
-    return 'Schedule · $date';
+    return '日程 · $date';
   }
 
   @override
-  String get scheduleEventTitle => 'Schedule Event';
+  String get scheduleEventTitle => '安排活动';
 
   @override
-  String get reminderNone => 'None';
+  String get reminderNone => '无提醒';
 
   @override
-  String get reminderFiveMin => '5 minutes before';
+  String get reminderFiveMin => '提前 5 分钟';
 
   @override
-  String get reminderFifteenMin => '15 minutes before';
+  String get reminderFifteenMin => '提前 15 分钟';
 
   @override
-  String get reminderThirtyMin => '30 minutes before';
+  String get reminderThirtyMin => '提前 30 分钟';
 
   @override
-  String get reminderOneHour => '1 hour before';
+  String get reminderOneHour => '提前 1 小时';
 
   @override
-  String get documentsTitle => 'Documents';
+  String get documentsTitle => '文档';
 
   @override
-  String get documentsRecent => 'Recent';
+  String get documentsRecent => '最近';
 
   @override
-  String get documentsRecentTitle => 'Recent Documents';
+  String get documentsRecentTitle => '最近文档';
 
   @override
-  String get documentEditorSave => 'Save';
+  String get documentEditorSave => '保存';
 
   @override
-  String get documentEditorStartWriting => 'Start writing...';
+  String get documentEditorStartWriting => '开始写作...';
 
   @override
-  String get documentNewFolderTitle => 'New Folder';
+  String get documentNewFolderTitle => '新建文件夹';
 
   @override
-  String get documentNewTitle => 'New Document';
+  String get documentNewTitle => '新建文档';
 
   @override
-  String get documentUploadFile => 'Upload File';
+  String get documentUploadFile => '上传文件';
 
   @override
-  String get documentNewFolder => 'New Folder';
+  String get documentNewFolder => '新建文件夹';
 
   @override
-  String get chatTitle => 'Messages';
+  String get chatTitle => '消息';
 
   @override
-  String get chatNewChannel => 'New Channel';
+  String get chatNewChannel => '新建频道';
 
   @override
-  String get notificationsTitle => 'Notifications';
+  String get notificationsTitle => '通知';
 
   @override
-  String get notificationsAll => 'All';
+  String get notificationsAll => '全部';
 
   @override
-  String get notificationsUnread => 'Unread';
+  String get notificationsUnread => '未读';
 
   @override
-  String get notificationsTasks => 'Tasks';
+  String get notificationsTasks => '任务';
 
   @override
-  String get notificationsMentions => 'Mentions';
+  String get notificationsMentions => '提及';
 
   @override
-  String get notificationsMarkRead => 'Mark as read';
+  String get notificationsMarkRead => '标为已读';
 
   @override
-  String get notificationsMarkUnread => 'Mark as unread';
+  String get notificationsMarkUnread => '标为未读';
 
   @override
-  String get analyticsTitle => 'Analytics';
+  String get analyticsTitle => '分析';
 
   @override
-  String get analyticsExportCSV => 'Export CSV';
+  String get analyticsExportCSV => '导出 CSV';
 
   @override
-  String get analyticsLastSevenDays => 'Last 7 days';
+  String get analyticsLastSevenDays => '最近 7 天';
 
   @override
-  String get analyticsLastThirtyDays => 'Last 30 days';
+  String get analyticsLastThirtyDays => '最近 30 天';
 
   @override
-  String get analyticsLastNinetyDays => 'Last 90 days';
+  String get analyticsLastNinetyDays => '最近 90 天';
 
   @override
-  String get analyticsTasksCompleted => 'Tasks Completed';
+  String get analyticsTasksCompleted => '已完成任务';
 
   @override
-  String get analyticsAvgTime => 'Avg. Completion Time';
+  String get analyticsAvgTime => '平均完成时间';
 
   @override
-  String get analyticsVelocity => 'Team Velocity';
+  String get analyticsVelocity => '团队速度';
 
   @override
-  String get analyticsStreak => 'Productive Streak';
+  String get analyticsStreak => '生产力连续天数';
 
   @override
-  String get analyticsWeeklyOutput => 'Weekly Task Output';
+  String get analyticsWeeklyOutput => '每周任务产出';
 
   @override
-  String get analyticsCategoryMix => 'Category Mix';
+  String get analyticsCategoryMix => '类别分布';
 
   @override
-  String get homeYourTasksToday => 'Your Tasks Today';
+  String get homeYourTasksToday => '今日任务';
 
   @override
-  String get homeQuickActions => 'Quick Actions';
+  String get homeQuickActions => '快捷操作';
 
   @override
-  String get homeOverview => 'Overview';
+  String get homeOverview => '概览';
 
   @override
-  String get homeUpcoming => 'Upcoming';
+  String get homeUpcoming => '即将到来';
 
   @override
-  String get homeStats => 'Stats';
+  String get homeStats => '统计';
 
   @override
-  String get homeDocs => 'Docs';
+  String get homeDocs => '文档';
 
   @override
-  String get homeSevenDays => '7 days';
+  String get homeSevenDays => '7 天';
 
   @override
-  String get homeThirtyDays => '30 days';
+  String get homeThirtyDays => '30 天';
 
   @override
-  String get homeTasksCompleted => 'Tasks Completed';
+  String get homeTasksCompleted => '已完成任务';
 
   @override
-  String get homeCompleted => 'Completed';
+  String get homeCompleted => '已完成';
 
   @override
-  String get homeInProgress => 'In Progress';
+  String get homeInProgress => '进行中';
 
   @override
-  String get homeOverdue => 'Overdue';
+  String get homeOverdue => '已逾期';
 
   @override
-  String get homeProductivity => 'Productivity';
+  String get homeProductivity => '生产力';
 
   @override
-  String get teamDirectoryTitle => 'Team Directory';
+  String get teamDirectoryTitle => '团队目录';
 
   @override
-  String get teamLatestUpdates => 'Latest Updates';
+  String get teamLatestUpdates => '最新动态';
 
   @override
-  String get teamNoActivity => 'No recent activity';
+  String get teamNoActivity => '暂无最近活动';
 
   @override
-  String get teamPresenceOnline => 'Active now';
+  String get teamPresenceOnline => '在线';
 
   @override
-  String get teamPresenceAway => 'Away';
+  String get teamPresenceAway => '离开';
 
   @override
-  String get teamPresenceOffline => 'Offline';
+  String get teamPresenceOffline => '离线';
 
   @override
-  String get settingsProfile => 'Profile';
+  String get settingsProfile => '个人资料';
 
   @override
-  String get settingsAccount => 'Account';
+  String get settingsAccount => '账户';
 
   @override
-  String get settingsNotifications => 'Notifications';
+  String get settingsNotifications => '通知';
 
   @override
-  String get settingsAppearance => 'Appearance';
+  String get settingsAppearance => '外观';
 
   @override
-  String get settingsSecurity => 'Security';
+  String get settingsSecurity => '安全';
 
   @override
-  String get settingsWorkspace => 'Workspace';
+  String get settingsWorkspace => '工作空间';
 
   @override
-  String get settingsSyncStatus => 'Sync status';
+  String get settingsSyncStatus => '同步状态';
 
   @override
-  String get settingsTheme => 'Theme';
+  String get settingsTheme => '主题';
 
   @override
-  String get settingsThemeLight => 'Light';
+  String get settingsThemeLight => '浅色';
 
   @override
-  String get settingsThemeDark => 'Dark';
+  String get settingsThemeDark => '深色';
 
   @override
-  String get settingsThemeSystem => 'System';
+  String get settingsThemeSystem => '系统';
 
   @override
-  String get settingsLanguage => 'Language';
+  String get settingsLanguage => '语言';
 
   @override
-  String get settingsAvatarUpdated => 'Avatar updated!';
+  String get settingsAvatarUpdated => '头像已更新！';
 
   @override
-  String get settingsDeleteAccountTitle => 'Delete account';
+  String get settingsDeleteAccountTitle => '删除账户';
 
   @override
-  String get settingsDeleteAccountDesc =>
-      'This permanently deletes your account and all data.';
+  String get settingsDeleteAccountDesc => '这将永久删除您的账户和所有数据。';
 
   @override
   String settingsComingSoon(String section) {
-    return '$section settings coming soon.';
+    return '$section 设置即将推出。';
   }
 
   @override
-  String get syncStatusTitle => 'Sync status';
+  String get syncStatusTitle => '同步状态';
 
   @override
-  String get syncConnection => 'Connection';
+  String get syncConnection => '连接';
 
   @override
-  String get syncOnline => 'Online';
+  String get syncOnline => '在线';
 
   @override
-  String get syncOffline => 'Offline';
+  String get syncOffline => '离线';
 
   @override
-  String get syncServerWaking => 'Server waking up...';
+  String get syncServerWaking => '服务器启动中...';
 
   @override
-  String get syncServerUnreachable => 'Server unreachable';
+  String get syncServerUnreachable => '服务器不可达';
 
   @override
   String syncLastSynced(String time) {
-    return 'Last synced: $time';
+    return '上次同步：$time';
   }
 
   @override
-  String get syncPendingChanges => 'Pending changes';
+  String get syncPendingChanges => '待同步更改';
 
   @override
-  String get syncNoPending => 'No pending changes.';
+  String get syncNoPending => '无待同步更改。';
 
   @override
-  String get syncFailedChanges => 'Failed changes';
+  String get syncFailedChanges => '失败的更改';
 
   @override
-  String get syncNoFailed => 'No failed changes.';
+  String get syncNoFailed => '无失败的更改。';
 
   @override
-  String get syncRetryAll => 'Retry all';
+  String get syncRetryAll => '全部重试';
 
   @override
-  String get syncCouldNotSave =>
-      'Could not be saved. You may no longer have access.';
+  String get syncCouldNotSave => '无法保存。您可能已失去访问权限。';
 
   @override
-  String get syncJustNow => 'Just now';
+  String get syncJustNow => '刚刚';
 
   @override
-  String get avatarCropTitle => 'Crop your photo';
+  String get avatarCropTitle => '裁剪头像';
 
   @override
-  String get codeCopied => 'Code copied';
+  String get codeCopied => '代码已复制';
 
   @override
   String get goodMorning => '早上好';

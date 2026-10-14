@@ -246,7 +246,7 @@ class _MobileTaskTile extends StatelessWidget {
                   color: task.isCompleted ? c.success : Colors.transparent,
                   border: task.isCompleted
                       ? null
-                      : Border.all(color: c.presenceOffline, width: 1.5),
+                      : Border.all(color: c.border, width: 1.5),
                 ),
                 child: task.isCompleted
                     ? const Icon(Icons.check, size: 14, color: Colors.white)
@@ -420,7 +420,7 @@ class _DesktopTasksScreen extends ConsumerWidget {
             child: const Text('Cancel')),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
-            style: FilledButton.styleFrom(backgroundColor: Colors.red),
+            style: FilledButton.styleFrom(backgroundColor: context.colors.danger),
             child: const Text('Delete')),
         ],
       ),
@@ -560,7 +560,7 @@ class _TableRow extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        color: selected ? const Color(0xFFF4F3FF) : Colors.transparent,
+        color: selected ? c.primarySoft : Colors.transparent,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         child: Row(
           children: [

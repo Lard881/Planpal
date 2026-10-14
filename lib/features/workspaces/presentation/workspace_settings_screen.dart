@@ -264,7 +264,7 @@ class _MemberRow extends ConsumerWidget {
             child: const Text('Cancel')),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
-            style: FilledButton.styleFrom(backgroundColor: Colors.red),
+            style: FilledButton.styleFrom(backgroundColor: context.colors.danger),
             child: const Text('Remove')),
         ],
       ),

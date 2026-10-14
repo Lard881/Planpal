@@ -749,7 +749,7 @@ abstract class AppLocalizations {
   /// No description provided for @workspaceNameHint.
   ///
   /// In en, this message translates to:
-  /// **'Acme Studio'**
+  /// **'My Team'**
   String get workspaceNameHint;
 
   /// No description provided for @workspaceSwitchTitle.
@@ -1067,7 +1067,7 @@ abstract class AppLocalizations {
   /// No description provided for @fieldEmailHint.
   ///
   /// In en, this message translates to:
-  /// **'maya.chen@planpal.io'**
+  /// **'name@example.com'**
   String get fieldEmailHint;
 
   /// No description provided for @fieldPassword.

@@ -500,7 +500,7 @@ class _AccountSection extends ConsumerWidget {
           decoration: BoxDecoration(
             color: c.dangerSoft,
             borderRadius: BorderRadius.circular(AppRadius.card),
-            border: Border.all(color: c.danger.withOpacity(0.3)),
+            border: Border.all(color: c.danger.withValues(alpha: 0.3)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

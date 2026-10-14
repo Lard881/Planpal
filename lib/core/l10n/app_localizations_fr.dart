@@ -45,13 +45,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get searchCtrlK => 'Ctrl K';
 
   @override
-  String get searchChats => 'Search chats...';
+  String get searchChats => 'Rechercher des chats...';
 
   @override
-  String get searchFiles => 'Search files...';
+  String get searchFiles => 'Rechercher des fichiers...';
 
   @override
-  String get searchTasks => 'Search tasks...';
+  String get searchTasks => 'Rechercher des tâches...';
 
   @override
   String get btnSave => 'Enregistrer';
@@ -72,10 +72,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get btnRetry => 'Réessayer';
 
   @override
-  String get btnViewAll => 'Voir tout';
+  String get btnViewAll => 'Tout voir';
 
   @override
-  String get btnViewAllTasks => 'View All Tasks';
+  String get btnViewAllTasks => 'Voir toutes les tâches';
 
   @override
   String get btnDetails => 'Détails';
@@ -93,79 +93,79 @@ class AppLocalizationsFr extends AppLocalizations {
   String get btnCreateTask => 'Créer une tâche';
 
   @override
-  String get btnUpload => 'Téléverser un fichier';
+  String get btnUpload => 'Télécharger un fichier';
 
   @override
-  String get btnNewDocument => '+ New Document';
+  String get btnNewDocument => '+ Nouveau document';
 
   @override
-  String get btnScheduleEvent => '+ Schedule Event';
+  String get btnScheduleEvent => '+ Planifier un événement';
 
   @override
-  String get btnSaveEvent => 'Save Event';
+  String get btnSaveEvent => 'Enregistrer l\'événement';
 
   @override
-  String get btnSaveSettings => 'Save Settings';
+  String get btnSaveSettings => 'Enregistrer les paramètres';
 
   @override
-  String get btnSignOut => 'Sign out';
+  String get btnSignOut => 'Se déconnecter';
 
   @override
-  String get btnDeleteAccount => 'Delete account';
+  String get btnDeleteAccount => 'Supprimer le compte';
 
   @override
-  String get btnMarkAllRead => 'Mark all as read';
+  String get btnMarkAllRead => 'Tout marquer comme lu';
 
   @override
-  String get btnMarkComplete => 'Mark Complete';
+  String get btnMarkComplete => 'Marquer comme terminé';
 
   @override
-  String get btnDeleteSelected => 'Delete Selected';
+  String get btnDeleteSelected => 'Supprimer la sélection';
 
   @override
-  String get btnInviteWithCode => 'Invite with code';
+  String get btnInviteWithCode => 'Inviter avec un code';
 
   @override
-  String get btnNewCode => '+ New code';
+  String get btnNewCode => '+ Nouveau code';
 
   @override
-  String get btnJoin => 'Join';
+  String get btnJoin => 'Rejoindre';
 
   @override
-  String get btnCreateWorkspace => '+ Create workspace';
+  String get btnCreateWorkspace => '+ Créer un espace';
 
   @override
-  String get btnJoinWithCode => 'Join with code';
+  String get btnJoinWithCode => 'Rejoindre avec un code';
 
   @override
-  String get btnUploadNew => 'Upload New';
+  String get btnUploadNew => 'Télécharger nouveau';
 
   @override
-  String get btnRemove => 'Remove';
+  String get btnRemove => 'Retirer';
 
   @override
-  String get btnRevoke => 'Revoke';
+  String get btnRevoke => 'Révoquer';
 
   @override
-  String get btnAdd => 'Add';
+  String get btnAdd => 'Ajouter';
 
   @override
-  String get btnOpen => 'Open';
+  String get btnOpen => 'Ouvrir';
 
   @override
-  String get btnDiscard => 'Discard';
+  String get btnDiscard => 'Ignorer';
 
   @override
-  String get btnSkipForNow => 'Skip for now';
+  String get btnSkipForNow => 'Ignorer pour l\'instant';
 
   @override
-  String get btnContinueWith => 'Continue ->';
+  String get btnContinueWith => 'Continuer ->';
 
   @override
-  String get btnGetStarted => 'Get started ->';
+  String get btnGetStarted => 'Commencer ->';
 
   @override
-  String get btnCreateCode => 'Create code';
+  String get btnCreateCode => 'Créer un code';
 
   @override
   String get emptyStateNoTasks => 'Aucune tâche';
@@ -175,19 +175,19 @@ class AppLocalizationsFr extends AppLocalizations {
       'Créez votre première tâche pour commencer.';
 
   @override
-  String get emptyStateNoTasksToday => 'Nothing due today.';
+  String get emptyStateNoTasksToday => 'Rien d\'urgent aujourd\'hui.';
 
   @override
   String get emptyStateNoEvents => 'Aucun événement cette semaine';
 
   @override
-  String get emptyStateNoEventsDay => 'No events this day.';
+  String get emptyStateNoEventsDay => 'Aucun événement ce jour.';
 
   @override
-  String get emptyStateNoMessages => 'Aucun message pour l\'instant';
+  String get emptyStateNoMessages => 'Aucun message.';
 
   @override
-  String get emptyStateNoDocuments => 'Aucun document pour l\'instant';
+  String get emptyStateNoDocuments => 'Aucun document';
 
   @override
   String get emptyStateNoNotifications => 'Vous êtes à jour';
@@ -197,64 +197,64 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String emptyStateNoResultsFor(String query) {
-    return 'No results for \"$query\"';
+    return 'Aucun résultat pour \"$query\"';
   }
 
   @override
-  String get emptyStateNoInviteCodes => 'No invite codes';
+  String get emptyStateNoInviteCodes => 'Aucun code d\'invitation';
 
   @override
-  String get emptyStateNoInviteCodesDesc => 'Create one to invite teammates.';
+  String get emptyStateNoInviteCodesDesc =>
+      'Créez-en un pour inviter des coéquipiers.';
 
   @override
-  String get emptyStateNoMembers => 'No members found';
+  String get emptyStateNoMembers => 'Aucun membre trouvé';
 
   @override
-  String get emptyStateNoAnalytics => 'No analytics yet';
+  String get emptyStateNoAnalytics => 'Aucune analytique';
 
   @override
   String get emptyStateNoAnalyticsDesc =>
-      'Complete some tasks to see your statistics.';
+      'Terminez des tâches pour voir vos statistiques.';
 
   @override
-  String get emptyStateNoChannels => 'No channels yet';
+  String get emptyStateNoChannels => 'Aucun canal';
 
   @override
-  String get emptyStateNoChannelsDesc => 'Create a channel to get started.';
+  String get emptyStateNoChannelsDesc => 'Créez un canal pour commencer.';
 
   @override
-  String get emptyStateSelectChannel => 'Select a channel';
+  String get emptyStateSelectChannel => 'Sélectionner un canal';
 
   @override
   String get emptyStateSelectChannelDesc =>
-      'Choose a channel to start messaging.';
+      'Choisissez un canal pour commencer à discuter.';
 
   @override
-  String get emptyStateChatTeamOnly => 'Chat is for teams';
+  String get emptyStateChatTeamOnly => 'Le chat est pour les équipes';
 
   @override
   String get emptyStateChatTeamOnlyDesc =>
-      'Chat is only available in team workspaces.';
+      'Le chat n\'est disponible que dans les espaces d\'équipe.';
 
   @override
-  String get emptyStateTeamOnly => 'Team is for team workspaces';
+  String get emptyStateTeamOnly => 'L\'équipe est pour les espaces d\'équipe';
 
   @override
   String get emptyStateTeamOnlyDesc =>
-      'Create or join a team workspace to see members.';
+      'Créez ou rejoignez un espace d\'équipe pour voir les membres.';
 
   @override
-  String get emptyStateTaskNotFound => 'Task not found';
+  String get emptyStateTaskNotFound => 'Tâche introuvable';
 
   @override
-  String get emptyStateDocNotFound => 'Document not found';
+  String get emptyStateDocNotFound => 'Document introuvable';
 
   @override
-  String get emptyStateNothingUpcoming => 'Nothing coming up.';
+  String get emptyStateNothingUpcoming => 'Rien de prévu.';
 
   @override
-  String get errorGeneric =>
-      'Quelque chose s\'est mal passé. Veuillez réessayer.';
+  String get errorGeneric => 'Une erreur s\'est produite. Veuillez réessayer.';
 
   @override
   String get errorNetwork =>
@@ -265,7 +265,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Erreur serveur. Veuillez réessayer dans un moment.';
 
   @override
-  String get errorPermission => 'Vous n\'avez pas la permission de faire cela.';
+  String get errorPermission => 'Vous n\'avez pas la permission de faire ça.';
 
   @override
   String get errorNotFound => 'Cet élément n\'existe plus.';
@@ -276,10 +276,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get bannerOffline =>
-      'Vous êtes hors ligne. Vos modifications sont sauvegardées et se synchroniseront dès votre retour.';
+      'Vous êtes hors ligne. Vos modifications sont enregistrées et seront synchronisées à la reconnexion.';
 
   @override
-  String get bannerServerUnreachable => 'Impossible d\'atteindre le serveur.';
+  String get bannerServerUnreachable =>
+      'Impossible d\'atteindre le serveur. Vérifiez votre connexion.';
 
   @override
   String get bannerWakingUp =>
@@ -294,13 +295,13 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get syncSaved => 'Saved';
+  String get syncSaved => 'Enregistré';
 
   @override
-  String get syncSaving => 'Saving...';
+  String get syncSaving => 'Enregistrement...';
 
   @override
-  String get syncWaitingShort => 'Waiting to sync';
+  String get syncWaitingShort => 'En attente de synchronisation';
 
   @override
   String get priorityHigh => 'Haute';
@@ -309,7 +310,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get priorityMedium => 'Moyenne';
 
   @override
-  String get priorityLow => 'Faible';
+  String get priorityLow => 'Basse';
 
   @override
   String get statusTodo => 'À faire';
@@ -350,49 +351,49 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get workspaceNameLabel => 'Workspace name';
+  String get workspaceNameLabel => 'Nom de l\'espace';
 
   @override
-  String get workspaceNameHint => 'Acme Studio';
+  String get workspaceNameHint => 'Mon équipe';
 
   @override
-  String get workspaceSwitchTitle => 'Switch workspace';
+  String get workspaceSwitchTitle => 'Changer d\'espace';
 
   @override
-  String get workspaceCreateTitle => 'Create workspace';
+  String get workspaceCreateTitle => 'Créer un espace';
 
   @override
-  String get workspaceCreateSubtitle => 'Give your new space a friendly name.';
+  String get workspaceCreateSubtitle => 'Donnez un nom à votre nouvel espace.';
 
   @override
   String get workspaceCreateTip =>
-      'Tip: you can invite teammates right after creating it.';
+      'Astuce : vous pouvez inviter des coéquipiers juste après la création.';
 
   @override
-  String get workspaceJoinTitle => 'Join with code';
+  String get workspaceJoinTitle => 'Rejoindre avec un code';
 
   @override
   String get workspaceJoinSubtitle =>
-      'Ask your teammate for the 8-character invite code.';
+      'Demandez le code d\'invitation à 8 caractères à votre coéquipier.';
 
   @override
   String workspaceJoinedSuccess(String name) {
-    return 'Joined $name!';
+    return 'Vous avez rejoint $name !';
   }
 
   @override
-  String get workspaceSettings => 'Workspace Settings';
+  String get workspaceSettings => 'Paramètres de l\'espace';
 
   @override
   String workspaceSettingsSubtitle(String name) {
-    return '$name · Manage people and access';
+    return '$name · Gérer les personnes et l\'accès';
   }
 
   @override
-  String get tabMembers => 'Members';
+  String get tabMembers => 'Membres';
 
   @override
-  String get tabInviteCodes => 'Invite codes';
+  String get tabInviteCodes => 'Codes d\'invitation';
 
   @override
   String get today => 'Aujourd\'hui';
@@ -407,46 +408,47 @@ class AppLocalizationsFr extends AppLocalizations {
   String get all => 'Tout';
 
   @override
-  String get yesterday => 'Yesterday';
+  String get yesterday => 'Hier';
 
   @override
-  String get tomorrow => 'Tomorrow';
+  String get tomorrow => 'Demain';
 
   @override
   String get pageLoading => 'Chargement...';
 
   @override
   String errorCode(String code) {
-    return 'Code d\'erreur: $code';
+    return 'Code d\'erreur : $code';
   }
 
   @override
   String requestId(String id) {
-    return 'ID de requête: $id';
+    return 'ID de requête : $id';
   }
 
   @override
-  String get confirmDeleteTitle => 'Supprimer cet élément?';
+  String get confirmDeleteTitle => 'Supprimer cet élément ?';
 
   @override
-  String get confirmDeleteBody => 'Cette action ne peut pas être annulée.';
+  String get confirmDeleteBody => 'Cette action est irréversible.';
 
   @override
-  String get confirmDeleteTasksTitle => 'Delete selected tasks?';
+  String get confirmDeleteTasksTitle => 'Supprimer les tâches sélectionnées ?';
 
   @override
-  String get confirmRemoveMemberTitle => 'Remove member?';
+  String get confirmRemoveMemberTitle => 'Retirer le membre ?';
 
   @override
   String confirmRemoveMemberBody(String name) {
-    return 'Remove $name from this workspace?';
+    return 'Retirer $name de cet espace ?';
   }
 
   @override
-  String get confirmDiscardTitle => 'Discard change?';
+  String get confirmDiscardTitle => 'Ignorer la modification ?';
 
   @override
-  String get confirmDiscardBody => 'This change will be permanently removed.';
+  String get confirmDiscardBody =>
+      'Cette modification sera définitivement supprimée.';
 
   @override
   String get logIn => 'Se connecter';
@@ -461,162 +463,163 @@ class AppLocalizationsFr extends AppLocalizations {
   String get forgotPassword => 'Mot de passe oublié';
 
   @override
-  String get continueWithGoogle => 'Continue with Google';
+  String get continueWithGoogle => 'Continuer avec Google';
 
   @override
-  String get createOrJoinTeam => 'Create or join a team workspace';
+  String get createOrJoinTeam => 'Créer ou rejoindre une équipe';
 
   @override
-  String get loginTitle => 'Welcome back';
+  String get loginTitle => 'Bon retour';
 
   @override
-  String get loginSubtitleMobile => 'Log in to keep the day on track.';
+  String get loginSubtitleMobile => 'Connectez-vous pour continuer la journée.';
 
   @override
-  String get loginSubtitleDesktop => 'Log in to pick up where you left off.';
+  String get loginSubtitleDesktop =>
+      'Connectez-vous pour reprendre où vous en étiez.';
 
   @override
-  String get loginForgotPassword => 'Forgot password?';
+  String get loginForgotPassword => 'Mot de passe oublié ?';
 
   @override
-  String get loginNewHere => 'New here?';
+  String get loginNewHere => 'Nouveau ici ?';
 
   @override
-  String get loginCreateAccount => 'Create account';
+  String get loginCreateAccount => 'Créer un compte';
 
   @override
-  String get loginCalm => 'Calm days, done tasks.';
+  String get loginCalm => 'Journées calmes, tâches faites.';
 
   @override
   String get loginCalmDesc =>
-      'PlanPal keeps tasks, calendar and chat in one friendly place.';
+      'PlanPal réunit tâches, calendrier et chat en un endroit convivial.';
 
   @override
-  String get signupTitle => 'Create your account';
+  String get signupTitle => 'Créez votre compte';
 
   @override
-  String get signupTeamworkTitle => 'Teamwork, minus the chaos.';
+  String get signupTeamworkTitle => 'Travail d\'équipe, sans le chaos.';
 
   @override
   String get signupTeamworkDesc =>
-      'Tasks, calendar, chat, docs and insights — designed to feel calm.';
+      'Tâches, calendrier, chat, docs et insights — conçus pour être sereins.';
 
   @override
-  String get signupHaveAccount => 'Have an account?';
+  String get signupHaveAccount => 'Vous avez un compte ?';
 
   @override
-  String get signupTermsPrefix => 'I agree to the';
+  String get signupTermsPrefix => 'J\'accepte les';
 
   @override
-  String get signupTerms => 'Terms';
+  String get signupTerms => 'Conditions';
 
   @override
-  String get signupTermsAnd => 'and';
+  String get signupTermsAnd => 'et la';
 
   @override
-  String get signupPrivacy => 'Privacy Policy';
+  String get signupPrivacy => 'Politique de confidentialité';
 
   @override
-  String get fieldFullName => 'Full name';
+  String get fieldFullName => 'Nom complet';
 
   @override
-  String get fieldFullNameHint => 'Maya Chen';
+  String get fieldFullNameHint => 'Prénom Nom';
 
   @override
-  String get fieldEmail => 'Email';
+  String get fieldEmail => 'E-mail';
 
   @override
-  String get fieldEmailHint => 'maya.chen@planpal.io';
+  String get fieldEmailHint => 'name@example.com';
 
   @override
-  String get fieldPassword => 'Password';
+  String get fieldPassword => 'Mot de passe';
 
   @override
   String get fieldPasswordHint => '••••••••••';
 
   @override
-  String get fieldConfirmPassword => 'Confirm password';
+  String get fieldConfirmPassword => 'Confirmer le mot de passe';
 
   @override
-  String get fieldNewPassword => 'New password';
+  String get fieldNewPassword => 'Nouveau mot de passe';
 
   @override
-  String get fieldConfirmNewPassword => 'Confirm new password';
+  String get fieldConfirmNewPassword => 'Confirmer le nouveau mot de passe';
 
   @override
-  String get fieldTaskName => 'Task Name';
+  String get fieldTaskName => 'Nom de la tâche';
 
   @override
-  String get fieldTaskNameHint => 'Plan team offsite';
+  String get fieldTaskNameHint => 'Planifier la réunion d\'équipe';
 
   @override
   String get fieldDescription => 'Description';
 
   @override
-  String get fieldDescriptionHint => 'Venue, date, agenda...';
+  String get fieldDescriptionHint => 'Lieu, date, ordre du jour...';
 
   @override
-  String get fieldDueDate => 'Due Date';
+  String get fieldDueDate => 'Date limite';
 
   @override
-  String get fieldTime => 'Time';
+  String get fieldTime => 'Heure';
 
   @override
-  String get fieldPriority => 'Priority';
+  String get fieldPriority => 'Priorité';
 
   @override
-  String get fieldAssignee => 'Assignee';
+  String get fieldAssignee => 'Assigné à';
 
   @override
-  String get fieldAssigneeOptional => 'Assignee (optional)';
+  String get fieldAssigneeOptional => 'Assigné à (optionnel)';
 
   @override
-  String get fieldLabel => 'Label';
+  String get fieldLabel => 'Étiquette';
 
   @override
-  String get fieldLabelOptional => 'Label (optional)';
+  String get fieldLabelOptional => 'Étiquette (optionnel)';
 
   @override
-  String get fieldTitle => 'Title';
+  String get fieldTitle => 'Titre';
 
   @override
-  String get fieldTitleHint => 'Design review';
+  String get fieldTitleHint => 'Revue de conception';
 
   @override
-  String get fieldStarts => 'Starts';
+  String get fieldStarts => 'Début';
 
   @override
-  String get fieldEnds => 'Ends';
+  String get fieldEnds => 'Fin';
 
   @override
-  String get fieldAllDay => 'All day';
+  String get fieldAllDay => 'Toute la journée';
 
   @override
-  String get fieldReminder => 'Reminder';
+  String get fieldReminder => 'Rappel';
 
   @override
-  String get fieldChannelName => 'Channel name';
+  String get fieldChannelName => 'Nom du canal';
 
   @override
-  String get fieldDocTitle => 'Document title';
+  String get fieldDocTitle => 'Titre du document';
 
   @override
-  String get fieldUntitled => 'Untitled';
+  String get fieldUntitled => 'Sans titre';
 
   @override
-  String get fieldStartWriting => 'Start writing...';
+  String get fieldStartWriting => 'Commencez à écrire...';
 
   @override
-  String get fieldAddDetailsHint => 'Add details...';
+  String get fieldAddDetailsHint => 'Ajouter des détails...';
 
   @override
-  String get fieldWriteComment => 'Write a comment...';
+  String get fieldWriteComment => 'Écrire un commentaire...';
 
   @override
   String get fieldMessageHint => 'Message...';
 
   @override
-  String get fieldSubtaskHint => 'Subtask title';
+  String get fieldSubtaskHint => 'Titre de la sous-tâche';
 
   @override
   String fieldMessageChannelHint(String channel) {
@@ -624,132 +627,135 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get validationEmailRequired => 'Email is required.';
+  String get validationEmailRequired => 'L\'e-mail est obligatoire.';
 
   @override
-  String get validationEmailInvalid => 'Enter a valid email.';
+  String get validationEmailInvalid => 'Entrez un e-mail valide.';
 
   @override
-  String get validationPasswordRequired => 'Password is required.';
+  String get validationPasswordRequired => 'Le mot de passe est obligatoire.';
 
   @override
   String get validationPasswordTooShort =>
-      'Password must be at least 8 characters.';
+      'Le mot de passe doit comporter au moins 8 caractères.';
 
   @override
-  String get validationPasswordsNoMatch => 'Passwords do not match.';
+  String get validationPasswordsNoMatch =>
+      'Les mots de passe ne correspondent pas.';
 
   @override
-  String get validationNameRequired => 'Full name is required.';
+  String get validationNameRequired => 'Le nom complet est obligatoire.';
 
   @override
   String get validationTermsRequired =>
-      'Please agree to the Terms and Privacy Policy.';
+      'Veuillez accepter les Conditions et la Politique de confidentialité.';
 
   @override
-  String get validationTaskNameRequired => 'Task name is required.';
+  String get validationTaskNameRequired =>
+      'Le nom de la tâche est obligatoire.';
 
   @override
-  String get validationWorkspaceNameRequired => 'Workspace name is required.';
+  String get validationWorkspaceNameRequired =>
+      'Le nom de l\'espace est obligatoire.';
 
   @override
-  String get forgotPasswordTitle => 'Reset password';
+  String get forgotPasswordTitle => 'Réinitialiser le mot de passe';
 
   @override
-  String get forgotPasswordSubtitle =>
-      'Enter the email linked to your account.';
+  String get forgotPasswordSubtitle => 'Entrez l\'e-mail lié à votre compte.';
 
   @override
   String forgotPasswordStep(int current) {
-    return 'Step $current of 3';
+    return 'Étape $current sur 3';
   }
 
   @override
-  String get forgotPasswordSendCode => 'Send Code';
+  String get forgotPasswordSendCode => 'Envoyer le code';
 
   @override
-  String get forgotPasswordBackToLogin => 'Back to log in';
+  String get forgotPasswordBackToLogin => 'Retour à la connexion';
 
   @override
-  String get forgotPasswordEnterCode => 'Enter code';
+  String get forgotPasswordEnterCode => 'Entrer le code';
 
   @override
-  String get forgotPasswordCodeSent => '6-digit code sent to your email.';
+  String get forgotPasswordCodeSent =>
+      'Code à 6 chiffres envoyé à votre e-mail.';
 
   @override
-  String get forgotPasswordContinue => 'Continue';
+  String get forgotPasswordContinue => 'Continuer';
 
   @override
-  String get forgotPasswordSetNew => 'Set new password';
+  String get forgotPasswordSetNew => 'Définir un nouveau mot de passe';
 
   @override
-  String get forgotPasswordSaveNew => 'Save New Password';
+  String get forgotPasswordSaveNew => 'Enregistrer le nouveau mot de passe';
 
   @override
-  String get verifyEmailTitle => 'Check your inbox';
+  String get verifyEmailTitle => 'Vérifiez votre boîte mail';
 
   @override
   String verifyEmailSentDesktop(String email) {
-    return 'We sent a 6-digit code to $email';
+    return 'Nous avons envoyé un code à 6 chiffres à $email';
   }
 
   @override
   String verifyEmailSentMobile(String email) {
-    return 'Code sent to $email';
+    return 'Code envoyé à $email';
   }
 
   @override
-  String get verifyEmailVerify => 'Verify';
+  String get verifyEmailVerify => 'Vérifier';
 
   @override
-  String get verifyEmailResend => 'Didn\'t get it? Resend code';
+  String get verifyEmailResend => 'Pas reçu ? Renvoyer le code';
 
   @override
   String verifyEmailResendCooldown(int seconds) {
-    return 'Didn\'t get it? Resend in ${seconds}s';
+    return 'Pas reçu ? Renvoyer dans ${seconds}s';
   }
 
   @override
-  String get onboardingTitle => 'Where do you want to start?';
+  String get onboardingTitle => 'Par où voulez-vous commencer ?';
 
   @override
   String get onboardingSubtitle =>
-      'You can always switch or create more later.';
+      'Vous pouvez toujours changer ou en créer d\'autres.';
 
   @override
-  String get onboardingPersonalTitle => 'My Personal workspace';
+  String get onboardingPersonalTitle => 'Mon espace personnel';
 
   @override
-  String get onboardingPersonalSubtitle => 'Private tasks and notes.';
+  String get onboardingPersonalSubtitle => 'Tâches et notes privées.';
 
   @override
   String get onboardingPersonalTitleDesktop =>
-      'Continue with my Personal workspace';
+      'Continuer avec mon espace personnel';
 
   @override
   String get onboardingPersonalSubtitleDesktop =>
-      'A calm private space for your own tasks and notes.';
+      'Un espace privé et calme pour vos propres tâches et notes.';
 
   @override
-  String get onboardingTeamTitle => 'Create or join a team';
+  String get onboardingTeamTitle => 'Créer ou rejoindre une équipe';
 
   @override
-  String get onboardingTeamSubtitle => 'Share work with others.';
+  String get onboardingTeamSubtitle => 'Partagez le travail avec d\'autres.';
 
   @override
   String get onboardingTeamSubtitleDesktop =>
-      'Invite teammates, share tasks and chat together.';
+      'Invitez des coéquipiers, partagez des tâches et discutez ensemble.';
 
   @override
-  String get tasksTitle => 'Tasks';
+  String get tasksTitle => 'Tâches';
 
   @override
   String tasksDueToday(int count, int dueToday) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count tasks · $dueToday due today',
-      one: '1 task · 1 due today',
+      other: '$count tâches · $dueToday à rendre aujourd\'hui',
+      one: '1 tâche · 1 à rendre aujourd\'hui',
     );
     return '$_temp0';
   }
@@ -759,335 +765,335 @@ class AppLocalizationsFr extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count tasks selected',
-      one: '1 task selected',
+      other: '$count tâches sélectionnées',
+      one: '1 tâche sélectionnée',
     );
     return '$_temp0';
   }
 
   @override
-  String get tasksNoResultsFilters => 'No results for these filters';
+  String get tasksNoResultsFilters => 'Aucun résultat pour ces filtres';
 
   @override
-  String get tasksClearFilters => 'Clear filters';
+  String get tasksClearFilters => 'Effacer les filtres';
 
   @override
-  String get tasksAddSubtask => '+ Add Subtask';
+  String get tasksAddSubtask => '+ Ajouter une sous-tâche';
 
   @override
-  String get tasksAddSubtaskHint => '+ Add subtask...';
+  String get tasksAddSubtaskHint => '+ Ajouter une sous-tâche...';
 
   @override
   String tasksSubtasksLabel(int done, int total) {
-    return 'Subtasks $done/$total';
+    return 'Sous-tâches $done/$total';
   }
 
   @override
-  String get tasksDetailTitle => 'Task details';
+  String get tasksDetailTitle => 'Détails de la tâche';
 
   @override
-  String get tasksNewTitle => 'New Task';
+  String get tasksNewTitle => 'Nouvelle tâche';
 
   @override
   String get tasksDescriptionLabel => 'Description';
 
   @override
-  String get tasksNoDescription => 'No description.';
+  String get tasksNoDescription => 'Aucune description.';
 
   @override
-  String get tasksComments => 'Comments';
+  String get tasksComments => 'Commentaires';
 
   @override
-  String get tasksAttachments => 'Attachments';
+  String get tasksAttachments => 'Pièces jointes';
 
   @override
-  String get tasksAssigneeLabel => 'Assignee & Label';
+  String get tasksAssigneeLabel => 'Assigné et étiquette';
 
   @override
-  String get tasksUnassigned => 'Unassigned';
+  String get tasksUnassigned => 'Non assigné';
 
   @override
   String tasksDoneDate(String date) {
-    return 'Done $date';
+    return 'Fait le $date';
   }
 
   @override
-  String get calendarTitle => 'Calendar';
+  String get calendarTitle => 'Calendrier';
 
   @override
-  String get calendarToday => 'Today';
+  String get calendarToday => 'Aujourd\'hui';
 
   @override
-  String get calendarTodaySchedule => 'Today\'s Schedule';
+  String get calendarTodaySchedule => 'Programme d\'aujourd\'hui';
 
   @override
   String calendarScheduleFor(String date) {
-    return 'Schedule · $date';
+    return 'Programme · $date';
   }
 
   @override
-  String get scheduleEventTitle => 'Schedule Event';
+  String get scheduleEventTitle => 'Planifier un événement';
 
   @override
-  String get reminderNone => 'None';
+  String get reminderNone => 'Aucun rappel';
 
   @override
-  String get reminderFiveMin => '5 minutes before';
+  String get reminderFiveMin => '5 minutes avant';
 
   @override
-  String get reminderFifteenMin => '15 minutes before';
+  String get reminderFifteenMin => '15 minutes avant';
 
   @override
-  String get reminderThirtyMin => '30 minutes before';
+  String get reminderThirtyMin => '30 minutes avant';
 
   @override
-  String get reminderOneHour => '1 hour before';
+  String get reminderOneHour => '1 heure avant';
 
   @override
   String get documentsTitle => 'Documents';
 
   @override
-  String get documentsRecent => 'Recent';
+  String get documentsRecent => 'Récents';
 
   @override
-  String get documentsRecentTitle => 'Recent Documents';
+  String get documentsRecentTitle => 'Documents récents';
 
   @override
-  String get documentEditorSave => 'Save';
+  String get documentEditorSave => 'Enregistrer';
 
   @override
-  String get documentEditorStartWriting => 'Start writing...';
+  String get documentEditorStartWriting => 'Commencez à écrire...';
 
   @override
-  String get documentNewFolderTitle => 'New Folder';
+  String get documentNewFolderTitle => 'Nouveau dossier';
 
   @override
-  String get documentNewTitle => 'New Document';
+  String get documentNewTitle => 'Nouveau document';
 
   @override
-  String get documentUploadFile => 'Upload File';
+  String get documentUploadFile => 'Télécharger un fichier';
 
   @override
-  String get documentNewFolder => 'New Folder';
+  String get documentNewFolder => 'Nouveau dossier';
 
   @override
   String get chatTitle => 'Messages';
 
   @override
-  String get chatNewChannel => 'New Channel';
+  String get chatNewChannel => 'Nouveau canal';
 
   @override
   String get notificationsTitle => 'Notifications';
 
   @override
-  String get notificationsAll => 'All';
+  String get notificationsAll => 'Toutes';
 
   @override
-  String get notificationsUnread => 'Unread';
+  String get notificationsUnread => 'Non lues';
 
   @override
-  String get notificationsTasks => 'Tasks';
+  String get notificationsTasks => 'Tâches';
 
   @override
   String get notificationsMentions => 'Mentions';
 
   @override
-  String get notificationsMarkRead => 'Mark as read';
+  String get notificationsMarkRead => 'Marquer comme lu';
 
   @override
-  String get notificationsMarkUnread => 'Mark as unread';
+  String get notificationsMarkUnread => 'Marquer comme non lu';
 
   @override
-  String get analyticsTitle => 'Analytics';
+  String get analyticsTitle => 'Analytique';
 
   @override
-  String get analyticsExportCSV => 'Export CSV';
+  String get analyticsExportCSV => 'Exporter CSV';
 
   @override
-  String get analyticsLastSevenDays => 'Last 7 days';
+  String get analyticsLastSevenDays => '7 derniers jours';
 
   @override
-  String get analyticsLastThirtyDays => 'Last 30 days';
+  String get analyticsLastThirtyDays => '30 derniers jours';
 
   @override
-  String get analyticsLastNinetyDays => 'Last 90 days';
+  String get analyticsLastNinetyDays => '90 derniers jours';
 
   @override
-  String get analyticsTasksCompleted => 'Tasks Completed';
+  String get analyticsTasksCompleted => 'Tâches terminées';
 
   @override
-  String get analyticsAvgTime => 'Avg. Completion Time';
+  String get analyticsAvgTime => 'Temps moyen d\'achèvement';
 
   @override
-  String get analyticsVelocity => 'Team Velocity';
+  String get analyticsVelocity => 'Vélocité de l\'équipe';
 
   @override
-  String get analyticsStreak => 'Productive Streak';
+  String get analyticsStreak => 'Séquence productive';
 
   @override
-  String get analyticsWeeklyOutput => 'Weekly Task Output';
+  String get analyticsWeeklyOutput => 'Production hebdomadaire';
 
   @override
-  String get analyticsCategoryMix => 'Category Mix';
+  String get analyticsCategoryMix => 'Répartition par catégorie';
 
   @override
-  String get homeYourTasksToday => 'Your Tasks Today';
+  String get homeYourTasksToday => 'Vos tâches du jour';
 
   @override
-  String get homeQuickActions => 'Quick Actions';
+  String get homeQuickActions => 'Actions rapides';
 
   @override
-  String get homeOverview => 'Overview';
+  String get homeOverview => 'Vue d\'ensemble';
 
   @override
-  String get homeUpcoming => 'Upcoming';
+  String get homeUpcoming => 'À venir';
 
   @override
-  String get homeStats => 'Stats';
+  String get homeStats => 'Statistiques';
 
   @override
   String get homeDocs => 'Docs';
 
   @override
-  String get homeSevenDays => '7 days';
+  String get homeSevenDays => '7 jours';
 
   @override
-  String get homeThirtyDays => '30 days';
+  String get homeThirtyDays => '30 jours';
 
   @override
-  String get homeTasksCompleted => 'Tasks Completed';
+  String get homeTasksCompleted => 'Tâches terminées';
 
   @override
-  String get homeCompleted => 'Completed';
+  String get homeCompleted => 'Terminé';
 
   @override
-  String get homeInProgress => 'In Progress';
+  String get homeInProgress => 'En cours';
 
   @override
-  String get homeOverdue => 'Overdue';
+  String get homeOverdue => 'En retard';
 
   @override
-  String get homeProductivity => 'Productivity';
+  String get homeProductivity => 'Productivité';
 
   @override
-  String get teamDirectoryTitle => 'Team Directory';
+  String get teamDirectoryTitle => 'Annuaire de l\'équipe';
 
   @override
-  String get teamLatestUpdates => 'Latest Updates';
+  String get teamLatestUpdates => 'Dernières mises à jour';
 
   @override
-  String get teamNoActivity => 'No recent activity';
+  String get teamNoActivity => 'Aucune activité récente';
 
   @override
-  String get teamPresenceOnline => 'Active now';
+  String get teamPresenceOnline => 'Actif maintenant';
 
   @override
-  String get teamPresenceAway => 'Away';
+  String get teamPresenceAway => 'Absent';
 
   @override
-  String get teamPresenceOffline => 'Offline';
+  String get teamPresenceOffline => 'Hors ligne';
 
   @override
-  String get settingsProfile => 'Profile';
+  String get settingsProfile => 'Profil';
 
   @override
-  String get settingsAccount => 'Account';
+  String get settingsAccount => 'Compte';
 
   @override
   String get settingsNotifications => 'Notifications';
 
   @override
-  String get settingsAppearance => 'Appearance';
+  String get settingsAppearance => 'Apparence';
 
   @override
-  String get settingsSecurity => 'Security';
+  String get settingsSecurity => 'Sécurité';
 
   @override
-  String get settingsWorkspace => 'Workspace';
+  String get settingsWorkspace => 'Espace de travail';
 
   @override
-  String get settingsSyncStatus => 'Sync status';
+  String get settingsSyncStatus => 'État de synchronisation';
 
   @override
-  String get settingsTheme => 'Theme';
+  String get settingsTheme => 'Thème';
 
   @override
-  String get settingsThemeLight => 'Light';
+  String get settingsThemeLight => 'Clair';
 
   @override
-  String get settingsThemeDark => 'Dark';
+  String get settingsThemeDark => 'Sombre';
 
   @override
-  String get settingsThemeSystem => 'System';
+  String get settingsThemeSystem => 'Système';
 
   @override
-  String get settingsLanguage => 'Language';
+  String get settingsLanguage => 'Langue';
 
   @override
-  String get settingsAvatarUpdated => 'Avatar updated!';
+  String get settingsAvatarUpdated => 'Avatar mis à jour !';
 
   @override
-  String get settingsDeleteAccountTitle => 'Delete account';
+  String get settingsDeleteAccountTitle => 'Supprimer le compte';
 
   @override
   String get settingsDeleteAccountDesc =>
-      'This permanently deletes your account and all data.';
+      'Cela supprime définitivement votre compte et toutes les données.';
 
   @override
   String settingsComingSoon(String section) {
-    return '$section settings coming soon.';
+    return 'Paramètres $section bientôt disponibles.';
   }
 
   @override
-  String get syncStatusTitle => 'Sync status';
+  String get syncStatusTitle => 'État de synchronisation';
 
   @override
-  String get syncConnection => 'Connection';
+  String get syncConnection => 'Connexion';
 
   @override
-  String get syncOnline => 'Online';
+  String get syncOnline => 'En ligne';
 
   @override
-  String get syncOffline => 'Offline';
+  String get syncOffline => 'Hors ligne';
 
   @override
-  String get syncServerWaking => 'Server waking up...';
+  String get syncServerWaking => 'Démarrage du serveur...';
 
   @override
-  String get syncServerUnreachable => 'Server unreachable';
+  String get syncServerUnreachable => 'Serveur inaccessible';
 
   @override
   String syncLastSynced(String time) {
-    return 'Last synced: $time';
+    return 'Dernière synchronisation : $time';
   }
 
   @override
-  String get syncPendingChanges => 'Pending changes';
+  String get syncPendingChanges => 'Modifications en attente';
 
   @override
-  String get syncNoPending => 'No pending changes.';
+  String get syncNoPending => 'Aucune modification en attente.';
 
   @override
-  String get syncFailedChanges => 'Failed changes';
+  String get syncFailedChanges => 'Modifications échouées';
 
   @override
-  String get syncNoFailed => 'No failed changes.';
+  String get syncNoFailed => 'Aucune modification échouée.';
 
   @override
-  String get syncRetryAll => 'Retry all';
+  String get syncRetryAll => 'Tout réessayer';
 
   @override
   String get syncCouldNotSave =>
-      'Could not be saved. You may no longer have access.';
+      'Impossible d\'enregistrer. Vous n\'avez peut-être plus accès.';
 
   @override
-  String get syncJustNow => 'Just now';
+  String get syncJustNow => 'À l\'instant';
 
   @override
-  String get avatarCropTitle => 'Crop your photo';
+  String get avatarCropTitle => 'Recadrer votre photo';
 
   @override
-  String get codeCopied => 'Code copied';
+  String get codeCopied => 'Code copié';
 
   @override
   String get goodMorning => 'Bonjour';

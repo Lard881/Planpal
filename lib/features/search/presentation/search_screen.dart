@@ -311,7 +311,7 @@ class _TaskResultCard extends StatelessWidget {
                 width: 20, height: 20,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: c.presenceOffline, width: 1.5)),
+                  border: Border.all(color: c.border, width: 1.5)),
               ),
               const SizedBox(width: 12),
               Expanded(

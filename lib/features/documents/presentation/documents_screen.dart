@@ -16,18 +16,18 @@ import '../models/document_models.dart';
 import '../providers/documents_providers.dart';
 import '../data/documents_repository.dart';
 
-// Folder tile colors cycle
+// Folder tile colors cycle — using the same values as PlanPalColors tokens
 const _folderColors = [
   Color(0xFFEEF0FF), // primarySoft
   Color(0xFFEDE9FE), // violetSoft
   Color(0xFFE0F2FE), // skySoft
-  Color(0xFFFEF3C7), // amber soft
+  Color(0xFFFEF3C7), // warningSoft
 ];
 const _folderIconColors = [
-  Color(0xFF4F46E5),
-  Color(0xFF8B5CF6),
-  Color(0xFF0EA5E9),
-  Color(0xFFF59E0B),
+  Color(0xFF4F46E5), // primary
+  Color(0xFF8B5CF6), // violet
+  Color(0xFF0EA5E9), // sky
+  Color(0xFFF59E0B), // warning
 ];
 
 class DocumentsScreen extends ConsumerWidget {
@@ -308,6 +308,7 @@ class _RecentDocsGrid extends ConsumerWidget {
   }
 
   void _showDocMenu(BuildContext context, WidgetRef ref, DocumentModel doc) {
+    final c = context.colors;
     showModalBottomSheet(
       context: context,
       builder: (_) => SafeArea(
@@ -324,9 +325,9 @@ class _RecentDocsGrid extends ConsumerWidget {
                 },
               ),
             ListTile(
-              leading: Icon(LucideIcons.trash2, color: Colors.red),
-              title: const Text('Delete',
-                style: TextStyle(color: Colors.red)),
+              leading: Icon(LucideIcons.trash2, color: c.danger),
+              title: Text('Delete',
+                style: TextStyle(color: c.danger)),
               onTap: () {
                 Navigator.pop(context);
                 ref.read(documentsProvider.notifier).deleteDocument(doc.id);

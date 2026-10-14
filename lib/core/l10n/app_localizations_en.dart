@@ -351,7 +351,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workspaceNameLabel => 'Workspace name';
 
   @override
-  String get workspaceNameHint => 'Acme Studio';
+  String get workspaceNameHint => 'My Team';
 
   @override
   String get workspaceSwitchTitle => 'Switch workspace';
@@ -524,7 +524,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fieldEmail => 'Email';
 
   @override
-  String get fieldEmailHint => 'maya.chen@planpal.io';
+  String get fieldEmailHint => 'name@example.com';
 
   @override
   String get fieldPassword => 'Password';

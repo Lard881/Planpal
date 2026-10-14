@@ -85,17 +85,18 @@ class FileTypeBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.colors;
     final ext = extension.toLowerCase().replaceAll('.', '');
     Color bg;
     String label;
     if (ext == 'pdf') {
-      bg = const Color(0xFFEF4444); label = 'PDF';
+      bg = c.danger; label = 'PDF';
     } else if (ext == 'doc' || ext == 'docx') {
-      bg = const Color(0xFF0EA5E9); label = 'DOC';
+      bg = c.sky; label = 'DOC';
     } else if (ext == 'xls' || ext == 'xlsx') {
-      bg = const Color(0xFF16A34A); label = 'XLS';
+      bg = c.success; label = 'XLS';
     } else {
-      bg = const Color(0xFF6B7185); label = ext.toUpperCase();
+      bg = c.textMuted; label = ext.toUpperCase();
     }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),

@@ -165,7 +165,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         ],
         PlanPalTextField(
           label: 'Email',
-          hint: 'maya.chen@planpal.io',
+          hint: 'name@example.com',
           controller: _emailCtrl,
           errorText: _emailError,
           keyboardType: TextInputType.emailAddress,

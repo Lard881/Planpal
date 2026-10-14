@@ -69,7 +69,7 @@ class _CreateWorkspaceScreenState extends ConsumerState<CreateWorkspaceScreen> {
         ],
         PlanPalTextField(
           label: 'Workspace name',
-          hint: 'Acme Studio',
+          hint: 'My Team',
           controller: _nameCtrl,
           errorText: _nameError,
           textInputAction: TextInputAction.done,

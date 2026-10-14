@@ -336,7 +336,7 @@ class _TaskTodayCard extends StatelessWidget {
                 width: 22, height: 22,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: c.presenceOffline, width: 1.5),
+                  border: Border.all(color: c.border, width: 1.5),
                 ),
               ),
             ),

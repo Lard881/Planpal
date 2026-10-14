@@ -211,7 +211,7 @@ class _ScheduleEventDialogState extends State<_ScheduleEventDialog> {
     try {
       return Color(int.parse('FF${hex.replaceAll('#', '')}', radix: 16));
     } catch (_) {
-      return const Color(0xFF4F46E5);
+      return PlanPalColors.light.primary;
     }
   }
 }

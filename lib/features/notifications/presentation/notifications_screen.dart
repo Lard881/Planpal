@@ -305,6 +305,7 @@ class _NotificationRow extends ConsumerWidget {
 
   void _showMenu(BuildContext context, WidgetRef ref,
       NotificationsNotifier notifier) {
+    final c = context.colors;
     showModalBottomSheet(
       context: context,
       builder: (_) => SafeArea(
@@ -326,9 +327,9 @@ class _NotificationRow extends ConsumerWidget {
               },
             ),
             ListTile(
-              leading: Icon(LucideIcons.trash2, color: Colors.red),
-              title: const Text('Delete',
-                style: TextStyle(color: Colors.red)),
+              leading: Icon(LucideIcons.trash2, color: c.danger),
+              title: Text('Delete',
+                style: TextStyle(color: c.danger)),
               onTap: () {
                 Navigator.pop(context);
                 notifier.delete(notification.id);

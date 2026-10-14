@@ -145,9 +145,9 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
         // Right: purple gradient panel
         Expanded(
           child: Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color(0xFF5A4AE8), Color(0xFF7554EF)],
+                colors: [c.primary, c.violet],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -217,7 +217,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
         const SizedBox(height: 16),
         PlanPalTextField(
           label: 'Email',
-          hint: 'maya.chen@planpal.io',
+          hint: 'name@example.com',
           controller: _emailCtrl,
           errorText: _emailError,
           keyboardType: TextInputType.emailAddress,
