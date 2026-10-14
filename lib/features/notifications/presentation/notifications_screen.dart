@@ -8,6 +8,7 @@ import '../../../core/theme/app_text.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/layout/breakpoints.dart';
 import '../../../core/widgets/empty_state.dart';
+import '../../../core/l10n/app_localizations.dart';
 import '../models/notification_model.dart';
 import '../providers/notifications_providers.dart';
 
@@ -42,12 +43,12 @@ class _DesktopNotifications extends ConsumerWidget {
           children: [
             Row(
               children: [
-                Text('Notifications',
+                Text(l10n.notificationsTitle,
                   style: AppText.pageTitle.copyWith(color: c.textPrimary)),
                 const Spacer(),
                 TextButton(
                   onPressed: notifier.markAllRead,
-                  child: Text('Mark all as read',
+                  child: Text(l10n.btnMarkAllRead,
                     style: AppText.bodyMedium.copyWith(color: c.primary)),
                 ),
               ],

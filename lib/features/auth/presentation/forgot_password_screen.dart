@@ -10,6 +10,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/layout/breakpoints.dart';
 import '../../../core/widgets/planpal_button.dart';
 import '../../../core/widgets/planpal_text_field.dart';
+import '../../../core/l10n/app_localizations.dart';
 import 'auth_notifier.dart';
 import 'widgets/auth_logo.dart';
 import 'widgets/otp_field.dart';
@@ -58,10 +59,11 @@ class _ForgotPasswordScreenState
   }
 
   Future<void> _step1Submit() async {
+    final l10n = AppLocalizations.of(context);
     setState(() {
       _emailError = _emailCtrl.text.trim().isEmpty
-          ? 'Email is required.'
-          : (!_emailCtrl.text.contains('@') ? 'Enter a valid email.' : null);
+          ? l10n.validationEmailRequired
+          : (!_emailCtrl.text.contains('@') ? l10n.validationEmailInvalid : null);
     });
     if (_emailError != null) return;
     final ok = await ref.read(authNotifierProvider.notifier)
@@ -77,11 +79,10 @@ class _ForgotPasswordScreenState
   }
 
   Future<void> _step3Submit() async {
+    final l10n = AppLocalizations.of(context);
     setState(() {
-      _passError = _passCtrl.text.length < 8
-          ? 'Password must be at least 8 characters.' : null;
-      _confirmError = _passCtrl.text != _confirmCtrl.text
-          ? 'Passwords do not match.' : null;
+      _passError = _passCtrl.text.length < 8 ? l10n.validationPasswordTooShort : null;
+      _confirmError = _passCtrl.text != _confirmCtrl.text ? l10n.validationPasswordsNoMatch : null;
     });
     if (_passError != null || _confirmError != null) return;
     final ok = await ref.read(authNotifierProvider.notifier)
@@ -161,6 +162,7 @@ class _ForgotPasswordScreenState
   }
 
   Widget _buildStepIndicator(PlanPalColors c, bool isDesktop) {
+    final l10n = AppLocalizations.of(context);
     if (isDesktop) {
       return Row(
         children: List.generate(3, (i) {
@@ -173,7 +175,7 @@ class _ForgotPasswordScreenState
                 color: active ? c.primarySoft : c.surfaceAlt,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: Text('Step ${i + 1} of 3',
+              child: Text(l10n.forgotPasswordStep(i + 1),
                 style: AppText.chip.copyWith(
                   color: active ? c.primary : c.textMuted)),
             ),
@@ -181,7 +183,6 @@ class _ForgotPasswordScreenState
         }),
       );
     }
-    // Mobile: show only current step centered
     return Center(
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -189,25 +190,26 @@ class _ForgotPasswordScreenState
           color: c.primarySoft,
           borderRadius: BorderRadius.circular(20),
         ),
-        child: Text('Step $_step of 3',
+        child: Text(l10n.forgotPasswordStep(_step),
           style: AppText.chip.copyWith(color: c.primary)),
       ),
     );
   }
 
   Widget _buildStep1(AuthState state, PlanPalColors c) {
+    final l10n = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text('Reset password',
+        Text(l10n.forgotPasswordTitle,
           style: AppText.sectionTitle.copyWith(color: c.textPrimary)),
         const SizedBox(height: 8),
-        Text('Enter the email linked to your account.',
+        Text(l10n.forgotPasswordSubtitle,
           style: AppText.body.copyWith(color: c.textMuted)),
         const SizedBox(height: 24),
         PlanPalTextField(
-          label: 'Email',
-          hint: 'name@example.com',
+          label: l10n.fieldEmail,
+          hint: l10n.fieldEmailHint,
           controller: _emailCtrl,
           errorText: _emailError,
           keyboardType: TextInputType.emailAddress,
@@ -217,7 +219,7 @@ class _ForgotPasswordScreenState
         ),
         const SizedBox(height: 20),
         PlanPalButton(
-          label: 'Send Code',
+          label: l10n.forgotPasswordSendCode,
           onPressed: _step1Submit,
           loading: state.loading,
           width: double.infinity,
@@ -226,7 +228,7 @@ class _ForgotPasswordScreenState
         Center(
           child: TextButton(
             onPressed: () => context.go('/login'),
-            child: Text('Back to log in',
+            child: Text(l10n.forgotPasswordBackToLogin,
               style: AppText.bodyMedium.copyWith(color: c.primary)),
           ),
         ),
@@ -235,13 +237,14 @@ class _ForgotPasswordScreenState
   }
 
   Widget _buildStep2(AuthState state, PlanPalColors c) {
+    final l10n = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text('Enter code',
+        Text(l10n.forgotPasswordEnterCode,
           style: AppText.sectionTitle.copyWith(color: c.textPrimary)),
         const SizedBox(height: 8),
-        Text('6-digit code sent to your email.',
+        Text(l10n.forgotPasswordCodeSent,
           style: AppText.body.copyWith(color: c.textMuted)),
         const SizedBox(height: 24),
         OtpField(
@@ -251,7 +254,7 @@ class _ForgotPasswordScreenState
         ),
         const SizedBox(height: 24),
         PlanPalButton(
-          label: 'Continue',
+          label: l10n.forgotPasswordContinue,
           onPressed: _otp.length == 6 ? _step2Submit : null,
           loading: state.loading,
           width: double.infinity,
@@ -266,8 +269,8 @@ class _ForgotPasswordScreenState
             },
             child: Text(
               _resendCooldown > 0
-                  ? "Didn't get it? Resend in ${_resendCooldown}s"
-                  : "Didn't get it? Resend code",
+                  ? l10n.verifyEmailResendCooldown(_resendCooldown)
+                  : l10n.verifyEmailResend,
               style: AppText.bodyMedium.copyWith(
                 color: _resendCooldown > 0 ? c.textMuted : c.primary)),
           ),
@@ -277,15 +280,16 @@ class _ForgotPasswordScreenState
   }
 
   Widget _buildStep3(AuthState state, PlanPalColors c) {
+    final l10n = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text('Set new password',
+        Text(l10n.forgotPasswordSetNew,
           style: AppText.sectionTitle.copyWith(color: c.textPrimary)),
         const SizedBox(height: 24),
         PlanPalTextField(
-          label: 'New password',
-          hint: '••••••••••',
+          label: l10n.fieldNewPassword,
+          hint: l10n.fieldPasswordHint,
           controller: _passCtrl,
           errorText: _passError,
           isPassword: true,
@@ -294,8 +298,8 @@ class _ForgotPasswordScreenState
         ),
         const SizedBox(height: 16),
         PlanPalTextField(
-          label: 'Confirm new password',
-          hint: '••••••••••',
+          label: l10n.fieldConfirmNewPassword,
+          hint: l10n.fieldPasswordHint,
           controller: _confirmCtrl,
           errorText: _confirmError,
           isPassword: true,
@@ -305,7 +309,7 @@ class _ForgotPasswordScreenState
         ),
         const SizedBox(height: 20),
         PlanPalButton(
-          label: 'Save New Password',
+          label: l10n.forgotPasswordSaveNew,
           onPressed: _step3Submit,
           loading: state.loading,
           width: double.infinity,

@@ -1,4 +1,4 @@
-// app/lib/features/tasks/providers/task_providers.dart
+import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/task_repository.dart';
 import '../models/task_model.dart';
@@ -81,21 +81,37 @@ class TaskListState {
 class TaskListNotifier extends StateNotifier<TaskListState> {
   final TaskRepository _repo;
   final String workspaceId;
+  StreamSubscription<List<TaskModel>>? _streamSub;
 
   TaskListNotifier(this._repo, this.workspaceId) : super(const TaskListState()) {
-    load();
+    _subscribeToCache();
+    _fetchFromApi();
   }
 
-  Future<void> load({bool refresh = false}) async {
-    if (workspaceId.isEmpty) return; // Guard
-    if (refresh) {
-      state = state.copyWith(loading: true, clearError: true, clearCursor: true);
-    } else {
-      state = state.copyWith(loading: true, clearError: true);
-    }
-
+  // A3: Subscribe to Drift stream — shows cached tasks instantly with no spinner
+  void _subscribeToCache() {
+    if (workspaceId.isEmpty) return;
     final f = state.filter;
-    final (tasks, cursor, err) = await _repo.getTasks(
+    _streamSub?.cancel();
+    _streamSub = _repo.watchTasks(
+      workspaceId,
+      status: f.status,
+      priority: f.priority,
+      view: f.view,
+    ).listen((tasks) {
+      // Only update from cache if we haven't applied search/sort (those need API)
+      if (f.q == null) {
+        state = state.copyWith(tasks: tasks, loading: false, clearError: true);
+      }
+    });
+  }
+
+  // A3: Fetch from API in background — merges into Drift, stream updates UI
+  Future<void> _fetchFromApi() async {
+    if (workspaceId.isEmpty) return;
+    state = state.copyWith(loading: state.tasks.isEmpty); // only show spinner if cache empty
+    final f = state.filter;
+    final (_, cursor, err) = await _repo.getTasks(
       workspaceId,
       status: f.status,
       priority: f.priority,
@@ -104,13 +120,24 @@ class TaskListNotifier extends StateNotifier<TaskListState> {
       sort: f.sort,
       q: f.q,
     );
+    // If there's a search query, update state directly (not via stream)
+    if (f.q != null) {
+      final (tasks, _, __) = await _repo.getTasks(workspaceId, q: f.q);
+      state = state.copyWith(tasks: tasks, loading: false, cursor: cursor,
+          error: err?.message);
+    } else {
+      state = state.copyWith(loading: false, cursor: cursor,
+          error: err?.message);
+    }
+  }
 
-    state = state.copyWith(
-      tasks: tasks,
-      loading: false,
-      cursor: cursor,
-      error: err?.message,
-    );
+  Future<void> load({bool refresh = false}) async {
+    if (workspaceId.isEmpty) return;
+    if (refresh) {
+      state = state.copyWith(loading: true, clearError: true, clearCursor: true);
+      _subscribeToCache(); // re-subscribe with updated filter
+    }
+    await _fetchFromApi();
   }
 
   Future<void> loadMore() async {
@@ -156,10 +183,15 @@ class TaskListNotifier extends StateNotifier<TaskListState> {
     clearSelection();
     load(refresh: true);
   }
-
   Future<void> quickComplete(String taskId) async {
     await _repo.updateTask(taskId, {'status': 'completed'});
-    load(refresh: true);
+    await _fetchFromApi(); // refresh from API to get server-confirmed state
+  }
+
+  @override
+  void dispose() {
+    _streamSub?.cancel();
+    super.dispose();
   }
 }
 

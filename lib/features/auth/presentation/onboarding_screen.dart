@@ -7,6 +7,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/layout/breakpoints.dart';
+import '../../../core/l10n/app_localizations.dart';
 import 'widgets/auth_logo.dart';
 
 class OnboardingScreen extends ConsumerWidget {
@@ -28,6 +29,7 @@ class OnboardingScreen extends ConsumerWidget {
   }
 
   Widget _buildMobile(BuildContext context, PlanPalColors c) {
+    final l10n = AppLocalizations.of(context);
     return Column(
       children: [
         Expanded(
@@ -39,12 +41,12 @@ class OnboardingScreen extends ConsumerWidget {
                 const SizedBox(height: 48),
                 const Center(child: AuthLogo()),
                 const SizedBox(height: 32),
-                Text('Where do you want\nto start?',
+                Text(l10n.onboardingTitle,
                   style: AppText.pageTitleMobile.copyWith(color: c.textPrimary),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
-                Text('You can always switch or create more later.',
+                Text(l10n.onboardingSubtitle,
                   style: AppText.body.copyWith(color: c.textMuted),
                   textAlign: TextAlign.center,
                 ),
@@ -53,8 +55,8 @@ class OnboardingScreen extends ConsumerWidget {
                   icon: LucideIcons.user,
                   iconBg: c.primarySoft,
                   iconColor: c.primary,
-                  title: 'My Personal workspace',
-                  subtitle: 'Private tasks and notes.',
+                  title: l10n.onboardingPersonalTitle,
+                  subtitle: l10n.onboardingPersonalSubtitle,
                   onTap: () => context.go('/home'),
                 ),
                 const SizedBox(height: 12),
@@ -62,8 +64,8 @@ class OnboardingScreen extends ConsumerWidget {
                   icon: LucideIcons.users,
                   iconBg: c.violetSoft,
                   iconColor: c.violet,
-                  title: 'Create or join a team',
-                  subtitle: 'Share work with others.',
+                  title: l10n.onboardingTeamTitle,
+                  subtitle: l10n.onboardingTeamSubtitle,
                   onTap: () => context.go('/workspace/create'),
                 ),
               ],
@@ -74,7 +76,7 @@ class OnboardingScreen extends ConsumerWidget {
           padding: const EdgeInsets.only(bottom: 32),
           child: TextButton(
             onPressed: () => context.go('/home'),
-            child: Text('Skip for now',
+            child: Text(l10n.btnSkipForNow,
               style: AppText.body.copyWith(color: c.textMuted)),
           ),
         ),
@@ -83,6 +85,7 @@ class OnboardingScreen extends ConsumerWidget {
   }
 
   Widget _buildDesktop(BuildContext context, PlanPalColors c) {
+    final l10n = AppLocalizations.of(context);
     return Center(
       child: SizedBox(
         width: 640,
@@ -91,12 +94,12 @@ class OnboardingScreen extends ConsumerWidget {
           children: [
             const AuthLogo(),
             const SizedBox(height: 48),
-            Text('Where do you want to start?',
+            Text(l10n.onboardingTitle,
               style: AppText.authTitle.copyWith(color: c.textPrimary),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
-            Text('You can always switch or create more later.',
+            Text(l10n.onboardingSubtitle,
               style: AppText.body.copyWith(color: c.textMuted),
               textAlign: TextAlign.center,
             ),
@@ -108,9 +111,9 @@ class OnboardingScreen extends ConsumerWidget {
                     icon: LucideIcons.user,
                     iconBg: c.primarySoft,
                     iconColor: c.primary,
-                    title: 'Continue with my Personal workspace',
-                    subtitle: 'A calm private space for your own tasks and notes.',
-                    actionLabel: 'Continue ->',
+                    title: l10n.onboardingPersonalTitleDesktop,
+                    subtitle: l10n.onboardingPersonalSubtitleDesktop,
+                    actionLabel: l10n.btnContinueWith,
                     onTap: () => context.go('/home'),
                   ),
                 ),
@@ -120,9 +123,9 @@ class OnboardingScreen extends ConsumerWidget {
                     icon: LucideIcons.users,
                     iconBg: c.violetSoft,
                     iconColor: c.violet,
-                    title: 'Create or join a team',
-                    subtitle: 'Invite teammates, share tasks and chat together.',
-                    actionLabel: 'Get started ->',
+                    title: l10n.onboardingTeamTitle,
+                    subtitle: l10n.onboardingTeamSubtitleDesktop,
+                    actionLabel: l10n.btnGetStarted,
                     onTap: () => context.go('/workspace/create'),
                   ),
                 ),
@@ -131,7 +134,7 @@ class OnboardingScreen extends ConsumerWidget {
             const SizedBox(height: 24),
             TextButton(
               onPressed: () => context.go('/home'),
-              child: Text('Skip for now',
+              child: Text(l10n.btnSkipForNow,
                 style: AppText.body.copyWith(color: c.textMuted)),
             ),
           ],

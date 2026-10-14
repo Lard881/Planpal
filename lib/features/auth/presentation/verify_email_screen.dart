@@ -8,6 +8,7 @@ import '../../../core/theme/app_text.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/layout/breakpoints.dart';
 import '../../../core/widgets/planpal_button.dart';
+import '../../../core/l10n/app_localizations.dart';
 import '../../../core/providers/user_profile_provider.dart';
 import 'auth_notifier.dart';
 import 'widgets/auth_logo.dart';
@@ -63,6 +64,8 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
     final isDesktop = context.isDesktopLayout;
     final email = widget.email ?? '';
 
+    final l10n = AppLocalizations.of(context);
+
     Widget content = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -71,16 +74,14 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
           const Center(child: AuthLogo()),
           const SizedBox(height: 32),
         ],
-        Text('Check your inbox',
+        Text(l10n.verifyEmailTitle,
           style: (isDesktop ? AppText.authTitle : AppText.pageTitleMobile)
               .copyWith(color: c.textPrimary),
           textAlign: isDesktop ? TextAlign.left : TextAlign.center,
         ),
         const SizedBox(height: 8),
         Text(
-          isDesktop
-              ? 'We sent a 6-digit code to $email'
-              : 'Code sent to $email',
+          isDesktop ? l10n.verifyEmailSentDesktop(email) : l10n.verifyEmailSentMobile(email),
           style: AppText.body.copyWith(color: c.textMuted),
           textAlign: isDesktop ? TextAlign.left : TextAlign.center,
         ),
@@ -104,7 +105,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
         ),
         const SizedBox(height: 24),
         PlanPalButton(
-          label: 'Verify',
+          label: l10n.verifyEmailVerify,
           onPressed: _otp.length == 6 ? _verify : null,
           loading: state.loading,
           width: double.infinity,
@@ -115,8 +116,8 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
             onPressed: _resendCooldown > 0 ? null : _resend,
             child: Text(
               _resendCooldown > 0
-                  ? "Didn't get it? Resend in ${_resendCooldown}s"
-                  : "Didn't get it? Resend code",
+                  ? l10n.verifyEmailResendCooldown(_resendCooldown)
+                  : l10n.verifyEmailResend,
               style: AppText.bodyMedium.copyWith(
                 color: _resendCooldown > 0 ? c.textMuted : c.primary),
             ),

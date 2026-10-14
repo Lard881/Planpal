@@ -8,6 +8,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/layout/breakpoints.dart';
 import '../../../core/widgets/planpal_button.dart';
 import '../../../core/widgets/planpal_text_field.dart';
+import '../../../core/l10n/app_localizations.dart';
 import 'auth_notifier.dart';
 import 'widgets/auth_logo.dart';
 import 'widgets/auth_divider.dart';
@@ -39,16 +40,15 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   }
 
   bool _validate() {
+    final l10n = AppLocalizations.of(context);
     setState(() {
-      _nameError = _nameCtrl.text.trim().isEmpty ? 'Full name is required.' : null;
+      _nameError = _nameCtrl.text.trim().isEmpty ? l10n.validationNameRequired : null;
       _emailError = _emailCtrl.text.trim().isEmpty
-          ? 'Email is required.'
-          : (!_emailCtrl.text.contains('@') ? 'Enter a valid email.' : null);
-      _passError = _passCtrl.text.length < 8
-          ? 'Password must be at least 8 characters.' : null;
-      _confirmError = _passCtrl.text != _confirmCtrl.text
-          ? 'Passwords do not match.' : null;
-      _termsError = !_termsAccepted ? 'Please agree to the Terms and Privacy Policy.' : null;
+          ? l10n.validationEmailRequired
+          : (!_emailCtrl.text.contains('@') ? l10n.validationEmailInvalid : null);
+      _passError = _passCtrl.text.length < 8 ? l10n.validationPasswordTooShort : null;
+      _confirmError = _passCtrl.text != _confirmCtrl.text ? l10n.validationPasswordsNoMatch : null;
+      _termsError = !_termsAccepted ? l10n.validationTermsRequired : null;
     });
     return _nameError == null && _emailError == null &&
         _passError == null && _confirmError == null && _termsError == null;
@@ -81,6 +81,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   }
 
   Widget _buildMobile(BuildContext context, AuthState state, PlanPalColors c) {
+    final l10n = AppLocalizations.of(context);
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -94,7 +95,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                     const SizedBox(height: 48),
                     const Center(child: AuthLogo()),
                     const SizedBox(height: 32),
-                    Text('Create your account',
+                    Text(l10n.signupTitle,
                       style: AppText.pageTitleMobile.copyWith(color: c.textPrimary),
                       textAlign: TextAlign.center,
                     ),
@@ -116,9 +117,9 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   }
 
   Widget _buildDesktop(BuildContext context, AuthState state, PlanPalColors c) {
+    final l10n = AppLocalizations.of(context);
     return Row(
       children: [
-        // Left: form
         Expanded(
           child: Center(
             child: SizedBox(
@@ -130,7 +131,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                   children: [
                     const AuthLogo(),
                     const SizedBox(height: 40),
-                    Text('Create your account',
+                    Text(l10n.signupTitle,
                       style: AppText.authTitle.copyWith(color: c.textPrimary)),
                     const SizedBox(height: 32),
                     _buildForm(state, c),
@@ -142,7 +143,6 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
             ),
           ),
         ),
-        // Right: purple gradient panel
         Expanded(
           child: Container(
             decoration: BoxDecoration(
@@ -158,16 +158,15 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text('Teamwork,\nminus the chaos.',
+                    Text(l10n.signupTeamworkTitle,
                       style: AppText.authTitle.copyWith(
                           color: Colors.white, fontSize: 36),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 16),
-                    Text(
-                      'Tasks, calendar, chat, docs and insights\n— designed to feel calm.',
+                    Text(l10n.signupTeamworkDesc,
                       style: AppText.body.copyWith(
-                          color: Colors.white.withOpacity(0.8)),
+                          color: Colors.white.withValues(alpha: 0.8)),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 32),
@@ -175,9 +174,9 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                       spacing: 12, runSpacing: 12,
                       alignment: WrapAlignment.center,
                       children: [
-                        _WhitePill('✓ Tasks'),
-                        _WhitePill('✓ Calendar'),
-                        _WhitePill('✓ Chat'),
+                        _WhitePill('✓ ${l10n.navTasks}'),
+                        _WhitePill('✓ ${l10n.navCalendar}'),
+                        _WhitePill('✓ ${l10n.navChat}'),
                       ],
                     ),
                   ],
@@ -191,6 +190,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   }
 
   Widget _buildForm(AuthState state, PlanPalColors c) {
+    final l10n = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -207,8 +207,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
           const SizedBox(height: 16),
         ],
         PlanPalTextField(
-          label: 'Full name',
-          hint: 'Maya Chen',
+          label: l10n.fieldFullName,
+          hint: l10n.fieldFullNameHint,
           controller: _nameCtrl,
           errorText: _nameError,
           textInputAction: TextInputAction.next,
@@ -216,8 +216,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
         ),
         const SizedBox(height: 16),
         PlanPalTextField(
-          label: 'Email',
-          hint: 'name@example.com',
+          label: l10n.fieldEmail,
+          hint: l10n.fieldEmailHint,
           controller: _emailCtrl,
           errorText: _emailError,
           keyboardType: TextInputType.emailAddress,
@@ -226,8 +226,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
         ),
         const SizedBox(height: 16),
         PlanPalTextField(
-          label: 'Password',
-          hint: '••••••••••',
+          label: l10n.fieldPassword,
+          hint: l10n.fieldPasswordHint,
           controller: _passCtrl,
           errorText: _passError,
           isPassword: true,
@@ -236,8 +236,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
         ),
         const SizedBox(height: 16),
         PlanPalTextField(
-          label: 'Confirm password',
-          hint: '••••••••••',
+          label: l10n.fieldConfirmPassword,
+          hint: l10n.fieldPasswordHint,
           controller: _confirmCtrl,
           errorText: _confirmError,
           isPassword: true,
@@ -249,12 +249,11 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
         _buildTermsRow(c),
         if (_termsError != null) ...[
           const SizedBox(height: 4),
-          Text(_termsError!,
-            style: AppText.caption.copyWith(color: c.danger)),
+          Text(_termsError!, style: AppText.caption.copyWith(color: c.danger)),
         ],
         const SizedBox(height: 20),
         PlanPalButton(
-          label: 'Create Account',
+          label: l10n.signUp,
           onPressed: _submit,
           loading: state.loading,
           width: double.infinity,
@@ -263,38 +262,38 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
         const AuthDivider(),
         const SizedBox(height: 16),
         GoogleButton(onPressed: () async {
-                  final (ok, err) = await GoogleSignInService.signIn();
-                  if (!mounted) return;
-                  if (err != null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(err.message)));
-                  } else if (ok) {
-                    await loadMeAndApply(ref);
-                    context.go('/home');
-                  }
-                }),
+          final (ok, err) = await GoogleSignInService.signIn();
+          if (!mounted) return;
+          if (err != null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(err.message)));
+          } else if (ok) {
+            await loadMeAndApply(ref);
+            context.go('/home');
+          }
+        }),
       ],
     );
   }
 
-  // A1.11: placeholder pages for legal docs (coming soon)
   void _showLegalDialog(BuildContext context, String title) {
+    final l10n = AppLocalizations.of(context);
     showDialog<void>(
       context: context,
       builder: (_) => AlertDialog(
         title: Text(title),
-        content: const Text('These documents are coming soon.'),
+        content: Text(l10n.settingsComingSoon(title)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
-          ),
+            child: Text(l10n.btnConfirm)),
         ],
       ),
     );
   }
 
   Widget _buildTermsRow(PlanPalColors c) {
+    final l10n = AppLocalizations.of(context);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -309,16 +308,16 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
           visualDensity: VisualDensity.compact,
         ),
         const SizedBox(width: 4),
-        Text('I agree to the ', style: AppText.body.copyWith(color: c.textMuted)),
+        Text('${l10n.signupTermsPrefix} ', style: AppText.body.copyWith(color: c.textMuted)),
         GestureDetector(
-          onTap: () => _showLegalDialog(context, 'Terms of Service'),
-          child: Text('Terms',
+          onTap: () => _showLegalDialog(context, l10n.signupTerms),
+          child: Text(l10n.signupTerms,
             style: AppText.bodyMedium.copyWith(color: c.primary)),
         ),
-        Text(' and ', style: AppText.body.copyWith(color: c.textMuted)),
+        Text(' ${l10n.signupTermsAnd} ', style: AppText.body.copyWith(color: c.textMuted)),
         GestureDetector(
-          onTap: () => _showLegalDialog(context, 'Privacy Policy'),
-          child: Text('Privacy Policy',
+          onTap: () => _showLegalDialog(context, l10n.signupPrivacy),
+          child: Text(l10n.signupPrivacy,
             style: AppText.bodyMedium.copyWith(color: c.primary)),
         ),
       ],
@@ -326,14 +325,15 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   }
 
   Widget _buildLoginLink(BuildContext context, PlanPalColors c) {
+    final l10n = AppLocalizations.of(context);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text('Have an account? ',
+        Text('${l10n.signupHaveAccount} ',
           style: AppText.body.copyWith(color: c.textMuted)),
         GestureDetector(
           onTap: () => context.go('/login'),
-          child: Text('Log in',
+          child: Text(l10n.logIn,
             style: AppText.bodyMedium.copyWith(color: c.primary)),
         ),
       ],

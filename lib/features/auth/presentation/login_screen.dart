@@ -8,6 +8,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/layout/breakpoints.dart';
 import '../../../core/widgets/planpal_button.dart';
 import '../../../core/widgets/planpal_text_field.dart';
+import '../../../core/l10n/app_localizations.dart';
 import 'auth_notifier.dart';
 import 'widgets/auth_logo.dart';
 import 'widgets/auth_divider.dart';
@@ -36,11 +37,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   bool _validate() {
+    final l10n = AppLocalizations.of(context);
     setState(() {
       _emailError = _emailCtrl.text.trim().isEmpty
-          ? 'Email is required.'
-          : (!_emailCtrl.text.contains('@') ? 'Enter a valid email.' : null);
-      _passError = _passCtrl.text.isEmpty ? 'Password is required.' : null;
+          ? l10n.validationEmailRequired
+          : (!_emailCtrl.text.contains('@') ? l10n.validationEmailInvalid : null);
+      _passError = _passCtrl.text.isEmpty ? l10n.validationPasswordRequired : null;
     });
     return _emailError == null && _passError == null;
   }
@@ -70,6 +72,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Widget _buildMobile(BuildContext context, AuthState state, PlanPalColors c) {
+    final l10n = AppLocalizations.of(context);
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -83,12 +86,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     const SizedBox(height: 48),
                     const Center(child: AuthLogo()),
                     const SizedBox(height: 32),
-                    Text('Welcome back',
+                    Text(l10n.loginTitle,
                       style: AppText.pageTitleMobile.copyWith(color: c.textPrimary),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 8),
-                    Text('Log in to keep the day on track.',
+                    Text(l10n.loginSubtitleMobile,
                       style: AppText.body.copyWith(color: c.textMuted),
                       textAlign: TextAlign.center,
                     ),
@@ -110,9 +113,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Widget _buildDesktop(BuildContext context, AuthState state, PlanPalColors c) {
+    final l10n = AppLocalizations.of(context);
     return Row(
       children: [
-        // Left: form
         Expanded(
           child: Center(
             child: SizedBox(
@@ -124,11 +127,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   children: [
                     const AuthLogo(),
                     const SizedBox(height: 40),
-                    Text('Welcome back',
+                    Text(l10n.loginTitle,
                       style: AppText.authTitle.copyWith(color: c.textPrimary),
                     ),
                     const SizedBox(height: 8),
-                    Text('Log in to pick up where you left off.',
+                    Text(l10n.loginSubtitleDesktop,
                       style: AppText.body.copyWith(color: c.textMuted),
                     ),
                     const SizedBox(height: 32),
@@ -141,13 +144,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ),
           ),
         ),
-        // Right: showcase
         const Expanded(child: LoginShowcase()),
       ],
     );
   }
 
   Widget _buildForm(AuthState state, PlanPalColors c) {
+    final l10n = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -164,8 +167,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           const SizedBox(height: 16),
         ],
         PlanPalTextField(
-          label: 'Email',
-          hint: 'name@example.com',
+          label: l10n.fieldEmail,
+          hint: l10n.fieldEmailHint,
           controller: _emailCtrl,
           errorText: _emailError,
           keyboardType: TextInputType.emailAddress,
@@ -174,8 +177,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         ),
         const SizedBox(height: 16),
         PlanPalTextField(
-          label: 'Password',
-          hint: '••••••••••',
+          label: l10n.fieldPassword,
+          hint: l10n.fieldPasswordHint,
           controller: _passCtrl,
           errorText: _passError,
           isPassword: true,
@@ -193,13 +196,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               minimumSize: Size.zero,
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
-            child: Text('Forgot password?',
+            child: Text(l10n.loginForgotPassword,
               style: AppText.bodyMedium.copyWith(color: c.primary)),
           ),
         ),
         const SizedBox(height: 16),
         PlanPalButton(
-          label: 'Log In',
+          label: l10n.logIn,
           onPressed: _submit,
           loading: state.loading,
           width: double.infinity,
@@ -208,28 +211,29 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         const AuthDivider(),
         const SizedBox(height: 16),
         GoogleButton(onPressed: () async {
-                  final (ok, err) = await GoogleSignInService.signIn();
-                  if (!mounted) return;
-                  if (err != null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(err.message)));
-                  } else if (ok) {
-                    await loadMeAndApply(ref);
-                    context.go('/home');
-                  }
-                }),
+          final (ok, err) = await GoogleSignInService.signIn();
+          if (!mounted) return;
+          if (err != null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(err.message)));
+          } else if (ok) {
+            await loadMeAndApply(ref);
+            context.go('/home');
+          }
+        }),
       ],
     );
   }
 
   Widget _buildSignupLink(BuildContext context, PlanPalColors c) {
+    final l10n = AppLocalizations.of(context);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text('New here? ', style: AppText.body.copyWith(color: c.textMuted)),
+        Text('${l10n.loginNewHere} ', style: AppText.body.copyWith(color: c.textMuted)),
         GestureDetector(
           onTap: () => context.go('/signup'),
-          child: Text('Create account',
+          child: Text(l10n.loginCreateAccount,
             style: AppText.bodyMedium.copyWith(color: c.primary)),
         ),
       ],
