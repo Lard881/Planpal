@@ -41,6 +41,20 @@ class ChannelModel {
 
   factory ChannelModel.fromJson(Map<String, dynamic> j) {
     final members = j['members'] as List? ?? [];
+    final otherUser = j['otherUser'] as Map<String, dynamic>?;
+    final List<String> memberNames;
+    final List<String> memberIds;
+    if (otherUser != null) {
+      // DM — use otherUser directly (R2.4 backend fix)
+      memberNames = [(otherUser['full_name'] as String? ?? '')];
+      memberIds = [(otherUser['id'] as String? ?? '')];
+    } else {
+      memberIds = members.map((m) => (m['user_id'] ?? m['id']) as String).toList();
+      memberNames = members.map((m) {
+        final p = m['profile'] as Map? ?? m;
+        return (p['full_name'] ?? '') as String;
+      }).where((n) => n.isNotEmpty).toList();
+    }
     return ChannelModel(
       id: j['id'] as String,
       workspaceId: j['workspace_id'] as String,
@@ -48,16 +62,13 @@ class ChannelModel {
       name: j['name'] as String?,
       description: j['description'] as String?,
       isPrivate: j['is_private'] as bool? ?? false,
-      unreadCount: j['unread_count'] as int? ?? 0,
-      lastMessageBody: j['last_message']?['body'] as String?,
-      lastMessageSenderName: j['last_message']?['sender']?['full_name'] as String?,
-      lastMessageAt: j['last_message']?['created_at'] != null
-          ? DateTime.parse(j['last_message']['created_at'] as String) : null,
-      memberIds: members.map((m) => (m['user_id'] ?? m['id']) as String).toList(),
-      memberNames: members.map((m) {
-        final p = m['profile'] as Map? ?? m;
-        return (p['full_name'] ?? '') as String;
-      }).where((n) => n.isNotEmpty).toList(),
+      unreadCount: j['unreadCount'] as int? ?? j['unread_count'] as int? ?? 0,
+      lastMessageBody: j['lastMessage']?['body'] as String?,
+      lastMessageSenderName: j['lastMessage']?['authorName'] as String?,
+      lastMessageAt: j['lastMessage']?['createdAt'] != null
+          ? DateTime.parse(j['lastMessage']['createdAt'] as String) : null,
+      memberIds: memberIds,
+      memberNames: memberNames,
     );
   }
 }

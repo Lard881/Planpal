@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text.dart';
+import '../l10n/app_localizations.dart';
 
 class _Chip extends StatelessWidget {
   final String label;
@@ -31,13 +32,11 @@ class PriorityChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     return switch (priority.toLowerCase()) {
-      'high' => _Chip(
-          label: 'High', bg: c.dangerSoft, fg: c.danger),
-      'medium' => _Chip(
-          label: 'Medium', bg: c.warningSoft, fg: c.warningText),
-      'low' => _Chip(
-          label: 'Low', bg: c.successSoft, fg: c.success),
+      'high' => _Chip(label: l10n.priorityHigh, bg: c.dangerSoft, fg: c.danger),
+      'medium' => _Chip(label: l10n.priorityMedium, bg: c.warningSoft, fg: c.warningText),
+      'low' => _Chip(label: l10n.priorityLow, bg: c.successSoft, fg: c.success),
       _ => _Chip(label: priority, bg: c.surfaceAlt, fg: c.textMuted),
     };
   }
@@ -50,14 +49,12 @@ class StatusChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     return switch (status.toLowerCase()) {
-      'todo' => _Chip(label: 'Todo', bg: c.surfaceAlt, fg: c.textMuted),
-      'in_progress' => _Chip(
-          label: 'In Progress', bg: c.primarySoft, fg: c.primary),
-      'completed' => _Chip(
-          label: 'Completed', bg: c.successSoft, fg: c.success),
-      'overdue' => _Chip(
-          label: 'Overdue', bg: c.dangerSoft, fg: c.danger),
+      'todo' => _Chip(label: l10n.statusTodo, bg: c.surfaceAlt, fg: c.textMuted),
+      'in_progress' => _Chip(label: l10n.statusInProgress, bg: c.primarySoft, fg: c.primary),
+      'completed' => _Chip(label: l10n.statusCompleted, bg: c.successSoft, fg: c.success),
+      'overdue' => _Chip(label: l10n.statusOverdue, bg: c.dangerSoft, fg: c.danger),
       _ => _Chip(label: status, bg: c.surfaceAlt, fg: c.textMuted),
     };
   }
@@ -70,10 +67,11 @@ class RoleBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     return switch (role.toLowerCase()) {
-      'admin' => _Chip(label: 'Admin', bg: c.primarySoft, fg: c.primary),
-      'member' => _Chip(label: 'Member', bg: c.violetSoft, fg: c.violet),
-      'guest' => _Chip(label: 'Guest', bg: c.surfaceAlt, fg: c.textMuted),
+      'admin' => _Chip(label: l10n.roleAdmin, bg: c.primarySoft, fg: c.primary),
+      'member' => _Chip(label: l10n.roleMember, bg: c.violetSoft, fg: c.violet),
+      'guest' => _Chip(label: l10n.roleGuest, bg: c.surfaceAlt, fg: c.textMuted),
       _ => _Chip(label: role, bg: c.surfaceAlt, fg: c.textMuted),
     };
   }

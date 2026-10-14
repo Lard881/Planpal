@@ -107,6 +107,37 @@ class WorkspaceRepository {
       return mapDioError(e);
     }
   }
+
+  Future<(WorkspaceModel?, AppFailure?)> renameWorkspace(
+      String workspaceId, String name) async {
+    try {
+      final res = await _dio.patch('/workspaces/$workspaceId',
+          data: {'name': name});
+      return (WorkspaceModel.fromJson(
+          res.data['workspace'] as Map<String, dynamic>), null);
+    } on DioException catch (e) {
+      return (null, mapDioError(e));
+    }
+  }
+
+  Future<AppFailure?> deleteWorkspace(String workspaceId) async {
+    try {
+      await _dio.delete('/workspaces/$workspaceId');
+      return null;
+    } on DioException catch (e) {
+      return mapDioError(e);
+    }
+  }
+
+  Future<AppFailure?> leaveWorkspace(
+      String workspaceId, String userId) async {
+    try {
+      await _dio.delete('/workspaces/$workspaceId/members/$userId');
+      return null;
+    } on DioException catch (e) {
+      return mapDioError(e);
+    }
+  }
 }
 
 final workspaceRepositoryProvider = Provider<WorkspaceRepository>((ref) {

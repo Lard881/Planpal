@@ -15,7 +15,10 @@ import '../../../core/services/avatar_upload_service.dart';
 import '../../../core/widgets/avatar_crop_dialog.dart';
 import '../../../core/providers/theme_provider.dart';
 import '../../../core/providers/locale_provider.dart';
+import '../../../core/network/api_client.dart';
 import '../../workspaces/providers/workspace_providers.dart';
+import '../../workspaces/data/workspace_repository.dart';
+import '../../auth/presentation/auth_notifier.dart';
 import 'sync_status_screen.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -132,6 +135,28 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       return _MobileProfileTab();
     }
 
+    // Section pages — show as full screen with back button
+    if (_section != 'list') {
+      return Scaffold(
+        backgroundColor: context.colors.background,
+        appBar: AppBar(
+          backgroundColor: context.colors.surface,
+          elevation: 0,
+          leading: GestureDetector(
+            onTap: () => setState(() => _section = 'list'),
+            child: Icon(Icons.arrow_back, color: context.colors.textPrimary),
+          ),
+          title: Text(_section[0].toUpperCase() + _section.substring(1),
+            style: AppText.bodyStrong.copyWith(
+              color: context.colors.textPrimary)),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16),
+          child: _buildSection(context),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: c.background,
       body: SafeArea(
@@ -167,8 +192,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       MaterialPageRoute(
                         builder: (_) => const SyncStatusScreen()))),
                 ],
-              ),
-            ),
+              ),            ),
           ],
         ),
       ),
@@ -180,6 +204,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       case 'profile': return _ProfileSection();
       case 'appearance': return _AppearanceSection();
       case 'account': return _AccountSection();
+      case 'workspace': return _WorkspaceSection();
       case 'sync': return const SyncStatusScreen();
       default: return Center(
         child: Text('$_section settings coming soon.',
@@ -212,8 +237,16 @@ class _ProfileSectionState extends ConsumerState<_ProfileSection> {
   Future<void> _save() async {
     setState(() => _saving = true);
     try {
+      // Update Supabase auth metadata
       await Supabase.instance.client.auth.updateUser(
         UserAttributes(data: {'full_name': _nameCtrl.text.trim()}));
+      // Also PATCH /me on the backend so the profile table stays in sync
+      await ref.read(apiClientProvider).dio.patch('/me',
+          data: {'fullName': _nameCtrl.text.trim()});
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Settings saved')));
+      }
     } catch (_) {}
     setState(() => _saving = false);
   }
@@ -490,7 +523,7 @@ class _AccountSection extends ConsumerWidget {
           variant: PlanPalButtonVariant.outline,
           width: double.infinity,
           onPressed: () async {
-            await Supabase.instance.client.auth.signOut();
+            await ref.read(authNotifierProvider.notifier).signOut(ref);
             if (context.mounted) context.go('/login');
           },
         ),
@@ -514,13 +547,48 @@ class _AccountSection extends ConsumerWidget {
               PlanPalButton(
                 label: 'Delete account',
                 variant: PlanPalButtonVariant.dangerOutline,
-                onPressed: () {},
+                onPressed: () => _confirmDeleteAccount(context, ref),
               ),
             ],
           ),
         ),
       ],
     );
+  }
+
+  Future<void> _confirmDeleteAccount(
+      BuildContext context, WidgetRef ref) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Delete account?'),
+        content: const Text(
+          'This permanently deletes your account and all data. '
+          'This cannot be undone.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel')),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: FilledButton.styleFrom(
+                backgroundColor: context.colors.danger),
+            child: const Text('Delete')),
+        ],
+      ),
+    );
+    if (confirmed != true || !context.mounted) return;
+    try {
+      await ref.read(apiClientProvider).dio.delete('/me',
+          data: {'confirmDelete': true});
+      await ref.read(authNotifierProvider.notifier).signOut(ref);
+      if (context.mounted) context.go('/login');
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Could not delete account: $e')));
+      }
+    }
   }
 }
 
@@ -656,4 +724,185 @@ class _MenuItem {
   final String label;
   final IconData icon;
   const _MenuItem(this.key, this.label, this.icon);
+}
+
+// ── Workspace Section ─────────────────────────────────────────────────────────
+class _WorkspaceSection extends ConsumerStatefulWidget {
+  @override
+  ConsumerState<_WorkspaceSection> createState() => _WorkspaceSectionState();
+}
+
+class _WorkspaceSectionState extends ConsumerState<_WorkspaceSection> {
+  late TextEditingController _nameCtrl;
+  bool _saving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final workspace = ref.read(currentWorkspaceProvider);
+    _nameCtrl = TextEditingController(text: workspace?.name ?? '');
+  }
+
+  @override
+  void dispose() {
+    _nameCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _rename() async {
+    final name = _nameCtrl.text.trim();
+    if (name.isEmpty) return;
+    setState(() => _saving = true);
+    final wsId = ref.read(currentWorkspaceIdProvider) ?? '';
+    final (_, err) = await ref.read(workspaceRepositoryProvider)
+        .renameWorkspace(wsId, name);
+    if (err != null && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(err.message)));
+    } else if (mounted) {
+      ref.invalidate(workspacesProvider);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Workspace renamed')));
+    }
+    if (mounted) setState(() => _saving = false);
+  }
+
+  Future<void> _leave() async {
+    final wsId = ref.read(currentWorkspaceIdProvider) ?? '';
+    final userId = Supabase.instance.client.auth.currentUser?.id ?? '';
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Leave workspace?'),
+        content: const Text('You will lose access to this workspace.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel')),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: FilledButton.styleFrom(
+                backgroundColor: context.colors.danger),
+            child: const Text('Leave')),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    final err = await ref.read(workspaceRepositoryProvider)
+        .leaveWorkspace(wsId, userId);
+    if (err != null && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(err.message)));
+    } else if (mounted) {
+      ref.read(currentWorkspaceIdProvider.notifier).clear();
+      ref.invalidate(workspacesProvider);
+      context.go('/home');
+    }
+  }
+
+  Future<void> _delete() async {
+    final wsId = ref.read(currentWorkspaceIdProvider) ?? '';
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Delete workspace?'),
+        content: const Text(
+          'This permanently deletes the workspace and all its data. '
+          'This cannot be undone.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel')),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: FilledButton.styleFrom(
+                backgroundColor: context.colors.danger),
+            child: const Text('Delete')),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    final err = await ref.read(workspaceRepositoryProvider)
+        .deleteWorkspace(wsId);
+    if (err != null && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(err.message)));
+    } else if (mounted) {
+      ref.read(currentWorkspaceIdProvider.notifier).clear();
+      ref.invalidate(workspacesProvider);
+      context.go('/home');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    final perms = ref.watch(currentRolePermissionsProvider);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Workspace',
+          style: AppText.authTitle.copyWith(color: c.textPrimary)),
+        const SizedBox(height: 24),
+        if (perms.isAdmin) ...[
+          Text('Workspace name',
+            style: AppText.label.copyWith(color: c.textPrimary)),
+          const SizedBox(height: 8),
+          TextField(
+            controller: _nameCtrl,
+            decoration: InputDecoration(
+              filled: true, fillColor: c.surfaceAlt,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppRadius.control),
+                borderSide: BorderSide.none),
+            ),
+          ),
+          const SizedBox(height: 12),
+          PlanPalButton(
+            label: 'Save',
+            onPressed: _rename,
+            loading: _saving,
+            width: double.infinity,
+          ),
+          const SizedBox(height: 24),
+        ],
+        // Leave workspace
+        PlanPalButton(
+          label: 'Leave workspace',
+          variant: PlanPalButtonVariant.outline,
+          width: double.infinity,
+          onPressed: _leave,
+        ),
+        if (perms.isAdmin) ...[
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: c.dangerSoft,
+              borderRadius: BorderRadius.circular(AppRadius.card),
+              border: Border.all(color: c.danger.withValues(alpha: 0.3)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Delete workspace',
+                  style: AppText.bodyStrong.copyWith(color: c.danger)),
+                const SizedBox(height: 8),
+                Text(
+                  'Permanently deletes the workspace and all its data.',
+                  style: AppText.body.copyWith(color: c.textMuted)),
+                const SizedBox(height: 12),
+                PlanPalButton(
+                  label: 'Delete workspace',
+                  variant: PlanPalButtonVariant.dangerOutline,
+                  onPressed: _delete,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ],
+    );
+  }
 }

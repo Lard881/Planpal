@@ -31,9 +31,9 @@ class ChatRepository {
       String workspaceId, String channelId, {String? cursor}) async {
     try {
       final params = <String, dynamic>{'limit': 50};
-      if (cursor != null) params['cursor'] = cursor;
+      if (cursor != null) params['before'] = cursor;
       final res = await _dio.get(
-          '/workspaces/$workspaceId/channels/$channelId/messages',
+          '/channels/$channelId/messages',
           queryParameters: params);
       final list = (res.data['messages'] as List)
           .map((m) => MessageModel.fromJson(m as Map<String, dynamic>))
@@ -52,7 +52,7 @@ class ChatRepository {
     final clientId = _uuid.v4();
     try {
       final res = await _dio.post(
-        '/workspaces/$workspaceId/channels/$channelId/messages',
+        '/channels/$channelId/messages',
         data: {'id': clientId, 'body': body},
       );
       return (MessageModel.fromJson(
@@ -65,8 +65,7 @@ class ChatRepository {
   Future<AppFailure?> markRead(
       String workspaceId, String channelId) async {
     try {
-      await _dio.post(
-          '/workspaces/$workspaceId/channels/$channelId/read');
+      await _dio.post('/channels/$channelId/read');
       return null;
     } on DioException catch (e) {
       return mapDioError(e);
@@ -109,8 +108,9 @@ class ChatRepository {
             value: channelId,
           ),
           callback: (payload) {
-            final msg = MessageModel.fromJson(
-                payload.newRecord as Map<String, dynamic>);
+            final record = Map<String, dynamic>.from(
+                payload.newRecord as Map);
+            final msg = MessageModel.fromJson(record);
             onMessage(msg);
           },
         )

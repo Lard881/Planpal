@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class FcmService {
-  static String? _currentToken;
-
   /// No-op on all platforms until Firebase packages are re-added.
   static Future<void> initialize(WidgetRef ref) async {
     debugPrint('FCM: Firebase packages not included in this build.');

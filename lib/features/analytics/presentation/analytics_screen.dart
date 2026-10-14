@@ -3,6 +3,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
 import '../../../core/theme/app_theme.dart';
@@ -10,6 +11,8 @@ import '../../../core/layout/breakpoints.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../models/analytics_models.dart';
 import '../providers/analytics_providers.dart';
+import '../../../core/network/api_client.dart';
+import '../../workspaces/providers/workspace_providers.dart';
 
 class AnalyticsScreen extends ConsumerWidget {
   const AnalyticsScreen({super.key});
@@ -108,14 +111,31 @@ class _RangeDropdown extends StatelessWidget {
   }
 }
 
-class _ExportButton extends StatelessWidget {
+class _ExportButton extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
+    final state = ref.watch(analyticsProvider);
+    final wsId = ref.watch(currentWorkspaceIdProvider) ?? '';
     return SizedBox(
       height: 40,
       child: OutlinedButton.icon(
-        onPressed: () {},
+        onPressed: () async {
+          try {
+            final baseUrl = ref.read(apiClientProvider).dio.options.baseUrl;
+            final url = '$baseUrl/workspaces/$wsId/analytics/export.csv'
+                '?range=${state.range}';
+            final uri = Uri.parse(url);
+            if (await canLaunchUrl(uri)) {
+              await launchUrl(uri, mode: LaunchMode.externalApplication);
+            }
+          } catch (_) {
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Could not export CSV')));
+            }
+          }
+        },
         icon: Icon(LucideIcons.download, size: 16, color: c.textPrimary),
         label: Text('Export CSV',
           style: AppText.bodyMedium.copyWith(color: c.textPrimary)),
@@ -358,7 +378,7 @@ class _WeeklyChart extends StatelessWidget {
                         toY: data[i].completed.toDouble(),
                         color: isMax
                             ? c.primary
-                            : c.primary.withOpacity(0.2),
+                            : c.primary.withValues(alpha: 0.2),
                         width: 24,
                         borderRadius: const BorderRadius.vertical(
                           top: Radius.circular(6)),

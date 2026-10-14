@@ -511,6 +511,55 @@ class _MessageBubble extends StatelessWidget {
 class _MobileChatList extends ConsumerWidget {
   const _MobileChatList();
 
+  void _showNewChannelMobile(
+      BuildContext context, WidgetRef ref, String wsId) {
+    final ctrl = TextEditingController();
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+          left: 16, right: 16, top: 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('New Channel',
+              style: AppText.bodyStrong.copyWith(
+                color: context.colors.textPrimary)),
+            const SizedBox(height: 12),
+            TextField(
+              controller: ctrl,
+              autofocus: true,
+              decoration: const InputDecoration(hintText: 'Channel name'),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Cancel')),
+                const SizedBox(width: 8),
+                FilledButton(
+                  onPressed: () async {
+                    if (ctrl.text.trim().isEmpty) return;
+                    Navigator.pop(context);
+                    await ref.read(chatRepositoryProvider)
+                        .createChannel(wsId, name: ctrl.text.trim());
+                    ref.invalidate(channelsProvider(wsId));
+                  },
+                  child: const Text('Create')),
+              ],
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
@@ -520,7 +569,7 @@ class _MobileChatList extends ConsumerWidget {
     return Scaffold(
       backgroundColor: c.background,
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () => _showNewChannelMobile(context, ref, wsId),
         backgroundColor: c.primary,
         child: const Icon(Icons.add, color: Colors.white),
       ),
