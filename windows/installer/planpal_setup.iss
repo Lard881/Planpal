@@ -23,7 +23,7 @@ AllowNoIcons=yes
 LicenseFile=
 OutputDir=..\..\build\windows\installer
 OutputBaseFilename=PlanPal-Setup-{#AppVersion}
-SetupIconFile={#BuildDir}\{#AppExeName}
+SetupIconFile=..\..\windows\runner\resources\app_icon.ico
 Compression=lzma2/ultra64
 SolidCompression=yes
 WizardStyle=modern
@@ -48,11 +48,11 @@ Name: "startupicon"; Description: "Start PlanPal automatically when Windows star
 ; Main executable
 Source: "{#BuildDir}\{#AppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 
-; Flutter DLLs
+; Flutter engine
 Source: "{#BuildDir}\flutter_windows.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#BuildDir}\msvcp140.dll"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
-Source: "{#BuildDir}\vcruntime140.dll"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
-Source: "{#BuildDir}\vcruntime140_1.dll"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
+
+; All plugin DLLs
+Source: "{#BuildDir}\*.dll"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 
 ; Data folder (Flutter assets + plugins)
 Source: "{#BuildDir}\data\*"; DestDir: "{app}\data"; Flags: ignoreversion recursesubdirs createallsubdirs
