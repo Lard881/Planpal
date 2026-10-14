@@ -220,7 +220,7 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
                                     shape: BoxShape.circle,
                                     color: s.isDone ? c.primary : Colors.transparent,
                                     border: s.isDone ? null : Border.all(
-                                      color: c.presenceOffline, width: 1.5),
+                                      color: c.border, width: 1.5),
                                   ),
                                   child: s.isDone
                                       ? const Icon(Icons.check, size: 12,

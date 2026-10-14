@@ -312,18 +312,10 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
         // Label
         Text('Label', style: AppText.label.copyWith(color: c.textPrimary)),
         const SizedBox(height: 6),
-        Container(
-          height: 44,
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            color: c.surfaceAlt,
-            borderRadius: BorderRadius.circular(AppRadius.control),
-          ),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text('Label (optional)',
-              style: AppText.body.copyWith(color: c.textMuted)),
-          ),
+        _LabelPicker(
+          workspaceId: ref.watch(currentWorkspaceIdProvider) ?? '',
+          selectedId: _labelId,
+          onChanged: (id) => setState(() => _labelId = id),
         ),
         const SizedBox(height: 16),
         // Subtasks
@@ -439,6 +431,101 @@ class _PrioritySegmented extends StatelessWidget {
           );
         }),
       ),
+    );
+  }
+}
+
+class _LabelPicker extends ConsumerWidget {
+  final String workspaceId;
+  final String? selectedId;
+  final ValueChanged<String?> onChanged;
+  const _LabelPicker({
+    required this.workspaceId,
+    required this.selectedId,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final c = context.colors;
+    final labelsAsync = ref.watch(labelsProvider(workspaceId));
+
+    return labelsAsync.when(
+      loading: () => Container(
+        height: 44,
+        decoration: BoxDecoration(
+          color: c.surfaceAlt,
+          borderRadius: BorderRadius.circular(AppRadius.control)),
+        child: const Center(child: SizedBox(
+          width: 16, height: 16,
+          child: CircularProgressIndicator(strokeWidth: 2)))),
+      error: (_, __) => const SizedBox.shrink(),
+      data: (labels) {
+        if (labels.isEmpty) {
+          return Container(
+            height: 44,
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            decoration: BoxDecoration(
+              color: c.surfaceAlt,
+              borderRadius: BorderRadius.circular(AppRadius.control)),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text('No labels yet',
+                style: AppText.body.copyWith(color: c.textMuted))));
+        }
+
+        final selected = labels.firstWhere(
+          (l) => l.id == selectedId,
+          orElse: () => labels.first,
+        );
+
+        return Container(
+          height: 44,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          decoration: BoxDecoration(
+            color: c.surfaceAlt,
+            borderRadius: BorderRadius.circular(AppRadius.control)),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<String?>(
+              value: selectedId,
+              hint: Text('Label (optional)',
+                style: AppText.body.copyWith(color: c.textMuted)),
+              icon: Icon(Icons.arrow_drop_down, color: c.textMuted),
+              isExpanded: true,
+              items: [
+                DropdownMenuItem<String?>(
+                  value: null,
+                  child: Text('No label',
+                    style: AppText.body.copyWith(color: c.textMuted))),
+                ...labels.map((l) {
+                  Color color;
+                  try {
+                    color = Color(int.parse(
+                        'FF${l.color.replaceAll('#', '')}', radix: 16));
+                  } catch (_) {
+                    color = c.primary;
+                  }
+                  return DropdownMenuItem<String?>(
+                    value: l.id,
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 10, height: 10,
+                          decoration: BoxDecoration(
+                            color: color, shape: BoxShape.circle)),
+                        const SizedBox(width: 8),
+                        Text(l.name,
+                          style: AppText.body.copyWith(color: c.textPrimary)),
+                      ],
+                    ),
+                  );
+                }),
+              ],
+              onChanged: onChanged,
+            ),
+          ),
+        );
+      },
     );
   }
 }
