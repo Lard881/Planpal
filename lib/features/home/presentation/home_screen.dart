@@ -11,7 +11,6 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/layout/breakpoints.dart';
 import '../../../core/widgets/chips.dart';
 import '../../../core/widgets/avatar.dart';
-import '../../../core/widgets/empty_state.dart';
 import '../../workspaces/providers/workspace_providers.dart';
 import '../../workspaces/presentation/workspace_switcher.dart';
 import '../../notifications/providers/notifications_providers.dart';

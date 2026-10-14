@@ -41,7 +41,7 @@ class EventModel {
     }
   }
 
-  Color get pillBg => pillFg.withOpacity(0.15);
+  Color get pillBg => pillFg.withValues(alpha: 0.15);
 
   factory EventModel.fromJson(Map<String, dynamic> j) {
     final attendees = (j['event_attendees'] as List?) ??
