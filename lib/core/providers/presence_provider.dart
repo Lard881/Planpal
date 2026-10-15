@@ -24,13 +24,12 @@ class PresenceNotifier extends StateNotifier<Map<String, PresenceStatus>> {
         opts: const RealtimeChannelConfig(self: true));
 
     _channel!
-        .onPresenceSync((dynamic s) => _updateState())
-        .onPresenceJoin((dynamic s) => _updateState())
-        .onPresenceLeave((dynamic s) => _updateState())
-        .subscribe((RealtimeSubscribeStatus status, [Object? err]) async {
+        .onPresenceSync((RealtimePresenceSyncPayload payload) => _updateState())
+        .onPresenceJoin((RealtimePresenceJoinPayload payload) => _updateState())
+        .onPresenceLeave((RealtimePresenceLeavePayload payload) => _updateState())
+        .subscribe((RealtimeSubscribeStatus status, Object? error) {
       if (status == RealtimeSubscribeStatus.subscribed) {
-        await _channel!.track({'user_id': userId, 'online_at': DateTime.now().millisecondsSinceEpoch});
-        // Heartbeat every 30 seconds to keep presence alive
+        _channel!.track({'user_id': userId, 'online_at': DateTime.now().millisecondsSinceEpoch});
         _heartbeat = Timer.periodic(const Duration(seconds: 30), (_) {
           _channel!.track({'user_id': userId, 'online_at': DateTime.now().millisecondsSinceEpoch});
         });
