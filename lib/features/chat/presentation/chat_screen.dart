@@ -10,6 +10,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/layout/breakpoints.dart';
 import '../../../core/widgets/avatar.dart';
 import '../../../core/widgets/empty_state.dart';
+import '../../../core/l10n/app_localizations.dart';
 import '../../workspaces/providers/workspace_providers.dart';
 import '../models/chat_models.dart';
 import '../providers/chat_providers.dart';
@@ -23,7 +24,6 @@ class ChatScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final workspace = ref.watch(currentWorkspaceProvider);
 
-    // Personal workspace — show explanation (fix F5)
     if (workspace?.isPersonal == true) {
       return _PersonalWorkspaceChat();
     }
@@ -41,13 +41,14 @@ class _PersonalWorkspaceChat extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: c.background,
       body: EmptyState(
         icon: LucideIcons.messageCircle,
-        title: 'Chat is for teams',
-        subtitle: 'Chat is only available in team workspaces.',
-        actionLabel: 'Create or join a team workspace',
+        title: l10n.emptyStateChatTeamOnly,
+        subtitle: l10n.emptyStateChatTeamOnlyDesc,
+        actionLabel: l10n.createOrJoinTeam,
         onAction: () => context.push('/workspace/create'),
       ),
     );
@@ -85,7 +86,7 @@ class _DesktopChat extends ConsumerWidget {
                 // Workspace name as title (fix F5)
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                  child: Text(workspace?.name ?? 'Chat',
+                  child: Text(workspace?.name ?? l10n.navChat,
                     style: AppText.bodyStrong.copyWith(color: c.textPrimary)),
                 ),
                 const Divider(),
@@ -161,8 +162,8 @@ class _DesktopChat extends ConsumerWidget {
                 : Center(
                     child: EmptyState(
                       icon: LucideIcons.messageCircle,
-                      title: 'Select a channel',
-                      subtitle: 'Choose a channel to start messaging.',
+                      title: l10n.emptyStateSelectChannel,
+                      subtitle: l10n.emptyStateSelectChannelDesc,
                     ),
                   ),
           ),
@@ -176,16 +177,16 @@ class _DesktopChat extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('New Channel'),
+        title: Text(l10n.chatNewChannel),
         content: TextField(
           controller: ctrl,
-          decoration: const InputDecoration(hintText: 'Channel name'),
+          decoration: InputDecoration(hintText: l10n.fieldChannelName),
           autofocus: true,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel')),
+            child: Text(l10n.btnCancel)),
           FilledButton(
             onPressed: () async {
               if (ctrl.text.trim().isEmpty) return;
@@ -194,7 +195,7 @@ class _DesktopChat extends ConsumerWidget {
                   .createChannel(wsId, name: ctrl.text.trim());
               ref.invalidate(channelsProvider(wsId));
             },
-            child: const Text('Create')),
+            child: Text(l10n.btnCreate)),
         ],
       ),
     );
@@ -254,8 +255,9 @@ class _DmRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     final name = channel.memberNames.isNotEmpty
-        ? channel.memberNames.first : 'Direct Message';
+        ? channel.memberNames.first : l10n.emptyStateSelectChannel;
     final initial = name[0].toUpperCase();
 
     return GestureDetector(
@@ -345,6 +347,7 @@ class _ConversationPanelState extends ConsumerState<_ConversationPanel> {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     final messages = ref.watch(messagesProvider((
       workspaceId: widget.workspaceId,
       channelId: widget.channelId,
@@ -357,7 +360,7 @@ class _ConversationPanelState extends ConsumerState<_ConversationPanel> {
         // Messages
         Expanded(
           child: messages.isEmpty
-              ? Center(child: Text('No messages yet.',
+              ? Center(child: Text(l10n.emptyStateNoMessages,
                   style: AppText.body.copyWith(color: c.textMuted)))
               : ListView.builder(
                   controller: _scrollCtrl,
@@ -393,7 +396,7 @@ class _ConversationPanelState extends ConsumerState<_ConversationPanel> {
                   child: TextField(
                     controller: _msgCtrl,
                     decoration: InputDecoration(
-                      hintText: 'Message...',
+                      hintText: l10n.fieldMessageHint,
                       hintStyle: AppText.body.copyWith(color: c.textMuted),
                       border: InputBorder.none,
                       filled: false,
@@ -459,7 +462,7 @@ class _MessageBubble extends StatelessWidget {
               children: [
                 Text(
                   isOwn ? 'You · ${message.formatTime()}'
-                      : '${message.senderName ?? 'Unknown'} · ${message.formatTime()}',
+                      : '${message.senderName ?? '–'} · ${message.formatTime()}',
                   style: AppText.caption.copyWith(color: c.textMuted),
                 ),
                 const SizedBox(height: 4),
@@ -525,14 +528,14 @@ class _MobileChatList extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('New Channel',
+            Text(l10n.chatNewChannel,
               style: AppText.bodyStrong.copyWith(
                 color: context.colors.textPrimary)),
             const SizedBox(height: 12),
             TextField(
               controller: ctrl,
               autofocus: true,
-              decoration: const InputDecoration(hintText: 'Channel name'),
+              decoration: InputDecoration(hintText: l10n.fieldChannelName),
             ),
             const SizedBox(height: 16),
             Row(
@@ -540,7 +543,7 @@ class _MobileChatList extends ConsumerWidget {
               children: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('Cancel')),
+                  child: Text(l10n.btnCancel)),
                 const SizedBox(width: 8),
                 FilledButton(
                   onPressed: () async {
@@ -550,7 +553,7 @@ class _MobileChatList extends ConsumerWidget {
                         .createChannel(wsId, name: ctrl.text.trim());
                     ref.invalidate(channelsProvider(wsId));
                   },
-                  child: const Text('Create')),
+                  child: Text(l10n.btnCreate)),
               ],
             ),
             const SizedBox(height: 16),
@@ -563,6 +566,7 @@ class _MobileChatList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     final wsId = ref.watch(currentWorkspaceIdProvider) ?? '';
     final channelsAsync = ref.watch(channelsProvider(wsId));
 
@@ -579,7 +583,7 @@ class _MobileChatList extends ConsumerWidget {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                child: Text('Messages',
+                child: Text(l10n.chatTitle,
                   style: AppText.pageTitleMobile.copyWith(
                     color: c.textPrimary)),
               ),
@@ -599,7 +603,7 @@ class _MobileChatList extends ConsumerWidget {
                       const SizedBox(width: 12),
                       Icon(LucideIcons.search, size: 16, color: c.textMuted),
                       const SizedBox(width: 8),
-                      Text('Search chats...',
+                      Text(l10n.searchChats,
                         style: AppText.body.copyWith(color: c.textMuted)),
                     ],
                   ),
@@ -612,13 +616,13 @@ class _MobileChatList extends ConsumerWidget {
               error: (_, __) => const SliverFillRemaining(
                 child: EmptyState(
                   icon: LucideIcons.messageCircle,
-                  title: 'Could not load chats')),
+                  title: l10n.errorGeneric)),
               data: (channels) => channels.isEmpty
-                  ? const SliverFillRemaining(
+                  ? SliverFillRemaining(
                       child: EmptyState(
                         icon: LucideIcons.messageCircle,
-                        title: 'No channels yet',
-                        subtitle: 'Create a channel to get started.'))
+                        title: l10n.emptyStateNoChannels,
+                        subtitle: l10n.emptyStateNoChannelsDesc))
                   : SliverPadding(
                       padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
                       sliver: SliverList(
@@ -723,6 +727,7 @@ class _ConversationScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     final wsId = ref.watch(currentWorkspaceIdProvider) ?? '';
     final channelsAsync = ref.watch(channelsProvider(wsId));
 
@@ -751,7 +756,7 @@ class _ConversationScreen extends ConsumerWidget {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(channel?.name != null ? '# ${channel!.name}' : 'Chat',
+            Text(channel?.name != null ? '# ${channel!.name}' : l10n.navChat,
               style: AppText.bodyStrong.copyWith(color: c.textPrimary)),
           ],
         ),

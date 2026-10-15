@@ -250,6 +250,8 @@
   "tasksAddSubtaskHint": "+ 添加子任务...",
   "tasksSubtasksLabel": "子任务 {done}/{total}",
   "@tasksSubtasksLabel": { "placeholders": { "done": { "type": "int" }, "total": { "type": "int" } } },
+  "tasksSubtasksTitle": "子任务",
+  "@tasksSubtasksTitle": {},
   "tasksDetailTitle": "任务详情",
   "tasksNewTitle": "新建任务",
   "tasksDescriptionLabel": "描述",

@@ -250,6 +250,8 @@
   "tasksAddSubtaskHint": "+ Ajouter une sous-tâche...",
   "tasksSubtasksLabel": "Sous-tâches {done}/{total}",
   "@tasksSubtasksLabel": { "placeholders": { "done": { "type": "int" }, "total": { "type": "int" } } },
+  "tasksSubtasksTitle": "Sous-tâches",
+  "@tasksSubtasksTitle": {},
   "tasksDetailTitle": "Détails de la tâche",
   "tasksNewTitle": "Nouvelle tâche",
   "tasksDescriptionLabel": "Description",

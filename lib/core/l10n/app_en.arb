@@ -529,6 +529,8 @@
       "total": { "type": "int" }
     }
   },
+  "tasksSubtasksTitle": "Subtasks",
+  "@tasksSubtasksTitle": {},
   "tasksDetailTitle": "Task details",
   "@tasksDetailTitle": {},
   "tasksNewTitle": "New Task",

@@ -31,6 +31,7 @@ class _DesktopNotifications extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     final state = ref.watch(notificationsProvider);
     final notifier = ref.read(notificationsProvider.notifier);
 
@@ -60,9 +61,9 @@ class _DesktopNotifications extends ConsumerWidget {
               child: state.loading
                   ? const Center(child: CircularProgressIndicator())
                   : state.notifications.isEmpty
-                      ? const EmptyState(
+                      ? EmptyState(
                           icon: LucideIcons.bell,
-                          title: "You're all caught up")
+                          title: l10n.emptyStateNoNotifications)
                       : Container(
                           decoration: BoxDecoration(
                             color: c.surface,
@@ -94,6 +95,7 @@ class _MobileNotifications extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     final state = ref.watch(notificationsProvider);
     final notifier = ref.read(notificationsProvider.notifier);
 
@@ -109,13 +111,13 @@ class _MobileNotifications extends ConsumerWidget {
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                   child: Row(
                     children: [
-                      Text('Notifications',
+                      Text(l10n.notificationsTitle,
                         style: AppText.pageTitleMobile.copyWith(
                           color: c.textPrimary)),
                       const Spacer(),
                       TextButton(
                         onPressed: notifier.markAllRead,
-                        child: Text('Mark all as read',
+                        child: Text(l10n.btnMarkAllRead,
                           style: AppText.caption.copyWith(color: c.primary)),
                       ),
                     ],
@@ -135,10 +137,10 @@ class _MobileNotifications extends ConsumerWidget {
                 const SliverFillRemaining(
                   child: Center(child: CircularProgressIndicator()))
               else if (state.notifications.isEmpty)
-                const SliverFillRemaining(
+                SliverFillRemaining(
                   child: EmptyState(
                     icon: LucideIcons.bell,
-                    title: "You're all caught up"))
+                    title: l10n.emptyStateNoNotifications))
               else
                 SliverPadding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -163,7 +165,7 @@ class _MobileNotifications extends ConsumerWidget {
   }
 }
 
-// ── Filter chips (fix F16 — no counts) ───────────────────────────────────────
+// ── Filter chips ──────────────────────────────────────────────────────────────
 class _FilterChips extends StatelessWidget {
   final String filter;
   final ValueChanged<String> onChanged;
@@ -172,11 +174,12 @@ class _FilterChips extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
-    const options = [
-      ('all', 'All'),
-      ('unread', 'Unread'),
-      ('tasks', 'Tasks'),
-      ('mentions', 'Mentions'),
+    final l10n = AppLocalizations.of(context);
+    final options = [
+      ('all', l10n.notificationsAll),
+      ('unread', l10n.notificationsUnread),
+      ('tasks', l10n.notificationsTasks),
+      ('mentions', l10n.notificationsMentions),
     ];
     return Row(
       children: options.map(((String val, String label) opt) {
@@ -307,6 +310,7 @@ class _NotificationRow extends ConsumerWidget {
   void _showMenu(BuildContext context, WidgetRef ref,
       NotificationsNotifier notifier) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     showModalBottomSheet(
       context: context,
       builder: (_) => SafeArea(
@@ -317,7 +321,7 @@ class _NotificationRow extends ConsumerWidget {
               leading: Icon(notification.isUnread
                   ? LucideIcons.checkCheck : LucideIcons.circle),
               title: Text(notification.isUnread
-                  ? 'Mark as read' : 'Mark as unread'),
+                  ? l10n.notificationsMarkRead : l10n.notificationsMarkUnread),
               onTap: () {
                 Navigator.pop(context);
                 if (notification.isUnread) {
@@ -329,7 +333,7 @@ class _NotificationRow extends ConsumerWidget {
             ),
             ListTile(
               leading: Icon(LucideIcons.trash2, color: c.danger),
-              title: Text('Delete',
+              title: Text(l10n.btnDelete,
                 style: TextStyle(color: c.danger)),
               onTap: () {
                 Navigator.pop(context);

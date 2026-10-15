@@ -16,6 +16,7 @@ import '../../../core/widgets/avatar_crop_dialog.dart';
 import '../../../core/providers/theme_provider.dart';
 import '../../../core/providers/locale_provider.dart';
 import '../../../core/network/api_client.dart';
+import '../../../core/l10n/app_localizations.dart';
 import '../../workspaces/providers/workspace_providers.dart';
 import '../../workspaces/data/workspace_repository.dart';
 import '../../auth/presentation/auth_notifier.dart';
@@ -48,17 +49,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   Widget _buildDesktop(BuildContext context) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     final workspace = ref.watch(currentWorkspaceProvider);
     final isPersonal = workspace?.isPersonal ?? true;
 
     final menuItems = [
-      _MenuItem('profile', 'Profile', LucideIcons.user),
-      _MenuItem('account', 'Account', LucideIcons.settings),
-      _MenuItem('notifications', 'Notifications', LucideIcons.bell),
-      _MenuItem('appearance', 'Appearance', LucideIcons.palette),
-      _MenuItem('security', 'Security', LucideIcons.lock),
-      if (!isPersonal) _MenuItem('workspace', 'Workspace', LucideIcons.building2),
-      _MenuItem('sync', 'Sync status', LucideIcons.refreshCw),
+      _MenuItem('profile', l10n.settingsProfile, LucideIcons.user),
+      _MenuItem('account', l10n.settingsAccount, LucideIcons.settings),
+      _MenuItem('notifications', l10n.settingsNotifications, LucideIcons.bell),
+      _MenuItem('appearance', l10n.settingsAppearance, LucideIcons.palette),
+      _MenuItem('security', l10n.settingsSecurity, LucideIcons.lock),
+      if (!isPersonal) _MenuItem('workspace', l10n.settingsWorkspace, LucideIcons.building2),
+      _MenuItem('sync', l10n.settingsSyncStatus, LucideIcons.refreshCw),
     ];
 
     return Scaffold(
@@ -127,6 +129,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   Widget _buildMobile(BuildContext context) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     final workspace = ref.watch(currentWorkspaceProvider);
     final isPersonal = workspace?.isPersonal ?? true;
 
@@ -163,7 +166,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            Text('Settings',
+            Text(l10n.navSettings,
               style: AppText.pageTitleMobile.copyWith(color: c.textPrimary)),
             const SizedBox(height: 16),
             Container(
@@ -174,25 +177,26 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
               child: Column(
                 children: [
-                  _SettingsRow(icon: LucideIcons.user, label: 'Profile',
+                  _SettingsRow(icon: LucideIcons.user, label: l10n.settingsProfile,
                     onTap: () => setState(() => _section = 'profile')),
-                  _SettingsRow(icon: LucideIcons.settings, label: 'Account',
+                  _SettingsRow(icon: LucideIcons.settings, label: l10n.settingsAccount,
                     onTap: () => setState(() => _section = 'account')),
-                  _SettingsRow(icon: LucideIcons.bell, label: 'Notifications',
+                  _SettingsRow(icon: LucideIcons.bell, label: l10n.settingsNotifications,
                     onTap: () => setState(() => _section = 'notifications')),
-                  _SettingsRow(icon: LucideIcons.palette, label: 'Appearance',
+                  _SettingsRow(icon: LucideIcons.palette, label: l10n.settingsAppearance,
                     onTap: () => setState(() => _section = 'appearance')),
-                  _SettingsRow(icon: LucideIcons.lock, label: 'Security',
+                  _SettingsRow(icon: LucideIcons.lock, label: l10n.settingsSecurity,
                     onTap: () => setState(() => _section = 'security')),
                   if (!isPersonal)
-                    _SettingsRow(icon: LucideIcons.building2, label: 'Workspace',
+                    _SettingsRow(icon: LucideIcons.building2, label: l10n.settingsWorkspace,
                       onTap: () => setState(() => _section = 'workspace')),
-                  _SettingsRow(icon: LucideIcons.refreshCw, label: 'Sync status',
+                  _SettingsRow(icon: LucideIcons.refreshCw, label: l10n.settingsSyncStatus,
                     onTap: () => Navigator.push(context,
                       MaterialPageRoute(
                         builder: (_) => const SyncStatusScreen()))),
                 ],
-              ),            ),
+              ),
+            ),
           ],
         ),
       ),
@@ -200,6 +204,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   Widget _buildSection(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     switch (_section) {
       case 'profile': return _ProfileSection();
       case 'appearance': return _AppearanceSection();
@@ -207,7 +212,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       case 'workspace': return _WorkspaceSection();
       case 'sync': return const SyncStatusScreen();
       default: return Center(
-        child: Text('$_section settings coming soon.',
+        child: Text(l10n.settingsComingSoon(_section),
           style: AppText.body.copyWith(color: context.colors.textMuted)));
     }
   }
@@ -235,6 +240,7 @@ class _ProfileSectionState extends ConsumerState<_ProfileSection> {
   void dispose() { _nameCtrl.dispose(); super.dispose(); }
 
   Future<void> _save() async {
+    final l10n = AppLocalizations.of(context);
     setState(() => _saving = true);
     try {
       // Update Supabase auth metadata
@@ -245,7 +251,7 @@ class _ProfileSectionState extends ConsumerState<_ProfileSection> {
           data: {'fullName': _nameCtrl.text.trim()});
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Settings saved')));
+          SnackBar(content: Text(l10n.syncSaved)));
       }
     } catch (_) {}
     setState(() => _saving = false);
@@ -254,6 +260,7 @@ class _ProfileSectionState extends ConsumerState<_ProfileSection> {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     final user = Supabase.instance.client.auth.currentUser;
     final name = user?.userMetadata?['full_name'] as String? ?? '';
     final email = user?.email ?? '';
@@ -262,7 +269,7 @@ class _ProfileSectionState extends ConsumerState<_ProfileSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Profile',
+        Text(l10n.settingsProfile,
           style: AppText.authTitle.copyWith(color: c.textPrimary)),
         const SizedBox(height: 24),
         // Avatar row
@@ -297,11 +304,11 @@ class _ProfileSectionState extends ConsumerState<_ProfileSection> {
                               SnackBar(content: Text(err.message)));
                           } else if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Avatar updated!')));
+                              SnackBar(
+                                content: Text(AppLocalizations.of(context).settingsAvatarUpdated)));
                           }
                         },
-                        child: Text('Upload New',
+                        child: Text(l10n.btnUploadNew,
                           style: AppText.caption.copyWith(color: c.primary)),
                       ),
                     ),
@@ -322,7 +329,7 @@ class _ProfileSectionState extends ConsumerState<_ProfileSection> {
                               SnackBar(content: Text(err.message)));
                           }
                         },
-                        child: Text('Remove',
+                        child: Text(l10n.btnRemove,
                           style: AppText.caption.copyWith(color: c.textMuted)),
                       ),
                     ),
@@ -336,14 +343,14 @@ class _ProfileSectionState extends ConsumerState<_ProfileSection> {
         // Fields
         Row(
           children: [
-            Expanded(child: _Field('Full name', _nameCtrl)),
+            Expanded(child: _Field(l10n.fieldFullName, _nameCtrl)),
             const SizedBox(width: 16),
-            Expanded(child: _ReadOnlyField('Email', email)),
+            Expanded(child: _ReadOnlyField(l10n.fieldEmail, email)),
           ],
         ),
         const SizedBox(height: 24),
         PlanPalButton(
-          label: 'Save Settings',
+          label: l10n.btnSaveSettings,
           onPressed: _save,
           loading: _saving,
           width: double.infinity,
@@ -412,13 +419,14 @@ class _AppearanceSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     final themeMode = ref.watch(themeModeProvider);
     final locale = ref.watch(localeProvider);
 
-    const themes = [
-      (ThemeMode.light, 'Light', LucideIcons.sun),
-      (ThemeMode.dark, 'Dark', LucideIcons.moon),
-      (ThemeMode.system, 'System', LucideIcons.monitor),
+    final themes = [
+      (ThemeMode.light, l10n.settingsThemeLight, LucideIcons.sun),
+      (ThemeMode.dark, l10n.settingsThemeDark, LucideIcons.moon),
+      (ThemeMode.system, l10n.settingsThemeSystem, LucideIcons.monitor),
     ];
 
     // fix F9 — all 5 languages with their own names
@@ -433,10 +441,10 @@ class _AppearanceSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Appearance',
+        Text(l10n.settingsAppearance,
           style: AppText.authTitle.copyWith(color: c.textPrimary)),
         const SizedBox(height: 24),
-        Text('Theme', style: AppText.label.copyWith(color: c.textPrimary)),
+        Text(l10n.settingsTheme, style: AppText.label.copyWith(color: c.textPrimary)),
         const SizedBox(height: 12),
         Row(
           children: themes.map(((ThemeMode mode, String label, IconData icon) t) {
@@ -478,7 +486,7 @@ class _AppearanceSection extends ConsumerWidget {
           }).toList(),
         ),
         const SizedBox(height: 24),
-        Text('Language', style: AppText.label.copyWith(color: c.textPrimary)),
+        Text(l10n.settingsLanguage, style: AppText.label.copyWith(color: c.textPrimary)),
         const SizedBox(height: 12),
         Container(
           decoration: BoxDecoration(
@@ -512,14 +520,15 @@ class _AccountSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Account',
+        Text(l10n.settingsAccount,
           style: AppText.authTitle.copyWith(color: c.textPrimary)),
         const SizedBox(height: 24),
         PlanPalButton(
-          label: 'Sign out',
+          label: l10n.btnSignOut,
           variant: PlanPalButtonVariant.outline,
           width: double.infinity,
           onPressed: () async {
@@ -538,14 +547,14 @@ class _AccountSection extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Delete account',
+              Text(l10n.settingsDeleteAccountTitle,
                 style: AppText.bodyStrong.copyWith(color: c.danger)),
               const SizedBox(height: 8),
-              Text('This permanently deletes your account and all data.',
+              Text(l10n.settingsDeleteAccountDesc,
                 style: AppText.body.copyWith(color: c.textMuted)),
               const SizedBox(height: 12),
               PlanPalButton(
-                label: 'Delete account',
+                label: l10n.btnDeleteAccount,
                 variant: PlanPalButtonVariant.dangerOutline,
                 onPressed: () => _confirmDeleteAccount(context, ref),
               ),
@@ -558,22 +567,21 @@ class _AccountSection extends ConsumerWidget {
 
   Future<void> _confirmDeleteAccount(
       BuildContext context, WidgetRef ref) async {
+    final l10n = AppLocalizations.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Delete account?'),
-        content: const Text(
-          'This permanently deletes your account and all data. '
-          'This cannot be undone.'),
+        title: Text(l10n.confirmDeleteTitle),
+        content: Text(l10n.confirmDeleteBody),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel')),
+            child: Text(l10n.btnCancel)),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
             style: FilledButton.styleFrom(
                 backgroundColor: context.colors.danger),
-            child: const Text('Delete')),
+            child: Text(l10n.btnDelete)),
         ],
       ),
     );
@@ -597,6 +605,7 @@ class _MobileProfileTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     final user = Supabase.instance.client.auth.currentUser;
     final name = user?.userMetadata?['full_name'] as String? ?? '';
     final email = user?.email ?? '';
@@ -632,7 +641,7 @@ class _MobileProfileTab extends ConsumerWidget {
                         decoration: BoxDecoration(
                           color: c.surfaceAlt,
                           borderRadius: BorderRadius.circular(20)),
-                        child: Text(workspace?.name ?? 'Workspace',
+                        child: Text(workspace?.name ?? l10n.navSettings,
                           style: AppText.caption.copyWith(
                               color: c.textPrimary)),
                       ),
@@ -655,21 +664,21 @@ class _MobileProfileTab extends ConsumerWidget {
               child: Column(
                 children: [
                   if (!isPersonal)
-                    _ProfileRow(icon: LucideIcons.users, label: 'Team',
+                    _ProfileRow(icon: LucideIcons.users, label: l10n.navTeam,
                       onTap: () => context.go('/team')),
-                  _ProfileRow(icon: LucideIcons.fileText, label: 'Documents',
+                  _ProfileRow(icon: LucideIcons.fileText, label: l10n.navDocuments,
                     onTap: () => context.go('/documents')),
                   if (!perms.isGuest)
-                    _ProfileRow(icon: LucideIcons.barChart2, label: 'Analytics',
+                    _ProfileRow(icon: LucideIcons.barChart2, label: l10n.navAnalytics,
                       onTap: () => context.go('/analytics')),
-                  _ProfileRow(icon: LucideIcons.bell, label: 'Notifications',
+                  _ProfileRow(icon: LucideIcons.bell, label: l10n.settingsNotifications,
                     onTap: () => context.push('/notifications')),
-                  _ProfileRow(icon: LucideIcons.refreshCw, label: 'Sync status',
+                  _ProfileRow(icon: LucideIcons.refreshCw, label: l10n.settingsSyncStatus,
                     onTap: () => Navigator.push(context, MaterialPageRoute(
                       builder: (_) => const SyncStatusScreen()))),
                   ListTile(
                     leading: Icon(LucideIcons.logOut, color: c.danger),
-                    title: Text('Sign out',
+                    title: Text(l10n.btnSignOut,
                       style: AppText.bodyMedium.copyWith(color: c.danger)),
                     trailing: Icon(LucideIcons.chevronRight,
                       size: 16, color: c.textMuted),
@@ -762,12 +771,13 @@ class _WorkspaceSectionState extends ConsumerState<_WorkspaceSection> {
     } else if (mounted) {
       ref.invalidate(workspacesProvider);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Workspace renamed')));
+        SnackBar(content: Text(l10n.workspaceSettings)));
     }
     if (mounted) setState(() => _saving = false);
   }
 
   Future<void> _leave() async {
+    final l10n = AppLocalizations.of(context);
     final wsId = ref.read(currentWorkspaceIdProvider) ?? '';
     final userId = Supabase.instance.client.auth.currentUser?.id ?? '';
     final confirmed = await showDialog<bool>(
@@ -778,7 +788,7 @@ class _WorkspaceSectionState extends ConsumerState<_WorkspaceSection> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel')),
+            child: Text(l10n.btnCancel)),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
             style: FilledButton.styleFrom(
@@ -801,23 +811,22 @@ class _WorkspaceSectionState extends ConsumerState<_WorkspaceSection> {
   }
 
   Future<void> _delete() async {
+    final l10n = AppLocalizations.of(context);
     final wsId = ref.read(currentWorkspaceIdProvider) ?? '';
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Delete workspace?'),
-        content: const Text(
-          'This permanently deletes the workspace and all its data. '
-          'This cannot be undone.'),
+        title: Text(l10n.confirmDeleteTitle),
+        content: Text(l10n.confirmDeleteBody),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel')),
+            child: Text(l10n.btnCancel)),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
             style: FilledButton.styleFrom(
                 backgroundColor: context.colors.danger),
-            child: const Text('Delete')),
+            child: Text(l10n.btnDelete)),
         ],
       ),
     );
@@ -837,16 +846,17 @@ class _WorkspaceSectionState extends ConsumerState<_WorkspaceSection> {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     final perms = ref.watch(currentRolePermissionsProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Workspace',
+        Text(l10n.settingsWorkspace,
           style: AppText.authTitle.copyWith(color: c.textPrimary)),
         const SizedBox(height: 24),
         if (perms.isAdmin) ...[
-          Text('Workspace name',
+          Text(l10n.workspaceNameLabel,
             style: AppText.label.copyWith(color: c.textPrimary)),
           const SizedBox(height: 8),
           TextField(
@@ -860,7 +870,7 @@ class _WorkspaceSectionState extends ConsumerState<_WorkspaceSection> {
           ),
           const SizedBox(height: 12),
           PlanPalButton(
-            label: 'Save',
+            label: l10n.btnSave,
             onPressed: _rename,
             loading: _saving,
             width: double.infinity,
@@ -869,7 +879,7 @@ class _WorkspaceSectionState extends ConsumerState<_WorkspaceSection> {
         ],
         // Leave workspace
         PlanPalButton(
-          label: 'Leave workspace',
+          label: l10n.btnRemove,
           variant: PlanPalButtonVariant.outline,
           width: double.infinity,
           onPressed: _leave,
@@ -886,7 +896,7 @@ class _WorkspaceSectionState extends ConsumerState<_WorkspaceSection> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Delete workspace',
+                Text(l10n.settingsDeleteAccountTitle,
                   style: AppText.bodyStrong.copyWith(color: c.danger)),
                 const SizedBox(height: 8),
                 Text(
@@ -894,7 +904,7 @@ class _WorkspaceSectionState extends ConsumerState<_WorkspaceSection> {
                   style: AppText.body.copyWith(color: c.textMuted)),
                 const SizedBox(height: 12),
                 PlanPalButton(
-                  label: 'Delete workspace',
+                  label: l10n.btnDelete,
                   variant: PlanPalButtonVariant.dangerOutline,
                   onPressed: _delete,
                 ),

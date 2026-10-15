@@ -1508,6 +1508,12 @@ abstract class AppLocalizations {
   /// **'Subtasks {done}/{total}'**
   String tasksSubtasksLabel(int done, int total);
 
+  /// No description provided for @tasksSubtasksTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Subtasks'**
+  String get tasksSubtasksTitle;
+
   /// No description provided for @tasksDetailTitle.
   ///
   /// In en, this message translates to:

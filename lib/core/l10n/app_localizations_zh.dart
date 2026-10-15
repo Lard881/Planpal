@@ -761,6 +761,9 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get tasksSubtasksTitle => '子任务';
+
+  @override
   String get tasksDetailTitle => '任务详情';
 
   @override

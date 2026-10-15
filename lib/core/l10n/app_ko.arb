@@ -250,6 +250,8 @@
   "tasksAddSubtaskHint": "+ 하위 작업 추가...",
   "tasksSubtasksLabel": "하위 작업 {done}/{total}",
   "@tasksSubtasksLabel": { "placeholders": { "done": { "type": "int" }, "total": { "type": "int" } } },
+  "tasksSubtasksTitle": "하위 작업",
+  "@tasksSubtasksTitle": {},
   "tasksDetailTitle": "작업 세부 정보",
   "tasksNewTitle": "새 작업",
   "tasksDescriptionLabel": "설명",

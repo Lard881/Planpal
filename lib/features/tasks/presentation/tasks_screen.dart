@@ -11,6 +11,7 @@ import '../../../core/widgets/chips.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../../../core/widgets/avatar.dart';
 import '../../../core/widgets/planpal_button.dart';
+import '../../../core/l10n/app_localizations.dart';
 import '../../workspaces/providers/workspace_providers.dart';
 import '../models/task_model.dart';
 import '../providers/task_providers.dart';
@@ -48,6 +49,7 @@ class _MobileTasksScreenState extends ConsumerState<_MobileTasksScreen> {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     final state = ref.watch(taskListProvider(widget.workspaceId));
     final notifier = ref.read(taskListProvider(widget.workspaceId).notifier);
 
@@ -69,7 +71,7 @@ class _MobileTasksScreenState extends ConsumerState<_MobileTasksScreen> {
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                   child: Row(
                     children: [
-                      Text('Tasks',
+                      Text(l10n.tasksTitle,
                         style: AppText.pageTitleMobile.copyWith(color: c.textPrimary)),
                       const Spacer(),
                       Container(
@@ -105,7 +107,7 @@ class _MobileTasksScreenState extends ConsumerState<_MobileTasksScreen> {
                           child: TextField(
                             controller: _searchCtrl,
                             decoration: InputDecoration(
-                              hintText: 'Search tasks...',
+                              hintText: l10n.searchTasks,
                               hintStyle: AppText.body.copyWith(color: c.textMuted),
                               border: InputBorder.none,
                               filled: false,
@@ -128,13 +130,13 @@ class _MobileTasksScreenState extends ConsumerState<_MobileTasksScreen> {
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children: [
-                        _ViewChip('All', 'all', state.filter.view, notifier, state),
+                        _ViewChip(l10n.all, 'all', state.filter.view, notifier, state),
                         const SizedBox(width: 8),
-                        _ViewChip('Today', 'today', state.filter.view, notifier, state),
+                        _ViewChip(l10n.today, 'today', state.filter.view, notifier, state),
                         const SizedBox(width: 8),
-                        _ViewChip('This Week', 'week', state.filter.view, notifier, state),
+                        _ViewChip(l10n.thisWeek, 'week', state.filter.view, notifier, state),
                         const SizedBox(width: 8),
-                        _ViewChip('Overdue', 'overdue', state.filter.view, notifier, state),
+                        _ViewChip(l10n.overdue, 'overdue', state.filter.view, notifier, state),
                       ],
                     ),
                   ),
@@ -149,11 +151,11 @@ class _MobileTasksScreenState extends ConsumerState<_MobileTasksScreen> {
                   child: EmptyState(
                     icon: LucideIcons.checkSquare,
                     title: state.filter.hasActiveFilters
-                        ? 'No results for these filters'
-                        : 'No tasks yet',
+                        ? l10n.tasksNoResultsFilters
+                        : l10n.emptyStateNoTasks,
                     subtitle: state.filter.hasActiveFilters
-                        ? null : 'Tap + to create your first task.',
-                    actionLabel: state.filter.hasActiveFilters ? 'Clear filters' : null,
+                        ? null : l10n.emptyStateNoTasksDesc,
+                    actionLabel: state.filter.hasActiveFilters ? l10n.tasksClearFilters : null,
                     onAction: state.filter.hasActiveFilters
                         ? () => notifier.setFilter(state.filter.cleared()) : null,
                   ),
@@ -223,6 +225,7 @@ class _MobileTaskTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     final dateStr = taskDateLabel(task);
     final isOverdue = task.isOverdue;
 
@@ -271,9 +274,9 @@ class _MobileTaskTile extends StatelessWidget {
                         style: AppText.caption.copyWith(color: c.textMuted),
                         children: [
                           if (isOverdue) ...[
-                            TextSpan(text: 'Yesterday · ',
+                            TextSpan(text: '${l10n.yesterday} · ',
                               style: TextStyle(color: c.danger)),
-                            TextSpan(text: 'Overdue',
+                            TextSpan(text: l10n.statusOverdue,
                               style: TextStyle(color: c.danger)),
                           ] else
                             TextSpan(text: dateStr),
@@ -300,6 +303,7 @@ class _DesktopTasksScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     final state = ref.watch(taskListProvider(workspaceId));
     final notifier = ref.read(taskListProvider(workspaceId).notifier);
     final hasSelection = state.selectedIds.isNotEmpty;
@@ -318,7 +322,7 @@ class _DesktopTasksScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Tasks',
+                      Text(l10n.tasksTitle,
                         style: AppText.pageTitle.copyWith(color: c.textPrimary)),
                       Text('${state.tasks.length} tasks · ${state.dueToday} due today',
                         style: AppText.body.copyWith(color: c.textMuted)),
@@ -326,7 +330,7 @@ class _DesktopTasksScreen extends ConsumerWidget {
                   ),
                 ),
                 PlanPalButton(
-                  label: '+ Add Task',
+                  label: l10n.btnAddTask,
                   toolbar: true,
                   onPressed: () => context.push('/tasks/new'),
                 ),
@@ -375,7 +379,7 @@ class _DesktopTasksScreen extends ConsumerWidget {
                 count: state.selectedIds.length,
                 onMarkComplete: notifier.bulkComplete,
                 onDelete: () async {
-                  final confirm = await _confirmBulkDelete(context);
+                  final confirm = await _confirmBulkDelete(context, l10n);
                   if (confirm) notifier.bulkDelete();
                 },
               ),
@@ -388,10 +392,10 @@ class _DesktopTasksScreen extends ConsumerWidget {
                       ? EmptyState(
                           icon: LucideIcons.checkSquare,
                           title: state.filter.hasActiveFilters
-                              ? 'No results for these filters'
-                              : 'No tasks yet',
+                              ? l10n.tasksNoResultsFilters
+                              : l10n.emptyStateNoTasks,
                           actionLabel: state.filter.hasActiveFilters
-                              ? 'Clear filters' : 'Add Task',
+                              ? l10n.tasksClearFilters : l10n.btnAddTask,
                           onAction: state.filter.hasActiveFilters
                               ? () => notifier.setFilter(state.filter.cleared())
                               : () => context.push('/tasks/new'),
@@ -409,19 +413,19 @@ class _DesktopTasksScreen extends ConsumerWidget {
     );
   }
 
-  Future<bool> _confirmBulkDelete(BuildContext context) async {
+  Future<bool> _confirmBulkDelete(BuildContext context, AppLocalizations l10n) async {
     return await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Delete selected tasks?'),
-        content: const Text('This cannot be undone.'),
+        title: Text(l10n.confirmDeleteTasksTitle),
+        content: Text(l10n.confirmDeleteBody),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel')),
+            child: Text(l10n.btnCancel)),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
             style: FilledButton.styleFrom(backgroundColor: context.colors.danger),
-            child: const Text('Delete')),
+            child: Text(l10n.btnDelete)),
         ],
       ),
     ) ?? false;
@@ -437,6 +441,7 @@ class _BulkBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     return Container(
       height: 56,
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -465,7 +470,7 @@ class _BulkBar extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppRadius.control)),
             ),
-            child: const Text('Mark Complete'),
+            child: Text(l10n.btnMarkComplete),
           ),
           const SizedBox(width: 8),
           OutlinedButton(
@@ -476,7 +481,7 @@ class _BulkBar extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppRadius.control)),
             ),
-            child: const Text('Delete Selected'),
+            child: Text(l10n.btnDeleteSelected),
           ),
         ],
       ),
@@ -504,21 +509,21 @@ class _TaskTable extends StatelessWidget {
       ),
       child: Column(
         children: [
-          // Header
+          // Header — column labels kept as-is per prompt
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Row(
               children: [
                 const SizedBox(width: 36),
-                Expanded(flex: 5, child: Text('Task Name',
+                Expanded(flex: 5, child: Text(l10n.fieldTaskName,
                   style: AppText.caption.copyWith(color: c.textMuted))),
-                Expanded(flex: 2, child: Text('Assignee',
+                Expanded(flex: 2, child: Text(l10n.fieldAssignee,
                   style: AppText.caption.copyWith(color: c.textMuted))),
-                Expanded(flex: 2, child: Text('Due Date',
+                Expanded(flex: 2, child: Text(l10n.fieldDueDate,
                   style: AppText.caption.copyWith(color: c.textMuted))),
-                Expanded(flex: 1, child: Text('Priority',
+                Expanded(flex: 1, child: Text(l10n.fieldPriority,
                   style: AppText.caption.copyWith(color: c.textMuted))),
-                Expanded(flex: 2, child: Text('Status',
+                Expanded(flex: 2, child: Text(l10n.navTasks,
                   style: AppText.caption.copyWith(color: c.textMuted))),
               ],
             ),
@@ -554,6 +559,7 @@ class _TableRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     final isOverdue = task.isOverdue;
     final statusStr = isOverdue ? 'overdue' : task.status;
 
@@ -630,7 +636,8 @@ class _DesktopFilterDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
-    final displayValue = value == 'in_progress' ? 'In Progress'
+    final l10n = AppLocalizations.of(context);
+    final displayValue = value == 'in_progress' ? l10n.statusInProgress
         : value == 'due_date' ? 'Due date'
         : value[0].toUpperCase() + value.substring(1);
 
@@ -650,14 +657,14 @@ class _DesktopFilterDropdown extends StatelessWidget {
           hint: Text('$label: $displayValue',
             style: AppText.bodyMedium.copyWith(color: c.textPrimary)),
           items: options.map((o) {
-            final display = o == 'in_progress' ? 'In Progress'
+            final display = o == 'in_progress' ? l10n.statusInProgress
                 : o == 'due_date' ? 'Due date'
                 : o[0].toUpperCase() + o.substring(1);
             return DropdownMenuItem(value: o, child: Text(display));
           }).toList(),
           onChanged: (v) { if (v != null) onChanged(v); },
           selectedItemBuilder: (_) => options.map((o) {
-            final display = o == 'in_progress' ? 'In Progress'
+            final display = o == 'in_progress' ? l10n.statusInProgress
                 : o == 'due_date' ? 'Due date'
                 : o[0].toUpperCase() + o.substring(1);
             return Text('$label: $display',

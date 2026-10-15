@@ -10,6 +10,7 @@ import '../../../core/widgets/chips.dart';
 import '../../../core/widgets/avatar.dart';
 import '../../../core/widgets/app_card.dart';
 import '../../../core/widgets/empty_state.dart';
+import '../../../core/l10n/app_localizations.dart';
 import '../data/task_repository.dart';
 import '../models/task_model.dart';
 import '../providers/task_providers.dart';
@@ -20,6 +21,7 @@ class TaskDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final taskAsync = ref.watch(taskDetailProvider(taskId));
 
     return taskAsync.when(
@@ -32,7 +34,7 @@ class TaskDetailScreen extends ConsumerWidget {
           return Scaffold(
             body: EmptyState(
               icon: LucideIcons.alertCircle,
-              title: 'Task not found'));
+              title: l10n.emptyStateTaskNotFound));
         }
         return _TaskDetailContent(task: task);
       },
@@ -80,6 +82,7 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
   Widget build(BuildContext context) {
     final task = widget.task;
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     final doneCount = task.subtasks.where((s) => s.isDone).length;
     final totalCount = task.subtasks.length;
     final isOverdue = task.isOverdue;
@@ -110,7 +113,7 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
                     ),
                     Expanded(
                       child: Center(
-                        child: Text('Task details',
+                        child: Text(l10n.tasksDetailTitle,
                           style: AppText.cardTitle.copyWith(color: c.textPrimary))),
                     ),
                     Icon(LucideIcons.moreHorizontal, color: c.textMuted),
@@ -158,12 +161,12 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Description',
+                      Text(l10n.tasksDescriptionLabel,
                         style: AppText.cardTitle.copyWith(color: c.textPrimary)),
                       const SizedBox(height: 8),
                       Text(
                         task.description.isEmpty
-                            ? 'No description.'
+                            ? l10n.tasksNoDescription
                             : task.description,
                         style: AppText.body.copyWith(
                           color: task.description.isEmpty
@@ -185,12 +188,14 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
                       Row(
                         children: [
                           Text(
-                            'Subtasks${totalCount > 0 ? ' $doneCount/$totalCount' : ''}',
+                            totalCount > 0
+                                ? l10n.tasksSubtasksLabel(doneCount, totalCount)
+                                : l10n.tasksSubtasksTitle,
                             style: AppText.cardTitle.copyWith(color: c.textPrimary)),
                           const Spacer(),
                           TextButton(
-                            onPressed: () => _showAddSubtask(context),
-                            child: Text('Add',
+                            onPressed: () => _showAddSubtask(context, l10n),
+                            child: Text(l10n.btnAdd,
                               style: AppText.bodyMedium.copyWith(color: c.primary)),
                           ),
                         ],
@@ -254,7 +259,7 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Assignee & Label',
+                      Text(l10n.tasksAssigneeLabel,
                         style: AppText.cardTitle.copyWith(color: c.textPrimary)),
                       const SizedBox(height: 12),
                       Row(
@@ -268,12 +273,12 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
                             ),
                             const SizedBox(width: 10),
                             Expanded(
-                              child: Text(task.assigneeName ?? 'Unassigned',
+                              child: Text(task.assigneeName ?? l10n.tasksUnassigned,
                                 style: AppText.bodyMedium.copyWith(
                                   color: c.textPrimary))),
                           ] else
                             Expanded(
-                              child: Text('Unassigned',
+                              child: Text(l10n.tasksUnassigned,
                                 style: AppText.body.copyWith(color: c.textMuted))),
                           if (task.labelId != null && task.labelName != null)
                             LabelChip(
@@ -297,7 +302,7 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Comments',
+                      Text(l10n.tasksComments,
                         style: AppText.cardTitle.copyWith(color: c.textPrimary)),
                       const SizedBox(height: 12),
                       ...task.comments.map((comment) => Padding(
@@ -327,7 +332,7 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
                               child: TextField(
                                 controller: _commentCtrl,
                                 decoration: InputDecoration(
-                                  hintText: 'Write a comment...',
+                                  hintText: l10n.fieldWriteComment,
                                   hintStyle: AppText.body.copyWith(color: c.textMuted),
                                   border: InputBorder.none,
                                   filled: false,
@@ -355,21 +360,21 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
     );
   }
 
-  void _showAddSubtask(BuildContext context) {
+  void _showAddSubtask(BuildContext context, AppLocalizations l10n) {
     final ctrl = TextEditingController();
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Add subtask'),
+        title: Text(l10n.tasksAddSubtask),
         content: TextField(
           controller: ctrl,
-          decoration: const InputDecoration(hintText: 'Subtask title'),
+          decoration: InputDecoration(hintText: l10n.fieldSubtaskHint),
           autofocus: true,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel')),
+            child: Text(l10n.btnCancel)),
           FilledButton(
             onPressed: () async {
               if (ctrl.text.trim().isNotEmpty) {
@@ -379,7 +384,7 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
               }
               if (context.mounted) Navigator.pop(context);
             },
-            child: const Text('Add')),
+            child: Text(l10n.btnAdd)),
         ],
       ),
     );

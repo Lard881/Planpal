@@ -11,6 +11,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/layout/breakpoints.dart';
 import '../../../core/widgets/chips.dart';
 import '../../../core/widgets/avatar.dart';
+import '../../../core/l10n/app_localizations.dart';
 import '../../workspaces/providers/workspace_providers.dart';
 import '../../workspaces/presentation/workspace_switcher.dart';
 import '../../notifications/providers/notifications_providers.dart';
@@ -31,11 +32,11 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
-String _greeting() {
+String _greeting(AppLocalizations l10n) {
   final h = DateTime.now().hour;
-  if (h < 12) return 'Good morning';
-  if (h < 17) return 'Good afternoon';
-  return 'Good evening';
+  if (h < 12) return l10n.goodMorning;
+  if (h < 17) return l10n.goodAfternoon;
+  return l10n.goodEvening;
 }
 
 // ── DESKTOP ───────────────────────────────────────────────────────────────────
@@ -45,6 +46,7 @@ class _DesktopHome extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     final wsId = ref.watch(currentWorkspaceIdProvider) ?? '';
     final user = Supabase.instance.client.auth.currentUser;
     final firstName = (user?.userMetadata?['full_name'] as String? ?? 'there')
@@ -64,10 +66,10 @@ class _DesktopHome extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Greeting
-                    Text('${_greeting()}, $firstName',
+                    Text('${_greeting(l10n)}, $firstName',
                       style: AppText.pageTitle.copyWith(color: c.textPrimary)),
                     const SizedBox(height: 4),
-                    Text("Let's make today productive.",
+                    Text(l10n.letsGetStarted,
                       style: AppText.body.copyWith(color: c.textMuted)),
                     const SizedBox(height: 24),
                     // Tasks today
@@ -110,6 +112,7 @@ class _MobileHome extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     final wsId = ref.watch(currentWorkspaceIdProvider) ?? '';
     final workspace = ref.watch(currentWorkspaceProvider);
     final unread = ref.watch(unreadCountProvider);
@@ -203,11 +206,11 @@ class _MobileHome extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('${_greeting()}, $firstName',
+                      Text('${_greeting(l10n)}, $firstName',
                         style: AppText.pageTitleMobile.copyWith(
                             color: c.textPrimary)),
                       const SizedBox(height: 4),
-                      Text("Let's make today productive.",
+                      Text(l10n.letsGetStarted,
                         style: AppText.body.copyWith(color: c.textMuted)),
                     ],
                   ),
@@ -253,6 +256,7 @@ class _TasksTodaySection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     final state = ref.watch(taskListProvider(workspaceId));
 
     // Filter to today's tasks
@@ -266,12 +270,12 @@ class _TasksTodaySection extends ConsumerWidget {
       children: [
         Row(
           children: [
-            Text('Your Tasks Today',
+            Text(l10n.homeYourTasksToday,
               style: AppText.sectionTitle.copyWith(color: c.textPrimary)),
             const Spacer(),
             TextButton(
               onPressed: () => context.go('/tasks'),
-              child: Text(isDesktop ? 'View All Tasks' : 'View All',
+              child: Text(isDesktop ? l10n.btnViewAllTasks : l10n.btnViewAll,
                 style: AppText.bodyMedium.copyWith(color: c.primary)),
             ),
           ],
@@ -288,7 +292,7 @@ class _TasksTodaySection extends ConsumerWidget {
               border: Border.all(color: c.border),
             ),
             child: Center(
-              child: Text('Nothing due today.',
+              child: Text(l10n.emptyStateNoTasksToday,
                 style: AppText.body.copyWith(color: c.textMuted))),
           )
         else
@@ -316,6 +320,7 @@ class _TaskTodayCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     final timeStr = task.dueAt != null ? _formatTime(task.dueAt!) : '';
 
     return GestureDetector(
@@ -365,7 +370,7 @@ class _TaskTodayCard extends StatelessWidget {
                   color: c.primarySoft,
                   borderRadius: BorderRadius.circular(AppRadius.control),
                 ),
-                child: Text('Details',
+                child: Text(l10n.btnDetails,
                   style: AppText.caption.copyWith(color: c.primary)),
               ),
             ],
@@ -391,19 +396,20 @@ class _QuickActions extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     final perms = ref.watch(currentRolePermissionsProvider);
 
     final actions = [
-      _Action('New Task', isDesktop ? 'New Task' : 'New Task',
+      _Action('New Task', l10n.tasksNewTitle,
           LucideIcons.plus, c.primarySoft, c.primary,
           () => context.push('/tasks/new')),
-      _Action('Calendar', 'Calendar',
+      _Action('Calendar', l10n.navCalendar,
           LucideIcons.calendar, c.violetSoft, c.violet,
           () => context.go('/calendar')),
-      _Action('Analytics', isDesktop ? 'Analytics' : 'Stats',
+      _Action('Analytics', isDesktop ? l10n.navAnalytics : l10n.homeStats,
           LucideIcons.barChart2, c.skySoft, c.sky,
           () => context.go('/analytics')),
-      _Action('Documents', isDesktop ? 'Documents' : 'Docs',
+      _Action('Documents', isDesktop ? l10n.navDocuments : l10n.homeDocs,
           LucideIcons.fileText, c.successSoft, c.success,
           () => context.go('/documents')),
     ];
@@ -417,7 +423,7 @@ class _QuickActions extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (isDesktop)
-          Text('Quick Actions',
+          Text(l10n.homeQuickActions,
             style: AppText.sectionTitle.copyWith(color: c.textPrimary)),
         if (isDesktop) const SizedBox(height: 12),
         Row(
@@ -479,6 +485,7 @@ class _OverviewCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     final state = ref.watch(homeProvider);
     final isDesktop = context.isDesktopLayout;
 
@@ -494,7 +501,7 @@ class _OverviewCard extends ConsumerWidget {
         children: [
           Row(
             children: [
-              Text('Overview',
+              Text(l10n.homeOverview,
                 style: AppText.sectionTitle.copyWith(color: c.textPrimary)),
               const Spacer(),
               Container(
@@ -510,9 +517,9 @@ class _OverviewCard extends ConsumerWidget {
                     icon: Icon(LucideIcons.chevronDown,
                       size: 12, color: c.textMuted),
                     style: AppText.caption.copyWith(color: c.textPrimary),
-                    items: const [
-                      DropdownMenuItem(value: '7d', child: Text('7 days')),
-                      DropdownMenuItem(value: '30d', child: Text('30 days')),
+                    items: [
+                      DropdownMenuItem(value: '7d', child: Text(l10n.homeSevenDays)),
+                      DropdownMenuItem(value: '30d', child: Text(l10n.homeThirtyDays)),
                     ],
                     onChanged: (v) {
                       if (v != null) {
@@ -532,21 +539,21 @@ class _OverviewCard extends ConsumerWidget {
           else ...[
             // Stat tiles — 4 across desktop, 2x2 mobile
             isDesktop
-                ? Row(children: _statTiles(state.overview!, c, isDesktop)
+                ? Row(children: _statTiles(state.overview!, c, l10n, isDesktop)
                     .map((t) => Expanded(child: Padding(
                         padding: const EdgeInsets.only(right: 8), child: t)))
                     .toList())
                 : Column(children: [
                     Row(children: [
-                      Expanded(child: _statTiles(state.overview!, c, isDesktop)[0]),
+                      Expanded(child: _statTiles(state.overview!, c, l10n, isDesktop)[0]),
                       const SizedBox(width: 8),
-                      Expanded(child: _statTiles(state.overview!, c, isDesktop)[1]),
+                      Expanded(child: _statTiles(state.overview!, c, l10n, isDesktop)[1]),
                     ]),
                     const SizedBox(height: 8),
                     Row(children: [
-                      Expanded(child: _statTiles(state.overview!, c, isDesktop)[2]),
+                      Expanded(child: _statTiles(state.overview!, c, l10n, isDesktop)[2]),
                       const SizedBox(width: 8),
-                      Expanded(child: _statTiles(state.overview!, c, isDesktop)[3]),
+                      Expanded(child: _statTiles(state.overview!, c, l10n, isDesktop)[3]),
                     ]),
                   ]),
             const SizedBox(height: 20),
@@ -558,13 +565,13 @@ class _OverviewCard extends ConsumerWidget {
     );
   }
 
-  List<Widget> _statTiles(HomeOverview ov, PlanPalColors c, bool isDesktop) => [
+  List<Widget> _statTiles(HomeOverview ov, PlanPalColors c, AppLocalizations l10n, bool isDesktop) => [
     _StatTile('${ov.completed}',
-      isDesktop ? 'Tasks Completed' : 'Completed', c),
-    _StatTile('${ov.inProgress}', 'In Progress', c),
-    _StatTile('${ov.overdue}', 'Overdue', c),
+      isDesktop ? l10n.homeTasksCompleted : l10n.homeCompleted, c),
+    _StatTile('${ov.inProgress}', l10n.homeInProgress, c),
+    _StatTile('${ov.overdue}', l10n.homeOverdue, c),
     _StatTile('${ov.productivityPercent.toStringAsFixed(0)}%',
-      'Productivity', c),
+      l10n.homeProductivity, c),
   ];
 }
 
@@ -605,10 +612,11 @@ class _OverviewChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     if (series.isEmpty) {
       return SizedBox(
         height: 120,
-        child: Center(child: Text('No data yet.',
+        child: Center(child: Text(l10n.emptyStateNoAnalytics,
           style: AppText.body.copyWith(color: c.textMuted))),
       );
     }
@@ -781,6 +789,7 @@ class _UpcomingCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     final calState = ref.watch(calendarProvider);
     final upcoming = calState.events
         .where((e) => e.startsAt.isAfter(DateTime.now()))
@@ -797,11 +806,11 @@ class _UpcomingCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Upcoming',
+          Text(l10n.homeUpcoming,
             style: AppText.sectionTitle.copyWith(color: c.textPrimary)),
           const SizedBox(height: 12),
           if (upcoming.isEmpty)
-            Text('Nothing coming up.',
+            Text(l10n.emptyStateNothingUpcoming,
               style: AppText.body.copyWith(color: c.textMuted))
           else
             ...upcoming.map((e) => Padding(

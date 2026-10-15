@@ -781,6 +781,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get tasksSubtasksTitle => 'Subtasks';
+
+  @override
   String get tasksDetailTitle => 'Task details';
 
   @override

@@ -9,6 +9,7 @@ import '../../../core/theme/app_text.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/layout/breakpoints.dart';
 import '../../../core/widgets/empty_state.dart';
+import '../../../core/l10n/app_localizations.dart';
 import '../models/analytics_models.dart';
 import '../providers/analytics_providers.dart';
 import '../../../core/network/api_client.dart';
@@ -20,6 +21,7 @@ class AnalyticsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDesktop = context.isDesktopLayout;
+    final l10n = AppLocalizations.of(context);
     final state = ref.watch(analyticsProvider);
     final c = context.colors;
 
@@ -33,7 +35,7 @@ class AnalyticsScreen extends ConsumerWidget {
             // Header
             Row(
               children: [
-                Text('Analytics',
+                Text(l10n.analyticsTitle,
                   style: (isDesktop ? AppText.pageTitle : AppText.pageTitleMobile)
                       .copyWith(color: c.textPrimary)),
                 const Spacer(),
@@ -56,11 +58,11 @@ class AnalyticsScreen extends ConsumerWidget {
             else if (state.error != null)
               Expanded(child: ErrorState(message: state.error!))
             else if (state.data == null)
-              const Expanded(
+              Expanded(
                 child: EmptyState(
                   icon: LucideIcons.barChart2,
-                  title: 'No analytics yet',
-                  subtitle: 'Complete some tasks to see your statistics.'))
+                  title: l10n.emptyStateNoAnalytics,
+                  subtitle: l10n.emptyStateNoAnalyticsDesc))
             else
               Expanded(
                 child: SingleChildScrollView(
@@ -85,7 +87,12 @@ class _RangeDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
-    final labels = {'7d': 'Last 7 days', '30d': 'Last 30 days', '90d': 'Last 90 days'};
+    final l10n = AppLocalizations.of(context);
+    final labels = {
+      '7d': l10n.analyticsLastSevenDays,
+      '30d': l10n.analyticsLastThirtyDays,
+      '90d': l10n.analyticsLastNinetyDays,
+    };
     return Container(
       height: 40,
       padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -115,6 +122,7 @@ class _ExportButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     final state = ref.watch(analyticsProvider);
     final wsId = ref.watch(currentWorkspaceIdProvider) ?? '';
     return SizedBox(
@@ -137,7 +145,7 @@ class _ExportButton extends ConsumerWidget {
           }
         },
         icon: Icon(LucideIcons.download, size: 16, color: c.textPrimary),
-        label: Text('Export CSV',
+        label: Text(l10n.analyticsExportCSV,
           style: AppText.bodyMedium.copyWith(color: c.textPrimary)),
         style: OutlinedButton.styleFrom(
           side: BorderSide(color: c.border),
@@ -157,6 +165,7 @@ class _AnalyticsBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
 
     // Stat cards
     final statCards = [
@@ -164,7 +173,7 @@ class _AnalyticsBody extends StatelessWidget {
         icon: LucideIcons.checkCircle,
         iconBg: c.successSoft, iconFg: c.success,
         value: '${data.summary.tasksCompleted}',
-        label: isDesktop ? 'Tasks Completed' : 'Completed',
+        label: isDesktop ? l10n.analyticsTasksCompleted : l10n.homeCompleted,
         subLine: data.summary.changeVsPrevious != null
             ? _changeLabel(data.summary.changeVsPrevious!, c) : null,
       ),
@@ -172,19 +181,19 @@ class _AnalyticsBody extends StatelessWidget {
         icon: LucideIcons.timer,
         iconBg: c.primarySoft, iconFg: c.primary,
         value: '${data.summary.avgCompletionDays.toStringAsFixed(1)} days',
-        label: isDesktop ? 'Avg. Completion Time' : 'Avg. Time',
+        label: l10n.analyticsAvgTime,
       ),
       _StatCard(
         icon: LucideIcons.zap,
         iconBg: c.violetSoft, iconFg: c.violet,
         value: '${data.summary.onTimeRate.toStringAsFixed(0)}%',
-        label: isDesktop ? 'Team Velocity' : 'Velocity',
+        label: l10n.analyticsVelocity,
       ),
       _StatCard(
         icon: LucideIcons.flame,
         iconBg: c.warningSoft, iconFg: c.warningText,
         value: '${data.summary.streak} days',
-        label: isDesktop ? 'Productive Streak' : 'Streak',
+        label: l10n.analyticsStreak,
       ),
     ];
 
@@ -307,6 +316,7 @@ class _WeeklyChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     final isDesktop = context.isDesktopLayout;
 
     // Ensure all 7 days present
@@ -330,7 +340,7 @@ class _WeeklyChart extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Weekly Task Output',
+          Text(l10n.analyticsWeeklyOutput,
             style: AppText.sectionTitle.copyWith(color: c.textPrimary)),
           const SizedBox(height: 20),
           SizedBox(
@@ -402,6 +412,7 @@ class _CategoryDonut extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
 
     // Top 3 + Other
     final sorted = [...categories]
@@ -409,8 +420,9 @@ class _CategoryDonut extends StatelessWidget {
     final top3 = sorted.take(3).toList();
     final otherTotal = sorted.skip(3).fold(0, (s, e) => s + e.total);
     if (otherTotal > 0) {
+      final l10n = AppLocalizations.of(context);
       top3.add(CategoryData(
-          label: 'Other', color: '#6B7185', total: otherTotal));
+          label: l10n.all, color: '#6B7185', total: otherTotal));
     }
     final total = top3.fold(0, (s, e) => s + e.total);
 
@@ -424,11 +436,11 @@ class _CategoryDonut extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Category Mix',
+          Text(l10n.analyticsCategoryMix,
             style: AppText.sectionTitle.copyWith(color: c.textPrimary)),
           const SizedBox(height: 20),
           if (top3.isEmpty)
-            Center(child: Text('No data',
+            Center(child: Text(l10n.emptyStateNoAnalytics,
               style: AppText.body.copyWith(color: c.textMuted)))
           else ...[
             // Donut chart
@@ -466,7 +478,7 @@ class _CategoryDonut extends StatelessWidget {
                       Text('$total',
                         style: AppText.statNumber.copyWith(
                           color: c.textPrimary)),
-                      Text('tasks',
+                      Text(l10n.navTasks.toLowerCase(),
                         style: AppText.caption.copyWith(color: c.textMuted)),
                     ],
                   ),

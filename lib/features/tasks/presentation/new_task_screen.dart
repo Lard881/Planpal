@@ -9,6 +9,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/layout/breakpoints.dart';
 import '../../../core/widgets/planpal_button.dart';
 import '../../../core/widgets/planpal_text_field.dart';
+import '../../../core/l10n/app_localizations.dart';
 import '../../workspaces/providers/workspace_providers.dart';
 import '../data/task_repository.dart';
 import '../providers/task_providers.dart';
@@ -41,8 +42,9 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
   }
 
   Future<void> _submit() async {
+    final l10n = AppLocalizations.of(context);
     if (_titleCtrl.text.trim().isEmpty) {
-      setState(() => _titleError = 'Task name is required.');
+      setState(() => _titleError = l10n.validationTaskNameRequired);
       return;
     }
     setState(() { _loading = true; _titleError = null; });
@@ -77,6 +79,7 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     final isDesktop = context.isDesktopLayout;
 
     if (isDesktop) {
@@ -97,7 +100,7 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
                   padding: const EdgeInsets.fromLTRB(24, 20, 16, 0),
                   child: Row(
                     children: [
-                      Text('New Task',
+                      Text(l10n.tasksNewTitle,
                         style: AppText.cardTitle.copyWith(color: c.textPrimary)),
                       const Spacer(),
                       IconButton(
@@ -110,12 +113,12 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
                 const Divider(),
                 Expanded(child: SingleChildScrollView(
                   padding: const EdgeInsets.all(24),
-                  child: _buildForm(c),
+                  child: _buildForm(c, l10n),
                 )),
                 Padding(
                   padding: const EdgeInsets.all(24),
                   child: PlanPalButton(
-                    label: 'Create Task',
+                    label: l10n.btnCreateTask,
                     onPressed: _submit,
                     loading: _loading,
                     width: double.infinity,
@@ -152,7 +155,7 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
                     ),
                   ),
                   Expanded(
-                    child: Center(child: Text('New Task',
+                    child: Center(child: Text(l10n.tasksNewTitle,
                       style: AppText.cardTitle.copyWith(color: c.textPrimary))),
                   ),
                   const SizedBox(width: 36),
@@ -162,13 +165,13 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(16),
-                child: _buildForm(c),
+                child: _buildForm(c, l10n),
               ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
               child: PlanPalButton(
-                label: 'Create Task',
+                label: l10n.btnCreateTask,
                 onPressed: _submit,
                 loading: _loading,
                 width: double.infinity,
@@ -180,13 +183,13 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
     );
   }
 
-  Widget _buildForm(PlanPalColors c) {
+  Widget _buildForm(PlanPalColors c, AppLocalizations l10n) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         PlanPalTextField(
-          label: 'Task Name',
-          hint: 'Plan team offsite',
+          label: l10n.fieldTaskName,
+          hint: l10n.fieldTaskNameHint,
           controller: _titleCtrl,
           errorText: _titleError,
           textInputAction: TextInputAction.next,
@@ -194,8 +197,8 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
         ),
         const SizedBox(height: 16),
         PlanPalTextField(
-          label: 'Description',
-          hint: 'Venue, date, agenda...',
+          label: l10n.fieldDescription,
+          hint: l10n.fieldDescriptionHint,
           controller: _descCtrl,
           maxLines: 3,
           textInputAction: TextInputAction.newline,
@@ -208,7 +211,7 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Due Date',
+                  Text(l10n.fieldDueDate,
                     style: AppText.label.copyWith(color: c.textPrimary)),
                   const SizedBox(height: 6),
                   GestureDetector(
@@ -248,7 +251,7 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Time',
+                  Text(l10n.fieldTime,
                     style: AppText.label.copyWith(color: c.textPrimary)),
                   const SizedBox(height: 6),
                   GestureDetector(
@@ -285,7 +288,7 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
         ),
         const SizedBox(height: 16),
         // Priority segmented control
-        Text('Priority', style: AppText.label.copyWith(color: c.textPrimary)),
+        Text(l10n.fieldPriority, style: AppText.label.copyWith(color: c.textPrimary)),
         const SizedBox(height: 6),
         _PrioritySegmented(
           value: _priority,
@@ -293,7 +296,7 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
         ),
         const SizedBox(height: 16),
         // Assignee
-        Text('Assignee', style: AppText.label.copyWith(color: c.textPrimary)),
+        Text(l10n.fieldAssignee, style: AppText.label.copyWith(color: c.textPrimary)),
         const SizedBox(height: 6),
         Container(
           height: 44,
@@ -304,13 +307,13 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
           ),
           child: Align(
             alignment: Alignment.centerLeft,
-            child: Text('Assignee (optional)',
+            child: Text(l10n.fieldAssigneeOptional,
               style: AppText.body.copyWith(color: c.textMuted)),
           ),
         ),
         const SizedBox(height: 16),
         // Label
-        Text('Label', style: AppText.label.copyWith(color: c.textPrimary)),
+        Text(l10n.fieldLabel, style: AppText.label.copyWith(color: c.textPrimary)),
         const SizedBox(height: 6),
         _LabelPicker(
           workspaceId: ref.watch(currentWorkspaceIdProvider) ?? '',
@@ -335,7 +338,7 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
         )),
         // Add subtask dashed button
         GestureDetector(
-          onTap: () => _showAddSubtaskDialog(),
+          onTap: () => _showAddSubtaskDialog(l10n),
           child: Container(
             height: 44,
             decoration: BoxDecoration(
@@ -347,7 +350,7 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
               children: [
                 Icon(LucideIcons.plus, size: 16, color: c.textMuted),
                 const SizedBox(width: 8),
-                Text('Add Subtask',
+                Text(l10n.tasksAddSubtask,
                   style: AppText.bodyMedium.copyWith(color: c.textMuted)),
               ],
             ),
@@ -357,21 +360,21 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
     );
   }
 
-  void _showAddSubtaskDialog() {
+  void _showAddSubtaskDialog(AppLocalizations l10n) {
     _subtaskCtrl.clear();
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Add subtask'),
+        title: Text(l10n.tasksAddSubtask),
         content: TextField(
           controller: _subtaskCtrl,
-          decoration: const InputDecoration(hintText: 'Subtask title'),
+          decoration: InputDecoration(hintText: l10n.fieldSubtaskHint),
           autofocus: true,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel')),
+            child: Text(l10n.btnCancel)),
           FilledButton(
             onPressed: () {
               if (_subtaskCtrl.text.trim().isNotEmpty) {
@@ -379,7 +382,7 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
               }
               Navigator.pop(context);
             },
-            child: const Text('Add')),
+            child: Text(l10n.btnAdd)),
         ],
       ),
     );
@@ -397,8 +400,9 @@ class _PrioritySegmented extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     const options = ['high', 'medium', 'low'];
-    const labels = ['High', 'Medium', 'Low'];
+    final labels = [l10n.priorityHigh, l10n.priorityMedium, l10n.priorityLow];
 
     return Container(
       height: 44,
@@ -448,6 +452,7 @@ class _LabelPicker extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     final labelsAsync = ref.watch(labelsProvider(workspaceId));
 
     return labelsAsync.when(
@@ -470,7 +475,7 @@ class _LabelPicker extends ConsumerWidget {
               borderRadius: BorderRadius.circular(AppRadius.control)),
             child: Align(
               alignment: Alignment.centerLeft,
-              child: Text('No labels yet',
+              child: Text(l10n.fieldLabelOptional,
                 style: AppText.body.copyWith(color: c.textMuted))));
         }
 
@@ -483,7 +488,7 @@ class _LabelPicker extends ConsumerWidget {
           child: DropdownButtonHideUnderline(
             child: DropdownButton<String?>(
               value: selectedId,
-              hint: Text('Label (optional)',
+              hint: Text(l10n.fieldLabelOptional,
                 style: AppText.body.copyWith(color: c.textMuted)),
               icon: Icon(Icons.arrow_drop_down, color: c.textMuted),
               isExpanded: true,

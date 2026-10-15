@@ -250,6 +250,8 @@
   "tasksAddSubtaskHint": "+ Añadir subtarea...",
   "tasksSubtasksLabel": "Subtareas {done}/{total}",
   "@tasksSubtasksLabel": { "placeholders": { "done": { "type": "int" }, "total": { "type": "int" } } },
+  "tasksSubtasksTitle": "Subtareas",
+  "@tasksSubtasksTitle": {},
   "tasksDetailTitle": "Detalles de la tarea",
   "tasksNewTitle": "Nueva tarea",
   "tasksDescriptionLabel": "Descripción",

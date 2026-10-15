@@ -11,6 +11,7 @@ import '../../../core/widgets/chips.dart';
 import '../../../core/widgets/avatar.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../../../core/widgets/planpal_button.dart';
+import '../../../core/l10n/app_localizations.dart';
 import '../../workspaces/providers/workspace_providers.dart';
 import '../../workspaces/data/workspace_repository.dart';
 import '../../workspaces/models/workspace_model.dart';
@@ -30,6 +31,7 @@ class _TeamScreenState extends ConsumerState<TeamScreen> {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     final isDesktop = context.isDesktopLayout;
     final wsId = widget.workspaceId ?? ref.watch(currentWorkspaceIdProvider) ?? '';
     final workspace = ref.watch(currentWorkspaceProvider);
@@ -39,10 +41,10 @@ class _TeamScreenState extends ConsumerState<TeamScreen> {
     if (workspace?.isPersonal == true) {
       return Scaffold(
         backgroundColor: c.background,
-        body: const EmptyState(
+        body: EmptyState(
           icon: LucideIcons.users,
-          title: 'Team is for team workspaces',
-          subtitle: 'Create or join a team workspace to see members.',
+          title: l10n.emptyStateTeamOnly,
+          subtitle: l10n.emptyStateTeamOnlyDesc,
         ),
       );
     }
@@ -53,6 +55,14 @@ class _TeamScreenState extends ConsumerState<TeamScreen> {
       return list;
     })(wsId));
 
+    // Role label map
+    final roleLabels = <String, String>{
+      'all': l10n.all,
+      'admin': l10n.roleAdmin,
+      'member': l10n.roleMember,
+      'guest': l10n.roleGuest,
+    };
+
     return Scaffold(
       backgroundColor: c.background,
       body: Padding(
@@ -62,13 +72,13 @@ class _TeamScreenState extends ConsumerState<TeamScreen> {
           children: [
             Row(
               children: [
-                Text('Team Directory',
+                Text(l10n.teamDirectoryTitle,
                   style: (isDesktop ? AppText.pageTitle : AppText.pageTitleMobile)
                       .copyWith(color: c.textPrimary)),
                 const Spacer(),
                 if (perms.isAdmin)
                   PlanPalButton(
-                    label: 'Invite with code',
+                    label: l10n.btnInviteWithCode,
                     toolbar: true,
                     icon: LucideIcons.key,
                     onPressed: () =>
@@ -83,7 +93,7 @@ class _TeamScreenState extends ConsumerState<TeamScreen> {
               child: Row(
                 children: ['all', 'admin', 'member', 'guest'].map((f) {
                   final selected = _filter == f;
-                  final label = f[0].toUpperCase() + f.substring(1);
+                  final label = roleLabels[f] ?? f;
                   return Padding(
                     padding: const EdgeInsets.only(right: 8),
                     child: GestureDetector(
@@ -115,9 +125,9 @@ class _TeamScreenState extends ConsumerState<TeamScreen> {
                       : members.where((m) => m.role == _filter).toList();
 
                   if (filtered.isEmpty) {
-                    return const EmptyState(
+                    return EmptyState(
                       icon: LucideIcons.users,
-                      title: 'No members found');
+                      title: l10n.emptyStateNoMembers);
                   }
 
                   return isDesktop
@@ -140,6 +150,7 @@ class _DesktopGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 4, crossAxisSpacing: 16,
@@ -181,7 +192,7 @@ class _DesktopGrid extends StatelessWidget {
               const SizedBox(height: 6),
               RoleBadge(role: m.role),
               const SizedBox(height: 4),
-              Text('Offline',
+              Text(l10n.teamPresenceOffline,
                 style: AppText.caption.copyWith(color: c.presenceOffline)),
             ],
           ),
@@ -198,6 +209,7 @@ class _MobileList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     return ListView.separated(
       itemCount: members.length,
       separatorBuilder: (_, __) => const SizedBox(height: 8),
@@ -229,7 +241,7 @@ class _MobileList extends StatelessWidget {
                       style: AppText.bodyStrong.copyWith(color: c.textPrimary),
                       maxLines: 1, overflow: TextOverflow.ellipsis,
                     ),
-                    Text('Offline',
+                    Text(l10n.teamPresenceOffline,
                       style: AppText.caption.copyWith(color: c.presenceOffline)),
                   ],
                 ),

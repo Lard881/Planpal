@@ -761,6 +761,9 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String get tasksSubtasksTitle => '하위 작업';
+
+  @override
   String get tasksDetailTitle => '작업 세부 정보';
 
   @override
