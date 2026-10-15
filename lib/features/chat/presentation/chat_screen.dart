@@ -174,6 +174,7 @@ class _DesktopChat extends ConsumerWidget {
   }
 
   void _showNewChannel(BuildContext context, WidgetRef ref, String wsId) {
+    final l10n = AppLocalizations.of(context);
     final ctrl = TextEditingController();
     showDialog(
       context: context,
@@ -517,6 +518,7 @@ class _MobileChatList extends ConsumerWidget {
 
   void _showNewChannelMobile(
       BuildContext context, WidgetRef ref, String wsId) {
+    final l10n = AppLocalizations.of(context);
     final ctrl = TextEditingController();
     showModalBottomSheet(
       context: context,
@@ -589,7 +591,7 @@ class _MobileChatList extends ConsumerWidget {
                     color: c.textPrimary)),
               ),
             ),
-            // Search
+            // Search bar — functional TextField
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -604,8 +606,18 @@ class _MobileChatList extends ConsumerWidget {
                       const SizedBox(width: 12),
                       Icon(LucideIcons.search, size: 16, color: c.textMuted),
                       const SizedBox(width: 8),
-                      Text(l10n.searchChats,
-                        style: AppText.body.copyWith(color: c.textMuted)),
+                      Expanded(
+                        child: TextField(
+                          decoration: InputDecoration(
+                            hintText: l10n.searchChats,
+                            hintStyle: AppText.body.copyWith(color: c.textMuted),
+                            border: InputBorder.none,
+                            filled: false,
+                            contentPadding: EdgeInsets.zero,
+                          ),
+                          onChanged: (_) {}, // search filtering is Part B
+                        ),
+                      ),
                     ],
                   ),
                 ),

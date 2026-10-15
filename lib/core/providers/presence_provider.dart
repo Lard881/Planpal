@@ -24,9 +24,9 @@ class PresenceNotifier extends StateNotifier<Map<String, PresenceStatus>> {
         opts: const RealtimeChannelConfig(self: true));
 
     _channel!
-        .onPresenceSync((payload) => _updateState())
-        .onPresenceJoin((payload) => _updateState())
-        .onPresenceLeave((payload) => _updateState())
+        .onPresenceSync((_) => _updateState())
+        .onPresenceJoin((_) => _updateState())
+        .onPresenceLeave((_) => _updateState())
         .subscribe((status, [_]) async {
       if (status == RealtimeSubscribeStatus.subscribed) {
         await _channel!.track({'user_id': userId, 'online_at': DateTime.now().millisecondsSinceEpoch});
