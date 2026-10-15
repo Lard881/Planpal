@@ -769,6 +769,7 @@ class _WorkspaceSectionState extends ConsumerState<_WorkspaceSection> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(err.message)));
     } else if (mounted) {
+      final l10n = AppLocalizations.of(context);
       ref.invalidate(workspacesProvider);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.workspaceSettings)));

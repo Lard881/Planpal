@@ -12,6 +12,7 @@ import '../../../core/widgets/avatar.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../../../core/widgets/planpal_button.dart';
 import '../../../core/l10n/app_localizations.dart';
+import '../../../core/providers/presence_provider.dart';
 import '../../workspaces/providers/workspace_providers.dart';
 import '../../workspaces/data/workspace_repository.dart';
 import '../../workspaces/models/workspace_model.dart';
@@ -131,8 +132,8 @@ class _TeamScreenState extends ConsumerState<TeamScreen> {
                   }
 
                   return isDesktop
-                      ? _DesktopGrid(members: filtered)
-                      : _MobileList(members: filtered);
+                      ? _DesktopGrid(members: filtered, wsId: wsId)
+                      : _MobileList(members: filtered, wsId: wsId);
                 },
               ),
             ),
@@ -143,14 +144,17 @@ class _TeamScreenState extends ConsumerState<TeamScreen> {
   }
 }
 
-class _DesktopGrid extends StatelessWidget {
+class _DesktopGrid extends ConsumerWidget {
   final List<MemberModel> members;
-  const _DesktopGrid({required this.members});
+  final String wsId;
+  const _DesktopGrid({required this.members, required this.wsId});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
     final l10n = AppLocalizations.of(context);
+    final presenceMap = ref.watch(presenceProvider(wsId));
+
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 4, crossAxisSpacing: 16,
@@ -159,6 +163,12 @@ class _DesktopGrid extends StatelessWidget {
       itemCount: members.length,
       itemBuilder: (_, i) {
         final m = members[i];
+        final presence = presenceMap[m.userId] ?? PresenceStatus.offline;
+        final presenceLabel = switch (presence) {
+          PresenceStatus.online => l10n.teamPresenceOnline,
+          PresenceStatus.away => l10n.teamPresenceAway,
+          PresenceStatus.offline => l10n.teamPresenceOffline,
+        };
         return Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
@@ -169,17 +179,12 @@ class _DesktopGrid extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Avatar(
-                    userId: m.userId,
-                    name: m.fullName,
-                    avatarUrl: m.avatarUrl,
-                    size: 56,
-                    presence: PresenceStatus.offline,
-                  ),
-                ],
+              Avatar(
+                userId: m.userId,
+                name: m.fullName,
+                avatarUrl: m.avatarUrl,
+                size: 56,
+                presence: presence,
               ),
               const SizedBox(height: 12),
               Text(
@@ -192,7 +197,7 @@ class _DesktopGrid extends StatelessWidget {
               const SizedBox(height: 6),
               RoleBadge(role: m.role),
               const SizedBox(height: 4),
-              Text(l10n.teamPresenceOffline,
+              Text(presenceLabel,
                 style: AppText.caption.copyWith(color: c.presenceOffline)),
             ],
           ),
@@ -202,19 +207,27 @@ class _DesktopGrid extends StatelessWidget {
   }
 }
 
-class _MobileList extends StatelessWidget {
+class _MobileList extends ConsumerWidget {
   final List<MemberModel> members;
-  const _MobileList({required this.members});
+  final String wsId;
+  const _MobileList({required this.members, required this.wsId});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
     final l10n = AppLocalizations.of(context);
+    final presenceMap = ref.watch(presenceProvider(wsId));
     return ListView.separated(
       itemCount: members.length,
       separatorBuilder: (_, __) => const SizedBox(height: 8),
       itemBuilder: (_, i) {
         final m = members[i];
+        final presence = presenceMap[m.userId] ?? PresenceStatus.offline;
+        final presenceLabel = switch (presence) {
+          PresenceStatus.online => l10n.teamPresenceOnline,
+          PresenceStatus.away => l10n.teamPresenceAway,
+          PresenceStatus.offline => l10n.teamPresenceOffline,
+        };
         return Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
@@ -229,7 +242,7 @@ class _MobileList extends StatelessWidget {
                 name: m.fullName,
                 avatarUrl: m.avatarUrl,
                 size: 44,
-                presence: PresenceStatus.offline,
+                presence: presence,
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -241,7 +254,7 @@ class _MobileList extends StatelessWidget {
                       style: AppText.bodyStrong.copyWith(color: c.textPrimary),
                       maxLines: 1, overflow: TextOverflow.ellipsis,
                     ),
-                    Text(l10n.teamPresenceOffline,
+                    Text(presenceLabel,
                       style: AppText.caption.copyWith(color: c.presenceOffline)),
                   ],
                 ),

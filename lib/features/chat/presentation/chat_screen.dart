@@ -63,6 +63,7 @@ class _DesktopChat extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     final wsId = ref.watch(currentWorkspaceIdProvider) ?? '';
     final workspace = ref.watch(currentWorkspaceProvider);
     final channelsAsync = ref.watch(channelsProvider(wsId));
@@ -613,7 +614,7 @@ class _MobileChatList extends ConsumerWidget {
             channelsAsync.when(
               loading: () => const SliverFillRemaining(
                 child: Center(child: CircularProgressIndicator())),
-              error: (_, __) => const SliverFillRemaining(
+              error: (_, __) => SliverFillRemaining(
                 child: EmptyState(
                   icon: LucideIcons.messageCircle,
                   title: l10n.errorGeneric)),
