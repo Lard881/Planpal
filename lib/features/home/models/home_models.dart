@@ -18,7 +18,8 @@ class HomeOverview {
     final counts = j['counts'] as Map<String, dynamic>? ?? j;
     return HomeOverview(
       completed: counts['completed'] as int? ?? 0,
-      inProgress: counts['in_progress'] as int? ?? counts['inProgress'] as int? ?? 0,
+      inProgress:
+          counts['in_progress'] as int? ?? counts['inProgress'] as int? ?? 0,
       overdue: counts['overdue'] as int? ?? 0,
       productivityPercent: (j['productivityPercent'] as num?)?.toDouble() ?? 0,
       dailySeries: (j['dailySeries'] as List? ?? [])
@@ -34,7 +35,7 @@ class DailyPoint {
   const DailyPoint({required this.date, required this.value});
 
   factory DailyPoint.fromJson(Map<String, dynamic> j) => DailyPoint(
-    date: DateTime.parse(j['date'] as String),
-    value: j['value'] as int? ?? 0,
+    date: DateTime.parse((j['day'] ?? j['date']) as String),
+    value: (j['completed'] ?? j['value']) as int? ?? 0,
   );
 }

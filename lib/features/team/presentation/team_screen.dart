@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
 import '../../../core/theme/app_theme.dart';
@@ -16,6 +17,28 @@ import '../../../core/providers/presence_provider.dart';
 import '../../workspaces/providers/workspace_providers.dart';
 import '../../workspaces/data/workspace_repository.dart';
 import '../../workspaces/models/workspace_model.dart';
+import '../../chat/data/chat_repository.dart';
+import '../../chat/providers/chat_providers.dart';
+import '../../tasks/data/task_repository.dart';
+import '../../tasks/models/task_model.dart';
+
+final teamMembersProvider = FutureProvider.autoDispose
+    .family<List<MemberModel>, String>((ref, workspaceId) async {
+      final (members, failure) = await ref
+          .read(workspaceRepositoryProvider)
+          .getMembers(workspaceId);
+      if (failure != null) throw failure;
+      return members;
+    });
+
+final teamLatestTaskUpdatesProvider = FutureProvider.autoDispose
+    .family<List<TaskModel>, String>((ref, workspaceId) async {
+      final (tasks, _, failure) = await ref
+          .read(taskRepositoryProvider)
+          .getTasks(workspaceId, sort: 'updated_at');
+      if (failure != null) throw failure;
+      return tasks;
+    });
 
 class TeamScreen extends ConsumerStatefulWidget {
   final String? workspaceId;
@@ -34,7 +57,8 @@ class _TeamScreenState extends ConsumerState<TeamScreen> {
     final c = context.colors;
     final l10n = AppLocalizations.of(context);
     final isDesktop = context.isDesktopLayout;
-    final wsId = widget.workspaceId ?? ref.watch(currentWorkspaceIdProvider) ?? '';
+    final wsId =
+        widget.workspaceId ?? ref.watch(currentWorkspaceIdProvider) ?? '';
     final workspace = ref.watch(currentWorkspaceProvider);
     final perms = ref.watch(currentRolePermissionsProvider);
 
@@ -50,11 +74,7 @@ class _TeamScreenState extends ConsumerState<TeamScreen> {
       );
     }
 
-    final membersAsync = ref.watch(
-        FutureProvider.family<List<MemberModel>, String>((ref, id) async {
-      final (list, _) = await ref.read(workspaceRepositoryProvider).getMembers(id);
-      return list;
-    })(wsId));
+    final membersAsync = ref.watch(teamMembersProvider(wsId));
 
     // Role label map
     final roleLabels = <String, String>{
@@ -73,17 +93,19 @@ class _TeamScreenState extends ConsumerState<TeamScreen> {
           children: [
             Row(
               children: [
-                Text(l10n.teamDirectoryTitle,
-                  style: (isDesktop ? AppText.pageTitle : AppText.pageTitleMobile)
-                      .copyWith(color: c.textPrimary)),
+                Text(
+                  l10n.teamDirectoryTitle,
+                  style:
+                      (isDesktop ? AppText.pageTitle : AppText.pageTitleMobile)
+                          .copyWith(color: c.textPrimary),
+                ),
                 const Spacer(),
                 if (perms.isAdmin)
                   PlanPalButton(
                     label: l10n.btnInviteWithCode,
                     toolbar: true,
                     icon: LucideIcons.key,
-                    onPressed: () =>
-                        context.push('/workspace/$wsId/invites'),
+                    onPressed: () => context.push('/workspace/$wsId/invites'),
                   ),
               ],
             ),
@@ -101,14 +123,19 @@ class _TeamScreenState extends ConsumerState<TeamScreen> {
                       onTap: () => setState(() => _filter = f),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 8),
+                          horizontal: 14,
+                          vertical: 8,
+                        ),
                         decoration: BoxDecoration(
                           color: selected ? c.primary : c.surfaceAlt,
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        child: Text(label,
+                        child: Text(
+                          label,
                           style: AppText.bodyMedium.copyWith(
-                            color: selected ? Colors.white : c.textMuted)),
+                            color: selected ? Colors.white : c.textMuted,
+                          ),
+                        ),
                       ),
                     ),
                   );
@@ -119,7 +146,11 @@ class _TeamScreenState extends ConsumerState<TeamScreen> {
             Expanded(
               child: membersAsync.when(
                 loading: () => const Center(child: CircularProgressIndicator()),
-                error: (e, _) => ErrorState(message: e.toString()),
+                error: (e, _) => ErrorState(
+                  message: e.toString(),
+                  retryLabel: l10n.btnRetry,
+                  onRetry: () => ref.invalidate(teamMembersProvider(wsId)),
+                ),
                 data: (members) {
                   final filtered = _filter == 'all'
                       ? members
@@ -128,12 +159,45 @@ class _TeamScreenState extends ConsumerState<TeamScreen> {
                   if (filtered.isEmpty) {
                     return EmptyState(
                       icon: LucideIcons.users,
-                      title: l10n.emptyStateNoMembers);
+                      title: l10n.emptyStateNoMembers,
+                    );
                   }
 
                   return isDesktop
-                      ? _DesktopGrid(members: filtered, wsId: wsId)
-                      : _MobileList(members: filtered, wsId: wsId);
+                      ? Row(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Expanded(
+                              child: _DesktopGrid(
+                                members: filtered,
+                                wsId: wsId,
+                                onMemberTap: (member) => _showMemberProfile(
+                                  context,
+                                  ref,
+                                  wsId,
+                                  member,
+                                  canManage: perms.isAdmin,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 20),
+                            SizedBox(
+                              width: 280,
+                              child: _LatestTaskUpdates(workspaceId: wsId),
+                            ),
+                          ],
+                        )
+                      : _MobileList(
+                          members: filtered,
+                          wsId: wsId,
+                          onMemberTap: (member) => _showMemberProfile(
+                            context,
+                            ref,
+                            wsId,
+                            member,
+                            canManage: perms.isAdmin,
+                          ),
+                        );
                 },
               ),
             ),
@@ -147,7 +211,12 @@ class _TeamScreenState extends ConsumerState<TeamScreen> {
 class _DesktopGrid extends ConsumerWidget {
   final List<MemberModel> members;
   final String wsId;
-  const _DesktopGrid({required this.members, required this.wsId});
+  final ValueChanged<MemberModel> onMemberTap;
+  const _DesktopGrid({
+    required this.members,
+    required this.wsId,
+    required this.onMemberTap,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -157,8 +226,10 @@ class _DesktopGrid extends ConsumerWidget {
 
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 4, crossAxisSpacing: 16,
-        mainAxisSpacing: 16, childAspectRatio: 1.1,
+        crossAxisCount: 4,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+        childAspectRatio: 1.1,
       ),
       itemCount: members.length,
       itemBuilder: (_, i) {
@@ -169,37 +240,43 @@ class _DesktopGrid extends ConsumerWidget {
           PresenceStatus.away => l10n.teamPresenceAway,
           PresenceStatus.offline => l10n.teamPresenceOffline,
         };
-        return Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: c.surface,
-            borderRadius: BorderRadius.circular(AppRadius.card),
-            border: Border.all(color: c.border),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Avatar(
-                userId: m.userId,
-                name: m.fullName,
-                avatarUrl: m.avatarUrl,
-                size: 56,
-                presence: presence,
-              ),
-              const SizedBox(height: 12),
-              Text(
-                m.fullName.isNotEmpty ? m.fullName : m.email,
-                style: AppText.bodyStrong.copyWith(color: c.textPrimary),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 6),
-              RoleBadge(role: m.role),
-              const SizedBox(height: 4),
-              Text(presenceLabel,
-                style: AppText.caption.copyWith(color: c.presenceOffline)),
-            ],
+        return InkWell(
+          borderRadius: BorderRadius.circular(AppRadius.card),
+          onTap: () => onMemberTap(m),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: c.surface,
+              borderRadius: BorderRadius.circular(AppRadius.card),
+              border: Border.all(color: c.border),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Avatar(
+                  userId: m.userId,
+                  name: m.fullName,
+                  avatarUrl: m.avatarUrl,
+                  size: 56,
+                  presence: presence,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  m.fullName.isNotEmpty ? m.fullName : m.email,
+                  style: AppText.bodyStrong.copyWith(color: c.textPrimary),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 6),
+                RoleBadge(role: m.role),
+                const SizedBox(height: 4),
+                Text(
+                  presenceLabel,
+                  style: AppText.caption.copyWith(color: c.presenceOffline),
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -210,7 +287,12 @@ class _DesktopGrid extends ConsumerWidget {
 class _MobileList extends ConsumerWidget {
   final List<MemberModel> members;
   final String wsId;
-  const _MobileList({required this.members, required this.wsId});
+  final ValueChanged<MemberModel> onMemberTap;
+  const _MobileList({
+    required this.members,
+    required this.wsId,
+    required this.onMemberTap,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -228,42 +310,312 @@ class _MobileList extends ConsumerWidget {
           PresenceStatus.away => l10n.teamPresenceAway,
           PresenceStatus.offline => l10n.teamPresenceOffline,
         };
-        return Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: c.surface,
-            borderRadius: BorderRadius.circular(AppRadius.card),
-            border: Border.all(color: c.border),
-          ),
-          child: Row(
-            children: [
-              Avatar(
-                userId: m.userId,
-                name: m.fullName,
-                avatarUrl: m.avatarUrl,
-                size: 44,
-                presence: presence,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      m.fullName.isNotEmpty ? m.fullName : m.email,
-                      style: AppText.bodyStrong.copyWith(color: c.textPrimary),
-                      maxLines: 1, overflow: TextOverflow.ellipsis,
-                    ),
-                    Text(presenceLabel,
-                      style: AppText.caption.copyWith(color: c.presenceOffline)),
-                  ],
+        return InkWell(
+          borderRadius: BorderRadius.circular(AppRadius.card),
+          onTap: () => onMemberTap(m),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: c.surface,
+              borderRadius: BorderRadius.circular(AppRadius.card),
+              border: Border.all(color: c.border),
+            ),
+            child: Row(
+              children: [
+                Avatar(
+                  userId: m.userId,
+                  name: m.fullName,
+                  avatarUrl: m.avatarUrl,
+                  size: 44,
+                  presence: presence,
                 ),
-              ),
-              RoleBadge(role: m.role),
-            ],
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        m.fullName.isNotEmpty ? m.fullName : m.email,
+                        style: AppText.bodyStrong.copyWith(
+                          color: c.textPrimary,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        presenceLabel,
+                        style: AppText.caption.copyWith(
+                          color: c.presenceOffline,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                RoleBadge(role: m.role),
+              ],
+            ),
           ),
         );
       },
+    );
+  }
+}
+
+Future<void> _showMemberProfile(
+  BuildContext context,
+  WidgetRef ref,
+  String workspaceId,
+  MemberModel member, {
+  required bool canManage,
+}) => showModalBottomSheet<void>(
+  context: context,
+  isScrollControlled: true,
+  builder: (_) => _MemberProfileSheet(
+    workspaceId: workspaceId,
+    member: member,
+    canManage: canManage,
+  ),
+);
+
+class _MemberProfileSheet extends ConsumerStatefulWidget {
+  final String workspaceId;
+  final MemberModel member;
+  final bool canManage;
+  const _MemberProfileSheet({
+    required this.workspaceId,
+    required this.member,
+    required this.canManage,
+  });
+
+  @override
+  ConsumerState<_MemberProfileSheet> createState() =>
+      _MemberProfileSheetState();
+}
+
+class _MemberProfileSheetState extends ConsumerState<_MemberProfileSheet> {
+  bool _busy = false;
+
+  bool get _isSelf =>
+      widget.member.userId == Supabase.instance.client.auth.currentUser?.id;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final l10n = AppLocalizations.of(context);
+    final displayName = widget.member.fullName.isEmpty
+        ? widget.member.email
+        : widget.member.fullName;
+
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              l10n.teamMemberProfile,
+              style: AppText.caption.copyWith(color: colors.textMuted),
+            ),
+            const SizedBox(height: 8),
+            Avatar(
+              userId: widget.member.userId,
+              name: displayName,
+              avatarUrl: widget.member.avatarUrl,
+              size: 72,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              displayName,
+              style: AppText.sectionTitle.copyWith(color: colors.textPrimary),
+            ),
+            Text(
+              widget.member.email,
+              style: AppText.body.copyWith(color: colors.textMuted),
+            ),
+            const SizedBox(height: 8),
+            RoleBadge(role: widget.member.role),
+            const SizedBox(height: 16),
+            if (!_isSelf)
+              PlanPalButton(
+                label: l10n.teamMessageMember,
+                icon: LucideIcons.messageCircle,
+                onPressed: _busy ? null : _messageMember,
+              ),
+            if (widget.canManage && !_isSelf) ...[
+              const SizedBox(height: 12),
+              DropdownButtonFormField<String>(
+                initialValue: widget.member.role,
+                decoration: InputDecoration(labelText: l10n.teamChangeRole),
+                items: [
+                  DropdownMenuItem(value: 'admin', child: Text(l10n.roleAdmin)),
+                  DropdownMenuItem(
+                    value: 'member',
+                    child: Text(l10n.roleMember),
+                  ),
+                  DropdownMenuItem(value: 'guest', child: Text(l10n.roleGuest)),
+                ],
+                onChanged: _busy ? null : _updateRole,
+              ),
+              const SizedBox(height: 8),
+              TextButton.icon(
+                onPressed: _busy ? null : _removeMember,
+                icon: const Icon(LucideIcons.userMinus),
+                label: Text(l10n.teamRemoveMember),
+                style: TextButton.styleFrom(foregroundColor: colors.danger),
+              ),
+            ],
+            if (_busy) const LinearProgressIndicator(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _messageMember() async {
+    setState(() => _busy = true);
+    final (channel, failure) = await ref
+        .read(chatRepositoryProvider)
+        .createDm(widget.workspaceId, widget.member.userId);
+    if (!mounted) return;
+    setState(() => _busy = false);
+    if (failure != null || channel == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            failure?.message ?? AppLocalizations.of(context).errorGeneric,
+          ),
+        ),
+      );
+      return;
+    }
+    ref.invalidate(channelsProvider(widget.workspaceId));
+    Navigator.pop(context);
+    context.go('/chat/${channel.id}');
+  }
+
+  Future<void> _updateRole(String? role) async {
+    if (role == null || role == widget.member.role) return;
+    setState(() => _busy = true);
+    final failure = await ref
+        .read(workspaceRepositoryProvider)
+        .updateMemberRole(widget.workspaceId, widget.member.userId, role);
+    if (!mounted) return;
+    setState(() => _busy = false);
+    if (failure != null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(failure.message)));
+      return;
+    }
+    ref.invalidate(teamMembersProvider(widget.workspaceId));
+    Navigator.pop(context);
+  }
+
+  Future<void> _removeMember() async {
+    final l10n = AppLocalizations.of(context);
+    final shouldRemove = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.teamRemoveMember),
+        content: Text(l10n.teamConfirmRemoveMember),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(l10n.btnCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(l10n.teamRemoveMember),
+          ),
+        ],
+      ),
+    );
+    if (shouldRemove != true || !mounted) return;
+    setState(() => _busy = true);
+    final failure = await ref
+        .read(workspaceRepositoryProvider)
+        .removeMember(widget.workspaceId, widget.member.userId);
+    if (!mounted) return;
+    setState(() => _busy = false);
+    if (failure != null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(failure.message)));
+      return;
+    }
+    ref.invalidate(teamMembersProvider(widget.workspaceId));
+    Navigator.pop(context);
+  }
+}
+
+class _LatestTaskUpdates extends ConsumerWidget {
+  final String workspaceId;
+  const _LatestTaskUpdates({required this.workspaceId});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colors = context.colors;
+    final l10n = AppLocalizations.of(context);
+    final updatesAsync = ref.watch(teamLatestTaskUpdatesProvider(workspaceId));
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: colors.surface,
+        borderRadius: BorderRadius.circular(AppRadius.card),
+        border: Border.all(color: colors.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l10n.teamLatestUpdates,
+            style: AppText.sectionTitle.copyWith(color: colors.textPrimary),
+          ),
+          const SizedBox(height: 12),
+          Expanded(
+            child: updatesAsync.when(
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (error, _) => ErrorState(
+                message: error.toString(),
+                retryLabel: l10n.btnRetry,
+                onRetry: () =>
+                    ref.invalidate(teamLatestTaskUpdatesProvider(workspaceId)),
+              ),
+              data: (tasks) => tasks.isEmpty
+                  ? Center(
+                      child: Text(
+                        l10n.teamNoActivity,
+                        style: AppText.body.copyWith(color: colors.textMuted),
+                      ),
+                    )
+                  : ListView.separated(
+                      itemCount: tasks.length > 8 ? 8 : tasks.length,
+                      separatorBuilder: (_, __) => const Divider(height: 16),
+                      itemBuilder: (context, index) {
+                        final task = tasks[index];
+                        final updatedAt =
+                            '${MaterialLocalizations.of(context).formatMediumDate(task.updatedAt)} · '
+                            '${MaterialLocalizations.of(context).formatTimeOfDay(TimeOfDay.fromDateTime(task.updatedAt))}';
+                        return ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          dense: true,
+                          title: Text(
+                            task.title,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          subtitle: Text(
+                            '${l10n.teamUpdatedTask} · $updatedAt',
+                          ),
+                          onTap: () => context.push('/tasks/${task.id}'),
+                        );
+                      },
+                    ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -8,6 +8,7 @@ import '../../../core/theme/app_text.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/layout/breakpoints.dart';
 import '../../../core/widgets/planpal_button.dart';
+import 'auth_failure_message.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/providers/user_profile_provider.dart';
 import 'auth_notifier.dart';
@@ -44,17 +45,22 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
   Future<void> _verify() async {
     if (_otp.length < 6) return;
     final email = widget.email ?? '';
-    final ok = await ref.read(authNotifierProvider.notifier).verifyOtp(email, _otp);
+    final ok = await ref
+        .read(authNotifierProvider.notifier)
+        .verifyOtp(email, _otp);
     if (ok && mounted) {
       await loadMeAndApply(ref);
+      if (!mounted) return;
       context.go('/onboarding/workspace');
     }
   }
 
   Future<void> _resend() async {
     if (_resendCooldown > 0) return;
-    await ref.read(authNotifierProvider.notifier).resendOtp(widget.email ?? '');
-    _startCooldown();
+    final sent = await ref
+        .read(authNotifierProvider.notifier)
+        .resendOtp(widget.email ?? '');
+    if (sent && mounted) _startCooldown();
   }
 
   @override
@@ -74,14 +80,17 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
           const Center(child: AuthLogo()),
           const SizedBox(height: 32),
         ],
-        Text(l10n.verifyEmailTitle,
+        Text(
+          l10n.verifyEmailTitle,
           style: (isDesktop ? AppText.authTitle : AppText.pageTitleMobile)
               .copyWith(color: c.textPrimary),
           textAlign: isDesktop ? TextAlign.left : TextAlign.center,
         ),
         const SizedBox(height: 8),
         Text(
-          isDesktop ? l10n.verifyEmailSentDesktop(email) : l10n.verifyEmailSentMobile(email),
+          isDesktop
+              ? l10n.verifyEmailSentDesktop(email)
+              : l10n.verifyEmailSentMobile(email),
           style: AppText.body.copyWith(color: c.textMuted),
           textAlign: isDesktop ? TextAlign.left : TextAlign.center,
         ),
@@ -93,8 +102,10 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
               color: c.dangerSoft,
               borderRadius: BorderRadius.circular(AppRadius.control),
             ),
-            child: Text(state.error!.message,
-              style: AppText.body.copyWith(color: c.danger)),
+            child: Text(
+              authFailureMessage(l10n, state.error!),
+              style: AppText.body.copyWith(color: c.danger),
+            ),
           ),
           const SizedBox(height: 16),
         ],
@@ -119,7 +130,8 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                   ? l10n.verifyEmailResendCooldown(_resendCooldown)
                   : l10n.verifyEmailResend,
               style: AppText.bodyMedium.copyWith(
-                color: _resendCooldown > 0 ? c.textMuted : c.primary),
+                color: _resendCooldown > 0 ? c.textMuted : c.primary,
+              ),
             ),
           ),
         ),

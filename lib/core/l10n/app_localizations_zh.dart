@@ -84,6 +84,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get btnCopy => '复制';
 
   @override
+  String get btnEdit => '编辑';
+
+  @override
   String get btnCopied => '已复制';
 
   @override
@@ -151,6 +154,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get btnOpen => '打开';
+
+  @override
+  String get btnRename => '重命名';
 
   @override
   String get btnDiscard => '放弃';
@@ -376,6 +382,15 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get workspaceTeamOnlySettings => '人员和访问设置仅适用于团队空间。';
+
+  @override
+  String get authGoogleBrowserComplete => '登录成功。您可以关闭此窗口并返回 PlanPal。';
+
+  @override
+  String get authGoogleBrowserFailure => 'Google 登录未能完成。请返回 PlanPal 并重试。';
+
+  @override
   String get tabMembers => '成员';
 
   @override
@@ -419,6 +434,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get confirmDeleteBody => '此操作无法撤销。';
 
   @override
+  String get confirmDeleteTaskTitle => '删除此任务？';
+
+  @override
   String get confirmDeleteTasksTitle => '删除所选任务？';
 
   @override
@@ -455,6 +473,24 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get loginTitle => '欢迎回来';
+
+  @override
+  String get authInvalidCredentials => '邮箱或密码不正确，请重试。';
+
+  @override
+  String get authEmailNotConfirmed => '登录前请先验证您的电子邮件。';
+
+  @override
+  String get authAccountAlreadyExists => '此电子邮件已注册账户。';
+
+  @override
+  String get authWeakPassword => '此密码强度不足，请选择更安全的密码。';
+
+  @override
+  String get authTooManyAttempts => '尝试次数过多，请稍等片刻后重试。';
+
+  @override
+  String get authInvalidCode => '验证码无效或已过期，请重试。';
 
   @override
   String get loginSubtitleMobile => '登录以继续今天的工作。';
@@ -544,10 +580,45 @@ class AppLocalizationsZh extends AppLocalizations {
   String get fieldDueDate => '截止日期';
 
   @override
+  String get fieldDueDateOptional => '选择截止日期';
+
+  @override
   String get fieldTime => '时间';
 
   @override
+  String get fieldTimeOptional => '可选';
+
+  @override
+  String get fieldTaskReminder => '提醒（提前分钟数）';
+
+  @override
+  String get fieldTaskReminderHint => '输入分钟数；留空则使用默认的提前 24 小时提醒。';
+
+  @override
+  String get taskReminderDefault => '默认（提前 24 小时）';
+
+  @override
+  String taskReminderCustom(int minutes) {
+    return '提前 $minutes 分钟';
+  }
+
+  @override
+  String get taskNoDueDate => '无截止日期';
+
+  @override
+  String get taskClearDueDate => '清除截止日期';
+
+  @override
+  String get validationTaskReminderRequiresDueDate => '请先选择截止日期。';
+
+  @override
+  String get validationTaskReminderMinimum => '请输入不小于 5 的整数分钟数。';
+
+  @override
   String get fieldPriority => '优先级';
+
+  @override
+  String get fieldStatus => '状态';
 
   @override
   String get fieldAssignee => '负责人';
@@ -747,7 +818,52 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tasksNoResultsFilters => '这些筛选条件没有结果';
 
   @override
+  String get tasksBulkPartialFailure => '部分所选任务无法处理。';
+
+  @override
+  String get tasksBulkActionFailed => '所选任务无法处理。';
+
+  @override
   String get tasksClearFilters => '清除筛选';
+
+  @override
+  String get tasksSwipeHint => '向左或向右滑动任务即可编辑或删除。';
+
+  @override
+  String get tasksDismissSwipeHint => '关闭滑动提示';
+
+  @override
+  String get tasksFilterTitle => '筛选任务';
+
+  @override
+  String get tasksFilterStatus => '状态';
+
+  @override
+  String get tasksFilterPriority => '优先级';
+
+  @override
+  String get tasksFilterSort => '排序';
+
+  @override
+  String get tasksFilterAll => '全部';
+
+  @override
+  String get tasksLoadMore => '加载更多';
+
+  @override
+  String get tasksSortBy => '排序方式';
+
+  @override
+  String get tasksSortDueDate => '截止日期';
+
+  @override
+  String get tasksSortCreated => '创建时间';
+
+  @override
+  String get tasksSortTitle => '标题';
+
+  @override
+  String get btnApply => '应用';
 
   @override
   String get tasksAddSubtask => '+ 添加子任务';
@@ -767,6 +883,23 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tasksDetailTitle => '任务详情';
 
   @override
+  String get tasksSwipeEdit => '编辑';
+
+  @override
+  String get confirmDeleteSubtaskTitle => '删除此子任务？';
+
+  @override
+  String get taskMoveToWorkspace => '移至其他工作区';
+
+  @override
+  String taskMoveConfirmation(Object workspace) {
+    return '将此任务移至“$workspace”吗？';
+  }
+
+  @override
+  String get btnMove => '移动';
+
+  @override
   String get tasksNewTitle => '新建任务';
 
   @override
@@ -779,7 +912,40 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tasksComments => '评论';
 
   @override
+  String get tasksCommentJustNow => '刚刚';
+
+  @override
+  String tasksCommentMinutesAgo(int count) {
+    return '$count 分钟前';
+  }
+
+  @override
+  String tasksCommentHoursAgo(int count) {
+    return '$count 小时前';
+  }
+
+  @override
+  String tasksCommentDaysAgo(int count) {
+    return '$count 天前';
+  }
+
+  @override
   String get tasksAttachments => '附件';
+
+  @override
+  String get taskNoAttachments => '暂无附件。';
+
+  @override
+  String get taskAttachmentOffline => '上传或打开附件需要网络连接。';
+
+  @override
+  String get taskAttachmentOpenFailed => '无法打开此附件，请重试。';
+
+  @override
+  String get taskAttachFile => '添加附件';
+
+  @override
+  String get taskAttachmentUploadFailed => '无法上传或添加此文件，请重试。';
 
   @override
   String get tasksAssigneeLabel => '负责人与标签';
@@ -807,6 +973,43 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get calendarWeek => '周';
+
+  @override
+  String get calendarMonth => '月';
+
+  @override
+  String get calendarDay => '日';
+
+  @override
+  String calendarEventsFor(String date) {
+    return '事件：$date';
+  }
+
+  @override
+  String calendarMoreEvents(int count) {
+    return '另有 $count 项';
+  }
+
+  @override
+  String get calendarTeam => '团队';
+
+  @override
+  String get calendarDueTasks => '到期任务';
+
+  @override
+  String get calendarQueuedOffline => '事件已保存在此设备，恢复联网后将同步。';
+
+  @override
+  String get calendarAttendees => '参与者';
+
+  @override
+  String get calendarNoMembers => '此工作区没有可用成员。';
+
+  @override
+  String get calendarInvalidRange => '结束时间必须晚于开始时间。';
+
+  @override
   String get scheduleEventTitle => '安排活动';
 
   @override
@@ -826,6 +1029,18 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get documentsTitle => '文档';
+
+  @override
+  String get documentSaving => '正在保存...';
+
+  @override
+  String get documentSaved => '已保存';
+
+  @override
+  String get documentSavedLocally => '已保存到此设备';
+
+  @override
+  String get documentWaitingToSync => '等待同步';
 
   @override
   String get documentsRecent => '最近';
@@ -849,6 +1064,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get documentUploadFile => '上传文件';
 
   @override
+  String get documentDropHint => '将文件拖放到此处以上传';
+
+  @override
+  String get documentDropFilesOnly => '请在此处拖放文件，而不是文件夹。';
+
+  @override
   String get documentNewFolder => '新建文件夹';
 
   @override
@@ -856,6 +1077,49 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get chatNewChannel => '新建频道';
+
+  @override
+  String get chatChannels => '频道';
+
+  @override
+  String get chatDirectMessages => '私信';
+
+  @override
+  String get chatNewDm => '新建私信';
+
+  @override
+  String get chatPrivateChannel => '私人频道';
+
+  @override
+  String get chatManageMembers => '管理频道成员';
+
+  @override
+  String get chatUnnamedChannel => '未命名频道';
+
+  @override
+  String get chatDirectMessageFallback => '私信';
+
+  @override
+  String get chatYou => '你';
+
+  @override
+  String get chatUnknownSender => '未知发送者';
+
+  @override
+  String chatMessageHeader(String sender, String time) {
+    return '$sender · $time';
+  }
+
+  @override
+  String chatTyping(String names) {
+    return '$names正在输入...';
+  }
+
+  @override
+  String get chatTapToRetry => '点击重试';
+
+  @override
+  String get chatConfirmDeleteMessage => '删除这条消息吗？';
 
   @override
   String get notificationsTitle => '通知';
@@ -951,6 +1215,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get homeProductivity => '生产力';
 
   @override
+  String get homeGreetingFallback => '你好';
+
+  @override
+  String get homeWorkspaceFallback => '工作区';
+
+  @override
   String get teamDirectoryTitle => '团队目录';
 
   @override
@@ -958,6 +1228,24 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get teamNoActivity => '暂无最近活动';
+
+  @override
+  String get teamUpdatedTask => '任务已更新';
+
+  @override
+  String get teamMemberProfile => '成员资料';
+
+  @override
+  String get teamMessageMember => '发送消息';
+
+  @override
+  String get teamRemoveMember => '移除成员';
+
+  @override
+  String get teamChangeRole => '更改角色';
+
+  @override
+  String get teamConfirmRemoveMember => '确定从工作区移除此成员吗？';
 
   @override
   String get teamPresenceOnline => '在线';

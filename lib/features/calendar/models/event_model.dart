@@ -44,8 +44,8 @@ class EventModel {
   Color get pillBg => pillFg.withValues(alpha: 0.15);
 
   factory EventModel.fromJson(Map<String, dynamic> j) {
-    final attendees = (j['event_attendees'] as List?) ??
-        (j['attendees'] as List?) ?? [];
+    final attendees =
+        (j['event_attendees'] as List?) ?? (j['attendees'] as List?) ?? [];
     return EventModel(
       id: j['id'] as String,
       workspaceId: j['workspace_id'] as String,
@@ -63,7 +63,8 @@ class EventModel {
           .toList(),
       attendeeNames: attendees
           .map((a) {
-            final p = (a as Map)['profile'] as Map? ?? a;
+            final p =
+                (a as Map)['profile'] as Map? ?? a['profiles'] as Map? ?? a;
             return (p['full_name'] ?? '') as String;
           })
           .where((n) => n.isNotEmpty)
@@ -71,16 +72,31 @@ class EventModel {
     );
   }
 
-  String get attendeeLabel {
-    if (attendeeNames.isEmpty) return 'Team';
-    if (attendeeNames.length <= 2) return attendeeNames.join(', ');
-    return '${attendeeNames.take(2).join(', ')} +${attendeeNames.length - 2}';
-  }
+  String formatTime(BuildContext context) => MaterialLocalizations.of(
+    context,
+  ).formatTimeOfDay(TimeOfDay.fromDateTime(startsAt));
+}
 
-  String formatTime() {
-    final h = startsAt.hour > 12 ? startsAt.hour - 12 : (startsAt.hour == 0 ? 12 : startsAt.hour);
-    final m = startsAt.minute.toString().padLeft(2, '0');
-    final ampm = startsAt.hour < 12 ? 'AM' : 'PM';
-    return '$h:$m $ampm';
-  }
+class DueTaskModel {
+  final String id;
+  final String title;
+  final DateTime dueAt;
+  final String status;
+  final String priority;
+
+  const DueTaskModel({
+    required this.id,
+    required this.title,
+    required this.dueAt,
+    required this.status,
+    required this.priority,
+  });
+
+  factory DueTaskModel.fromJson(Map<String, dynamic> json) => DueTaskModel(
+    id: json['id'] as String,
+    title: json['title'] as String,
+    dueAt: DateTime.parse(json['due_at'] as String).toLocal(),
+    status: json['status'] as String,
+    priority: json['priority'] as String,
+  );
 }

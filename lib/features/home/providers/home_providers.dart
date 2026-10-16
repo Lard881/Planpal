@@ -18,8 +18,11 @@ class HomeState {
   });
 
   HomeState copyWith({
-    String? range, HomeOverview? overview,
-    bool? loading, String? error, bool clearError = false,
+    String? range,
+    HomeOverview? overview,
+    bool? loading,
+    String? error,
+    bool clearError = false,
   }) => HomeState(
     range: range ?? this.range,
     overview: overview ?? this.overview,
@@ -31,6 +34,7 @@ class HomeState {
 class HomeNotifier extends StateNotifier<HomeState> {
   final HomeRepository _repo;
   final String workspaceId;
+  int _loadGeneration = 0;
 
   HomeNotifier(this._repo, this.workspaceId) : super(const HomeState()) {
     load();
@@ -38,11 +42,13 @@ class HomeNotifier extends StateNotifier<HomeState> {
 
   Future<void> load({String? range}) async {
     if (workspaceId.isEmpty) return; // Guard: don't call API with empty ID
+    final generation = ++_loadGeneration;
     final r = range ?? state.range;
     state = state.copyWith(loading: true, clearError: true, range: r);
     final (overview, err) = await _repo.getOverview(workspaceId, r);
+    if (generation != _loadGeneration) return;
     state = state.copyWith(
-      overview: overview,
+      overview: overview ?? state.overview,
       loading: false,
       error: err?.message,
     );
@@ -51,8 +57,9 @@ class HomeNotifier extends StateNotifier<HomeState> {
   void setRange(String range) => load(range: range);
 }
 
-final homeProvider =
-    StateNotifierProvider.autoDispose<HomeNotifier, HomeState>((ref) {
-  final wsId = ref.watch(currentWorkspaceIdProvider) ?? '';
-  return HomeNotifier(ref.watch(homeRepositoryProvider), wsId);
-});
+final homeProvider = StateNotifierProvider.autoDispose<HomeNotifier, HomeState>(
+  (ref) {
+    final wsId = ref.watch(currentWorkspaceIdProvider) ?? '';
+    return HomeNotifier(ref.watch(homeRepositoryProvider), wsId);
+  },
+);

@@ -15,9 +15,16 @@ import '../notifications/providers/notifications_providers.dart';
 
 // Routes that should HIDE the bottom bar on mobile
 const _fullScreenRoutes = {
-  '/login', '/signup', '/verify-email', '/forgot-password',
-  '/verify-code', '/new-password', '/onboarding/workspace',
-  '/tasks/new', '/workspace/create', '/workspace/join',
+  '/login',
+  '/signup',
+  '/verify-email',
+  '/forgot-password',
+  '/verify-code',
+  '/new-password',
+  '/onboarding/workspace',
+  '/tasks/new',
+  '/workspace/create',
+  '/workspace/join',
 };
 
 class AdaptiveShell extends ConsumerWidget {
@@ -69,7 +76,7 @@ class _DesktopSidebar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
     final location = GoRouterState.of(context).uri.path;
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     return Container(
       width: LayoutMetrics.sidebarWidth,
@@ -87,20 +94,29 @@ class _DesktopSidebar extends ConsumerWidget {
               children: [
                 // Indigo square with "P"
                 Container(
-                  width: 36, height: 36,
+                  width: 36,
+                  height: 36,
                   decoration: BoxDecoration(
                     color: c.primary,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: const Center(
-                    child: Text('P',
-                      style: TextStyle(color: Colors.white, fontSize: 20,
-                          fontWeight: FontWeight.w700, fontFamily: 'Inter'),
+                    child: Text(
+                      'P',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        fontFamily: 'Inter',
+                      ),
                     ),
                   ),
                 ),
                 const SizedBox(width: 10),
-                Text('PlanPal', style: AppText.brand.copyWith(color: c.textPrimary)),
+                Text(
+                  'PlanPal',
+                  style: AppText.brand.copyWith(color: c.textPrimary),
+                ),
               ],
             ),
           ),
@@ -121,23 +137,22 @@ class _DesktopSidebar extends ConsumerWidget {
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
-                children: _navItems(l10n).map((item) =>
-                  _SidebarNavItem(
-                    icon: item.icon,
-                    label: item.label,
-                    route: item.route,
-                    isActive: location.startsWith(item.route),
-                  ),
-                ).toList(),
+                children: _navItems(l10n)
+                    .map(
+                      (item) => _SidebarNavItem(
+                        icon: item.icon,
+                        label: item.label,
+                        route: item.route,
+                        isActive: location.startsWith(item.route),
+                      ),
+                    )
+                    .toList(),
               ),
             ),
           ),
 
           // Bottom user card
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: _SidebarUserCard(),
-          ),
+          Padding(padding: const EdgeInsets.all(16), child: _SidebarUserCard()),
         ],
       ),
     );
@@ -160,15 +175,20 @@ class _WorkspaceSwitcherCard extends ConsumerWidget {
         children: [
           // Workspace initial avatar
           Container(
-            width: 28, height: 28,
+            width: 28,
+            height: 28,
             decoration: BoxDecoration(
               color: c.primary,
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Center(
-              child: Text('W',
-                style: TextStyle(color: Colors.white, fontSize: 13,
-                    fontWeight: FontWeight.w700),
+              child: Text(
+                'W',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
           ),
@@ -178,11 +198,13 @@ class _WorkspaceSwitcherCard extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Workspace',
+                Text(
+                  'Workspace',
                   style: AppText.bodyStrong.copyWith(color: c.textPrimary),
                   overflow: TextOverflow.ellipsis,
                 ),
-                Text('Personal',
+                Text(
+                  'Personal',
                   style: AppText.caption.copyWith(color: c.textMuted),
                 ),
               ],
@@ -210,7 +232,8 @@ class _SidebarUserCard extends ConsumerWidget {
         children: [
           // Avatar
           Container(
-            width: 32, height: 32,
+            width: 32,
+            height: 32,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: LinearGradient(
@@ -220,7 +243,8 @@ class _SidebarUserCard extends ConsumerWidget {
               ),
             ),
             child: Center(
-              child: Text('U',
+              child: Text(
+                'U',
                 style: AppText.bodyStrong.copyWith(color: Colors.white),
               ),
             ),
@@ -230,11 +254,13 @@ class _SidebarUserCard extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('User',
+                Text(
+                  'User',
                   style: AppText.bodyStrong.copyWith(color: c.textPrimary),
                   overflow: TextOverflow.ellipsis,
                 ),
-                Text('Workspace',
+                Text(
+                  'Workspace',
                   style: AppText.caption.copyWith(color: c.textMuted),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -253,8 +279,10 @@ class _SidebarNavItem extends StatelessWidget {
   final String route;
   final bool isActive;
   const _SidebarNavItem({
-    required this.icon, required this.label,
-    required this.route, required this.isActive,
+    required this.icon,
+    required this.label,
+    required this.route,
+    required this.isActive,
   });
 
   @override
@@ -276,10 +304,10 @@ class _SidebarNavItem extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Icon(icon, size: 20,
-                  color: isActive ? c.primary : c.textMuted),
+                Icon(icon, size: 20, color: isActive ? c.primary : c.textMuted),
                 const SizedBox(width: 12),
-                Text(label,
+                Text(
+                  label,
                   style: AppText.label.copyWith(
                     color: isActive ? c.primary : c.textMuted,
                   ),
@@ -309,39 +337,44 @@ class _DesktopTopBar extends ConsumerWidget {
             child: GestureDetector(
               onTap: () => context.push('/search'),
               child: Container(
-              height: 40,
-              constraints: const BoxConstraints(maxWidth: 448),
-              decoration: BoxDecoration(
-                color: c.surface,
-                border: Border.all(color: c.border),
-                borderRadius: BorderRadius.circular(AppRadius.control),
+                height: 40,
+                constraints: const BoxConstraints(maxWidth: 448),
+                decoration: BoxDecoration(
+                  color: c.surface,
+                  border: Border.all(color: c.border),
+                  borderRadius: BorderRadius.circular(AppRadius.control),
+                ),
+                child: Row(
+                  children: [
+                    const SizedBox(width: 12),
+                    Icon(LucideIcons.search, size: 16, color: c.textMuted),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Search tasks, docs, people...',
+                        style: AppText.body.copyWith(color: c.textMuted),
+                      ),
+                    ),
+                    // Ctrl K chip
+                    Container(
+                      margin: const EdgeInsets.only(right: 8),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: c.surfaceAlt,
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(color: c.border),
+                      ),
+                      child: Text(
+                        'Ctrl K',
+                        style: AppText.chip.copyWith(color: c.textMuted),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              child: Row(
-                children: [
-                  const SizedBox(width: 12),
-                  Icon(LucideIcons.search, size: 16, color: c.textMuted),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text('Search tasks, docs, people...',
-                      style: AppText.body.copyWith(color: c.textMuted),
-                    ),
-                  ),
-                  // Ctrl K chip
-                  Container(
-                    margin: const EdgeInsets.only(right: 8),
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: c.surfaceAlt,
-                      borderRadius: BorderRadius.circular(6),
-                      border: Border.all(color: c.border),
-                    ),
-                    child: Text('Ctrl K',
-                      style: AppText.chip.copyWith(color: c.textMuted),
-                    ),
-                  ),
-                ],
-              ),
-            ),
             ),
           ),
           const Spacer(),
@@ -364,7 +397,11 @@ class _TopBarIconButton extends StatelessWidget {
   final IconData icon;
   final bool hasUnread;
   final VoidCallback? onTap;
-  const _TopBarIconButton({required this.icon, this.hasUnread = false, this.onTap});
+  const _TopBarIconButton({
+    required this.icon,
+    this.hasUnread = false,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -375,7 +412,8 @@ class _TopBarIconButton extends StatelessWidget {
         GestureDetector(
           onTap: onTap,
           child: Container(
-            width: 40, height: 40,
+            width: 40,
+            height: 40,
             decoration: BoxDecoration(
               color: c.surface,
               border: Border.all(color: c.border),
@@ -386,9 +424,11 @@ class _TopBarIconButton extends StatelessWidget {
         ),
         if (hasUnread)
           Positioned(
-            top: -2, right: -2,
+            top: -2,
+            right: -2,
             child: Container(
-              width: 8, height: 8,
+              width: 8,
+              height: 8,
               decoration: BoxDecoration(
                 color: c.danger,
                 shape: BoxShape.circle,
@@ -408,7 +448,8 @@ class _TopBarUserChip extends ConsumerWidget {
     return Row(
       children: [
         Container(
-          width: 36, height: 36,
+          width: 36,
+          height: 36,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             gradient: LinearGradient(
@@ -418,7 +459,8 @@ class _TopBarUserChip extends ConsumerWidget {
             ),
           ),
           child: Center(
-            child: Text('U',
+            child: Text(
+              'U',
               style: AppText.bodyStrong.copyWith(color: Colors.white),
             ),
           ),
@@ -428,7 +470,8 @@ class _TopBarUserChip extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('User',
+            Text(
+              'User',
               style: AppText.bodyStrong.copyWith(color: c.textPrimary),
             ),
             // Role badge
@@ -438,7 +481,8 @@ class _TopBarUserChip extends ConsumerWidget {
                 color: c.primarySoft,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: Text('Member',
+              child: Text(
+                'Member',
                 style: AppText.chip.copyWith(color: c.primary),
               ),
             ),
@@ -460,7 +504,7 @@ class _TabletShell extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
     final location = GoRouterState.of(context).uri.path;
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final items = _navItems(l10n);
 
     int selectedIndex = 0;
@@ -485,10 +529,14 @@ class _TabletShell extends ConsumerWidget {
             unselectedLabelTextStyle: AppText.chip.copyWith(color: c.textMuted),
             labelType: NavigationRailLabelType.all,
             minWidth: LayoutMetrics.railWidth,
-            destinations: items.map((item) => NavigationRailDestination(
-              icon: Icon(item.icon),
-              label: Text(item.label),
-            )).toList(),
+            destinations: items
+                .map(
+                  (item) => NavigationRailDestination(
+                    icon: Icon(item.icon),
+                    label: Text(item.label),
+                  ),
+                )
+                .toList(),
           ),
           Container(width: 1, color: c.border),
           Expanded(child: child),
@@ -509,7 +557,7 @@ class _MobileShell extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
     final location = GoRouterState.of(context).uri.path;
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     // Hide bottom bar for full-screen routes
     final hideBar = _fullScreenRoutes.any((r) => location.startsWith(r));
@@ -526,44 +574,48 @@ class _MobileShell extends ConsumerWidget {
     return Scaffold(
       backgroundColor: c.background,
       body: child,
-      bottomNavigationBar: hideBar ? null : Container(
-        decoration: BoxDecoration(
-          color: c.surface,
-          border: Border(top: BorderSide(color: c.border)),
-        ),
-        child: SafeArea(
-          top: false,
-          child: SizedBox(
-            height: 60,
-            child: Row(
-              children: List.generate(mobileItems.length, (i) {
-                final item = mobileItems[i];
-                final isActive = i == selectedIndex;
-                return Expanded(
-                  child: InkWell(
-                    onTap: () => context.go(item.route),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(isActive ? item.activeIcon : item.icon,
-                          size: 24,
-                          color: isActive ? c.primary : c.textMuted,
-                        ),
-                        const SizedBox(height: 2),
-                        Text(item.label,
-                          style: AppText.chip.copyWith(
-                            color: isActive ? c.primary : c.textMuted,
+      bottomNavigationBar: hideBar
+          ? null
+          : Container(
+              decoration: BoxDecoration(
+                color: c.surface,
+                border: Border(top: BorderSide(color: c.border)),
+              ),
+              child: SafeArea(
+                top: false,
+                child: SizedBox(
+                  height: 60,
+                  child: Row(
+                    children: List.generate(mobileItems.length, (i) {
+                      final item = mobileItems[i];
+                      final isActive = i == selectedIndex;
+                      return Expanded(
+                        child: InkWell(
+                          onTap: () => context.go(item.route),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                isActive ? item.activeIcon : item.icon,
+                                size: 24,
+                                color: isActive ? c.primary : c.textMuted,
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                item.label,
+                                style: AppText.chip.copyWith(
+                                  color: isActive ? c.primary : c.textMuted,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
+                      );
+                    }),
                   ),
-                );
-              }),
+                ),
+              ),
             ),
-          ),
-        ),
-      ),
     );
   }
 }
@@ -577,27 +629,65 @@ class _NavItem {
   final String label;
   final String route;
   const _NavItem({
-    required this.icon, required this.label, required this.route,
+    required this.icon,
+    required this.label,
+    required this.route,
     IconData? activeIcon,
   }) : activeIcon = activeIcon ?? icon;
 }
 
 List<_NavItem> _navItems(AppLocalizations l10n) => [
   _NavItem(icon: LucideIcons.home, label: l10n.navHome, route: '/home'),
-  _NavItem(icon: LucideIcons.checkSquare, label: l10n.navTasks, route: '/tasks'),
-  _NavItem(icon: LucideIcons.calendar, label: l10n.navCalendar, route: '/calendar'),
-  _NavItem(icon: LucideIcons.messageCircle, label: l10n.navChat, route: '/chat'),
-  _NavItem(icon: LucideIcons.fileText, label: l10n.navDocuments, route: '/documents'),
-  _NavItem(icon: LucideIcons.barChart2, label: l10n.navAnalytics, route: '/analytics'),
+  _NavItem(
+    icon: LucideIcons.checkSquare,
+    label: l10n.navTasks,
+    route: '/tasks',
+  ),
+  _NavItem(
+    icon: LucideIcons.calendar,
+    label: l10n.navCalendar,
+    route: '/calendar',
+  ),
+  _NavItem(
+    icon: LucideIcons.messageCircle,
+    label: l10n.navChat,
+    route: '/chat',
+  ),
+  _NavItem(
+    icon: LucideIcons.fileText,
+    label: l10n.navDocuments,
+    route: '/documents',
+  ),
+  _NavItem(
+    icon: LucideIcons.barChart2,
+    label: l10n.navAnalytics,
+    route: '/analytics',
+  ),
   _NavItem(icon: LucideIcons.users, label: l10n.navTeam, route: '/team'),
-  _NavItem(icon: LucideIcons.settings, label: l10n.navSettings, route: '/settings'),
+  _NavItem(
+    icon: LucideIcons.settings,
+    label: l10n.navSettings,
+    route: '/settings',
+  ),
 ];
 
 // Mobile: Home, Tasks, Chat, Profile, Settings (5 tabs per the mock)
 List<_NavItem> _mobileNavItems(AppLocalizations l10n) => [
   _NavItem(icon: LucideIcons.home, label: l10n.navHome, route: '/home'),
-  _NavItem(icon: LucideIcons.checkSquare, label: l10n.navTasks, route: '/tasks'),
-  _NavItem(icon: LucideIcons.messageCircle, label: l10n.navChat, route: '/chat'),
+  _NavItem(
+    icon: LucideIcons.checkSquare,
+    label: l10n.navTasks,
+    route: '/tasks',
+  ),
+  _NavItem(
+    icon: LucideIcons.messageCircle,
+    label: l10n.navChat,
+    route: '/chat',
+  ),
   _NavItem(icon: LucideIcons.user, label: l10n.navProfile, route: '/profile'),
-  _NavItem(icon: LucideIcons.settings, label: l10n.navSettings, route: '/settings'),
+  _NavItem(
+    icon: LucideIcons.settings,
+    label: l10n.navSettings,
+    route: '/settings',
+  ),
 ];

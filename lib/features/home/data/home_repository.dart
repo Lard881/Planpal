@@ -11,10 +11,12 @@ class HomeRepository {
   HomeRepository(this._dio);
 
   Future<(HomeOverview?, AppFailure?)> getOverview(
-      String workspaceId, String range) async {
+    String workspaceId,
+    String range,
+  ) async {
     try {
       final res = await _dio.get(
-        '/workspaces/$workspaceId/analytics/overview',
+        '/workspaces/$workspaceId/overview',
         queryParameters: {'range': range},
       );
       return (HomeOverview.fromJson(res.data as Map<String, dynamic>), null);

@@ -34,8 +34,12 @@ class _OtpFieldState extends State<OtpField> {
 
   @override
   void dispose() {
-    for (final c in _controllers) c.dispose();
-    for (final f in _focusNodes) f.dispose();
+    for (final c in _controllers) {
+      c.dispose();
+    }
+    for (final f in _focusNodes) {
+      f.dispose();
+    }
     super.dispose();
   }
 
@@ -66,8 +70,8 @@ class _OtpFieldState extends State<OtpField> {
     setState(() {});
   }
 
-  void _onKeyDown(int index, RawKeyEvent event) {
-    if (event is RawKeyDownEvent &&
+  void _onKeyDown(int index, KeyEvent event) {
+    if (event is KeyDownEvent &&
         event.logicalKey == LogicalKeyboardKey.backspace &&
         _controllers[index].text.isEmpty &&
         index > 0) {
@@ -85,10 +89,11 @@ class _OtpFieldState extends State<OtpField> {
       children: List.generate(widget.length, (i) {
         final filled = _controllers[i].text.isNotEmpty;
         return SizedBox(
-          width: 48, height: 52,
-          child: RawKeyboardListener(
+          width: 48,
+          height: 52,
+          child: KeyboardListener(
             focusNode: FocusNode(),
-            onKey: (e) => _onKeyDown(i, e),
+            onKeyEvent: (e) => _onKeyDown(i, e),
             child: TextField(
               controller: _controllers[i],
               focusNode: _focusNodes[i],

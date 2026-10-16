@@ -84,6 +84,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get btnCopy => '복사';
 
   @override
+  String get btnEdit => '수정';
+
+  @override
   String get btnCopied => '복사됨';
 
   @override
@@ -151,6 +154,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get btnOpen => '열기';
+
+  @override
+  String get btnRename => '이름 변경';
 
   @override
   String get btnDiscard => '취소';
@@ -376,6 +382,16 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String get workspaceTeamOnlySettings => '사람 및 액세스 설정은 팀 공간에서만 사용할 수 있습니다.';
+
+  @override
+  String get authGoogleBrowserComplete => '로그인했습니다. 이 창을 닫고 PlanPal로 돌아가세요.';
+
+  @override
+  String get authGoogleBrowserFailure =>
+      'Google 로그인을 완료하지 못했습니다. PlanPal로 돌아가 다시 시도하세요.';
+
+  @override
   String get tabMembers => '멤버';
 
   @override
@@ -419,6 +435,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get confirmDeleteBody => '이 작업은 취소할 수 없습니다.';
 
   @override
+  String get confirmDeleteTaskTitle => '이 작업을 삭제할까요?';
+
+  @override
   String get confirmDeleteTasksTitle => '선택한 작업을 삭제할까요?';
 
   @override
@@ -455,6 +474,24 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get loginTitle => '다시 오신 것을 환영합니다';
+
+  @override
+  String get authInvalidCredentials => '이메일 또는 비밀번호가 올바르지 않습니다. 다시 시도해 주세요.';
+
+  @override
+  String get authEmailNotConfirmed => '로그인하기 전에 이메일을 확인해 주세요.';
+
+  @override
+  String get authAccountAlreadyExists => '이 이메일로 만든 계정이 이미 있습니다.';
+
+  @override
+  String get authWeakPassword => '비밀번호가 충분히 안전하지 않습니다. 더 안전한 비밀번호를 선택해 주세요.';
+
+  @override
+  String get authTooManyAttempts => '시도 횟수가 너무 많습니다. 잠시 후 다시 시도해 주세요.';
+
+  @override
+  String get authInvalidCode => '인증 코드가 잘못되었거나 만료되었습니다. 다시 시도해 주세요.';
 
   @override
   String get loginSubtitleMobile => '로그인하여 오늘 하루를 이어가세요.';
@@ -544,10 +581,45 @@ class AppLocalizationsKo extends AppLocalizations {
   String get fieldDueDate => '마감일';
 
   @override
+  String get fieldDueDateOptional => '마감일 선택';
+
+  @override
   String get fieldTime => '시간';
 
   @override
+  String get fieldTimeOptional => '선택 사항';
+
+  @override
+  String get fieldTaskReminder => '알림 (마감 전 분)';
+
+  @override
+  String get fieldTaskReminderHint => '분 단위로 입력하세요. 비워 두면 기본 24시간 전 알림을 사용합니다.';
+
+  @override
+  String get taskReminderDefault => '기본값 (24시간 전)';
+
+  @override
+  String taskReminderCustom(int minutes) {
+    return '$minutes분 전';
+  }
+
+  @override
+  String get taskNoDueDate => '마감일 없음';
+
+  @override
+  String get taskClearDueDate => '마감일 지우기';
+
+  @override
+  String get validationTaskReminderRequiresDueDate => '먼저 마감일을 선택해 주세요.';
+
+  @override
+  String get validationTaskReminderMinimum => '5분 이상의 정수를 입력해 주세요.';
+
+  @override
   String get fieldPriority => '우선순위';
+
+  @override
+  String get fieldStatus => '상태';
 
   @override
   String get fieldAssignee => '담당자';
@@ -747,7 +819,52 @@ class AppLocalizationsKo extends AppLocalizations {
   String get tasksNoResultsFilters => '이 필터로 결과가 없습니다';
 
   @override
+  String get tasksBulkPartialFailure => '선택한 작업 중 일부를 처리하지 못했습니다.';
+
+  @override
+  String get tasksBulkActionFailed => '선택한 작업을 처리하지 못했습니다.';
+
+  @override
   String get tasksClearFilters => '필터 초기화';
+
+  @override
+  String get tasksSwipeHint => '작업을 왼쪽이나 오른쪽으로 밀어 편집하거나 삭제하세요.';
+
+  @override
+  String get tasksDismissSwipeHint => '스와이프 안내 닫기';
+
+  @override
+  String get tasksFilterTitle => '작업 필터';
+
+  @override
+  String get tasksFilterStatus => '상태';
+
+  @override
+  String get tasksFilterPriority => '우선순위';
+
+  @override
+  String get tasksFilterSort => '정렬';
+
+  @override
+  String get tasksFilterAll => '전체';
+
+  @override
+  String get tasksLoadMore => '더 불러오기';
+
+  @override
+  String get tasksSortBy => '정렬 기준';
+
+  @override
+  String get tasksSortDueDate => '마감일';
+
+  @override
+  String get tasksSortCreated => '생성일';
+
+  @override
+  String get tasksSortTitle => '제목';
+
+  @override
+  String get btnApply => '적용';
 
   @override
   String get tasksAddSubtask => '+ 하위 작업 추가';
@@ -767,6 +884,23 @@ class AppLocalizationsKo extends AppLocalizations {
   String get tasksDetailTitle => '작업 세부 정보';
 
   @override
+  String get tasksSwipeEdit => '편집';
+
+  @override
+  String get confirmDeleteSubtaskTitle => '이 하위 작업을 삭제할까요?';
+
+  @override
+  String get taskMoveToWorkspace => '다른 워크스페이스로 이동';
+
+  @override
+  String taskMoveConfirmation(Object workspace) {
+    return '이 작업을 $workspace(으)로 이동할까요?';
+  }
+
+  @override
+  String get btnMove => '이동';
+
+  @override
   String get tasksNewTitle => '새 작업';
 
   @override
@@ -779,7 +913,40 @@ class AppLocalizationsKo extends AppLocalizations {
   String get tasksComments => '댓글';
 
   @override
+  String get tasksCommentJustNow => '방금';
+
+  @override
+  String tasksCommentMinutesAgo(int count) {
+    return '$count분 전';
+  }
+
+  @override
+  String tasksCommentHoursAgo(int count) {
+    return '$count시간 전';
+  }
+
+  @override
+  String tasksCommentDaysAgo(int count) {
+    return '$count일 전';
+  }
+
+  @override
   String get tasksAttachments => '첨부 파일';
+
+  @override
+  String get taskNoAttachments => '첨부 파일이 없습니다.';
+
+  @override
+  String get taskAttachmentOffline => '첨부 파일을 업로드하거나 열려면 인터넷 연결이 필요합니다.';
+
+  @override
+  String get taskAttachmentOpenFailed => '첨부 파일을 열 수 없습니다. 다시 시도해 주세요.';
+
+  @override
+  String get taskAttachFile => '파일 첨부';
+
+  @override
+  String get taskAttachmentUploadFailed => '파일을 업로드하거나 첨부할 수 없습니다. 다시 시도해 주세요.';
 
   @override
   String get tasksAssigneeLabel => '담당자 및 레이블';
@@ -807,6 +974,43 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String get calendarWeek => '주';
+
+  @override
+  String get calendarMonth => '월';
+
+  @override
+  String get calendarDay => '일';
+
+  @override
+  String calendarEventsFor(String date) {
+    return '이벤트: $date';
+  }
+
+  @override
+  String calendarMoreEvents(int count) {
+    return '+$count개 더 보기';
+  }
+
+  @override
+  String get calendarTeam => '팀';
+
+  @override
+  String get calendarDueTasks => '마감 예정 작업';
+
+  @override
+  String get calendarQueuedOffline => '이벤트가 기기에 저장되었으며 온라인 상태가 되면 동기화됩니다.';
+
+  @override
+  String get calendarAttendees => '참석자';
+
+  @override
+  String get calendarNoMembers => '이 워크스페이스에 사용 가능한 멤버가 없습니다.';
+
+  @override
+  String get calendarInvalidRange => '종료 시간은 시작 시간보다 늦어야 합니다.';
+
+  @override
   String get scheduleEventTitle => '일정 추가';
 
   @override
@@ -826,6 +1030,18 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get documentsTitle => '문서';
+
+  @override
+  String get documentSaving => '저장 중...';
+
+  @override
+  String get documentSaved => '저장됨';
+
+  @override
+  String get documentSavedLocally => '이 기기에 저장됨';
+
+  @override
+  String get documentWaitingToSync => '동기화 대기 중';
 
   @override
   String get documentsRecent => '최근';
@@ -849,6 +1065,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get documentUploadFile => '파일 업로드';
 
   @override
+  String get documentDropHint => '업로드할 파일을 여기에 놓으세요';
+
+  @override
+  String get documentDropFilesOnly => '폴더가 아닌 파일을 여기에 놓으세요.';
+
+  @override
   String get documentNewFolder => '새 폴더';
 
   @override
@@ -856,6 +1078,49 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get chatNewChannel => '새 채널';
+
+  @override
+  String get chatChannels => '채널';
+
+  @override
+  String get chatDirectMessages => '다이렉트 메시지';
+
+  @override
+  String get chatNewDm => '새 다이렉트 메시지';
+
+  @override
+  String get chatPrivateChannel => '비공개 채널';
+
+  @override
+  String get chatManageMembers => '채널 멤버 관리';
+
+  @override
+  String get chatUnnamedChannel => '이름 없는 채널';
+
+  @override
+  String get chatDirectMessageFallback => '다이렉트 메시지';
+
+  @override
+  String get chatYou => '나';
+
+  @override
+  String get chatUnknownSender => '알 수 없는 발신자';
+
+  @override
+  String chatMessageHeader(String sender, String time) {
+    return '$sender · $time';
+  }
+
+  @override
+  String chatTyping(String names) {
+    return '$names 입력 중...';
+  }
+
+  @override
+  String get chatTapToRetry => '탭하여 다시 시도';
+
+  @override
+  String get chatConfirmDeleteMessage => '이 메시지를 삭제할까요?';
 
   @override
   String get notificationsTitle => '알림';
@@ -951,6 +1216,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get homeProductivity => '생산성';
 
   @override
+  String get homeGreetingFallback => '안녕하세요';
+
+  @override
+  String get homeWorkspaceFallback => '워크스페이스';
+
+  @override
   String get teamDirectoryTitle => '팀 디렉토리';
 
   @override
@@ -958,6 +1229,24 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get teamNoActivity => '최근 활동 없음';
+
+  @override
+  String get teamUpdatedTask => '작업 업데이트됨';
+
+  @override
+  String get teamMemberProfile => '멤버 프로필';
+
+  @override
+  String get teamMessageMember => '메시지';
+
+  @override
+  String get teamRemoveMember => '멤버 제거';
+
+  @override
+  String get teamChangeRole => '역할 변경';
+
+  @override
+  String get teamConfirmRemoveMember => '이 사용자를 워크스페이스에서 제거할까요?';
 
   @override
   String get teamPresenceOnline => '지금 활성';

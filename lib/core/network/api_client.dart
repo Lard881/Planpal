@@ -1,6 +1,7 @@
 // app/lib/core/network/api_client.dart
 // Dio client: base path /api/v1, bearer token, retry once on AUTH_EXPIRED.
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../config/env.dart';
@@ -8,21 +9,21 @@ import '../config/env.dart';
 class ApiClient {
   late final Dio _dio;
 
-  ApiClient() {
-    _dio = Dio(BaseOptions(
-      baseUrl: Env.apiBaseUrl,
-      connectTimeout: const Duration(seconds: 30),
-      receiveTimeout: const Duration(seconds: 30),
-      // Long timeout on first call — backend may be waking up on Render
-      sendTimeout: const Duration(seconds: 60),
-    ));
+  ApiClient({required VoidCallback onSessionExpired}) {
+    _dio = Dio(
+      BaseOptions(
+        baseUrl: Env.apiBaseUrl,
+        connectTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 30),
+        // Long timeout on first call — backend may be waking up on Render
+        sendTimeout: const Duration(seconds: 60),
+      ),
+    );
 
-    _dio.interceptors.add(_AuthInterceptor(_dio));
-    _dio.interceptors.add(LogInterceptor(
-      requestBody: false,
-      responseBody: false,
-      error: true,
-    ));
+    _dio.interceptors.add(_AuthInterceptor(_dio, onSessionExpired));
+    _dio.interceptors.add(
+      LogInterceptor(requestBody: false, responseBody: false, error: true),
+    );
   }
 
   Dio get dio => _dio;
@@ -30,7 +31,8 @@ class ApiClient {
 
 class _AuthInterceptor extends Interceptor {
   final Dio dio;
-  _AuthInterceptor(this.dio);
+  final VoidCallback onSessionExpired;
+  _AuthInterceptor(this.dio, this.onSessionExpired);
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
@@ -49,20 +51,57 @@ class _AuthInterceptor extends Interceptor {
       final Map? errorMap = (data is Map) ? data['error'] as Map? : null;
       final code = errorMap?['code'];
       if (code == 'AUTH_EXPIRED') {
+        final requestOptions = err.requestOptions;
+        if (requestOptions.extra['authRetry'] == true) {
+          await _signOutAfterRefreshFailure();
+          return handler.next(err);
+        }
         try {
           await Supabase.instance.client.auth.refreshSession();
           final session = Supabase.instance.client.auth.currentSession;
           if (session != null) {
+            requestOptions.extra['authRetry'] = true;
             final opts = err.requestOptions;
             opts.headers['Authorization'] = 'Bearer ${session.accessToken}';
             final response = await dio.fetch(opts);
             return handler.resolve(response);
           }
-        } catch (_) {}
+        } catch (error, stackTrace) {
+          FlutterError.reportError(
+            FlutterErrorDetails(
+              exception: error,
+              stack: stackTrace,
+              library: 'session refresh',
+            ),
+          );
+        }
+        await _signOutAfterRefreshFailure();
       }
     }
     handler.next(err);
   }
+
+  Future<void> _signOutAfterRefreshFailure() async {
+    onSessionExpired();
+    try {
+      await Supabase.instance.client.auth.signOut();
+    } catch (error, stackTrace) {
+      FlutterError.reportError(
+        FlutterErrorDetails(
+          exception: error,
+          stack: stackTrace,
+          library: 'session-expired sign out',
+        ),
+      );
+    }
+  }
 }
 
-final apiClientProvider = Provider<ApiClient>((ref) => ApiClient());
+final sessionExpiredProvider = StateProvider<bool>((ref) => false);
+
+final apiClientProvider = Provider<ApiClient>(
+  (ref) => ApiClient(
+    onSessionExpired: () =>
+        ref.read(sessionExpiredProvider.notifier).state = true,
+  ),
+);

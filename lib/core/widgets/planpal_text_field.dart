@@ -63,7 +63,8 @@ class _PlanPalTextFieldState extends State<PlanPalTextField> {
       mainAxisSize: MainAxisSize.min,
       children: [
         if (widget.label != null) ...[
-          Text(widget.label!,
+          Text(
+            widget.label!,
             style: AppText.label.copyWith(color: c.textPrimary),
           ),
           const SizedBox(height: 6),
@@ -91,15 +92,16 @@ class _PlanPalTextFieldState extends State<PlanPalTextField> {
                   ? IconButton(
                       icon: Icon(
                         _obscure ? LucideIcons.eyeOff : LucideIcons.eye,
-                        size: 18, color: c.textMuted,
+                        size: 18,
+                        color: c.textMuted,
                       ),
                       onPressed: () => setState(() => _obscure = !_obscure),
                     )
-                  : widget.trailing != null
-                      ? widget.trailing
-                      : null,
+                  : widget.trailing,
               contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16, vertical: 12),
+                horizontal: 16,
+                vertical: 12,
+              ),
             ),
           ),
         ),

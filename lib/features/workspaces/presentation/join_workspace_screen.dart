@@ -18,7 +18,8 @@ const _allowedChars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 class JoinWorkspaceScreen extends ConsumerStatefulWidget {
   const JoinWorkspaceScreen({super.key});
   @override
-  ConsumerState<JoinWorkspaceScreen> createState() => _JoinWorkspaceScreenState();
+  ConsumerState<JoinWorkspaceScreen> createState() =>
+      _JoinWorkspaceScreenState();
 }
 
 class _JoinWorkspaceScreenState extends ConsumerState<JoinWorkspaceScreen> {
@@ -29,8 +30,12 @@ class _JoinWorkspaceScreenState extends ConsumerState<JoinWorkspaceScreen> {
 
   @override
   void dispose() {
-    for (final c in _controllers) c.dispose();
-    for (final f in _focusNodes) f.dispose();
+    for (final c in _controllers) {
+      c.dispose();
+    }
+    for (final f in _focusNodes) {
+      f.dispose();
+    }
     super.dispose();
   }
 
@@ -38,8 +43,11 @@ class _JoinWorkspaceScreenState extends ConsumerState<JoinWorkspaceScreen> {
 
   void _onChanged(int index, String value) {
     // Auto-uppercase and filter to allowed chars
-    final filtered = value.toUpperCase().split('')
-        .where((c) => _allowedChars.contains(c)).join();
+    final filtered = value
+        .toUpperCase()
+        .split('')
+        .where((c) => _allowedChars.contains(c))
+        .join();
 
     if (filtered.length > 1) {
       // Paste handling
@@ -55,8 +63,8 @@ class _JoinWorkspaceScreenState extends ConsumerState<JoinWorkspaceScreen> {
     setState(() {});
   }
 
-  void _onKeyDown(int index, RawKeyEvent event) {
-    if (event is RawKeyDownEvent &&
+  void _onKeyDown(int index, KeyEvent event) {
+    if (event is KeyDownEvent &&
         event.logicalKey == LogicalKeyboardKey.backspace &&
         _controllers[index].text.isEmpty &&
         index > 0) {
@@ -68,8 +76,13 @@ class _JoinWorkspaceScreenState extends ConsumerState<JoinWorkspaceScreen> {
 
   Future<void> _submit() async {
     if (_code.length < 8) return;
-    setState(() { _loading = true; _error = null; });
-    final (workspace, failure) = await ref.read(workspaceRepositoryProvider).joinWithCode(_code);
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    final (workspace, failure) = await ref
+        .read(workspaceRepositoryProvider)
+        .joinWithCode(_code);
     if (!mounted) return;
     setState(() => _loading = false);
     if (failure != null) {
@@ -80,9 +93,9 @@ class _JoinWorkspaceScreenState extends ConsumerState<JoinWorkspaceScreen> {
       await ref.read(currentWorkspaceIdProvider.notifier).set(workspace.id);
       ref.invalidate(workspacesProvider);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Joined ${workspace.name}!')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Joined ${workspace.name}!')));
         context.go('/home');
       }
     }
@@ -102,7 +115,8 @@ class _JoinWorkspaceScreenState extends ConsumerState<JoinWorkspaceScreen> {
     if (lower.contains('code_used_up') || lower.contains('max uses')) {
       return 'This invite code has reached its maximum uses.';
     }
-    if (lower.contains('already_member') || lower.contains('already a member')) {
+    if (lower.contains('already_member') ||
+        lower.contains('already a member')) {
       return 'You are already a member of this workspace.';
     }
     if (lower.contains('rate_limited') || lower.contains('rate limit')) {
@@ -120,9 +134,11 @@ class _JoinWorkspaceScreenState extends ConsumerState<JoinWorkspaceScreen> {
     Widget content = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text('Join with code',
-          style: (isDesktop ? AppText.pageTitle : AppText.pageTitle)
-              .copyWith(color: c.textPrimary),
+        Text(
+          'Join with code',
+          style: (isDesktop ? AppText.pageTitle : AppText.pageTitle).copyWith(
+            color: c.textPrimary,
+          ),
           textAlign: isDesktop ? TextAlign.left : TextAlign.left,
         ),
         const SizedBox(height: 8),
@@ -150,10 +166,11 @@ class _JoinWorkspaceScreenState extends ConsumerState<JoinWorkspaceScreen> {
           children: List.generate(8, (i) {
             final filled = _controllers[i].text.isNotEmpty;
             return SizedBox(
-              width: 36, height: 48,
-              child: RawKeyboardListener(
+              width: 36,
+              height: 48,
+              child: KeyboardListener(
                 focusNode: FocusNode(),
-                onKey: (e) => _onKeyDown(i, e),
+                onKeyEvent: (e) => _onKeyDown(i, e),
                 child: TextField(
                   controller: _controllers[i],
                   focusNode: _focusNodes[i],
@@ -165,7 +182,9 @@ class _JoinWorkspaceScreenState extends ConsumerState<JoinWorkspaceScreen> {
                   ],
                   onChanged: (v) => _onChanged(i, v),
                   style: AppText.bodyStrong.copyWith(
-                    color: c.textPrimary, fontSize: 18),
+                    color: c.textPrimary,
+                    fontSize: 18,
+                  ),
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: filled ? c.primarySoft : c.surfaceAlt,
@@ -174,17 +193,20 @@ class _JoinWorkspaceScreenState extends ConsumerState<JoinWorkspaceScreen> {
                       borderRadius: BorderRadius.circular(AppRadius.control),
                       borderSide: BorderSide(
                         color: filled ? c.primary : Colors.transparent,
-                        width: 1.5),
+                        width: 1.5,
+                      ),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(AppRadius.control),
                       borderSide: BorderSide(
                         color: filled ? c.primary : Colors.transparent,
-                        width: 1.5),
+                        width: 1.5,
+                      ),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(AppRadius.control),
-                      borderSide: BorderSide(color: c.primary, width: 1.5)),
+                      borderSide: BorderSide(color: c.primary, width: 1.5),
+                    ),
                   ),
                 ),
               ),
@@ -231,14 +253,18 @@ class _JoinWorkspaceScreenState extends ConsumerState<JoinWorkspaceScreen> {
               GestureDetector(
                 onTap: () => context.pop(),
                 child: Container(
-                  width: 36, height: 36,
+                  width: 36,
+                  height: 36,
                   decoration: BoxDecoration(
                     color: c.surface,
                     borderRadius: BorderRadius.circular(AppRadius.control),
                     border: Border.all(color: c.border),
                   ),
-                  child: Icon(LucideIcons.arrowLeft,
-                    size: 18, color: c.textPrimary),
+                  child: Icon(
+                    LucideIcons.arrowLeft,
+                    size: 18,
+                    color: c.textPrimary,
+                  ),
                 ),
               ),
               const SizedBox(height: 24),

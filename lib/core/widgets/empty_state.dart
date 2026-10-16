@@ -57,6 +57,7 @@ class ErrorState extends StatelessWidget {
   final String message;
   final String? code;
   final String? requestId;
+  final String retryLabel;
   final VoidCallback? onRetry;
 
   const ErrorState({
@@ -64,6 +65,7 @@ class ErrorState extends StatelessWidget {
     required this.message,
     this.code,
     this.requestId,
+    this.retryLabel = 'Try again',
     this.onRetry,
   });
 
@@ -94,7 +96,7 @@ class ErrorState extends StatelessWidget {
             if (onRetry != null) ...[
               const SizedBox(height: 24),
               PlanPalButton(
-                label: 'Try again',
+                label: retryLabel,
                 onPressed: onRetry,
                 variant: PlanPalButtonVariant.outline,
               ),

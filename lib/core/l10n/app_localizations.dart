@@ -254,6 +254,12 @@ abstract class AppLocalizations {
   /// **'Copy'**
   String get btnCopy;
 
+  /// No description provided for @btnEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get btnEdit;
+
   /// No description provided for @btnCopied.
   ///
   /// In en, this message translates to:
@@ -391,6 +397,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open'**
   String get btnOpen;
+
+  /// No description provided for @btnRename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get btnRename;
 
   /// No description provided for @btnDiscard.
   ///
@@ -806,6 +818,24 @@ abstract class AppLocalizations {
   /// **'{name} · Manage people and access'**
   String workspaceSettingsSubtitle(String name);
 
+  /// No description provided for @workspaceTeamOnlySettings.
+  ///
+  /// In en, this message translates to:
+  /// **'People and access settings are only available in team workspaces.'**
+  String get workspaceTeamOnlySettings;
+
+  /// No description provided for @authGoogleBrowserComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-in completed. You can close this window and return to PlanPal.'**
+  String get authGoogleBrowserComplete;
+
+  /// No description provided for @authGoogleBrowserFailure.
+  ///
+  /// In en, this message translates to:
+  /// **'Google sign-in could not be completed. Return to PlanPal and try again.'**
+  String get authGoogleBrowserFailure;
+
   /// No description provided for @tabMembers.
   ///
   /// In en, this message translates to:
@@ -884,6 +914,12 @@ abstract class AppLocalizations {
   /// **'This action cannot be undone.'**
   String get confirmDeleteBody;
 
+  /// No description provided for @confirmDeleteTaskTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this task?'**
+  String get confirmDeleteTaskTitle;
+
   /// No description provided for @confirmDeleteTasksTitle.
   ///
   /// In en, this message translates to:
@@ -955,6 +991,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Welcome back'**
   String get loginTitle;
+
+  /// No description provided for @authInvalidCredentials.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect email or password. Please try again.'**
+  String get authInvalidCredentials;
+
+  /// No description provided for @authEmailNotConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Please verify your email before logging in.'**
+  String get authEmailNotConfirmed;
+
+  /// No description provided for @authAccountAlreadyExists.
+  ///
+  /// In en, this message translates to:
+  /// **'An account with this email already exists.'**
+  String get authAccountAlreadyExists;
+
+  /// No description provided for @authWeakPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'This password is not strong enough. Please choose a stronger one.'**
+  String get authWeakPassword;
+
+  /// No description provided for @authTooManyAttempts.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many attempts. Please wait a moment and try again.'**
+  String get authTooManyAttempts;
+
+  /// No description provided for @authInvalidCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid or expired code. Please try again.'**
+  String get authInvalidCode;
 
   /// No description provided for @loginSubtitleMobile.
   ///
@@ -1130,17 +1202,83 @@ abstract class AppLocalizations {
   /// **'Due Date'**
   String get fieldDueDate;
 
+  /// No description provided for @fieldDueDateOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a due date'**
+  String get fieldDueDateOptional;
+
   /// No description provided for @fieldTime.
   ///
   /// In en, this message translates to:
   /// **'Time'**
   String get fieldTime;
 
+  /// No description provided for @fieldTimeOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional'**
+  String get fieldTimeOptional;
+
+  /// No description provided for @fieldTaskReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder (minutes before)'**
+  String get fieldTaskReminder;
+
+  /// No description provided for @fieldTaskReminderHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter minutes; blank uses the 24-hour default.'**
+  String get fieldTaskReminderHint;
+
+  /// No description provided for @taskReminderDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Default (24 hours before)'**
+  String get taskReminderDefault;
+
+  /// No description provided for @taskReminderCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} minutes before'**
+  String taskReminderCustom(int minutes);
+
+  /// No description provided for @taskNoDueDate.
+  ///
+  /// In en, this message translates to:
+  /// **'No due date'**
+  String get taskNoDueDate;
+
+  /// No description provided for @taskClearDueDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear due date'**
+  String get taskClearDueDate;
+
+  /// No description provided for @validationTaskReminderRequiresDueDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a due date first.'**
+  String get validationTaskReminderRequiresDueDate;
+
+  /// No description provided for @validationTaskReminderMinimum.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a whole number of at least 5 minutes.'**
+  String get validationTaskReminderMinimum;
+
   /// No description provided for @fieldPriority.
   ///
   /// In en, this message translates to:
   /// **'Priority'**
   String get fieldPriority;
+
+  /// No description provided for @fieldStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get fieldStatus;
 
   /// No description provided for @fieldAssignee.
   ///
@@ -1484,11 +1622,101 @@ abstract class AppLocalizations {
   /// **'No results for these filters'**
   String get tasksNoResultsFilters;
 
+  /// No description provided for @tasksBulkPartialFailure.
+  ///
+  /// In en, this message translates to:
+  /// **'Some selected tasks could not be processed.'**
+  String get tasksBulkPartialFailure;
+
+  /// No description provided for @tasksBulkActionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The selected tasks could not be processed.'**
+  String get tasksBulkActionFailed;
+
   /// No description provided for @tasksClearFilters.
   ///
   /// In en, this message translates to:
   /// **'Clear filters'**
   String get tasksClearFilters;
+
+  /// No description provided for @tasksSwipeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Swipe a task left or right to edit or delete.'**
+  String get tasksSwipeHint;
+
+  /// No description provided for @tasksDismissSwipeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Dismiss swipe tip'**
+  String get tasksDismissSwipeHint;
+
+  /// No description provided for @tasksFilterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter tasks'**
+  String get tasksFilterTitle;
+
+  /// No description provided for @tasksFilterStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get tasksFilterStatus;
+
+  /// No description provided for @tasksFilterPriority.
+  ///
+  /// In en, this message translates to:
+  /// **'Priority'**
+  String get tasksFilterPriority;
+
+  /// No description provided for @tasksFilterSort.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort'**
+  String get tasksFilterSort;
+
+  /// No description provided for @tasksFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get tasksFilterAll;
+
+  /// No description provided for @tasksLoadMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Load more'**
+  String get tasksLoadMore;
+
+  /// No description provided for @tasksSortBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort by'**
+  String get tasksSortBy;
+
+  /// No description provided for @tasksSortDueDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Due date'**
+  String get tasksSortDueDate;
+
+  /// No description provided for @tasksSortCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Created'**
+  String get tasksSortCreated;
+
+  /// No description provided for @tasksSortTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get tasksSortTitle;
+
+  /// No description provided for @btnApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get btnApply;
 
   /// No description provided for @tasksAddSubtask.
   ///
@@ -1520,6 +1748,36 @@ abstract class AppLocalizations {
   /// **'Task details'**
   String get tasksDetailTitle;
 
+  /// No description provided for @tasksSwipeEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get tasksSwipeEdit;
+
+  /// No description provided for @confirmDeleteSubtaskTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this subtask?'**
+  String get confirmDeleteSubtaskTitle;
+
+  /// No description provided for @taskMoveToWorkspace.
+  ///
+  /// In en, this message translates to:
+  /// **'Move to another workspace'**
+  String get taskMoveToWorkspace;
+
+  /// No description provided for @taskMoveConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Move this task to {workspace}?'**
+  String taskMoveConfirmation(Object workspace);
+
+  /// No description provided for @btnMove.
+  ///
+  /// In en, this message translates to:
+  /// **'Move'**
+  String get btnMove;
+
   /// No description provided for @tasksNewTitle.
   ///
   /// In en, this message translates to:
@@ -1544,11 +1802,65 @@ abstract class AppLocalizations {
   /// **'Comments'**
   String get tasksComments;
 
+  /// No description provided for @tasksCommentJustNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get tasksCommentJustNow;
+
+  /// No description provided for @tasksCommentMinutesAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 minute ago} other{{count} minutes ago}}'**
+  String tasksCommentMinutesAgo(int count);
+
+  /// No description provided for @tasksCommentHoursAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 hour ago} other{{count} hours ago}}'**
+  String tasksCommentHoursAgo(int count);
+
+  /// No description provided for @tasksCommentDaysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 day ago} other{{count} days ago}}'**
+  String tasksCommentDaysAgo(int count);
+
   /// No description provided for @tasksAttachments.
   ///
   /// In en, this message translates to:
   /// **'Attachments'**
   String get tasksAttachments;
+
+  /// No description provided for @taskNoAttachments.
+  ///
+  /// In en, this message translates to:
+  /// **'No attachments yet.'**
+  String get taskNoAttachments;
+
+  /// No description provided for @taskAttachmentOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Attachments need an internet connection to upload or open.'**
+  String get taskAttachmentOffline;
+
+  /// No description provided for @taskAttachmentOpenFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open this attachment. Please try again.'**
+  String get taskAttachmentOpenFailed;
+
+  /// No description provided for @taskAttachFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Attach file'**
+  String get taskAttachFile;
+
+  /// No description provided for @taskAttachmentUploadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not upload or attach this file. Please try again.'**
+  String get taskAttachmentUploadFailed;
 
   /// No description provided for @tasksAssigneeLabel.
   ///
@@ -1592,6 +1904,72 @@ abstract class AppLocalizations {
   /// **'Schedule · {date}'**
   String calendarScheduleFor(String date);
 
+  /// No description provided for @calendarWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Week'**
+  String get calendarWeek;
+
+  /// No description provided for @calendarMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Month'**
+  String get calendarMonth;
+
+  /// No description provided for @calendarDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Day'**
+  String get calendarDay;
+
+  /// No description provided for @calendarEventsFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Events: {date}'**
+  String calendarEventsFor(String date);
+
+  /// No description provided for @calendarMoreEvents.
+  ///
+  /// In en, this message translates to:
+  /// **'+{count} more'**
+  String calendarMoreEvents(int count);
+
+  /// No description provided for @calendarTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'Team'**
+  String get calendarTeam;
+
+  /// No description provided for @calendarDueTasks.
+  ///
+  /// In en, this message translates to:
+  /// **'Tasks due'**
+  String get calendarDueTasks;
+
+  /// No description provided for @calendarQueuedOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Event saved on this device and will sync when you\'re back online.'**
+  String get calendarQueuedOffline;
+
+  /// No description provided for @calendarAttendees.
+  ///
+  /// In en, this message translates to:
+  /// **'Attendees'**
+  String get calendarAttendees;
+
+  /// No description provided for @calendarNoMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'No workspace members available.'**
+  String get calendarNoMembers;
+
+  /// No description provided for @calendarInvalidRange.
+  ///
+  /// In en, this message translates to:
+  /// **'The end time must be after the start time.'**
+  String get calendarInvalidRange;
+
   /// No description provided for @scheduleEventTitle.
   ///
   /// In en, this message translates to:
@@ -1633,6 +2011,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Documents'**
   String get documentsTitle;
+
+  /// No description provided for @documentSaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving...'**
+  String get documentSaving;
+
+  /// No description provided for @documentSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get documentSaved;
+
+  /// No description provided for @documentSavedLocally.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved on this device'**
+  String get documentSavedLocally;
+
+  /// No description provided for @documentWaitingToSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting to sync'**
+  String get documentWaitingToSync;
 
   /// No description provided for @documentsRecent.
   ///
@@ -1676,6 +2078,18 @@ abstract class AppLocalizations {
   /// **'Upload File'**
   String get documentUploadFile;
 
+  /// No description provided for @documentDropHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop files here to upload'**
+  String get documentDropHint;
+
+  /// No description provided for @documentDropFilesOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop files here, not folders.'**
+  String get documentDropFilesOnly;
+
   /// No description provided for @documentNewFolder.
   ///
   /// In en, this message translates to:
@@ -1693,6 +2107,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'New Channel'**
   String get chatNewChannel;
+
+  /// No description provided for @chatChannels.
+  ///
+  /// In en, this message translates to:
+  /// **'Channels'**
+  String get chatChannels;
+
+  /// No description provided for @chatDirectMessages.
+  ///
+  /// In en, this message translates to:
+  /// **'Direct messages'**
+  String get chatDirectMessages;
+
+  /// No description provided for @chatNewDm.
+  ///
+  /// In en, this message translates to:
+  /// **'New direct message'**
+  String get chatNewDm;
+
+  /// No description provided for @chatPrivateChannel.
+  ///
+  /// In en, this message translates to:
+  /// **'Private channel'**
+  String get chatPrivateChannel;
+
+  /// No description provided for @chatManageMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage channel members'**
+  String get chatManageMembers;
+
+  /// No description provided for @chatUnnamedChannel.
+  ///
+  /// In en, this message translates to:
+  /// **'Unnamed channel'**
+  String get chatUnnamedChannel;
+
+  /// No description provided for @chatDirectMessageFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Direct message'**
+  String get chatDirectMessageFallback;
+
+  /// No description provided for @chatYou.
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get chatYou;
+
+  /// No description provided for @chatUnknownSender.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown sender'**
+  String get chatUnknownSender;
+
+  /// No description provided for @chatMessageHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'{sender} · {time}'**
+  String chatMessageHeader(String sender, String time);
+
+  /// No description provided for @chatTyping.
+  ///
+  /// In en, this message translates to:
+  /// **'{names} typing...'**
+  String chatTyping(String names);
+
+  /// No description provided for @chatTapToRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to retry'**
+  String get chatTapToRetry;
+
+  /// No description provided for @chatConfirmDeleteMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this message?'**
+  String get chatConfirmDeleteMessage;
 
   /// No description provided for @notificationsTitle.
   ///
@@ -1880,6 +2372,18 @@ abstract class AppLocalizations {
   /// **'Productivity'**
   String get homeProductivity;
 
+  /// No description provided for @homeGreetingFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'there'**
+  String get homeGreetingFallback;
+
+  /// No description provided for @homeWorkspaceFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Workspace'**
+  String get homeWorkspaceFallback;
+
   /// No description provided for @teamDirectoryTitle.
   ///
   /// In en, this message translates to:
@@ -1897,6 +2401,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No recent activity'**
   String get teamNoActivity;
+
+  /// No description provided for @teamUpdatedTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Task updated'**
+  String get teamUpdatedTask;
+
+  /// No description provided for @teamMemberProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Member profile'**
+  String get teamMemberProfile;
+
+  /// No description provided for @teamMessageMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get teamMessageMember;
+
+  /// No description provided for @teamRemoveMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove member'**
+  String get teamRemoveMember;
+
+  /// No description provided for @teamChangeRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Change role'**
+  String get teamChangeRole;
+
+  /// No description provided for @teamConfirmRemoveMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this person from the workspace?'**
+  String get teamConfirmRemoveMember;
 
   /// No description provided for @teamPresenceOnline.
   ///

@@ -9,6 +9,7 @@ import '../../../core/theme/app_text.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/layout/breakpoints.dart';
 import '../../../core/widgets/planpal_button.dart';
+import 'auth_failure_message.dart';
 import '../../../core/widgets/planpal_text_field.dart';
 import '../../../core/l10n/app_localizations.dart';
 import 'auth_notifier.dart';
@@ -93,6 +94,7 @@ class _ForgotPasswordScreenState
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(authNotifierProvider);
+    final l10n = AppLocalizations.of(context);
     final c = context.colors;
     final isDesktop = context.isDesktopLayout;
 
@@ -113,7 +115,7 @@ class _ForgotPasswordScreenState
               color: c.dangerSoft,
               borderRadius: BorderRadius.circular(AppRadius.control),
             ),
-            child: Text(state.error!.message,
+            child: Text(authFailureMessage(l10n, state.error!),
               style: AppText.body.copyWith(color: c.danger)),
           ),
           const SizedBox(height: 16),

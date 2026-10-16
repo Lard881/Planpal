@@ -34,6 +34,15 @@ class _DesktopNotifications extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final state = ref.watch(notificationsProvider);
     final notifier = ref.read(notificationsProvider.notifier);
+    ref.listen(notificationsProvider, (previous, next) {
+      if (next.error != null &&
+          next.error != previous?.error &&
+          next.notifications.isNotEmpty) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(next.error!)));
+      }
+    });
 
     return Scaffold(
       backgroundColor: c.background,
@@ -44,42 +53,52 @@ class _DesktopNotifications extends ConsumerWidget {
           children: [
             Row(
               children: [
-                Text(l10n.notificationsTitle,
-                  style: AppText.pageTitle.copyWith(color: c.textPrimary)),
+                Text(
+                  l10n.notificationsTitle,
+                  style: AppText.pageTitle.copyWith(color: c.textPrimary),
+                ),
                 const Spacer(),
                 TextButton(
                   onPressed: notifier.markAllRead,
-                  child: Text(l10n.btnMarkAllRead,
-                    style: AppText.bodyMedium.copyWith(color: c.primary)),
+                  child: Text(
+                    l10n.btnMarkAllRead,
+                    style: AppText.bodyMedium.copyWith(color: c.primary),
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 16),
-            _FilterChips(filter: state.filter, onChanged: (f) => notifier.load(filter: f)),
+            _FilterChips(
+              filter: state.filter,
+              onChanged: (f) => notifier.load(filter: f),
+            ),
             const SizedBox(height: 16),
             Expanded(
               child: state.loading
                   ? const Center(child: CircularProgressIndicator())
+                  : state.error != null && state.notifications.isEmpty
+                  ? ErrorState(message: state.error!, onRetry: notifier.load)
                   : state.notifications.isEmpty
-                      ? EmptyState(
-                          icon: LucideIcons.bell,
-                          title: l10n.emptyStateNoNotifications)
-                      : Container(
-                          decoration: BoxDecoration(
-                            color: c.surface,
-                            borderRadius: BorderRadius.circular(AppRadius.card),
-                            border: Border.all(color: c.border),
-                          ),
-                          child: ListView.separated(
-                            itemCount: state.notifications.length,
-                            separatorBuilder: (_, __) =>
-                                Divider(height: 1, color: c.border),
-                            itemBuilder: (ctx, i) => _NotificationRow(
-                              notification: state.notifications[i],
-                              desktop: true,
-                            ),
-                          ),
+                  ? EmptyState(
+                      icon: LucideIcons.bell,
+                      title: l10n.emptyStateNoNotifications,
+                    )
+                  : Container(
+                      decoration: BoxDecoration(
+                        color: c.surface,
+                        borderRadius: BorderRadius.circular(AppRadius.card),
+                        border: Border.all(color: c.border),
+                      ),
+                      child: ListView.separated(
+                        itemCount: state.notifications.length,
+                        separatorBuilder: (_, __) =>
+                            Divider(height: 1, color: c.border),
+                        itemBuilder: (ctx, i) => _NotificationRow(
+                          notification: state.notifications[i],
+                          desktop: true,
                         ),
+                      ),
+                    ),
             ),
           ],
         ),
@@ -98,6 +117,15 @@ class _MobileNotifications extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final state = ref.watch(notificationsProvider);
     final notifier = ref.read(notificationsProvider.notifier);
+    ref.listen(notificationsProvider, (previous, next) {
+      if (next.error != null &&
+          next.error != previous?.error &&
+          next.notifications.isNotEmpty) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(next.error!)));
+      }
+    });
 
     return Scaffold(
       backgroundColor: c.background,
@@ -111,14 +139,19 @@ class _MobileNotifications extends ConsumerWidget {
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                   child: Row(
                     children: [
-                      Text(l10n.notificationsTitle,
+                      Text(
+                        l10n.notificationsTitle,
                         style: AppText.pageTitleMobile.copyWith(
-                          color: c.textPrimary)),
+                          color: c.textPrimary,
+                        ),
+                      ),
                       const Spacer(),
                       TextButton(
                         onPressed: notifier.markAllRead,
-                        child: Text(l10n.btnMarkAllRead,
-                          style: AppText.caption.copyWith(color: c.primary)),
+                        child: Text(
+                          l10n.btnMarkAllRead,
+                          style: AppText.caption.copyWith(color: c.primary),
+                        ),
                       ),
                     ],
                   ),
@@ -129,18 +162,29 @@ class _MobileNotifications extends ConsumerWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: _FilterChips(
                     filter: state.filter,
-                    onChanged: (f) => notifier.load(filter: f)),
+                    onChanged: (f) => notifier.load(filter: f),
+                  ),
                 ),
               ),
               const SliverToBoxAdapter(child: SizedBox(height: 12)),
               if (state.loading)
                 const SliverFillRemaining(
-                  child: Center(child: CircularProgressIndicator()))
+                  child: Center(child: CircularProgressIndicator()),
+                )
+              else if (state.error != null && state.notifications.isEmpty)
+                SliverFillRemaining(
+                  child: ErrorState(
+                    message: state.error!,
+                    onRetry: notifier.load,
+                  ),
+                )
               else if (state.notifications.isEmpty)
                 SliverFillRemaining(
                   child: EmptyState(
                     icon: LucideIcons.bell,
-                    title: l10n.emptyStateNoNotifications))
+                    title: l10n.emptyStateNoNotifications,
+                  ),
+                )
               else
                 SliverPadding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -194,9 +238,12 @@ class _FilterChips extends StatelessWidget {
                 color: selected ? c.primary : c.surfaceAlt,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: Text(opt.$2,
+              child: Text(
+                opt.$2,
                 style: AppText.bodyMedium.copyWith(
-                  color: selected ? Colors.white : c.textMuted)),
+                  color: selected ? Colors.white : c.textMuted,
+                ),
+              ),
             ),
           ),
         );
@@ -219,7 +266,7 @@ class _NotificationRow extends ConsumerWidget {
 
     Widget row = Container(
       color: n.isUnread
-          ? c.primarySoft.withOpacity(0.3)
+          ? c.primarySoft.withValues(alpha: 0.3)
           : Colors.transparent,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
@@ -227,7 +274,8 @@ class _NotificationRow extends ConsumerWidget {
         children: [
           // Icon tile
           Container(
-            width: 36, height: 36,
+            width: 36,
+            height: 36,
             decoration: BoxDecoration(
               color: n.iconBg(c),
               borderRadius: BorderRadius.circular(AppRadius.control),
@@ -240,17 +288,24 @@ class _NotificationRow extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(n.title,
+                Text(
+                  n.title,
                   style: AppText.bodyMedium.copyWith(
                     color: c.textPrimary,
-                    fontWeight: n.isUnread
-                        ? FontWeight.w600 : FontWeight.w400)),
+                    fontWeight: n.isUnread ? FontWeight.w600 : FontWeight.w400,
+                  ),
+                ),
                 if (n.body.isNotEmpty)
-                  Text(n.body,
+                  Text(
+                    n.body,
                     style: AppText.caption.copyWith(color: c.textMuted),
-                    maxLines: 1, overflow: TextOverflow.ellipsis),
-                Text(n.relativeTime,
-                  style: AppText.caption.copyWith(color: c.textMuted)),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                Text(
+                  n.relativeTime,
+                  style: AppText.caption.copyWith(color: c.textMuted),
+                ),
               ],
             ),
           ),
@@ -260,15 +315,21 @@ class _NotificationRow extends ConsumerWidget {
             children: [
               if (n.isUnread)
                 Container(
-                  width: 8, height: 8,
+                  width: 8,
+                  height: 8,
                   decoration: BoxDecoration(
-                    color: c.primary, shape: BoxShape.circle),
+                    color: c.primary,
+                    shape: BoxShape.circle,
+                  ),
                 ),
               const SizedBox(height: 4),
               GestureDetector(
                 onTap: () => _showMenu(context, ref, notifier),
-                child: Icon(LucideIcons.moreHorizontal,
-                  size: 16, color: c.textMuted),
+                child: Icon(
+                  LucideIcons.moreHorizontal,
+                  size: 16,
+                  color: c.textMuted,
+                ),
               ),
             ],
           ),
@@ -279,7 +340,7 @@ class _NotificationRow extends ConsumerWidget {
     if (!desktop) {
       row = Container(
         decoration: BoxDecoration(
-          color: n.isUnread ? c.primarySoft.withOpacity(0.15) : c.surface,
+          color: n.isUnread ? c.primarySoft.withValues(alpha: 0.15) : c.surface,
           borderRadius: BorderRadius.circular(AppRadius.card),
           border: Border.all(color: c.border),
         ),
@@ -293,8 +354,11 @@ class _NotificationRow extends ConsumerWidget {
     );
   }
 
-  void _navigate(BuildContext context, WidgetRef ref,
-      NotificationsNotifier notifier) {
+  void _navigate(
+    BuildContext context,
+    WidgetRef ref,
+    NotificationsNotifier notifier,
+  ) {
     notifier.markRead(notification.id);
     final type = notification.entityType;
     final id = notification.entityId;
@@ -307,8 +371,11 @@ class _NotificationRow extends ConsumerWidget {
     }
   }
 
-  void _showMenu(BuildContext context, WidgetRef ref,
-      NotificationsNotifier notifier) {
+  void _showMenu(
+    BuildContext context,
+    WidgetRef ref,
+    NotificationsNotifier notifier,
+  ) {
     final c = context.colors;
     final l10n = AppLocalizations.of(context);
     showModalBottomSheet(
@@ -318,10 +385,16 @@ class _NotificationRow extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: Icon(notification.isUnread
-                  ? LucideIcons.checkCheck : LucideIcons.circle),
-              title: Text(notification.isUnread
-                  ? l10n.notificationsMarkRead : l10n.notificationsMarkUnread),
+              leading: Icon(
+                notification.isUnread
+                    ? LucideIcons.checkCheck
+                    : LucideIcons.circle,
+              ),
+              title: Text(
+                notification.isUnread
+                    ? l10n.notificationsMarkRead
+                    : l10n.notificationsMarkUnread,
+              ),
               onTap: () {
                 Navigator.pop(context);
                 if (notification.isUnread) {
@@ -333,8 +406,7 @@ class _NotificationRow extends ConsumerWidget {
             ),
             ListTile(
               leading: Icon(LucideIcons.trash2, color: c.danger),
-              title: Text(l10n.btnDelete,
-                style: TextStyle(color: c.danger)),
+              title: Text(l10n.btnDelete, style: TextStyle(color: c.danger)),
               onTap: () {
                 Navigator.pop(context);
                 notifier.delete(notification.id);

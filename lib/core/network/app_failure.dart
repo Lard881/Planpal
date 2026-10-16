@@ -28,6 +28,24 @@ class AuthExpiredFailure extends AppFailure {
   const AuthExpiredFailure([super.message = 'Your session has expired. Please log in again.']);
 }
 
+enum AuthFailureReason {
+  invalidCredentials,
+  emailNotConfirmed,
+  accountAlreadyExists,
+  weakPassword,
+  rateLimited,
+  invalidCode,
+  network,
+  googleSignInFailed,
+  unknown,
+}
+
+class AuthFailure extends AppFailure {
+  final AuthFailureReason reason;
+
+  const AuthFailure(this.reason) : super('');
+}
+
 // Permission
 class ForbiddenFailure extends AppFailure {
   const ForbiddenFailure([super.message = 'You don\'t have permission to do this.', String? requestId]) : super(requestId: requestId);

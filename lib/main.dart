@@ -1,4 +1,6 @@
 // app/lib/main.dart
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' show Supabase, User;
@@ -15,8 +17,13 @@ import 'core/connectivity/connectivity_service.dart';
 import 'core/widgets/empty_state.dart';
 import 'core/providers/user_profile_provider.dart';
 import 'core/providers/auth_provider.dart';
+import 'core/db/app_database.dart';
+import 'core/network/api_client.dart';
+import 'features/workspaces/providers/workspace_providers.dart';
 import 'core/l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+
+final _rootScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,14 +35,14 @@ void main() async {
   if (Env.isConfigured) {
     await Supabase.initialize(
       url: Env.supabaseUrl,
-      anonKey: Env.supabaseAnonKey,
+      publishableKey: Env.supabaseAnonKey,
     );
   } else {
     // Still call initialize with placeholder so the SDK doesn't crash;
     // the splash screen checks Env.isConfigured and redirects accordingly.
     await Supabase.initialize(
       url: 'https://placeholder.supabase.co',
-      anonKey: 'placeholder',
+      publishableKey: 'placeholder',
     );
   }
 
@@ -66,11 +73,35 @@ class PlanPalApp extends ConsumerWidget {
     final locale = ref.watch(localeProvider);
     final router = ref.watch(routerProvider);
 
+    ref.listen<bool>(sessionExpiredProvider, (_, expired) {
+      if (!expired) return;
+      ref.read(sessionExpiredProvider.notifier).state = false;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final messengerContext = _rootScaffoldMessengerKey.currentContext;
+        if (messengerContext == null) return;
+        final l10n = AppLocalizations.of(messengerContext);
+        _rootScaffoldMessengerKey.currentState?.showSnackBar(
+          SnackBar(content: Text(l10n.errorSessionExpired)),
+        );
+      });
+    });
+
     // Trigger sync when connectivity comes back online
     ref.listen(connectivityServiceProvider, (prev, next) {
       if (prev != ConnectivityState.online &&
-          next == ConnectivityState.online) {
-        ref.read(syncEngineProvider.notifier).sync();
+          next == ConnectivityState.online &&
+          ref.read(currentUserProvider) != null) {
+        ref
+            .read(syncEngineProvider.notifier)
+            .sync(workspaceId: ref.read(currentWorkspaceIdProvider));
+      }
+    });
+
+    ref.listen<String?>(currentWorkspaceIdProvider, (previous, next) {
+      if (next != null &&
+          next != previous &&
+          ref.read(currentUserProvider) != null) {
+        ref.read(syncEngineProvider.notifier).sync(workspaceId: next);
       }
     });
 
@@ -80,11 +111,15 @@ class PlanPalApp extends ConsumerWidget {
         // User just became logged in (either fresh login or session restore)
         loadMeAndApply(ref);
       }
+      if (prev?.valueOrNull != null && next.valueOrNull == null) {
+        unawaited(_clearSignedOutUserData(ref));
+      }
     });
 
     return MaterialApp.router(
       title: 'PlanPal',
       debugShowCheckedModeBanner: false,
+      scaffoldMessengerKey: _rootScaffoldMessengerKey,
       themeMode: themeMode,
       theme: buildPlanPalTheme(Brightness.light),
       darkTheme: buildPlanPalTheme(Brightness.dark),
@@ -98,5 +133,21 @@ class PlanPalApp extends ConsumerWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
     );
+  }
+
+  Future<void> _clearSignedOutUserData(WidgetRef ref) async {
+    try {
+      await ref.read(appDatabaseProvider).clearUserData();
+      await ref.read(currentWorkspaceIdProvider.notifier).clear();
+      await ref.read(syncEngineProvider.notifier).clearSyncCursors();
+    } catch (error, stackTrace) {
+      FlutterError.reportError(
+        FlutterErrorDetails(
+          exception: error,
+          stack: stackTrace,
+          library: 'signed-out local data cleanup',
+        ),
+      );
+    }
   }
 }

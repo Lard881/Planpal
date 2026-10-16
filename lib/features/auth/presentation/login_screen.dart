@@ -15,6 +15,7 @@ import 'widgets/auth_divider.dart';
 import 'widgets/google_button.dart';
 import 'widgets/login_showcase.dart';
 import '../../../core/services/google_sign_in_service.dart';
+import 'auth_failure_message.dart';
 import '../../../core/providers/user_profile_provider.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -41,18 +42,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     setState(() {
       _emailError = _emailCtrl.text.trim().isEmpty
           ? l10n.validationEmailRequired
-          : (!_emailCtrl.text.contains('@') ? l10n.validationEmailInvalid : null);
-      _passError = _passCtrl.text.isEmpty ? l10n.validationPasswordRequired : null;
+          : (!_emailCtrl.text.contains('@')
+                ? l10n.validationEmailInvalid
+                : null);
+      _passError = _passCtrl.text.isEmpty
+          ? l10n.validationPasswordRequired
+          : null;
     });
     return _emailError == null && _passError == null;
   }
 
   Future<void> _submit() async {
     if (!_validate()) return;
-    final ok = await ref.read(authNotifierProvider.notifier)
+    final ok = await ref
+        .read(authNotifierProvider.notifier)
         .signIn(_emailCtrl.text.trim(), _passCtrl.text);
     if (ok && mounted) {
       await loadMeAndApply(ref);
+      if (!mounted) return;
       context.go('/home');
     }
   }
@@ -86,12 +93,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     const SizedBox(height: 48),
                     const Center(child: AuthLogo()),
                     const SizedBox(height: 32),
-                    Text(l10n.loginTitle,
-                      style: AppText.pageTitleMobile.copyWith(color: c.textPrimary),
+                    Text(
+                      l10n.loginTitle,
+                      style: AppText.pageTitleMobile.copyWith(
+                        color: c.textPrimary,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 8),
-                    Text(l10n.loginSubtitleMobile,
+                    Text(
+                      l10n.loginSubtitleMobile,
                       style: AppText.body.copyWith(color: c.textMuted),
                       textAlign: TextAlign.center,
                     ),
@@ -127,11 +138,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   children: [
                     const AuthLogo(),
                     const SizedBox(height: 40),
-                    Text(l10n.loginTitle,
+                    Text(
+                      l10n.loginTitle,
                       style: AppText.authTitle.copyWith(color: c.textPrimary),
                     ),
                     const SizedBox(height: 8),
-                    Text(l10n.loginSubtitleDesktop,
+                    Text(
+                      l10n.loginSubtitleDesktop,
                       style: AppText.body.copyWith(color: c.textMuted),
                     ),
                     const SizedBox(height: 32),
@@ -161,8 +174,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               color: c.dangerSoft,
               borderRadius: BorderRadius.circular(AppRadius.control),
             ),
-            child: Text(state.error!.message,
-              style: AppText.body.copyWith(color: c.danger)),
+            child: Text(
+              authFailureMessage(l10n, state.error!),
+              style: AppText.body.copyWith(color: c.danger),
+            ),
           ),
           const SizedBox(height: 16),
         ],
@@ -196,8 +211,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               minimumSize: Size.zero,
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
-            child: Text(l10n.loginForgotPassword,
-              style: AppText.bodyMedium.copyWith(color: c.primary)),
+            child: Text(
+              l10n.loginForgotPassword,
+              style: AppText.bodyMedium.copyWith(color: c.primary),
+            ),
           ),
         ),
         const SizedBox(height: 16),
@@ -210,17 +227,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         const SizedBox(height: 16),
         const AuthDivider(),
         const SizedBox(height: 16),
-        GoogleButton(onPressed: () async {
-          final (ok, err) = await GoogleSignInService.signIn();
-          if (!mounted) return;
-          if (err != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(err.message)));
-          } else if (ok) {
-            await loadMeAndApply(ref);
-            context.go('/home');
-          }
-        }),
+        GoogleButton(
+          onPressed: () async {
+            final (ok, err) = await GoogleSignInService.signIn(
+              browserCompleteMessage: l10n.authGoogleBrowserComplete,
+              browserFailureMessage: l10n.authGoogleBrowserFailure,
+            );
+            if (!mounted) return;
+            if (err != null) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(
+                SnackBar(content: Text(authFailureMessage(l10n, err))),
+              );
+            } else if (ok) {
+              await loadMeAndApply(ref);
+              if (!mounted) return;
+              context.go('/home');
+            }
+          },
+        ),
       ],
     );
   }
@@ -230,11 +256,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text('${l10n.loginNewHere} ', style: AppText.body.copyWith(color: c.textMuted)),
+        Text(
+          '${l10n.loginNewHere} ',
+          style: AppText.body.copyWith(color: c.textMuted),
+        ),
         GestureDetector(
           onTap: () => context.go('/signup'),
-          child: Text(l10n.loginCreateAccount,
-            style: AppText.bodyMedium.copyWith(color: c.primary)),
+          child: Text(
+            l10n.loginCreateAccount,
+            style: AppText.bodyMedium.copyWith(color: c.primary),
+          ),
         ),
       ],
     );

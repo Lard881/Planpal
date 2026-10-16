@@ -14,6 +14,7 @@ import 'widgets/auth_logo.dart';
 import 'widgets/auth_divider.dart';
 import 'widgets/google_button.dart';
 import '../../../core/services/google_sign_in_service.dart';
+import 'auth_failure_message.dart';
 import '../../../core/providers/user_profile_provider.dart';
 
 class SignupScreen extends ConsumerStatefulWidget {
@@ -42,25 +43,34 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   bool _validate() {
     final l10n = AppLocalizations.of(context);
     setState(() {
-      _nameError = _nameCtrl.text.trim().isEmpty ? l10n.validationNameRequired : null;
+      _nameError = _nameCtrl.text.trim().isEmpty
+          ? l10n.validationNameRequired
+          : null;
       _emailError = _emailCtrl.text.trim().isEmpty
           ? l10n.validationEmailRequired
-          : (!_emailCtrl.text.contains('@') ? l10n.validationEmailInvalid : null);
-      _passError = _passCtrl.text.length < 8 ? l10n.validationPasswordTooShort : null;
-      _confirmError = _passCtrl.text != _confirmCtrl.text ? l10n.validationPasswordsNoMatch : null;
+          : (!_emailCtrl.text.contains('@')
+                ? l10n.validationEmailInvalid
+                : null);
+      _passError = _passCtrl.text.length < 8
+          ? l10n.validationPasswordTooShort
+          : null;
+      _confirmError = _passCtrl.text != _confirmCtrl.text
+          ? l10n.validationPasswordsNoMatch
+          : null;
       _termsError = !_termsAccepted ? l10n.validationTermsRequired : null;
     });
-    return _nameError == null && _emailError == null &&
-        _passError == null && _confirmError == null && _termsError == null;
+    return _nameError == null &&
+        _emailError == null &&
+        _passError == null &&
+        _confirmError == null &&
+        _termsError == null;
   }
 
   Future<void> _submit() async {
     if (!_validate()) return;
-    final ok = await ref.read(authNotifierProvider.notifier).signUp(
-      _emailCtrl.text.trim(),
-      _passCtrl.text,
-      _nameCtrl.text.trim(),
-    );
+    final ok = await ref
+        .read(authNotifierProvider.notifier)
+        .signUp(_emailCtrl.text.trim(), _passCtrl.text, _nameCtrl.text.trim());
     if (ok && mounted) {
       context.go('/verify-email', extra: _emailCtrl.text.trim());
     }
@@ -95,8 +105,11 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                     const SizedBox(height: 48),
                     const Center(child: AuthLogo()),
                     const SizedBox(height: 32),
-                    Text(l10n.signupTitle,
-                      style: AppText.pageTitleMobile.copyWith(color: c.textPrimary),
+                    Text(
+                      l10n.signupTitle,
+                      style: AppText.pageTitleMobile.copyWith(
+                        color: c.textPrimary,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 32),
@@ -131,8 +144,10 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                   children: [
                     const AuthLogo(),
                     const SizedBox(height: 40),
-                    Text(l10n.signupTitle,
-                      style: AppText.authTitle.copyWith(color: c.textPrimary)),
+                    Text(
+                      l10n.signupTitle,
+                      style: AppText.authTitle.copyWith(color: c.textPrimary),
+                    ),
                     const SizedBox(height: 32),
                     _buildForm(state, c),
                     const SizedBox(height: 24),
@@ -158,20 +173,26 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(l10n.signupTeamworkTitle,
+                    Text(
+                      l10n.signupTeamworkTitle,
                       style: AppText.authTitle.copyWith(
-                          color: Colors.white, fontSize: 36),
+                        color: Colors.white,
+                        fontSize: 36,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 16),
-                    Text(l10n.signupTeamworkDesc,
+                    Text(
+                      l10n.signupTeamworkDesc,
                       style: AppText.body.copyWith(
-                          color: Colors.white.withValues(alpha: 0.8)),
+                        color: Colors.white.withValues(alpha: 0.8),
+                      ),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 32),
                     Wrap(
-                      spacing: 12, runSpacing: 12,
+                      spacing: 12,
+                      runSpacing: 12,
                       alignment: WrapAlignment.center,
                       children: [
                         _WhitePill('✓ ${l10n.navTasks}'),
@@ -201,8 +222,10 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
               color: c.dangerSoft,
               borderRadius: BorderRadius.circular(AppRadius.control),
             ),
-            child: Text(state.error!.message,
-              style: AppText.body.copyWith(color: c.danger)),
+            child: Text(
+              authFailureMessage(l10n, state.error!),
+              style: AppText.body.copyWith(color: c.danger),
+            ),
           ),
           const SizedBox(height: 16),
         ],
@@ -261,17 +284,26 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
         const SizedBox(height: 16),
         const AuthDivider(),
         const SizedBox(height: 16),
-        GoogleButton(onPressed: () async {
-          final (ok, err) = await GoogleSignInService.signIn();
-          if (!mounted) return;
-          if (err != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(err.message)));
-          } else if (ok) {
-            await loadMeAndApply(ref);
-            context.go('/home');
-          }
-        }),
+        GoogleButton(
+          onPressed: () async {
+            final (ok, err) = await GoogleSignInService.signIn(
+              browserCompleteMessage: l10n.authGoogleBrowserComplete,
+              browserFailureMessage: l10n.authGoogleBrowserFailure,
+            );
+            if (!mounted) return;
+            if (err != null) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(
+                SnackBar(content: Text(authFailureMessage(l10n, err))),
+              );
+            } else if (ok) {
+              await loadMeAndApply(ref);
+              if (!mounted) return;
+              context.go('/home');
+            }
+          },
+        ),
       ],
     );
   }
@@ -286,7 +318,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text(l10n.btnConfirm)),
+            child: Text(l10n.btnConfirm),
+          ),
         ],
       ),
     );
@@ -308,17 +341,27 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
           visualDensity: VisualDensity.compact,
         ),
         const SizedBox(width: 4),
-        Text('${l10n.signupTermsPrefix} ', style: AppText.body.copyWith(color: c.textMuted)),
+        Text(
+          '${l10n.signupTermsPrefix} ',
+          style: AppText.body.copyWith(color: c.textMuted),
+        ),
         GestureDetector(
           onTap: () => _showLegalDialog(context, l10n.signupTerms),
-          child: Text(l10n.signupTerms,
-            style: AppText.bodyMedium.copyWith(color: c.primary)),
+          child: Text(
+            l10n.signupTerms,
+            style: AppText.bodyMedium.copyWith(color: c.primary),
+          ),
         ),
-        Text(' ${l10n.signupTermsAnd} ', style: AppText.body.copyWith(color: c.textMuted)),
+        Text(
+          ' ${l10n.signupTermsAnd} ',
+          style: AppText.body.copyWith(color: c.textMuted),
+        ),
         GestureDetector(
           onTap: () => _showLegalDialog(context, l10n.signupPrivacy),
-          child: Text(l10n.signupPrivacy,
-            style: AppText.bodyMedium.copyWith(color: c.primary)),
+          child: Text(
+            l10n.signupPrivacy,
+            style: AppText.bodyMedium.copyWith(color: c.primary),
+          ),
         ),
       ],
     );
@@ -329,12 +372,16 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text('${l10n.signupHaveAccount} ',
-          style: AppText.body.copyWith(color: c.textMuted)),
+        Text(
+          '${l10n.signupHaveAccount} ',
+          style: AppText.body.copyWith(color: c.textMuted),
+        ),
         GestureDetector(
           onTap: () => context.go('/login'),
-          child: Text(l10n.logIn,
-            style: AppText.bodyMedium.copyWith(color: c.primary)),
+          child: Text(
+            l10n.logIn,
+            style: AppText.bodyMedium.copyWith(color: c.primary),
+          ),
         ),
       ],
     );
@@ -349,13 +396,18 @@ class _WhitePill extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.2),
+        color: Colors.white.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.3)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
       ),
-      child: Text(label,
-        style: const TextStyle(color: Colors.white,
-            fontSize: 14, fontWeight: FontWeight.w500)),
+      child: Text(
+        label,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
     );
   }
 }

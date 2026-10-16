@@ -20,6 +20,7 @@ import '../../../core/l10n/app_localizations.dart';
 import '../../workspaces/providers/workspace_providers.dart';
 import '../../workspaces/data/workspace_repository.dart';
 import '../../auth/presentation/auth_notifier.dart';
+import '../../auth/presentation/auth_failure_message.dart';
 import 'sync_status_screen.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -42,9 +43,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final isDesktop = context.isDesktopLayout;
-    return isDesktop
-        ? _buildDesktop(context)
-        : _buildMobile(context);
+    return isDesktop ? _buildDesktop(context) : _buildMobile(context);
   }
 
   Widget _buildDesktop(BuildContext context) {
@@ -59,7 +58,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       _MenuItem('notifications', l10n.settingsNotifications, LucideIcons.bell),
       _MenuItem('appearance', l10n.settingsAppearance, LucideIcons.palette),
       _MenuItem('security', l10n.settingsSecurity, LucideIcons.lock),
-      if (!isPersonal) _MenuItem('workspace', l10n.settingsWorkspace, LucideIcons.building2),
+      if (!isPersonal)
+        _MenuItem('workspace', l10n.settingsWorkspace, LucideIcons.building2),
       _MenuItem('sync', l10n.settingsSyncStatus, LucideIcons.refreshCw),
     ];
 
@@ -95,12 +95,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       ),
                       child: Row(
                         children: [
-                          Icon(item.icon, size: 16,
-                            color: selected ? c.primary : c.textMuted),
+                          Icon(
+                            item.icon,
+                            size: 16,
+                            color: selected ? c.primary : c.textMuted,
+                          ),
                           const SizedBox(width: 10),
-                          Text(item.label,
+                          Text(
+                            item.label,
                             style: AppText.bodyMedium.copyWith(
-                              color: selected ? c.primary : c.textPrimary)),
+                              color: selected ? c.primary : c.textPrimary,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -149,9 +155,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             onTap: () => setState(() => _section = 'list'),
             child: Icon(Icons.arrow_back, color: context.colors.textPrimary),
           ),
-          title: Text(_section[0].toUpperCase() + _section.substring(1),
+          title: Text(
+            _section[0].toUpperCase() + _section.substring(1),
             style: AppText.bodyStrong.copyWith(
-              color: context.colors.textPrimary)),
+              color: context.colors.textPrimary,
+            ),
+          ),
         ),
         body: Padding(
           padding: const EdgeInsets.all(16),
@@ -166,8 +175,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            Text(l10n.navSettings,
-              style: AppText.pageTitleMobile.copyWith(color: c.textPrimary)),
+            Text(
+              l10n.navSettings,
+              style: AppText.pageTitleMobile.copyWith(color: c.textPrimary),
+            ),
             const SizedBox(height: 16),
             Container(
               decoration: BoxDecoration(
@@ -177,23 +188,47 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
               child: Column(
                 children: [
-                  _SettingsRow(icon: LucideIcons.user, label: l10n.settingsProfile,
-                    onTap: () => setState(() => _section = 'profile')),
-                  _SettingsRow(icon: LucideIcons.settings, label: l10n.settingsAccount,
-                    onTap: () => setState(() => _section = 'account')),
-                  _SettingsRow(icon: LucideIcons.bell, label: l10n.settingsNotifications,
-                    onTap: () => setState(() => _section = 'notifications')),
-                  _SettingsRow(icon: LucideIcons.palette, label: l10n.settingsAppearance,
-                    onTap: () => setState(() => _section = 'appearance')),
-                  _SettingsRow(icon: LucideIcons.lock, label: l10n.settingsSecurity,
-                    onTap: () => setState(() => _section = 'security')),
+                  _SettingsRow(
+                    icon: LucideIcons.user,
+                    label: l10n.settingsProfile,
+                    onTap: () => setState(() => _section = 'profile'),
+                  ),
+                  _SettingsRow(
+                    icon: LucideIcons.settings,
+                    label: l10n.settingsAccount,
+                    onTap: () => setState(() => _section = 'account'),
+                  ),
+                  _SettingsRow(
+                    icon: LucideIcons.bell,
+                    label: l10n.settingsNotifications,
+                    onTap: () => setState(() => _section = 'notifications'),
+                  ),
+                  _SettingsRow(
+                    icon: LucideIcons.palette,
+                    label: l10n.settingsAppearance,
+                    onTap: () => setState(() => _section = 'appearance'),
+                  ),
+                  _SettingsRow(
+                    icon: LucideIcons.lock,
+                    label: l10n.settingsSecurity,
+                    onTap: () => setState(() => _section = 'security'),
+                  ),
                   if (!isPersonal)
-                    _SettingsRow(icon: LucideIcons.building2, label: l10n.settingsWorkspace,
-                      onTap: () => setState(() => _section = 'workspace')),
-                  _SettingsRow(icon: LucideIcons.refreshCw, label: l10n.settingsSyncStatus,
-                    onTap: () => Navigator.push(context,
+                    _SettingsRow(
+                      icon: LucideIcons.building2,
+                      label: l10n.settingsWorkspace,
+                      onTap: () => setState(() => _section = 'workspace'),
+                    ),
+                  _SettingsRow(
+                    icon: LucideIcons.refreshCw,
+                    label: l10n.settingsSyncStatus,
+                    onTap: () => Navigator.push(
+                      context,
                       MaterialPageRoute(
-                        builder: (_) => const SyncStatusScreen()))),
+                        builder: (_) => const SyncStatusScreen(),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -206,14 +241,23 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Widget _buildSection(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     switch (_section) {
-      case 'profile': return _ProfileSection();
-      case 'appearance': return _AppearanceSection();
-      case 'account': return _AccountSection();
-      case 'workspace': return _WorkspaceSection();
-      case 'sync': return const SyncStatusScreen();
-      default: return Center(
-        child: Text(l10n.settingsComingSoon(_section),
-          style: AppText.body.copyWith(color: context.colors.textMuted)));
+      case 'profile':
+        return _ProfileSection();
+      case 'appearance':
+        return _AppearanceSection();
+      case 'account':
+        return _AccountSection();
+      case 'workspace':
+        return _WorkspaceSection();
+      case 'sync':
+        return const SyncStatusScreen();
+      default:
+        return Center(
+          child: Text(
+            l10n.settingsComingSoon(_section),
+            style: AppText.body.copyWith(color: context.colors.textMuted),
+          ),
+        );
     }
   }
 }
@@ -233,11 +277,15 @@ class _ProfileSectionState extends ConsumerState<_ProfileSection> {
     super.initState();
     final user = Supabase.instance.client.auth.currentUser;
     _nameCtrl = TextEditingController(
-      text: user?.userMetadata?['full_name'] as String? ?? '');
+      text: user?.userMetadata?['full_name'] as String? ?? '',
+    );
   }
 
   @override
-  void dispose() { _nameCtrl.dispose(); super.dispose(); }
+  void dispose() {
+    _nameCtrl.dispose();
+    super.dispose();
+  }
 
   Future<void> _save() async {
     final l10n = AppLocalizations.of(context);
@@ -245,13 +293,17 @@ class _ProfileSectionState extends ConsumerState<_ProfileSection> {
     try {
       // Update Supabase auth metadata
       await Supabase.instance.client.auth.updateUser(
-        UserAttributes(data: {'full_name': _nameCtrl.text.trim()}));
+        UserAttributes(data: {'full_name': _nameCtrl.text.trim()}),
+      );
       // Also PATCH /me on the backend so the profile table stays in sync
-      await ref.read(apiClientProvider).dio.patch('/me',
-          data: {'fullName': _nameCtrl.text.trim()});
+      await ref
+          .read(apiClientProvider)
+          .dio
+          .patch('/me', data: {'fullName': _nameCtrl.text.trim()});
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.syncSaved)));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l10n.syncSaved)));
       }
     } catch (_) {}
     setState(() => _saving = false);
@@ -269,8 +321,10 @@ class _ProfileSectionState extends ConsumerState<_ProfileSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(l10n.settingsProfile,
-          style: AppText.authTitle.copyWith(color: c.textPrimary)),
+        Text(
+          l10n.settingsProfile,
+          style: AppText.authTitle.copyWith(color: c.textPrimary),
+        ),
         const SizedBox(height: 24),
         // Avatar row
         Row(
@@ -280,17 +334,22 @@ class _ProfileSectionState extends ConsumerState<_ProfileSection> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('$name · ${perms.role ?? 'Member'}',
-                  style: AppText.bodyStrong.copyWith(color: c.textPrimary)),
+                Text(
+                  '$name · ${perms.role ?? 'Member'}',
+                  style: AppText.bodyStrong.copyWith(color: c.textPrimary),
+                ),
                 const SizedBox(height: 8),
                 Row(
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         color: c.primarySoft,
-                        borderRadius: BorderRadius.circular(20)),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
                       child: GestureDetector(
                         onTap: () async {
                           final result = await pickAndCropAvatar(context);
@@ -301,24 +360,36 @@ class _ProfileSectionState extends ConsumerState<_ProfileSection> {
                               .upload(file, mime);
                           if (err != null && context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(err.message)));
+                              SnackBar(content: Text(err.message)),
+                            );
                           } else if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: Text(AppLocalizations.of(context).settingsAvatarUpdated)));
+                                content: Text(
+                                  AppLocalizations.of(
+                                    context,
+                                  ).settingsAvatarUpdated,
+                                ),
+                              ),
+                            );
                           }
                         },
-                        child: Text(l10n.btnUploadNew,
-                          style: AppText.caption.copyWith(color: c.primary)),
+                        child: Text(
+                          l10n.btnUploadNew,
+                          style: AppText.caption.copyWith(color: c.primary),
+                        ),
                       ),
                     ),
                     const SizedBox(width: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         color: c.surfaceAlt,
-                        borderRadius: BorderRadius.circular(20)),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
                       child: GestureDetector(
                         onTap: () async {
                           final err = await ref
@@ -326,11 +397,14 @@ class _ProfileSectionState extends ConsumerState<_ProfileSection> {
                               .removeAvatar();
                           if (err != null && context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(err.message)));
+                              SnackBar(content: Text(err.message)),
+                            );
                           }
                         },
-                        child: Text(l10n.btnRemove,
-                          style: AppText.caption.copyWith(color: c.textMuted)),
+                        child: Text(
+                          l10n.btnRemove,
+                          style: AppText.caption.copyWith(color: c.textMuted),
+                        ),
                       ),
                     ),
                   ],
@@ -375,10 +449,12 @@ class _Field extends StatelessWidget {
         TextField(
           controller: ctrl,
           decoration: InputDecoration(
-            filled: true, fillColor: c.surfaceAlt,
+            filled: true,
+            fillColor: c.surfaceAlt,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppRadius.control),
-              borderSide: BorderSide.none),
+              borderSide: BorderSide.none,
+            ),
           ),
         ),
       ],
@@ -403,11 +479,15 @@ class _ReadOnlyField extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           decoration: BoxDecoration(
             color: c.surfaceAlt,
-            borderRadius: BorderRadius.circular(AppRadius.control)),
+            borderRadius: BorderRadius.circular(AppRadius.control),
+          ),
           child: Align(
             alignment: Alignment.centerLeft,
-            child: Text(value,
-              style: AppText.body.copyWith(color: c.textMuted))),
+            child: Text(
+              value,
+              style: AppText.body.copyWith(color: c.textMuted),
+            ),
+          ),
         ),
       ],
     );
@@ -441,20 +521,27 @@ class _AppearanceSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(l10n.settingsAppearance,
-          style: AppText.authTitle.copyWith(color: c.textPrimary)),
+        Text(
+          l10n.settingsAppearance,
+          style: AppText.authTitle.copyWith(color: c.textPrimary),
+        ),
         const SizedBox(height: 24),
-        Text(l10n.settingsTheme, style: AppText.label.copyWith(color: c.textPrimary)),
+        Text(
+          l10n.settingsTheme,
+          style: AppText.label.copyWith(color: c.textPrimary),
+        ),
         const SizedBox(height: 12),
         Row(
-          children: themes.map(((ThemeMode mode, String label, IconData icon) t) {
+          children: themes.map((
+            (ThemeMode mode, String label, IconData icon) t,
+          ) {
             final selected = themeMode == t.$1;
             return Expanded(
               child: Padding(
                 padding: const EdgeInsets.only(right: 12),
                 child: GestureDetector(
-                  onTap: () => ref.read(themeModeProvider.notifier)
-                      .setTheme(t.$1),
+                  onTap: () =>
+                      ref.read(themeModeProvider.notifier).setTheme(t.$1),
                   child: Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
@@ -462,21 +549,29 @@ class _AppearanceSection extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(AppRadius.card),
                       border: Border.all(
                         color: selected ? c.primary : c.border,
-                        width: selected ? 2 : 1),
+                        width: selected ? 2 : 1,
+                      ),
                     ),
                     child: Column(
                       children: [
                         Container(
-                          width: 36, height: 36,
+                          width: 36,
+                          height: 36,
                           decoration: BoxDecoration(
                             color: c.surfaceAlt,
-                            borderRadius: BorderRadius.circular(AppRadius.control)),
+                            borderRadius: BorderRadius.circular(
+                              AppRadius.control,
+                            ),
+                          ),
                           child: Icon(t.$3, size: 18, color: c.textMuted),
                         ),
                         const SizedBox(height: 8),
-                        Text(t.$2,
+                        Text(
+                          t.$2,
                           style: AppText.bodyMedium.copyWith(
-                            color: selected ? c.primary : c.textPrimary)),
+                            color: selected ? c.primary : c.textPrimary,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -486,7 +581,10 @@ class _AppearanceSection extends ConsumerWidget {
           }).toList(),
         ),
         const SizedBox(height: 24),
-        Text(l10n.settingsLanguage, style: AppText.label.copyWith(color: c.textPrimary)),
+        Text(
+          l10n.settingsLanguage,
+          style: AppText.label.copyWith(color: c.textPrimary),
+        ),
         const SizedBox(height: 12),
         Container(
           decoration: BoxDecoration(
@@ -499,10 +597,13 @@ class _AppearanceSection extends ConsumerWidget {
               final selected = (locale?.languageCode ?? 'en') == lang.$1;
               return ListTile(
                 dense: true,
-                onTap: () => ref.read(localeProvider.notifier)
+                onTap: () => ref
+                    .read(localeProvider.notifier)
                     .setLocale(Locale(lang.$1)),
-                title: Text(lang.$2,
-                  style: AppText.bodyMedium.copyWith(color: c.textPrimary)),
+                title: Text(
+                  lang.$2,
+                  style: AppText.bodyMedium.copyWith(color: c.textPrimary),
+                ),
                 trailing: selected
                     ? Icon(Icons.check, color: c.primary, size: 18)
                     : null,
@@ -524,15 +625,24 @@ class _AccountSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(l10n.settingsAccount,
-          style: AppText.authTitle.copyWith(color: c.textPrimary)),
+        Text(
+          l10n.settingsAccount,
+          style: AppText.authTitle.copyWith(color: c.textPrimary),
+        ),
         const SizedBox(height: 24),
         PlanPalButton(
           label: l10n.btnSignOut,
           variant: PlanPalButtonVariant.outline,
           width: double.infinity,
           onPressed: () async {
-            await ref.read(authNotifierProvider.notifier).signOut(ref);
+            final failure = await ref
+                .read(authNotifierProvider.notifier)
+                .signOut(ref);
+            if (context.mounted && failure != null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(authFailureMessage(l10n, failure))),
+              );
+            }
             if (context.mounted) context.go('/login');
           },
         ),
@@ -547,11 +657,15 @@ class _AccountSection extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(l10n.settingsDeleteAccountTitle,
-                style: AppText.bodyStrong.copyWith(color: c.danger)),
+              Text(
+                l10n.settingsDeleteAccountTitle,
+                style: AppText.bodyStrong.copyWith(color: c.danger),
+              ),
               const SizedBox(height: 8),
-              Text(l10n.settingsDeleteAccountDesc,
-                style: AppText.body.copyWith(color: c.textMuted)),
+              Text(
+                l10n.settingsDeleteAccountDesc,
+                style: AppText.body.copyWith(color: c.textMuted),
+              ),
               const SizedBox(height: 12),
               PlanPalButton(
                 label: l10n.btnDeleteAccount,
@@ -566,7 +680,9 @@ class _AccountSection extends ConsumerWidget {
   }
 
   Future<void> _confirmDeleteAccount(
-      BuildContext context, WidgetRef ref) async {
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
     final l10n = AppLocalizations.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
@@ -576,25 +692,38 @@ class _AccountSection extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.btnCancel)),
+            child: Text(l10n.btnCancel),
+          ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
             style: FilledButton.styleFrom(
-                backgroundColor: context.colors.danger),
-            child: Text(l10n.btnDelete)),
+              backgroundColor: context.colors.danger,
+            ),
+            child: Text(l10n.btnDelete),
+          ),
         ],
       ),
     );
     if (confirmed != true || !context.mounted) return;
     try {
-      await ref.read(apiClientProvider).dio.delete('/me',
-          data: {'confirmDelete': true});
-      await ref.read(authNotifierProvider.notifier).signOut(ref);
-      if (context.mounted) context.go('/login');
-    } catch (e) {
-      if (context.mounted) {
+      await ref
+          .read(apiClientProvider)
+          .dio
+          .delete('/me', data: {'confirmDelete': true});
+      final signOutFailure = await ref
+          .read(authNotifierProvider.notifier)
+          .signOut(ref);
+      if (signOutFailure != null && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Could not delete account: $e')));
+          SnackBar(content: Text(authFailureMessage(l10n, signOutFailure))),
+        );
+      }
+      if (context.mounted) context.go('/login');
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l10n.errorGeneric)));
       }
     }
   }
@@ -626,28 +755,33 @@ class _MobileProfileTab extends ConsumerWidget {
                   const SizedBox(height: 24),
                   CurrentUserAvatar(name: name, size: 96),
                   const SizedBox(height: 12),
-                  Text(name,
+                  Text(
+                    name,
                     style: AppText.pageTitleMobile.copyWith(
-                        color: c.textPrimary)),
-                  Text(email,
-                    style: AppText.body.copyWith(color: c.textMuted)),
+                      color: c.textPrimary,
+                    ),
+                  ),
+                  Text(email, style: AppText.body.copyWith(color: c.textMuted)),
                   const SizedBox(height: 12),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 6),
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
                         decoration: BoxDecoration(
                           color: c.surfaceAlt,
-                          borderRadius: BorderRadius.circular(20)),
-                        child: Text(workspace?.name ?? l10n.navSettings,
-                          style: AppText.caption.copyWith(
-                              color: c.textPrimary)),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          workspace?.name ?? l10n.navSettings,
+                          style: AppText.caption.copyWith(color: c.textPrimary),
+                        ),
                       ),
                       const SizedBox(width: 8),
-                      if (perms.role != null)
-                        RoleBadge(role: perms.role!),
+                      if (perms.role != null) RoleBadge(role: perms.role!),
                     ],
                   ),
                 ],
@@ -664,24 +798,48 @@ class _MobileProfileTab extends ConsumerWidget {
               child: Column(
                 children: [
                   if (!isPersonal)
-                    _ProfileRow(icon: LucideIcons.users, label: l10n.navTeam,
-                      onTap: () => context.go('/team')),
-                  _ProfileRow(icon: LucideIcons.fileText, label: l10n.navDocuments,
-                    onTap: () => context.go('/documents')),
+                    _ProfileRow(
+                      icon: LucideIcons.users,
+                      label: l10n.navTeam,
+                      onTap: () => context.go('/team'),
+                    ),
+                  _ProfileRow(
+                    icon: LucideIcons.fileText,
+                    label: l10n.navDocuments,
+                    onTap: () => context.go('/documents'),
+                  ),
                   if (!perms.isGuest)
-                    _ProfileRow(icon: LucideIcons.barChart2, label: l10n.navAnalytics,
-                      onTap: () => context.go('/analytics')),
-                  _ProfileRow(icon: LucideIcons.bell, label: l10n.settingsNotifications,
-                    onTap: () => context.push('/notifications')),
-                  _ProfileRow(icon: LucideIcons.refreshCw, label: l10n.settingsSyncStatus,
-                    onTap: () => Navigator.push(context, MaterialPageRoute(
-                      builder: (_) => const SyncStatusScreen()))),
+                    _ProfileRow(
+                      icon: LucideIcons.barChart2,
+                      label: l10n.navAnalytics,
+                      onTap: () => context.go('/analytics'),
+                    ),
+                  _ProfileRow(
+                    icon: LucideIcons.bell,
+                    label: l10n.settingsNotifications,
+                    onTap: () => context.push('/notifications'),
+                  ),
+                  _ProfileRow(
+                    icon: LucideIcons.refreshCw,
+                    label: l10n.settingsSyncStatus,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const SyncStatusScreen(),
+                      ),
+                    ),
+                  ),
                   ListTile(
                     leading: Icon(LucideIcons.logOut, color: c.danger),
-                    title: Text(l10n.btnSignOut,
-                      style: AppText.bodyMedium.copyWith(color: c.danger)),
-                    trailing: Icon(LucideIcons.chevronRight,
-                      size: 16, color: c.textMuted),
+                    title: Text(
+                      l10n.btnSignOut,
+                      style: AppText.bodyMedium.copyWith(color: c.danger),
+                    ),
+                    trailing: Icon(
+                      LucideIcons.chevronRight,
+                      size: 16,
+                      color: c.textMuted,
+                    ),
                     onTap: () async {
                       await Supabase.instance.client.auth.signOut();
                       if (context.mounted) context.go('/login');
@@ -701,15 +859,21 @@ class _ProfileRow extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback onTap;
-  const _ProfileRow({required this.icon, required this.label, required this.onTap});
+  const _ProfileRow({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
     return ListTile(
       leading: Icon(icon, color: c.textMuted, size: 20),
-      title: Text(label,
-        style: AppText.bodyMedium.copyWith(color: c.textPrimary)),
+      title: Text(
+        label,
+        style: AppText.bodyMedium.copyWith(color: c.textPrimary),
+      ),
       trailing: Icon(LucideIcons.chevronRight, size: 16, color: c.textMuted),
       onTap: onTap,
     );
@@ -720,7 +884,11 @@ class _SettingsRow extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback onTap;
-  const _SettingsRow({required this.icon, required this.label, required this.onTap});
+  const _SettingsRow({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -763,16 +931,19 @@ class _WorkspaceSectionState extends ConsumerState<_WorkspaceSection> {
     if (name.isEmpty) return;
     setState(() => _saving = true);
     final wsId = ref.read(currentWorkspaceIdProvider) ?? '';
-    final (_, err) = await ref.read(workspaceRepositoryProvider)
+    final (_, err) = await ref
+        .read(workspaceRepositoryProvider)
         .renameWorkspace(wsId, name);
     if (err != null && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(err.message)));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(err.message)));
     } else if (mounted) {
       final l10n = AppLocalizations.of(context);
       ref.invalidate(workspacesProvider);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.workspaceSettings)));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.workspaceSettings)));
     }
     if (mounted) setState(() => _saving = false);
   }
@@ -789,21 +960,26 @@ class _WorkspaceSectionState extends ConsumerState<_WorkspaceSection> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.btnCancel)),
+            child: Text(l10n.btnCancel),
+          ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
             style: FilledButton.styleFrom(
-                backgroundColor: context.colors.danger),
-            child: const Text('Leave')),
+              backgroundColor: context.colors.danger,
+            ),
+            child: const Text('Leave'),
+          ),
         ],
       ),
     );
     if (confirmed != true || !mounted) return;
-    final err = await ref.read(workspaceRepositoryProvider)
+    final err = await ref
+        .read(workspaceRepositoryProvider)
         .leaveWorkspace(wsId, userId);
     if (err != null && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(err.message)));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(err.message)));
     } else if (mounted) {
       ref.read(currentWorkspaceIdProvider.notifier).clear();
       ref.invalidate(workspacesProvider);
@@ -822,21 +998,26 @@ class _WorkspaceSectionState extends ConsumerState<_WorkspaceSection> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.btnCancel)),
+            child: Text(l10n.btnCancel),
+          ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
             style: FilledButton.styleFrom(
-                backgroundColor: context.colors.danger),
-            child: Text(l10n.btnDelete)),
+              backgroundColor: context.colors.danger,
+            ),
+            child: Text(l10n.btnDelete),
+          ),
         ],
       ),
     );
     if (confirmed != true || !mounted) return;
-    final err = await ref.read(workspaceRepositoryProvider)
+    final err = await ref
+        .read(workspaceRepositoryProvider)
         .deleteWorkspace(wsId);
     if (err != null && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(err.message)));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(err.message)));
     } else if (mounted) {
       ref.read(currentWorkspaceIdProvider.notifier).clear();
       ref.invalidate(workspacesProvider);
@@ -853,20 +1034,26 @@ class _WorkspaceSectionState extends ConsumerState<_WorkspaceSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(l10n.settingsWorkspace,
-          style: AppText.authTitle.copyWith(color: c.textPrimary)),
+        Text(
+          l10n.settingsWorkspace,
+          style: AppText.authTitle.copyWith(color: c.textPrimary),
+        ),
         const SizedBox(height: 24),
         if (perms.isAdmin) ...[
-          Text(l10n.workspaceNameLabel,
-            style: AppText.label.copyWith(color: c.textPrimary)),
+          Text(
+            l10n.workspaceNameLabel,
+            style: AppText.label.copyWith(color: c.textPrimary),
+          ),
           const SizedBox(height: 8),
           TextField(
             controller: _nameCtrl,
             decoration: InputDecoration(
-              filled: true, fillColor: c.surfaceAlt,
+              filled: true,
+              fillColor: c.surfaceAlt,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(AppRadius.control),
-                borderSide: BorderSide.none),
+                borderSide: BorderSide.none,
+              ),
             ),
           ),
           const SizedBox(height: 12),
@@ -897,12 +1084,15 @@ class _WorkspaceSectionState extends ConsumerState<_WorkspaceSection> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(l10n.settingsDeleteAccountTitle,
-                  style: AppText.bodyStrong.copyWith(color: c.danger)),
+                Text(
+                  l10n.settingsDeleteAccountTitle,
+                  style: AppText.bodyStrong.copyWith(color: c.danger),
+                ),
                 const SizedBox(height: 8),
                 Text(
                   'Permanently deletes the workspace and all its data.',
-                  style: AppText.body.copyWith(color: c.textMuted)),
+                  style: AppText.body.copyWith(color: c.textMuted),
+                ),
                 const SizedBox(height: 12),
                 PlanPalButton(
                   label: l10n.btnDelete,

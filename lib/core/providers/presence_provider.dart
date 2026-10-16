@@ -20,21 +20,31 @@ class PresenceNotifier extends StateNotifier<Map<String, PresenceStatus>> {
     final userId = client.auth.currentUser?.id;
     if (userId == null) return;
 
-    _channel = client.channel('presence:$workspaceId',
-        opts: const RealtimeChannelConfig(self: true));
+    _channel = client.channel(
+      'presence:$workspaceId',
+      opts: const RealtimeChannelConfig(self: true),
+    );
 
     _channel!
         .onPresenceSync((RealtimePresenceSyncPayload payload) => _updateState())
         .onPresenceJoin((RealtimePresenceJoinPayload payload) => _updateState())
-        .onPresenceLeave((RealtimePresenceLeavePayload payload) => _updateState())
+        .onPresenceLeave(
+          (RealtimePresenceLeavePayload payload) => _updateState(),
+        )
         .subscribe((RealtimeSubscribeStatus status, Object? error) {
-      if (status == RealtimeSubscribeStatus.subscribed) {
-        _channel!.track({'user_id': userId, 'online_at': DateTime.now().millisecondsSinceEpoch});
-        _heartbeat = Timer.periodic(const Duration(seconds: 30), (_) {
-          _channel!.track({'user_id': userId, 'online_at': DateTime.now().millisecondsSinceEpoch});
+          if (status == RealtimeSubscribeStatus.subscribed) {
+            _channel!.track({
+              'user_id': userId,
+              'online_at': DateTime.now().millisecondsSinceEpoch,
+            });
+            _heartbeat = Timer.periodic(const Duration(seconds: 30), (_) {
+              _channel!.track({
+                'user_id': userId,
+                'online_at': DateTime.now().millisecondsSinceEpoch,
+              });
+            });
+          }
         });
-      }
-    });
   }
 
   void _updateState() {
@@ -43,10 +53,10 @@ class PresenceNotifier extends StateNotifier<Map<String, PresenceStatus>> {
     final now = DateTime.now().millisecondsSinceEpoch;
     final updated = <String, PresenceStatus>{};
 
-    rawState.forEach((key, presences) {
-      for (final p in presences) {
-        final userId = (p as Map)['user_id'] as String?;
-        final onlineAt = p['online_at'] as int?;
+    for (final presence in rawState) {
+      for (final p in presence.presences) {
+        final userId = p.payload['user_id'] as String?;
+        final onlineAt = p.payload['online_at'] as int?;
         if (userId == null) continue;
 
         PresenceStatus status;
@@ -64,7 +74,7 @@ class PresenceNotifier extends StateNotifier<Map<String, PresenceStatus>> {
         }
         updated[userId] = status;
       }
-    });
+    }
 
     state = updated;
   }
@@ -82,5 +92,5 @@ class PresenceNotifier extends StateNotifier<Map<String, PresenceStatus>> {
 
 final presenceProvider = StateNotifierProvider.family
     .autoDispose<PresenceNotifier, Map<String, PresenceStatus>, String>(
-  (ref, workspaceId) => PresenceNotifier(workspaceId),
-);
+      (ref, workspaceId) => PresenceNotifier(workspaceId),
+    );

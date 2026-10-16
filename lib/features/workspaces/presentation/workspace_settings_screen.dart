@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import '../../../core/l10n/app_localizations.dart';
+import '../../../core/network/app_failure.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/avatar.dart';
+import '../../../core/widgets/chips.dart';
 import '../../../core/widgets/planpal_button.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../data/workspace_repository.dart';
@@ -38,10 +41,61 @@ class _WorkspaceSettingsScreenState
   }
 
   @override
+  void didUpdateWidget(covariant WorkspaceSettingsScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.workspaceId != widget.workspaceId ||
+        oldWidget.showInvites != widget.showInvites) {
+      _showInvites = widget.showInvites;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final workspacesAsync = ref.watch(workspacesProvider);
+    return workspacesAsync.when(
+      data: (workspaces) {
+        WorkspaceModel? routeWorkspace;
+        for (final workspace in workspaces) {
+          if (workspace.id == widget.workspaceId) {
+            routeWorkspace = workspace;
+            break;
+          }
+        }
+        if (routeWorkspace == null) {
+          return Scaffold(
+            body: ErrorState(
+              message: AppLocalizations.of(context).errorNotFound,
+            ),
+          );
+        }
+        return _buildWorkspaceSettings(context, routeWorkspace);
+      },
+      loading: () =>
+          const Scaffold(body: Center(child: CircularProgressIndicator())),
+      error: (error, _) => Scaffold(
+        body: ErrorState(
+          message: error is AppFailure
+              ? error.message
+              : AppLocalizations.of(context).errorGeneric,
+          requestId: error is AppFailure ? error.requestId : null,
+          retryLabel: AppLocalizations.of(context).btnRetry,
+          onRetry: () => ref.invalidate(workspacesProvider),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWorkspaceSettings(
+    BuildContext context,
+    WorkspaceModel routeWorkspace,
+  ) {
     final c = context.colors;
-    final workspace = ref.watch(currentWorkspaceProvider);
-    final wsName = workspace?.name ?? 'Workspace';
+    final l10n = AppLocalizations.of(context);
+    final wsName = routeWorkspace.name;
+    final isPersonalWorkspace = routeWorkspace.isPersonal;
+    final canManageWorkspace =
+        routeWorkspace.type == 'team' && routeWorkspace.isAdmin;
+    final showInvites = canManageWorkspace && _showInvites;
 
     return Scaffold(
       backgroundColor: c.background,
@@ -56,44 +110,63 @@ class _WorkspaceSettingsScreenState
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Workspace Settings',
-                        style: AppText.pageTitle.copyWith(color: c.textPrimary)),
+                      Text(
+                        'Workspace Settings',
+                        style: AppText.pageTitle.copyWith(color: c.textPrimary),
+                      ),
                       const SizedBox(height: 4),
-                      Text('$wsName · Manage people and access',
-                        style: AppText.body.copyWith(color: c.textMuted)),
+                      Text(
+                        '$wsName · Manage people and access',
+                        style: AppText.body.copyWith(color: c.textMuted),
+                      ),
                     ],
                   ),
                 ),
-                PlanPalButton(
-                  label: '+ New code',
-                  toolbar: true,
-                  onPressed: () => _showCreateCodeDialog(context),
-                ),
+                if (canManageWorkspace)
+                  PlanPalButton(
+                    label: l10n.btnNewCode,
+                    toolbar: true,
+                    onPressed: () => _showCreateCodeDialog(context),
+                  ),
               ],
             ),
-            const SizedBox(height: 24),
-            // Tab pills
-            Row(
-              children: [
-                _TabPill(
-                  label: 'Members',
-                  selected: !_showInvites,
-                  onTap: () => setState(() => _showInvites = false),
+            if (isPersonalWorkspace)
+              Expanded(
+                child: EmptyState(
+                  icon: Icons.people_outline,
+                  title: l10n.workspacePersonal,
+                  subtitle: l10n.workspaceTeamOnlySettings,
                 ),
-                const SizedBox(width: 8),
-                _TabPill(
-                  label: 'Invite codes',
-                  selected: _showInvites,
-                  onTap: () => setState(() => _showInvites = true),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: _showInvites
-                  ? _InviteCodesTab(workspaceId: widget.workspaceId)
-                  : _MembersTab(workspaceId: widget.workspaceId),
-            ),
+              )
+            else ...[
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  _TabPill(
+                    label: l10n.tabMembers,
+                    selected: !showInvites,
+                    onTap: () => setState(() => _showInvites = false),
+                  ),
+                  if (canManageWorkspace) ...[
+                    const SizedBox(width: 8),
+                    _TabPill(
+                      label: l10n.tabInviteCodes,
+                      selected: showInvites,
+                      onTap: () => setState(() => _showInvites = true),
+                    ),
+                  ],
+                ],
+              ),
+              const SizedBox(height: 20),
+              Expanded(
+                child: showInvites
+                    ? _InviteCodesTab(workspaceId: widget.workspaceId)
+                    : _MembersTab(
+                        workspaceId: widget.workspaceId,
+                        canManageMembers: canManageWorkspace,
+                      ),
+              ),
+            ],
           ],
         ),
       ),
@@ -108,9 +181,12 @@ class _WorkspaceSettingsScreenState
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDlgState) => AlertDialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppRadius.panel)),
-          title: Text('New invite code',
-            style: AppText.cardTitle.copyWith(color: c.textPrimary)),
+            borderRadius: BorderRadius.circular(AppRadius.panel),
+          ),
+          title: Text(
+            'New invite code',
+            style: AppText.cardTitle.copyWith(color: c.textPrimary),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,15 +194,23 @@ class _WorkspaceSettingsScreenState
               Text('Role', style: AppText.label.copyWith(color: c.textPrimary)),
               const SizedBox(height: 8),
               DropdownButtonFormField<String>(
-                value: role,
+                initialValue: role,
                 decoration: InputDecoration(
-                  filled: true, fillColor: c.surfaceAlt,
+                  filled: true,
+                  fillColor: c.surfaceAlt,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(AppRadius.control),
-                    borderSide: BorderSide.none),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
-                items: ['admin', 'member', 'guest'].map((r) =>
-                  DropdownMenuItem(value: r, child: Text(r.capitalize()))).toList(),
+                items: ['admin', 'member', 'guest']
+                    .map(
+                      (r) => DropdownMenuItem(
+                        value: r,
+                        child: Text(r.capitalize()),
+                      ),
+                    )
+                    .toList(),
                 onChanged: (v) => setDlgState(() => role = v ?? 'member'),
               ),
             ],
@@ -134,20 +218,28 @@ class _WorkspaceSettingsScreenState
           actions: [
             TextButton(
               onPressed: () => Navigator.of(ctx).pop(),
-              child: Text('Cancel',
-                style: AppText.bodyMedium.copyWith(color: c.textMuted))),
+              child: Text(
+                'Cancel',
+                style: AppText.bodyMedium.copyWith(color: c.textMuted),
+              ),
+            ),
             FilledButton(
               onPressed: () async {
                 Navigator.of(ctx).pop();
-                final (code, err) = await ref.read(workspaceRepositoryProvider)
+                final (code, err) = await ref
+                    .read(workspaceRepositoryProvider)
                     .createInviteCode(widget.workspaceId, role);
                 if (err != null && mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(err.message)));
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(err.message)));
                 }
-                if (mounted) ref.invalidate(_inviteCodesProvider(widget.workspaceId));
+                if (mounted) {
+                  ref.invalidate(_inviteCodesProvider(widget.workspaceId));
+                }
               },
-              child: const Text('Create code')),
+              child: const Text('Create code'),
+            ),
           ],
         ),
       ),
@@ -158,7 +250,11 @@ class _WorkspaceSettingsScreenState
 // ── Members Tab ───────────────────────────────────────────────────────────────
 class _MembersTab extends ConsumerWidget {
   final String workspaceId;
-  const _MembersTab({required this.workspaceId});
+  final bool canManageMembers;
+  const _MembersTab({
+    required this.workspaceId,
+    required this.canManageMembers,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -179,6 +275,7 @@ class _MembersTab extends ConsumerWidget {
           itemBuilder: (ctx, i) => _MemberRow(
             member: members[i],
             workspaceId: workspaceId,
+            canManageMembers: canManageMembers,
           ),
         ),
       ),
@@ -191,7 +288,12 @@ class _MembersTab extends ConsumerWidget {
 class _MemberRow extends ConsumerWidget {
   final MemberModel member;
   final String workspaceId;
-  const _MemberRow({required this.member, required this.workspaceId});
+  final bool canManageMembers;
+  const _MemberRow({
+    required this.member,
+    required this.workspaceId,
+    required this.canManageMembers,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -208,46 +310,55 @@ class _MemberRow extends ConsumerWidget {
           ),
           const SizedBox(width: 12),
           Expanded(
-            child: Text(member.fullName.isNotEmpty ? member.fullName : member.email,
-              style: AppText.bodyMedium.copyWith(color: c.textPrimary)),
-          ),
-          // Role dropdown
-          _RoleDropdown(
-            current: member.role,
-            onChanged: (newRole) async {
-              final err = await ref.read(workspaceRepositoryProvider)
-                  .updateMemberRole(workspaceId, member.userId, newRole);
-              if (err != null && context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(err.message)));
-              } else {
-                ref.invalidate(_membersProvider(workspaceId));
-              }
-            },
-          ),
-          const SizedBox(width: 8),
-          OutlinedButton(
-            onPressed: () async {
-              final confirm = await _confirmRemove(context, member.fullName);
-              if (!confirm) return;
-              final err = await ref.read(workspaceRepositoryProvider)
-                  .removeMember(workspaceId, member.userId);
-              if (err != null && context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(err.message)));
-              } else {
-                ref.invalidate(_membersProvider(workspaceId));
-              }
-            },
-            style: OutlinedButton.styleFrom(
-              foregroundColor: c.danger,
-              side: BorderSide(color: c.danger),
-              minimumSize: const Size(0, 36),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppRadius.control)),
+            child: Text(
+              member.fullName.isNotEmpty ? member.fullName : member.email,
+              style: AppText.bodyMedium.copyWith(color: c.textPrimary),
             ),
-            child: const Text('Remove'),
           ),
+          if (canManageMembers) ...[
+            _RoleDropdown(
+              current: member.role,
+              onChanged: (newRole) async {
+                final err = await ref
+                    .read(workspaceRepositoryProvider)
+                    .updateMemberRole(workspaceId, member.userId, newRole);
+                if (err != null && context.mounted) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(err.message)));
+                } else {
+                  ref.invalidate(_membersProvider(workspaceId));
+                }
+              },
+            ),
+            const SizedBox(width: 8),
+            OutlinedButton(
+              onPressed: () async {
+                final confirm = await _confirmRemove(context, member.fullName);
+                if (!confirm) return;
+                final err = await ref
+                    .read(workspaceRepositoryProvider)
+                    .removeMember(workspaceId, member.userId);
+                if (err != null && context.mounted) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(err.message)));
+                } else {
+                  ref.invalidate(_membersProvider(workspaceId));
+                }
+              },
+              style: OutlinedButton.styleFrom(
+                foregroundColor: c.danger,
+                side: BorderSide(color: c.danger),
+                minimumSize: const Size(0, 36),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.control),
+                ),
+              ),
+              child: Text(AppLocalizations.of(context).btnRemove),
+            ),
+          ] else
+            RoleBadge(role: member.role),
         ],
       ),
     );
@@ -255,20 +366,26 @@ class _MemberRow extends ConsumerWidget {
 
   Future<bool> _confirmRemove(BuildContext context, String name) async {
     return await showDialog<bool>(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('Remove member?'),
-        content: Text('Remove $name from this workspace?'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel')),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: FilledButton.styleFrom(backgroundColor: context.colors.danger),
-            child: const Text('Remove')),
-        ],
-      ),
-    ) ?? false;
+          context: context,
+          builder: (_) => AlertDialog(
+            title: const Text('Remove member?'),
+            content: Text('Remove $name from this workspace?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Cancel'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.pop(context, true),
+                style: FilledButton.styleFrom(
+                  backgroundColor: context.colors.danger,
+                ),
+                child: const Text('Remove'),
+              ),
+            ],
+          ),
+        ) ??
+        false;
   }
 }
 
@@ -292,9 +409,14 @@ class _RoleDropdown extends StatelessWidget {
           value: current,
           icon: Icon(LucideIcons.chevronDown, size: 14, color: c.textMuted),
           style: AppText.bodyMedium.copyWith(color: c.textPrimary),
-          items: ['admin', 'member', 'guest'].map((r) =>
-            DropdownMenuItem(value: r, child: Text(r.capitalize()))).toList(),
-          onChanged: (v) { if (v != null) onChanged(v); },
+          items: ['admin', 'member', 'guest']
+              .map(
+                (r) => DropdownMenuItem(value: r, child: Text(r.capitalize())),
+              )
+              .toList(),
+          onChanged: (v) {
+            if (v != null) onChanged(v);
+          },
         ),
       ),
     );
@@ -316,7 +438,8 @@ class _InviteCodesTab extends ConsumerWidget {
           ? const EmptyState(
               icon: Icons.key_off_outlined,
               title: 'No invite codes',
-              subtitle: 'Create one to invite teammates.')
+              subtitle: 'Create one to invite teammates.',
+            )
           : Container(
               decoration: BoxDecoration(
                 color: c.surface,
@@ -326,11 +449,10 @@ class _InviteCodesTab extends ConsumerWidget {
               child: ListView.separated(
                 shrinkWrap: true,
                 itemCount: codes.length,
-                separatorBuilder: (_, __) => Divider(height: 1, color: c.border),
-                itemBuilder: (_, i) => _InviteCodeRow(
-                  code: codes[i],
-                  workspaceId: workspaceId,
-                ),
+                separatorBuilder: (_, __) =>
+                    Divider(height: 1, color: c.border),
+                itemBuilder: (_, i) =>
+                    _InviteCodeRow(code: codes[i], workspaceId: workspaceId),
               ),
             ),
       loading: () => const Center(child: CircularProgressIndicator()),
@@ -352,11 +474,17 @@ class _InviteCodeRow extends ConsumerWidget {
     Color statusBg;
     Color statusFg;
     if (code.isRevoked) {
-      statusLabel = 'Revoked'; statusBg = c.surfaceAlt; statusFg = c.textMuted;
+      statusLabel = 'Revoked';
+      statusBg = c.surfaceAlt;
+      statusFg = c.textMuted;
     } else if (code.isExpired) {
-      statusLabel = 'Expired'; statusBg = c.surfaceAlt; statusFg = c.textMuted;
+      statusLabel = 'Expired';
+      statusBg = c.surfaceAlt;
+      statusFg = c.textMuted;
     } else {
-      statusLabel = 'Active'; statusBg = c.successSoft; statusFg = c.success;
+      statusLabel = 'Active';
+      statusBg = c.successSoft;
+      statusFg = c.success;
     }
 
     String expiryText;
@@ -379,11 +507,15 @@ class _InviteCodeRow extends ConsumerWidget {
               color: c.surfaceAlt,
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Text(code.code,
+            child: Text(
+              code.code,
               style: TextStyle(
                 fontFamily: 'monospace',
-                fontSize: 14, fontWeight: FontWeight.w700,
-                letterSpacing: 2, color: c.textPrimary),
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 2,
+                color: c.textPrimary,
+              ),
             ),
           ),
           const SizedBox(width: 16),
@@ -391,10 +523,14 @@ class _InviteCodeRow extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('${code.role.capitalize()} · ${code.useCount} uses',
-                  style: AppText.bodyMedium.copyWith(color: c.textPrimary)),
-                Text(expiryText,
-                  style: AppText.caption.copyWith(color: c.textMuted)),
+                Text(
+                  '${code.role.capitalize()} · ${code.useCount} uses',
+                  style: AppText.bodyMedium.copyWith(color: c.textPrimary),
+                ),
+                Text(
+                  expiryText,
+                  style: AppText.caption.copyWith(color: c.textMuted),
+                ),
               ],
             ),
           ),
@@ -405,23 +541,27 @@ class _InviteCodeRow extends ConsumerWidget {
               color: statusBg,
               borderRadius: BorderRadius.circular(20),
             ),
-            child: Text(statusLabel,
-              style: AppText.chip.copyWith(color: statusFg)),
+            child: Text(
+              statusLabel,
+              style: AppText.chip.copyWith(color: statusFg),
+            ),
           ),
           const SizedBox(width: 8),
           // Copy button
           OutlinedButton.icon(
             onPressed: () {
               Clipboard.setData(ClipboardData(text: code.code));
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Code copied')));
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(const SnackBar(content: Text('Code copied')));
             },
             icon: Icon(LucideIcons.copy, size: 14),
             label: const Text('Copy'),
             style: OutlinedButton.styleFrom(
               minimumSize: const Size(0, 36),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppRadius.control)),
+                borderRadius: BorderRadius.circular(AppRadius.control),
+              ),
             ),
           ),
           // Revoke button (hide for already revoked)
@@ -429,11 +569,13 @@ class _InviteCodeRow extends ConsumerWidget {
             const SizedBox(width: 8),
             OutlinedButton(
               onPressed: () async {
-                final err = await ref.read(workspaceRepositoryProvider)
+                final err = await ref
+                    .read(workspaceRepositoryProvider)
                     .revokeInviteCode(workspaceId, code.id);
                 if (err != null && context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(err.message)));
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(err.message)));
                 } else {
                   ref.invalidate(_inviteCodesProvider(workspaceId));
                 }
@@ -443,7 +585,8 @@ class _InviteCodeRow extends ConsumerWidget {
                 side: BorderSide(color: c.danger),
                 minimumSize: const Size(0, 36),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppRadius.control)),
+                  borderRadius: BorderRadius.circular(AppRadius.control),
+                ),
               ),
               child: const Text('Revoke'),
             ),
@@ -453,8 +596,7 @@ class _InviteCodeRow extends ConsumerWidget {
     );
   }
 
-  String _formatDate(DateTime dt) =>
-      '${dt.day}/${dt.month}/${dt.year}';
+  String _formatDate(DateTime dt) => '${dt.day}/${dt.month}/${dt.year}';
 }
 
 // ── Tab Pill ──────────────────────────────────────────────────────────────────
@@ -462,7 +604,11 @@ class _TabPill extends StatelessWidget {
   final String label;
   final bool selected;
   final VoidCallback onTap;
-  const _TabPill({required this.label, required this.selected, required this.onTap});
+  const _TabPill({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -475,29 +621,42 @@ class _TabPill extends StatelessWidget {
           color: selected ? c.primary : c.surfaceAlt,
           borderRadius: BorderRadius.circular(20),
         ),
-        child: Text(label,
+        child: Text(
+          label,
           style: AppText.bodyMedium.copyWith(
-            color: selected ? Colors.white : c.textMuted)),
+            color: selected ? Colors.white : c.textMuted,
+          ),
+        ),
       ),
     );
   }
 }
 
 // ── Providers ─────────────────────────────────────────────────────────────────
-final _membersProvider =
-    FutureProvider.family<List<MemberModel>, String>((ref, workspaceId) async {
-  final (list, err) = await ref.read(workspaceRepositoryProvider).getMembers(workspaceId);
+final _membersProvider = FutureProvider.family<List<MemberModel>, String>((
+  ref,
+  workspaceId,
+) async {
+  final (list, err) = await ref
+      .read(workspaceRepositoryProvider)
+      .getMembers(workspaceId);
   if (err != null) throw err;
   return list;
 });
 
 final _inviteCodesProvider =
-    FutureProvider.family<List<InviteCodeModel>, String>((ref, workspaceId) async {
-  final (list, err) = await ref.read(workspaceRepositoryProvider).getInviteCodes(workspaceId);
-  if (err != null) throw err;
-  return list;
-});
+    FutureProvider.family<List<InviteCodeModel>, String>((
+      ref,
+      workspaceId,
+    ) async {
+      final (list, err) = await ref
+          .read(workspaceRepositoryProvider)
+          .getInviteCodes(workspaceId);
+      if (err != null) throw err;
+      return list;
+    });
 
 extension on String {
-  String capitalize() => isEmpty ? this : '${this[0].toUpperCase()}${substring(1)}';
+  String capitalize() =>
+      isEmpty ? this : '${this[0].toUpperCase()}${substring(1)}';
 }

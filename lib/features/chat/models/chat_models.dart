@@ -31,14 +31,6 @@ class ChannelModel {
   bool get isDm => kind == 'dm';
   bool get isChannel => kind == 'channel';
 
-  String displayName(String currentUserId) {
-    if (isChannel) return name ?? 'channel';
-    final others = memberNames.where((n) => n.isNotEmpty).toList();
-    return others.isNotEmpty ? others.first : 'Direct Message';
-  }
-
-  String get initial => (name ?? 'C')[0].toUpperCase();
-
   factory ChannelModel.fromJson(Map<String, dynamic> j) {
     final members = j['members'] as List? ?? [];
     final otherUser = j['otherUser'] as Map<String, dynamic>?;
@@ -49,11 +41,16 @@ class ChannelModel {
       memberNames = [(otherUser['full_name'] as String? ?? '')];
       memberIds = [(otherUser['id'] as String? ?? '')];
     } else {
-      memberIds = members.map((m) => (m['user_id'] ?? m['id']) as String).toList();
-      memberNames = members.map((m) {
-        final p = m['profile'] as Map? ?? m;
-        return (p['full_name'] ?? '') as String;
-      }).where((n) => n.isNotEmpty).toList();
+      memberIds = members
+          .map((m) => (m['user_id'] ?? m['id']) as String)
+          .toList();
+      memberNames = members
+          .map((m) {
+            final p = m['profile'] as Map? ?? m;
+            return (p['full_name'] ?? '') as String;
+          })
+          .where((n) => n.isNotEmpty)
+          .toList();
     }
     return ChannelModel(
       id: j['id'] as String,
@@ -66,7 +63,8 @@ class ChannelModel {
       lastMessageBody: j['lastMessage']?['body'] as String?,
       lastMessageSenderName: j['lastMessage']?['authorName'] as String?,
       lastMessageAt: j['lastMessage']?['createdAt'] != null
-          ? DateTime.parse(j['lastMessage']['createdAt'] as String) : null,
+          ? DateTime.parse(j['lastMessage']['createdAt'] as String)
+          : null,
       memberIds: memberIds,
       memberNames: memberNames,
     );
@@ -120,12 +118,14 @@ class MessageModel {
       fileMimeType: file?['mime_type'] as String?,
       createdAt: DateTime.parse(j['created_at'] as String),
       editedAt: j['edited_at'] != null
-          ? DateTime.parse(j['edited_at'] as String) : null,
+          ? DateTime.parse(j['edited_at'] as String)
+          : null,
     );
   }
 
   String formatTime() {
-    final h = createdAt.hour > 12 ? createdAt.hour - 12
+    final h = createdAt.hour > 12
+        ? createdAt.hour - 12
         : (createdAt.hour == 0 ? 12 : createdAt.hour);
     final m = createdAt.minute.toString().padLeft(2, '0');
     final ampm = createdAt.hour < 12 ? 'AM' : 'PM';

@@ -84,6 +84,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get btnCopy => 'Copiar';
 
   @override
+  String get btnEdit => 'Editar';
+
+  @override
   String get btnCopied => 'Copiado';
 
   @override
@@ -151,6 +154,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get btnOpen => 'Abrir';
+
+  @override
+  String get btnRename => 'Cambiar nombre';
 
   @override
   String get btnDiscard => 'Descartar';
@@ -389,6 +395,18 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get workspaceTeamOnlySettings =>
+      'La configuración de personas y acceso solo está disponible en espacios de equipo.';
+
+  @override
+  String get authGoogleBrowserComplete =>
+      'Inicio de sesión completado. Puedes cerrar esta ventana y volver a PlanPal.';
+
+  @override
+  String get authGoogleBrowserFailure =>
+      'No se pudo completar el inicio de sesión con Google. Vuelve a PlanPal e inténtalo de nuevo.';
+
+  @override
   String get tabMembers => 'Miembros';
 
   @override
@@ -432,6 +450,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get confirmDeleteBody => 'Esta acción no se puede deshacer.';
 
   @override
+  String get confirmDeleteTaskTitle => '¿Eliminar esta tarea?';
+
+  @override
   String get confirmDeleteTasksTitle => '¿Eliminar tareas seleccionadas?';
 
   @override
@@ -468,6 +489,30 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get loginTitle => 'Bienvenido de nuevo';
+
+  @override
+  String get authInvalidCredentials =>
+      'El correo o la contraseña no son correctos. Inténtalo de nuevo.';
+
+  @override
+  String get authEmailNotConfirmed =>
+      'Verifica tu correo antes de iniciar sesión.';
+
+  @override
+  String get authAccountAlreadyExists =>
+      'Ya existe una cuenta con este correo.';
+
+  @override
+  String get authWeakPassword =>
+      'Esta contraseña no es suficientemente segura. Elige una más segura.';
+
+  @override
+  String get authTooManyAttempts =>
+      'Demasiados intentos. Espera un momento e inténtalo de nuevo.';
+
+  @override
+  String get authInvalidCode =>
+      'El código no es válido o ha caducado. Inténtalo de nuevo.';
 
   @override
   String get loginSubtitleMobile => 'Inicia sesión para seguir el día.';
@@ -559,10 +604,48 @@ class AppLocalizationsEs extends AppLocalizations {
   String get fieldDueDate => 'Fecha límite';
 
   @override
+  String get fieldDueDateOptional => 'Selecciona una fecha límite';
+
+  @override
   String get fieldTime => 'Hora';
 
   @override
+  String get fieldTimeOptional => 'Opcional';
+
+  @override
+  String get fieldTaskReminder => 'Recordatorio (minutos antes)';
+
+  @override
+  String get fieldTaskReminderHint =>
+      'Introduce minutos; vacío usa el valor predeterminado de 24 horas.';
+
+  @override
+  String get taskReminderDefault => 'Predeterminado (24 horas antes)';
+
+  @override
+  String taskReminderCustom(int minutes) {
+    return '$minutes minutos antes';
+  }
+
+  @override
+  String get taskNoDueDate => 'Sin fecha límite';
+
+  @override
+  String get taskClearDueDate => 'Eliminar fecha límite';
+
+  @override
+  String get validationTaskReminderRequiresDueDate =>
+      'Selecciona primero una fecha límite.';
+
+  @override
+  String get validationTaskReminderMinimum =>
+      'Introduce un número entero de al menos 5 minutos.';
+
+  @override
   String get fieldPriority => 'Prioridad';
+
+  @override
+  String get fieldStatus => 'Estado';
 
   @override
   String get fieldAssignee => 'Asignado';
@@ -772,7 +855,55 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tasksNoResultsFilters => 'Sin resultados para estos filtros';
 
   @override
+  String get tasksBulkPartialFailure =>
+      'No se pudieron procesar algunas tareas seleccionadas.';
+
+  @override
+  String get tasksBulkActionFailed =>
+      'No se pudieron procesar las tareas seleccionadas.';
+
+  @override
   String get tasksClearFilters => 'Borrar filtros';
+
+  @override
+  String get tasksSwipeHint =>
+      'Desliza una tarea a la izquierda o a la derecha para editarla o eliminarla.';
+
+  @override
+  String get tasksDismissSwipeHint => 'Descartar consejo de deslizamiento';
+
+  @override
+  String get tasksFilterTitle => 'Filtrar tareas';
+
+  @override
+  String get tasksFilterStatus => 'Estado';
+
+  @override
+  String get tasksFilterPriority => 'Prioridad';
+
+  @override
+  String get tasksFilterSort => 'Orden';
+
+  @override
+  String get tasksFilterAll => 'Todos';
+
+  @override
+  String get tasksLoadMore => 'Cargar más';
+
+  @override
+  String get tasksSortBy => 'Ordenar por';
+
+  @override
+  String get tasksSortDueDate => 'Fecha de vencimiento';
+
+  @override
+  String get tasksSortCreated => 'Fecha de creación';
+
+  @override
+  String get tasksSortTitle => 'Título';
+
+  @override
+  String get btnApply => 'Aplicar';
 
   @override
   String get tasksAddSubtask => '+ Añadir subtarea';
@@ -792,6 +923,23 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tasksDetailTitle => 'Detalles de la tarea';
 
   @override
+  String get tasksSwipeEdit => 'Editar';
+
+  @override
+  String get confirmDeleteSubtaskTitle => '¿Eliminar esta subtarea?';
+
+  @override
+  String get taskMoveToWorkspace => 'Mover a otro espacio de trabajo';
+
+  @override
+  String taskMoveConfirmation(Object workspace) {
+    return '¿Mover esta tarea a $workspace?';
+  }
+
+  @override
+  String get btnMove => 'Mover';
+
+  @override
   String get tasksNewTitle => 'Nueva tarea';
 
   @override
@@ -804,7 +952,61 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tasksComments => 'Comentarios';
 
   @override
+  String get tasksCommentJustNow => 'Ahora mismo';
+
+  @override
+  String tasksCommentMinutesAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'hace $count minutos',
+      one: 'hace 1 minuto',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String tasksCommentHoursAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'hace $count horas',
+      one: 'hace 1 hora',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String tasksCommentDaysAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'hace $count días',
+      one: 'hace 1 día',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get tasksAttachments => 'Adjuntos';
+
+  @override
+  String get taskNoAttachments => 'Todavía no hay archivos adjuntos.';
+
+  @override
+  String get taskAttachmentOffline =>
+      'Necesitas conexión a internet para subir o abrir los archivos adjuntos.';
+
+  @override
+  String get taskAttachmentOpenFailed =>
+      'No se pudo abrir este archivo adjunto. Inténtalo de nuevo.';
+
+  @override
+  String get taskAttachFile => 'Adjuntar archivo';
+
+  @override
+  String get taskAttachmentUploadFailed =>
+      'No se pudo subir o adjuntar este archivo. Inténtalo de nuevo.';
 
   @override
   String get tasksAssigneeLabel => 'Asignado y etiqueta';
@@ -832,6 +1034,46 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get calendarWeek => 'Semana';
+
+  @override
+  String get calendarMonth => 'Mes';
+
+  @override
+  String get calendarDay => 'Día';
+
+  @override
+  String calendarEventsFor(String date) {
+    return 'Eventos: $date';
+  }
+
+  @override
+  String calendarMoreEvents(int count) {
+    return '+$count más';
+  }
+
+  @override
+  String get calendarTeam => 'Equipo';
+
+  @override
+  String get calendarDueTasks => 'Tareas pendientes';
+
+  @override
+  String get calendarQueuedOffline =>
+      'El evento se guardó en este dispositivo y se sincronizará cuando vuelvas a estar en línea.';
+
+  @override
+  String get calendarAttendees => 'Asistentes';
+
+  @override
+  String get calendarNoMembers =>
+      'No hay miembros disponibles en este espacio de trabajo.';
+
+  @override
+  String get calendarInvalidRange =>
+      'La hora de finalización debe ser posterior a la hora de inicio.';
+
+  @override
   String get scheduleEventTitle => 'Programar evento';
 
   @override
@@ -851,6 +1093,18 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get documentsTitle => 'Documentos';
+
+  @override
+  String get documentSaving => 'Guardando...';
+
+  @override
+  String get documentSaved => 'Guardado';
+
+  @override
+  String get documentSavedLocally => 'Guardado en este dispositivo';
+
+  @override
+  String get documentWaitingToSync => 'Esperando para sincronizar';
 
   @override
   String get documentsRecent => 'Recientes';
@@ -874,6 +1128,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get documentUploadFile => 'Subir archivo';
 
   @override
+  String get documentDropHint => 'Suelta los archivos aquí para subirlos';
+
+  @override
+  String get documentDropFilesOnly => 'Suelta archivos aquí, no carpetas.';
+
+  @override
   String get documentNewFolder => 'Nueva carpeta';
 
   @override
@@ -881,6 +1141,49 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get chatNewChannel => 'Nuevo canal';
+
+  @override
+  String get chatChannels => 'Canales';
+
+  @override
+  String get chatDirectMessages => 'Mensajes directos';
+
+  @override
+  String get chatNewDm => 'Nuevo mensaje directo';
+
+  @override
+  String get chatPrivateChannel => 'Canal privado';
+
+  @override
+  String get chatManageMembers => 'Administrar miembros del canal';
+
+  @override
+  String get chatUnnamedChannel => 'Canal sin nombre';
+
+  @override
+  String get chatDirectMessageFallback => 'Mensaje directo';
+
+  @override
+  String get chatYou => 'Tú';
+
+  @override
+  String get chatUnknownSender => 'Remitente desconocido';
+
+  @override
+  String chatMessageHeader(String sender, String time) {
+    return '$sender · $time';
+  }
+
+  @override
+  String chatTyping(String names) {
+    return '$names está escribiendo...';
+  }
+
+  @override
+  String get chatTapToRetry => 'Toca para reintentar';
+
+  @override
+  String get chatConfirmDeleteMessage => '¿Eliminar este mensaje?';
 
   @override
   String get notificationsTitle => 'Notificaciones';
@@ -976,6 +1279,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get homeProductivity => 'Productividad';
 
   @override
+  String get homeGreetingFallback => 'hola';
+
+  @override
+  String get homeWorkspaceFallback => 'Espacio de trabajo';
+
+  @override
   String get teamDirectoryTitle => 'Directorio del equipo';
 
   @override
@@ -983,6 +1292,25 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get teamNoActivity => 'Sin actividad reciente';
+
+  @override
+  String get teamUpdatedTask => 'Tarea actualizada';
+
+  @override
+  String get teamMemberProfile => 'Perfil del miembro';
+
+  @override
+  String get teamMessageMember => 'Mensaje';
+
+  @override
+  String get teamRemoveMember => 'Eliminar miembro';
+
+  @override
+  String get teamChangeRole => 'Cambiar rol';
+
+  @override
+  String get teamConfirmRemoveMember =>
+      '¿Eliminar a esta persona del espacio de trabajo?';
 
   @override
   String get teamPresenceOnline => 'Activo ahora';

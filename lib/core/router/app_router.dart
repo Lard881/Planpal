@@ -57,7 +57,8 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       // A1.3/A1.4: Auth routes — but NOT if a reset is in progress or
       // onboarding is pending (those flags are handled inside the screens).
-      final isAuthRoute = loc.startsWith('/login') ||
+      final isAuthRoute =
+          loc.startsWith('/login') ||
           loc.startsWith('/signup') ||
           loc.startsWith('/forgot-password') ||
           loc.startsWith('/verify-email') ||
@@ -69,16 +70,18 @@ final routerProvider = Provider<GoRouter>((ref) {
           loc.startsWith('/verify-code') ||
           loc.startsWith('/new-password') ||
           loc.startsWith('/onboarding') ||
+          loc == '/not-configured' ||
           loc == '/splash';
 
       if (!isLoggedIn && !isAuthRoute) return '/login';
       // A1.3: logged-in guard intentionally omits /verify-code and /new-password
       // so those steps survive the Supabase auto-sign-in during recovery.
-      final isRedirectedAuthRoute = isLoggedIn &&
+      final isRedirectedAuthRoute =
+          isLoggedIn &&
           (loc.startsWith('/login') ||
-           loc.startsWith('/signup') ||
-           loc.startsWith('/forgot-password') ||
-           loc.startsWith('/verify-email'));
+              loc.startsWith('/signup') ||
+              loc.startsWith('/forgot-password') ||
+              loc.startsWith('/verify-email'));
       if (isRedirectedAuthRoute) return '/home';
       return null;
     },
@@ -89,10 +92,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       // ── Auth routes (no shell) ────────────────────────────────────────────
       GoRoute(path: '/login', builder: (_, __) => const LoginScreen()),
       GoRoute(path: '/signup', builder: (_, __) => const SignupScreen()),
-      GoRoute(path: '/verify-email', builder: (context, state) {
-        final email = state.extra as String?;
-        return VerifyEmailScreen(email: email);
-      }),
+      GoRoute(
+        path: '/verify-email',
+        builder: (context, state) {
+          final email = state.extra as String?;
+          return VerifyEmailScreen(email: email);
+        },
+      ),
       GoRoute(
         path: '/forgot-password',
         builder: (_, __) => const ForgotPasswordScreen(),
@@ -129,26 +135,43 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state, child) => AdaptiveShell(child: child),
         routes: [
           GoRoute(path: '/home', builder: (_, __) => const HomeScreen()),
-          GoRoute(path: '/tasks', builder: (_, __) => const TasksScreen()),
-          GoRoute(path: '/calendar', builder: (_, __) => const CalendarScreen()),
+          GoRoute(
+            path: '/tasks',
+            builder: (_, state) => TasksScreen(
+              initialView: state.uri.queryParameters['view'] ?? 'all',
+            ),
+          ),
+          GoRoute(
+            path: '/calendar',
+            builder: (_, __) => const CalendarScreen(),
+          ),
           GoRoute(path: '/chat', builder: (_, __) => const ChatScreen()),
           GoRoute(
             path: '/chat/:channelId',
             builder: (context, state) =>
                 ChatScreen(channelId: state.pathParameters['channelId']),
           ),
-          GoRoute(path: '/documents', builder: (_, __) => const DocumentsScreen()),
+          GoRoute(
+            path: '/documents',
+            builder: (_, __) => const DocumentsScreen(),
+          ),
           GoRoute(
             path: '/documents/:id',
             builder: (context, state) =>
                 DocumentsScreen(documentId: state.pathParameters['id']),
           ),
-          GoRoute(path: '/analytics', builder: (_, __) => const AnalyticsScreen()),
+          GoRoute(
+            path: '/analytics',
+            builder: (_, __) => const AnalyticsScreen(),
+          ),
           GoRoute(path: '/team', builder: (_, __) => const TeamScreen()),
 
           // A1.7: Notifications, search, task routes inside shell so they
           // get the sidebar on desktop.
-          GoRoute(path: '/notifications', builder: (_, __) => const NotificationsScreen()),
+          GoRoute(
+            path: '/notifications',
+            builder: (_, __) => const NotificationsScreen(),
+          ),
           GoRoute(
             path: '/search',
             builder: (context, state) {
@@ -169,13 +192,15 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/workspace/:id/members',
             builder: (context, state) => WorkspaceSettingsScreen(
-                workspaceId: state.pathParameters['id']!),
+              workspaceId: state.pathParameters['id']!,
+            ),
           ),
           GoRoute(
             path: '/workspace/:id/invites',
             builder: (context, state) => WorkspaceSettingsScreen(
-                workspaceId: state.pathParameters['id']!,
-                showInvites: true),
+              workspaceId: state.pathParameters['id']!,
+              showInvites: true,
+            ),
           ),
           GoRoute(
             path: '/workspace/create',
@@ -252,8 +277,11 @@ class _AppNotConfiguredScreen extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.warning_amber_rounded,
-                  size: 64, color: Color(0xFFF59E0B)),
+              const Icon(
+                Icons.warning_amber_rounded,
+                size: 64,
+                color: Color(0xFFF59E0B),
+              ),
               const SizedBox(height: 24),
               const Text(
                 'App is not configured',

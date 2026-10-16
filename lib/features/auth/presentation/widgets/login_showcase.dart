@@ -37,7 +37,8 @@ class LoginShowcase extends StatelessWidget {
                   Row(
                     children: [
                       Container(
-                        width: 36, height: 36,
+                        width: 36,
+                        height: 36,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           gradient: LinearGradient(
@@ -45,9 +46,13 @@ class LoginShowcase extends StatelessWidget {
                           ),
                         ),
                         child: const Center(
-                          child: Text('MA',
-                            style: TextStyle(color: Colors.white,
-                                fontSize: 12, fontWeight: FontWeight.w700),
+                          child: Text(
+                            'MA',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
                       ),
@@ -55,30 +60,43 @@ class LoginShowcase extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Maya's Tuesday",
+                          Text(
+                            "Maya's Tuesday",
                             style: AppText.bodyStrong.copyWith(
-                                color: c.textPrimary)),
-                          Text('4 of 6 done — nice pace',
-                            style: AppText.caption.copyWith(
-                                color: c.textMuted)),
+                              color: c.textPrimary,
+                            ),
+                          ),
+                          Text(
+                            '4 of 6 done — nice pace',
+                            style: AppText.caption.copyWith(color: c.textMuted),
+                          ),
                         ],
                       ),
                     ],
                   ),
                   const SizedBox(height: 20),
-                  _TaskRow('Design review deck', 'High',
-                      const Color(0xFFEF4444)),
-                  _TaskRow('Ship onboarding flow', 'In Progress',
-                      const Color(0xFF4F46E5)),
-                  _TaskRow('Water the plants', 'Low',
-                      const Color(0xFF16A34A)),
+                  _TaskRow(
+                    'Design review deck',
+                    'High',
+                    const Color(0xFFEF4444),
+                  ),
+                  _TaskRow(
+                    'Ship onboarding flow',
+                    'In Progress',
+                    const Color(0xFF4F46E5),
+                  ),
+                  _TaskRow('Water the plants', 'Low', const Color(0xFF16A34A)),
                 ],
               ),
             ),
             const SizedBox(height: 28),
-            Text('Calm days, done tasks.',
+            Text(
+              'Calm days, done tasks.',
               style: AppText.sectionTitle.copyWith(
-                  color: c.textPrimary, fontWeight: FontWeight.w700)),
+                color: c.textPrimary,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
             const SizedBox(height: 8),
             SizedBox(
               width: 320,
@@ -109,7 +127,8 @@ class _TaskRow extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: 16, height: 16,
+            width: 16,
+            height: 16,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(color: badgeColor, width: 1.5),
@@ -117,17 +136,18 @@ class _TaskRow extends StatelessWidget {
           ),
           const SizedBox(width: 12),
           Expanded(
-            child: Text(title,
-              style: AppText.body.copyWith(color: c.textPrimary)),
+            child: Text(
+              title,
+              style: AppText.body.copyWith(color: c.textPrimary),
+            ),
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
             decoration: BoxDecoration(
-              color: badgeColor.withOpacity(0.1),
+              color: badgeColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(20),
             ),
-            child: Text(badge,
-              style: AppText.chip.copyWith(color: badgeColor)),
+            child: Text(badge, style: AppText.chip.copyWith(color: badgeColor)),
           ),
         ],
       ),

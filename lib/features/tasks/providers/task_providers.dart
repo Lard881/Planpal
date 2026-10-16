@@ -10,7 +10,7 @@ class TaskFilter {
   final String? status;
   final String? priority;
   final String? assigneeId;
-  final String sort; // due_date|priority|created|title
+  final String sort; // due_at|priority|created_at|title
   final String? q;
 
   const TaskFilter({
@@ -18,25 +18,36 @@ class TaskFilter {
     this.status,
     this.priority,
     this.assigneeId,
-    this.sort = 'due_date',
+    this.sort = 'due_at',
     this.q,
   });
 
   bool get hasActiveFilters =>
-      status != null || priority != null || assigneeId != null || view != 'all';
+      status != null ||
+      priority != null ||
+      assigneeId != null ||
+      view != 'all' ||
+      (q?.trim().isNotEmpty ?? false);
 
   TaskFilter copyWith({
-    String? view, String? status, String? priority,
-    String? assigneeId, String? sort, String? q,
-    bool clearStatus = false, bool clearPriority = false,
-    bool clearAssignee = false, bool clearQ = false,
+    String? view,
+    String? status,
+    String? priority,
+    String? assigneeId,
+    String? sort,
+    String? q,
+    bool clearStatus = false,
+    bool clearPriority = false,
+    bool clearAssignee = false,
+    bool clearQ = false,
+    bool setQ = false,
   }) => TaskFilter(
     view: view ?? this.view,
     status: clearStatus ? null : (status ?? this.status),
     priority: clearPriority ? null : (priority ?? this.priority),
     assigneeId: clearAssignee ? null : (assigneeId ?? this.assigneeId),
     sort: sort ?? this.sort,
-    q: clearQ ? null : (q ?? this.q),
+    q: clearQ ? null : (setQ ? q : (q ?? this.q)),
   );
 
   TaskFilter cleared() => const TaskFilter();
@@ -64,9 +75,15 @@ class TaskListState {
   int get dueToday => tasks.where((t) => t.isToday && !t.isCompleted).length;
 
   TaskListState copyWith({
-    List<TaskModel>? tasks, bool? loading, bool? loadingMore,
-    String? cursor, String? error, TaskFilter? filter,
-    Set<String>? selectedIds, bool clearError = false, bool clearCursor = false,
+    List<TaskModel>? tasks,
+    bool? loading,
+    bool? loadingMore,
+    String? cursor,
+    String? error,
+    TaskFilter? filter,
+    Set<String>? selectedIds,
+    bool clearError = false,
+    bool clearCursor = false,
   }) => TaskListState(
     tasks: tasks ?? this.tasks,
     loading: loading ?? this.loading,
@@ -83,7 +100,8 @@ class TaskListNotifier extends StateNotifier<TaskListState> {
   final String workspaceId;
   StreamSubscription<List<TaskModel>>? _streamSub;
 
-  TaskListNotifier(this._repo, this.workspaceId) : super(const TaskListState()) {
+  TaskListNotifier(this._repo, this.workspaceId)
+    : super(const TaskListState()) {
     _subscribeToCache();
     _fetchFromApi();
   }
@@ -93,25 +111,42 @@ class TaskListNotifier extends StateNotifier<TaskListState> {
     if (workspaceId.isEmpty) return;
     final f = state.filter;
     _streamSub?.cancel();
-    _streamSub = _repo.watchTasks(
-      workspaceId,
-      status: f.status,
-      priority: f.priority,
-      view: f.view,
-    ).listen((tasks) {
-      // Only update from cache if we haven't applied search/sort (those need API)
-      if (f.q == null) {
-        state = state.copyWith(tasks: tasks, loading: false, clearError: true);
-      }
-    });
+    _streamSub = _repo
+        .watchTasks(
+          workspaceId,
+          status: f.status,
+          priority: f.priority,
+          assigneeId: f.assigneeId,
+          view: f.view,
+          sort: f.sort,
+        )
+        .listen((tasks) {
+          final query = f.q?.trim().toLowerCase();
+          final visibleTasks = query == null || query.isEmpty
+              ? tasks
+              : tasks
+                    .where(
+                      (task) =>
+                          task.title.toLowerCase().contains(query) ||
+                          task.description.toLowerCase().contains(query),
+                    )
+                    .toList();
+          state = state.copyWith(
+            tasks: visibleTasks,
+            loading: false,
+            clearError: true,
+          );
+        });
   }
 
   // A3: Fetch from API in background — merges into Drift, stream updates UI
   Future<void> _fetchFromApi() async {
     if (workspaceId.isEmpty) return;
-    state = state.copyWith(loading: state.tasks.isEmpty); // only show spinner if cache empty
+    state = state.copyWith(
+      loading: state.tasks.isEmpty,
+    ); // only show spinner if cache empty
     final f = state.filter;
-    final (_, cursor, err) = await _repo.getTasks(
+    final (tasks, cursor, err) = await _repo.getTasks(
       workspaceId,
       status: f.status,
       priority: f.priority,
@@ -122,19 +157,30 @@ class TaskListNotifier extends StateNotifier<TaskListState> {
     );
     // If there's a search query, update state directly (not via stream)
     if (f.q != null) {
-      final (tasks, _, __) = await _repo.getTasks(workspaceId, q: f.q);
-      state = state.copyWith(tasks: tasks, loading: false, cursor: cursor,
-          error: err?.message);
+      state = state.copyWith(
+        tasks: err == null ? tasks : null,
+        loading: false,
+        cursor: cursor,
+        error: err?.message,
+        clearError: err == null,
+      );
     } else {
-      state = state.copyWith(loading: false, cursor: cursor,
-          error: err?.message);
+      state = state.copyWith(
+        loading: false,
+        cursor: cursor,
+        error: err?.message,
+      );
     }
   }
 
   Future<void> load({bool refresh = false}) async {
     if (workspaceId.isEmpty) return;
     if (refresh) {
-      state = state.copyWith(loading: true, clearError: true, clearCursor: true);
+      state = state.copyWith(
+        loading: true,
+        clearError: true,
+        clearCursor: true,
+      );
       _subscribeToCache(); // re-subscribe with updated filter
     }
     await _fetchFromApi();
@@ -144,16 +190,30 @@ class TaskListNotifier extends StateNotifier<TaskListState> {
     if (state.cursor == null || state.loadingMore) return;
     state = state.copyWith(loadingMore: true);
     final f = state.filter;
-    final (more, cursor, _) = await _repo.getTasks(
+    final (more, cursor, error) = await _repo.getTasks(
       workspaceId,
-      status: f.status, priority: f.priority,
-      assigneeId: f.assigneeId, view: f.view,
-      sort: f.sort, q: f.q, cursor: state.cursor,
+      status: f.status,
+      priority: f.priority,
+      assigneeId: f.assigneeId,
+      view: f.view,
+      sort: f.sort,
+      q: f.q,
+      cursor: state.cursor,
     );
+    if (error != null) {
+      state = state.copyWith(loadingMore: false, error: error.message);
+      return;
+    }
+    final existingIds = state.tasks.map((task) => task.id).toSet();
     state = state.copyWith(
-      tasks: [...state.tasks, ...more],
+      tasks: [
+        ...state.tasks,
+        ...more.where((task) => existingIds.add(task.id)),
+      ],
       loadingMore: false,
       cursor: cursor,
+      clearCursor: cursor == null,
+      clearError: true,
     );
   }
 
@@ -164,25 +224,32 @@ class TaskListNotifier extends StateNotifier<TaskListState> {
 
   void toggleSelect(String id) {
     final ids = Set<String>.from(state.selectedIds);
-    if (ids.contains(id)) ids.remove(id); else ids.add(id);
+    if (ids.contains(id)) {
+      ids.remove(id);
+    } else {
+      ids.add(id);
+    }
     state = state.copyWith(selectedIds: ids);
   }
 
   void clearSelection() => state = state.copyWith(selectedIds: {});
 
-  Future<void> bulkComplete() async {
+  Future<BulkTaskActionResult> bulkComplete() => _performBulkAction('complete');
+
+  Future<BulkTaskActionResult> bulkDelete() => _performBulkAction('delete');
+
+  Future<BulkTaskActionResult> _performBulkAction(String action) async {
     final ids = state.selectedIds.toList();
-    await _repo.bulkAction(ids, 'complete');
-    clearSelection();
-    load(refresh: true);
+    final result = await _repo.bulkAction(ids, action);
+    if (result.succeededIds.isNotEmpty) {
+      final remainingIds = Set<String>.from(state.selectedIds)
+        ..removeAll(result.succeededIds);
+      state = state.copyWith(selectedIds: remainingIds);
+      await load(refresh: true);
+    }
+    return result;
   }
 
-  Future<void> bulkDelete() async {
-    final ids = state.selectedIds.toList();
-    await _repo.bulkAction(ids, 'delete');
-    clearSelection();
-    load(refresh: true);
-  }
   Future<void> quickComplete(String taskId) async {
     await _repo.updateTask(taskId, {'status': 'completed'});
     await _fetchFromApi(); // refresh from API to get server-confirmed state
@@ -197,20 +264,25 @@ class TaskListNotifier extends StateNotifier<TaskListState> {
 
 final taskListProvider = StateNotifierProvider.family
     .autoDispose<TaskListNotifier, TaskListState, String>((ref, workspaceId) {
-  return TaskListNotifier(ref.watch(taskRepositoryProvider), workspaceId);
-});
+      return TaskListNotifier(ref.watch(taskRepositoryProvider), workspaceId);
+    });
 
 final currentWorkspaceTasksProvider =
     StateNotifierProvider.autoDispose<TaskListNotifier, TaskListState>((ref) {
-  final wsId = ref.watch(currentWorkspaceIdProvider) ?? '';
-  return TaskListNotifier(ref.watch(taskRepositoryProvider), wsId);
-});
+      final wsId = ref.watch(currentWorkspaceIdProvider) ?? '';
+      return TaskListNotifier(ref.watch(taskRepositoryProvider), wsId);
+    });
 
-final taskDetailProvider =
-    FutureProvider.family.autoDispose<TaskModel?, String>((ref, taskId) async {
-  final (task, _) = await ref.watch(taskRepositoryProvider).getTask(taskId);
-  return task;
-});
+final taskDetailProvider = FutureProvider.family
+    .autoDispose<TaskModel?, String>((ref, taskId) async {
+      final (task, failure) = await ref
+          .watch(taskRepositoryProvider)
+          .getTask(taskId);
+      if (task == null && failure != null) {
+        throw failure;
+      }
+      return task;
+    });
 
 // Labels provider — loads workspace labels for the label picker
 class LabelModel {
@@ -228,15 +300,10 @@ class LabelModel {
 
 final labelsProvider = FutureProvider.family
     .autoDispose<List<LabelModel>, String>((ref, workspaceId) async {
-  if (workspaceId.isEmpty) return [];
-  try {
-    final dio = ref.watch(apiClientProvider).dio;
-    final res = await dio.get('/workspaces/$workspaceId/labels');
-    final list = (res.data['labels'] as List)
-        .map((l) => LabelModel.fromJson(l as Map<String, dynamic>))
-        .toList();
-    return list;
-  } catch (_) {
-    return [];
-  }
-});
+      if (workspaceId.isEmpty) return [];
+      final dio = ref.watch(apiClientProvider).dio;
+      final res = await dio.get('/workspaces/$workspaceId/labels');
+      return (res.data['labels'] as List)
+          .map((l) => LabelModel.fromJson(l as Map<String, dynamic>))
+          .toList();
+    });

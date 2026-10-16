@@ -4,11 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import '../../../core/l10n/app_localizations.dart';
+import '../../../core/network/app_failure.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/chips.dart';
 import '../../../core/widgets/planpal_button.dart';
+import '../../../core/widgets/empty_state.dart';
 import '../models/workspace_model.dart';
 import '../providers/workspace_providers.dart';
 
@@ -84,7 +87,14 @@ class _WorkspaceSwitcherPopover extends ConsumerWidget {
                     padding: EdgeInsets.all(16),
                     child: CircularProgressIndicator(),
                   ),
-                  error: (_, __) => const SizedBox.shrink(),
+                  error: (error, _) => ErrorState(
+                    message: error is AppFailure
+                        ? error.message
+                        : AppLocalizations.of(context).errorGeneric,
+                    requestId: error is AppFailure ? error.requestId : null,
+                    retryLabel: AppLocalizations.of(context).btnRetry,
+                    onRetry: () => ref.invalidate(workspacesProvider),
+                  ),
                 ),
                 Divider(height: 1, color: c.border),
                 _ActionRow(
@@ -167,7 +177,14 @@ class _WorkspaceSwitcherSheet extends ConsumerWidget {
                 ).toList(),
               ),
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (_, __) => const SizedBox.shrink(),
+              error: (error, _) => ErrorState(
+                message: error is AppFailure
+                    ? error.message
+                    : AppLocalizations.of(context).errorGeneric,
+                requestId: error is AppFailure ? error.requestId : null,
+                retryLabel: AppLocalizations.of(context).btnRetry,
+                onRetry: () => ref.invalidate(workspacesProvider),
+              ),
             ),
             const SizedBox(height: 8),
             PlanPalButton(

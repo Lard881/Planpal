@@ -60,14 +60,17 @@ class _AvatarCropDialogState extends State<_AvatarCropDialog> {
     return Dialog(
       backgroundColor: c.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppRadius.panel)),
+        borderRadius: BorderRadius.circular(AppRadius.panel),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('Crop your photo',
-              style: AppText.cardTitle.copyWith(color: c.textPrimary)),
+            Text(
+              'Crop your photo',
+              style: AppText.cardTitle.copyWith(color: c.textPrimary),
+            ),
             const SizedBox(height: 20),
             // Crop area
             RepaintBoundary(
@@ -90,8 +93,8 @@ class _AvatarCropDialogState extends State<_AvatarCropDialog> {
                     },
                     child: Transform(
                       transform: Matrix4.identity()
-                        ..translate(_offset.dx, _offset.dy)
-                        ..scale(_scale),
+                        ..translateByDouble(_offset.dx, _offset.dy, 0, 1)
+                        ..scaleByDouble(_scale, _scale, _scale, 1),
                       child: Image.file(
                         widget.imageFile,
                         width: cropSize,
@@ -130,11 +133,14 @@ class _AvatarCropDialogState extends State<_AvatarCropDialog> {
                     style: OutlinedButton.styleFrom(
                       side: BorderSide(color: c.border),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(AppRadius.control)),
+                        borderRadius: BorderRadius.circular(AppRadius.control),
+                      ),
                       minimumSize: const Size(0, 44),
                     ),
-                    child: Text('Cancel',
-                      style: AppText.bodyMedium.copyWith(color: c.textPrimary)),
+                    child: Text(
+                      'Cancel',
+                      style: AppText.bodyMedium.copyWith(color: c.textPrimary),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -144,12 +150,18 @@ class _AvatarCropDialogState extends State<_AvatarCropDialog> {
                     style: FilledButton.styleFrom(
                       minimumSize: const Size(0, 44),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(AppRadius.control)),
+                        borderRadius: BorderRadius.circular(AppRadius.control),
+                      ),
                     ),
                     child: _saving
-                        ? const SizedBox(width: 18, height: 18,
+                        ? const SizedBox(
+                            width: 18,
+                            height: 18,
                             child: CircularProgressIndicator(
-                              strokeWidth: 2, color: Colors.white))
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
                         : const Text('Save'),
                   ),
                 ),
@@ -165,21 +177,29 @@ class _AvatarCropDialogState extends State<_AvatarCropDialog> {
     setState(() => _saving = true);
     try {
       // Capture the repaint boundary as an image
-      final boundary = _repaintKey.currentContext?.findRenderObject()
-          as RenderRepaintBoundary?;
-      if (boundary == null) { Navigator.pop(context); return; }
+      final boundary =
+          _repaintKey.currentContext?.findRenderObject()
+              as RenderRepaintBoundary?;
+      if (boundary == null) {
+        Navigator.pop(context);
+        return;
+      }
 
       final image = await boundary.toImage(pixelRatio: 2.0);
-      final byteData =
-          await image.toByteData(format: ui.ImageByteFormat.png);
-      if (byteData == null) { Navigator.pop(context); return; }
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      if (!mounted) return;
+      if (byteData == null) {
+        Navigator.pop(context);
+        return;
+      }
 
       final bytes = byteData.buffer.asUint8List();
 
       // Write to a temp file
       final tmpDir = Directory.systemTemp;
       final tmpFile = File(
-          '${tmpDir.path}/avatar_crop_${DateTime.now().millisecondsSinceEpoch}.png');
+        '${tmpDir.path}/avatar_crop_${DateTime.now().millisecondsSinceEpoch}.png',
+      );
       await tmpFile.writeAsBytes(bytes);
 
       if (mounted) Navigator.pop(context, tmpFile);

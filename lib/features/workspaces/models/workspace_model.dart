@@ -3,15 +3,19 @@ class WorkspaceModel {
   final String id;
   final String name;
   final String type; // 'personal' | 'team'
+  final String? createdBy;
   final String? role; // caller's role
   final int? memberCount;
+  final DateTime? createdAt;
 
   const WorkspaceModel({
     required this.id,
     required this.name,
     required this.type,
+    this.createdBy,
     this.role,
     this.memberCount,
+    this.createdAt,
   });
 
   bool get isPersonal => type == 'personal';
@@ -25,8 +29,12 @@ class WorkspaceModel {
     id: j['id'] as String,
     name: j['name'] as String,
     type: j['type'] as String? ?? 'team',
+    createdBy: (j['createdBy'] ?? j['created_by']) as String?,
     role: j['role'] as String?,
     memberCount: j['memberCount'] as int?,
+    createdAt: (j['createdAt'] ?? j['created_at']) is String
+        ? DateTime.parse((j['createdAt'] ?? j['created_at']) as String)
+        : null,
   );
 }
 
@@ -48,10 +56,15 @@ class MemberModel {
   factory MemberModel.fromJson(Map<String, dynamic> j) {
     final profile = j['profile'] as Map<String, dynamic>? ?? j;
     return MemberModel(
-      userId: j['user_id'] as String? ?? j['id'] as String,
-      fullName: profile['full_name'] as String? ?? '',
-      email: profile['email'] as String? ?? '',
-      avatarUrl: profile['avatar_url'] as String?,
+      userId: (j['userId'] ?? j['user_id'] ?? j['id']) as String,
+      fullName:
+          (j['fullName'] ?? profile['full_name'] ?? profile['fullName'])
+              as String? ??
+          '',
+      email: (j['email'] ?? profile['email']) as String? ?? '',
+      avatarUrl:
+          (j['avatarUrl'] ?? profile['avatar_url'] ?? profile['avatarUrl'])
+              as String?,
       role: j['role'] as String? ?? 'member',
     );
   }
@@ -88,8 +101,10 @@ class InviteCodeModel {
     maxUses: j['max_uses'] as int?,
     useCount: j['use_count'] as int? ?? 0,
     expiresAt: j['expires_at'] != null
-        ? DateTime.parse(j['expires_at'] as String) : null,
+        ? DateTime.parse(j['expires_at'] as String)
+        : null,
     revokedAt: j['revoked_at'] != null
-        ? DateTime.parse(j['revoked_at'] as String) : null,
+        ? DateTime.parse(j['revoked_at'] as String)
+        : null,
   );
 }

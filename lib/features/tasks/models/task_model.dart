@@ -7,6 +7,7 @@ class TaskModel {
   final String status; // todo | in_progress | completed
   final String priority; // high | medium | low
   final DateTime? dueAt;
+  final int? reminderMinutesBefore;
   final String? assigneeId;
   final String? assigneeName;
   final String? assigneeAvatarUrl;
@@ -29,6 +30,7 @@ class TaskModel {
     this.status = 'todo',
     this.priority = 'medium',
     this.dueAt,
+    this.reminderMinutesBefore,
     this.assigneeId,
     this.assigneeName,
     this.assigneeAvatarUrl,
@@ -66,6 +68,7 @@ class TaskModel {
       status: j['status'] as String? ?? 'todo',
       priority: j['priority'] as String? ?? 'medium',
       dueAt: j['due_at'] != null ? DateTime.parse(j['due_at'] as String) : null,
+      reminderMinutesBefore: j['reminder_minutes_before'] as int?,
       assigneeId: j['assignee_id'] as String?,
       assigneeName: assignee?['full_name'] as String?,
       assigneeAvatarUrl: assignee?['avatar_url'] as String?,
@@ -74,7 +77,8 @@ class TaskModel {
       labelColor: label?['color'] as String?,
       createdBy: j['created_by'] as String,
       completedAt: j['completed_at'] != null
-          ? DateTime.parse(j['completed_at'] as String) : null,
+          ? DateTime.parse(j['completed_at'] as String)
+          : null,
       createdAt: DateTime.parse(j['created_at'] as String),
       updatedAt: DateTime.parse(j['updated_at'] as String),
       subtasks: (j['subtasks'] as List? ?? [])
@@ -83,9 +87,10 @@ class TaskModel {
       comments: (j['comments'] as List? ?? [])
           .map((c) => CommentModel.fromJson(c as Map<String, dynamic>))
           .toList(),
-      attachments: (j['attachments'] as List? ?? [])
-          .map((a) => AttachmentModel.fromJson(a as Map<String, dynamic>))
-          .toList(),
+      attachments:
+          (j['attachments'] as List? ?? j['task_attachments'] as List? ?? [])
+              .map((a) => AttachmentModel.fromJson(a as Map<String, dynamic>))
+              .toList(),
     );
   }
 }
@@ -109,9 +114,29 @@ class SubtaskModel {
     id: j['id'] as String,
     taskId: j['task_id'] as String,
     title: j['title'] as String,
-    isDone: j['is_done'] as bool? ?? false,
+    isDone: j['is_done'] as bool? ?? j['done'] as bool? ?? false,
     position: j['position'] as int? ?? 0,
   );
+}
+
+List<SubtaskModel> reorderSubtaskList(
+  List<SubtaskModel> subtasks,
+  int oldIndex,
+  int newIndex,
+) {
+  final reordered = List<SubtaskModel>.from(subtasks);
+  final moved = reordered.removeAt(oldIndex);
+  reordered.insert(newIndex, moved);
+  return [
+    for (var index = 0; index < reordered.length; index++)
+      SubtaskModel(
+        id: reordered[index].id,
+        taskId: reordered[index].taskId,
+        title: reordered[index].title,
+        isDone: reordered[index].isDone,
+        position: index,
+      ),
+  ];
 }
 
 class CommentModel {
@@ -165,12 +190,17 @@ class AttachmentModel {
   String get extension => name.split('.').last.toLowerCase();
   String get sizeLabel {
     if (sizeBytes < 1024) return '${sizeBytes}B';
-    if (sizeBytes < 1024 * 1024) return '${(sizeBytes / 1024).toStringAsFixed(1)}KB';
+    if (sizeBytes < 1024 * 1024) {
+      return '${(sizeBytes / 1024).toStringAsFixed(1)}KB';
+    }
     return '${(sizeBytes / (1024 * 1024)).toStringAsFixed(1)}MB';
   }
 
   factory AttachmentModel.fromJson(Map<String, dynamic> j) {
-    final file = j['file'] as Map<String, dynamic>? ?? j;
+    final file =
+        j['file'] as Map<String, dynamic>? ??
+        j['files'] as Map<String, dynamic>? ??
+        j;
     return AttachmentModel(
       fileId: file['id'] as String? ?? j['file_id'] as String,
       name: file['name'] as String? ?? '',
