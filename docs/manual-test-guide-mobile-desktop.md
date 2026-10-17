@@ -10,6 +10,7 @@ on Android does not count as a Windows result, or vice versa.
 |---|---|---|---|---|
 |  |  |  |  |  |
 
+
 For each case, mark **Pass**, **Fail**, or **Not tested**, and add a short note.
 Do not put passwords, access tokens, Firebase keys, cron secrets, or private data
 in this document.
