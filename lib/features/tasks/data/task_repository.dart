@@ -42,8 +42,16 @@ class TaskRepository {
   final Dio _dio;
   final AppDatabase _db;
   final SyncEngine _sync;
+  final String? Function() _currentUserId;
 
-  TaskRepository(this._dio, this._db, this._sync);
+  TaskRepository(
+    this._dio,
+    this._db,
+    this._sync, {
+    String? Function()? currentUserId,
+  }) : _currentUserId =
+           currentUserId ??
+           (() => Supabase.instance.client.auth.currentUser?.id);
 
   // ── List ──────────────────────────────────────────────────────────────────
   /// Stream from Drift for offline-first display — shows cached data instantly.
@@ -379,49 +387,50 @@ class TaskRepository {
         .toList();
     // Write to Drift first (offline-first)
     final now = DateTime.now();
-    final currentUserId =
-        Supabase.instance.client.auth.currentUser?.id ?? 'local';
-    await _db
-        .into(_db.tasks)
-        .insertOnConflictUpdate(
-          TasksCompanion.insert(
-            id: clientId,
-            workspaceId: workspaceId,
-            title: title,
-            description: Value(description),
-            status: const Value('todo'),
-            priority: Value(priority),
-            dueAt: Value(dueAt),
-            reminderMinutesBefore: Value(reminderMinutesBefore),
-            assigneeId: Value(assigneeId),
-            labelId: Value(labelId),
-            createdBy: currentUserId,
-            createdAt: now,
-            updatedAt: now,
-          ),
-        );
-
-    for (final subtask in childSubtasks) {
+    final currentUserId = _currentUserId() ?? 'local';
+    await _db.transaction(() async {
       await _db
-          .into(_db.subtasks)
-          .insert(
-            SubtasksCompanion.insert(
-              id: subtask['id']! as String,
-              taskId: clientId,
-              title: subtask['title']! as String,
-              position: Value(subtask['position']! as int),
+          .into(_db.tasks)
+          .insertOnConflictUpdate(
+            TasksCompanion.insert(
+              id: clientId,
+              workspaceId: workspaceId,
+              title: title,
+              description: Value(description),
+              status: const Value('todo'),
+              priority: Value(priority),
+              dueAt: Value(dueAt),
+              reminderMinutesBefore: Value(reminderMinutesBefore),
+              assigneeId: Value(assigneeId),
+              labelId: Value(labelId),
+              createdBy: currentUserId,
               createdAt: now,
               updatedAt: now,
             ),
           );
-    }
+
+      for (final subtask in childSubtasks) {
+        await _db
+            .into(_db.subtasks)
+            .insert(
+              SubtasksCompanion.insert(
+                id: subtask['id']! as String,
+                taskId: clientId,
+                title: subtask['title']! as String,
+                position: Value(subtask['position']! as int),
+                createdAt: now,
+                updatedAt: now,
+              ),
+            );
+      }
+    });
 
     final data = <String, dynamic>{
       'id': clientId,
       'title': title,
       'description': description,
       'priority': priority,
-      if (dueAt != null) 'dueAt': dueAt.toIso8601String(),
+      if (dueAt != null) 'dueAt': dueAt.toUtc().toIso8601String(),
       'reminderMinutesBefore': reminderMinutesBefore,
       if (assigneeId != null) 'assigneeId': assigneeId,
       if (labelId != null) 'labelId': labelId,

@@ -114,11 +114,19 @@ class CalendarNotifier extends StateNotifier<CalendarState> {
       to,
     );
     if (request != _loadRequest) return;
+    final shouldHideConnectivityError =
+        err != null &&
+        const [
+          '__PLANPAL_API_ERROR__:NETWORK',
+          '__PLANPAL_API_ERROR__:TIMEOUT',
+          '__PLANPAL_API_ERROR__:SERVER_UNREACHABLE',
+        ].any(err.message.startsWith) &&
+        state.events.isNotEmpty;
     state = state.copyWith(
       events: events,
       dueTasks: dueTasks,
       loading: false,
-      error: err?.message,
+      error: shouldHideConnectivityError ? null : err?.message,
     );
   }
 

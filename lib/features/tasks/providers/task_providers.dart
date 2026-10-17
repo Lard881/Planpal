@@ -139,6 +139,15 @@ class TaskListNotifier extends StateNotifier<TaskListState> {
         });
   }
 
+  bool _shouldHideConnectivityError(String? message) {
+    if (message == null) return false;
+    return const [
+      '__PLANPAL_API_ERROR__:NETWORK',
+      '__PLANPAL_API_ERROR__:TIMEOUT',
+      '__PLANPAL_API_ERROR__:SERVER_UNREACHABLE',
+    ].any(message.startsWith);
+  }
+
   // A3: Fetch from API in background — merges into Drift, stream updates UI
   Future<void> _fetchFromApi() async {
     if (workspaceId.isEmpty) return;
@@ -155,20 +164,23 @@ class TaskListNotifier extends StateNotifier<TaskListState> {
       sort: f.sort,
       q: f.q,
     );
+    final shouldHideConnectivityError =
+        _shouldHideConnectivityError(err?.message) && state.tasks.isNotEmpty;
+    final nextError = shouldHideConnectivityError ? null : err?.message;
     // If there's a search query, update state directly (not via stream)
     if (f.q != null) {
       state = state.copyWith(
         tasks: err == null ? tasks : null,
         loading: false,
         cursor: cursor,
-        error: err?.message,
+        error: nextError,
         clearError: err == null,
       );
     } else {
       state = state.copyWith(
         loading: false,
         cursor: cursor,
-        error: err?.message,
+        error: nextError,
       );
     }
   }

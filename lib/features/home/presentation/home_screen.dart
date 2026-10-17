@@ -13,6 +13,8 @@ import '../../../core/layout/breakpoints.dart';
 import '../../../core/widgets/chips.dart';
 import '../../../core/widgets/avatar.dart';
 import '../../../core/l10n/app_localizations.dart';
+import '../../../core/connectivity/connectivity_service.dart';
+import '../../../core/network/failure_localizer.dart';
 import '../../workspaces/providers/workspace_providers.dart';
 import '../../workspaces/presentation/workspace_switcher.dart';
 import '../../notifications/providers/notifications_providers.dart';
@@ -36,6 +38,20 @@ String _greeting(AppLocalizations l10n) {
   if (h < 12) return l10n.goodMorning;
   if (h < 17) return l10n.goodAfternoon;
   return l10n.goodEvening;
+}
+
+bool _showCachedSectionError(
+  String? message, {
+  required bool hasCachedData,
+  required bool isOnline,
+}) {
+  if (message == null || !hasCachedData) return message != null;
+  final isConnectivityError = const [
+    '__PLANPAL_API_ERROR__:NETWORK',
+    '__PLANPAL_API_ERROR__:TIMEOUT',
+    '__PLANPAL_API_ERROR__:SERVER_UNREACHABLE',
+  ].any(message.startsWith);
+  return isOnline && !isConnectivityError;
 }
 
 // ── DESKTOP ───────────────────────────────────────────────────────────────────
@@ -305,6 +321,7 @@ class _TasksTodaySection extends ConsumerWidget {
     final c = context.colors;
     final l10n = AppLocalizations.of(context);
     final state = ref.watch(taskListProvider(workspaceId));
+    final isOnline = ref.watch(isOnlineProvider);
     final currentUserId = Supabase.instance.client.auth.currentUser?.id;
 
     // Home shows only today's tasks assigned to the signed-in user.
@@ -345,7 +362,11 @@ class _TasksTodaySection extends ConsumerWidget {
                 .load(refresh: true),
           )
         else ...[
-          if (state.error != null)
+          if (_showCachedSectionError(
+            state.error,
+            hasCachedData: state.tasks.isNotEmpty,
+            isOnline: isOnline,
+          ))
             _HomeError(
               message: state.error!,
               onRetry: () => ref
@@ -407,7 +428,7 @@ class _HomeError extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              message,
+              localizeFailureText(l10n, message),
               style: AppText.caption.copyWith(color: colors.danger),
             ),
           ),
@@ -668,6 +689,7 @@ class _OverviewCard extends ConsumerWidget {
     final c = context.colors;
     final l10n = AppLocalizations.of(context);
     final state = ref.watch(homeProvider);
+    final isOnline = ref.watch(isOnlineProvider);
     final isDesktop = context.isDesktopLayout;
 
     return Container(
@@ -733,7 +755,11 @@ class _OverviewCard extends ConsumerWidget {
             )
           else ...[
             if (state.loading) const LinearProgressIndicator(),
-            if (state.error != null)
+            if (_showCachedSectionError(
+              state.error,
+              hasCachedData: state.overview != null,
+              isOnline: isOnline,
+            ))
               _HomeError(
                 message: state.error!,
                 onRetry: () => ref.read(homeProvider.notifier).load(),
@@ -1091,6 +1117,7 @@ class _UpcomingCard extends ConsumerWidget {
     final c = context.colors;
     final l10n = AppLocalizations.of(context);
     final calState = ref.watch(calendarProvider);
+    final isOnline = ref.watch(isOnlineProvider);
     final upcoming = calState.events
         .where((e) => e.startsAt.isAfter(DateTime.now()))
         .take(3)
@@ -1111,7 +1138,11 @@ class _UpcomingCard extends ConsumerWidget {
             style: AppText.sectionTitle.copyWith(color: c.textPrimary),
           ),
           const SizedBox(height: 12),
-          if (calState.error != null)
+          if (_showCachedSectionError(
+            calState.error,
+            hasCachedData: calState.events.isNotEmpty,
+            isOnline: isOnline,
+          ))
             _HomeError(
               message: calState.error!,
               onRetry: () => ref.read(calendarProvider.notifier).loadMonth(),

@@ -11,7 +11,10 @@ import '../../core/theme/app_text.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/layout/breakpoints.dart';
 import '../../core/l10n/app_localizations.dart';
+import '../../core/connectivity/connectivity_service.dart';
+import '../../core/widgets/empty_state.dart';
 import '../workspaces/presentation/workspace_switcher.dart';
+import '../workspaces/providers/workspace_providers.dart';
 import '../notifications/providers/notifications_providers.dart';
 
 // Routes that should HIDE the bottom bar on mobile
@@ -60,20 +63,23 @@ class _DesktopShell extends ConsumerWidget {
         },
       },
       child: Scaffold(
-      backgroundColor: c.background,
-      body: Row(
-        children: [
-          _DesktopSidebar(),
-          Expanded(
-            child: Column(
-              children: [
-                _DesktopTopBar(),
-                Expanded(child: child),
-              ],
+        backgroundColor: c.background,
+        body: Row(
+          children: [
+            _DesktopSidebar(),
+            Expanded(
+              child: Column(
+                children: [
+                  _DesktopTopBar(),
+                  ConnectivityBanner(
+                    state: ref.watch(connectivityServiceProvider),
+                  ),
+                  Expanded(child: child),
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
       ),
     );
   }
@@ -108,7 +114,7 @@ class _DesktopSidebar extends ConsumerWidget {
                     color: c.primary,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Center(
+                  child: Center(
                     child: Text(
                       'P',
                       style: TextStyle(
@@ -158,9 +164,6 @@ class _DesktopSidebar extends ConsumerWidget {
               ),
             ),
           ),
-
-          // Bottom user card
-          Padding(padding: const EdgeInsets.all(16), child: _SidebarUserCard()),
         ],
       ),
     );
@@ -171,6 +174,8 @@ class _WorkspaceSwitcherCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
+    final workspace = ref.watch(currentWorkspaceProvider);
     return Container(
       height: 56,
       padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -189,9 +194,9 @@ class _WorkspaceSwitcherCard extends ConsumerWidget {
               color: c.primary,
               borderRadius: BorderRadius.circular(8),
             ),
-            child: const Center(
+            child: Center(
               child: Text(
-                'W',
+                workspace?.initial ?? l10n.homeWorkspaceFallback[0],
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 13,
@@ -207,74 +212,27 @@ class _WorkspaceSwitcherCard extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Workspace',
+                  workspace?.name ?? l10n.homeWorkspaceFallback,
                   style: AppText.bodyStrong.copyWith(color: c.textPrimary),
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
-                  'Personal',
+                  workspace == null
+                      ? ''
+                      : workspace.isPersonal
+                      ? l10n.workspacePersonal
+                      : switch (workspace.role) {
+                          'admin' => l10n.roleAdmin,
+                          'member' => l10n.roleMember,
+                          'guest' => l10n.roleGuest,
+                          _ => l10n.workspaceTeam,
+                        },
                   style: AppText.caption.copyWith(color: c.textMuted),
                 ),
               ],
             ),
           ),
           Icon(LucideIcons.chevronsUpDown, size: 16, color: c.textMuted),
-        ],
-      ),
-    );
-  }
-}
-
-class _SidebarUserCard extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final c = context.colors;
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: c.surface,
-        border: Border.all(color: c.border),
-        borderRadius: BorderRadius.circular(AppRadius.tile),
-      ),
-      child: Row(
-        children: [
-          // Avatar
-          Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                colors: [c.primary, c.violet],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
-            child: Center(
-              child: Text(
-                'U',
-                style: AppText.bodyStrong.copyWith(color: Colors.white),
-              ),
-            ),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'User',
-                  style: AppText.bodyStrong.copyWith(color: c.textPrimary),
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Text(
-                  'Workspace',
-                  style: AppText.caption.copyWith(color: c.textMuted),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ),
         ],
       ),
     );
@@ -392,9 +350,6 @@ class _DesktopTopBar extends ConsumerWidget {
             hasUnread: unreadCount > 0,
             onTap: () => context.push('/notifications'),
           ),
-          const SizedBox(width: 8),
-          // User chip
-          _TopBarUserChip(),
         ],
       ),
     );
@@ -444,58 +399,6 @@ class _TopBarIconButton extends StatelessWidget {
               ),
             ),
           ),
-      ],
-    );
-  }
-}
-
-class _TopBarUserChip extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final c = context.colors;
-    return Row(
-      children: [
-        Container(
-          width: 36,
-          height: 36,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: LinearGradient(
-              colors: [c.primary, c.violet],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-          child: Center(
-            child: Text(
-              'U',
-              style: AppText.bodyStrong.copyWith(color: Colors.white),
-            ),
-          ),
-        ),
-        const SizedBox(width: 8),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'User',
-              style: AppText.bodyStrong.copyWith(color: c.textPrimary),
-            ),
-            // Role badge
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
-              decoration: BoxDecoration(
-                color: c.primarySoft,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text(
-                'Member',
-                style: AppText.chip.copyWith(color: c.primary),
-              ),
-            ),
-          ],
-        ),
       ],
     );
   }

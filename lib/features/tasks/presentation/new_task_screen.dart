@@ -172,7 +172,7 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
       if (err != null) {
         messenger.showSnackBar(SnackBar(content: Text(l10n.syncWaitingShort)));
       }
-      context.pop();
+      context.go('/tasks/${task.id}');
     } else if (err != null) {
       final cleanupFailed = await _removeUploadedFiles(
         documents,

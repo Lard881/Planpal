@@ -41,17 +41,34 @@ final currentWorkspaceIdProvider =
     });
 
 class CurrentWorkspaceNotifier extends StateNotifier<String?> {
-  CurrentWorkspaceNotifier() : super(null) {
+  CurrentWorkspaceNotifier({
+    Future<String?> Function()? readWorkspaceId,
+    Future<void> Function(String id)? writeWorkspaceId,
+    Future<void> Function()? deleteWorkspaceId,
+  }) : _readWorkspaceId =
+           readWorkspaceId ?? (() => _storage.read(key: _kCurrentWorkspaceKey)),
+       _writeWorkspaceId =
+           writeWorkspaceId ??
+           ((id) => _storage.write(key: _kCurrentWorkspaceKey, value: id)),
+       _deleteWorkspaceId =
+           deleteWorkspaceId ??
+           (() => _storage.delete(key: _kCurrentWorkspaceKey)),
+       super(null) {
     _load();
   }
 
+  final Future<String?> Function() _readWorkspaceId;
+  final Future<void> Function(String id) _writeWorkspaceId;
+  final Future<void> Function() _deleteWorkspaceId;
   List<WorkspaceModel>? _availableWorkspaces;
+  bool _selectionLoaded = false;
+  int _selectionRevision = 0;
 
   Future<void> _load() async {
+    final revision = _selectionRevision;
     try {
-      final saved = await _storage.read(key: _kCurrentWorkspaceKey);
-      if (saved != null) state = saved;
-      await _reconcileSelection();
+      final saved = await _readWorkspaceId();
+      if (saved != null && revision == _selectionRevision) state = saved;
     } on PlatformException catch (error, stackTrace) {
       FlutterError.reportError(
         FlutterErrorDetails(
@@ -60,12 +77,15 @@ class CurrentWorkspaceNotifier extends StateNotifier<String?> {
           library: 'current workspace preference',
         ),
       );
+    } finally {
+      _selectionLoaded = true;
     }
+    await _reconcileSelection();
   }
 
   void updateAvailableWorkspaces(List<WorkspaceModel> workspaces) {
     _availableWorkspaces = workspaces;
-    unawaited(_reconcileSelection());
+    if (_selectionLoaded) unawaited(_reconcileSelection());
   }
 
   Future<void> _reconcileSelection() async {
@@ -89,13 +109,15 @@ class CurrentWorkspaceNotifier extends StateNotifier<String?> {
   }
 
   Future<void> set(String id) async {
-    await _storage.write(key: _kCurrentWorkspaceKey, value: id);
+    _selectionRevision++;
     state = id;
+    await _writeWorkspaceId(id);
   }
 
   Future<void> clear() async {
+    _selectionRevision++;
     state = null;
-    await _storage.delete(key: _kCurrentWorkspaceKey);
+    await _deleteWorkspaceId();
   }
 }
 

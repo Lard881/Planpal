@@ -31,6 +31,15 @@ class HomeState {
   );
 }
 
+bool _shouldHideConnectivityError(String? message, {required bool hasCachedData}) {
+  if (message == null || !hasCachedData) return false;
+  return const [
+    '__PLANPAL_API_ERROR__:NETWORK',
+    '__PLANPAL_API_ERROR__:TIMEOUT',
+    '__PLANPAL_API_ERROR__:SERVER_UNREACHABLE',
+  ].any(message.startsWith);
+}
+
 class HomeNotifier extends StateNotifier<HomeState> {
   final HomeRepository _repo;
   final String workspaceId;
@@ -47,10 +56,17 @@ class HomeNotifier extends StateNotifier<HomeState> {
     state = state.copyWith(loading: true, clearError: true, range: r);
     final (overview, err) = await _repo.getOverview(workspaceId, r);
     if (generation != _loadGeneration) return;
+    final hasCachedOverview = state.overview != null || overview != null;
+    final error = _shouldHideConnectivityError(
+          err?.message,
+          hasCachedData: hasCachedOverview,
+        )
+        ? null
+        : err?.message;
     state = state.copyWith(
       overview: overview ?? state.overview,
       loading: false,
-      error: err?.message,
+      error: error,
     );
   }
 
