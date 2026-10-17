@@ -13,6 +13,7 @@ import '../../../core/widgets/avatar.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../../../core/widgets/planpal_button.dart';
 import '../../../core/l10n/app_localizations.dart';
+import '../../../core/network/failure_localizer.dart';
 import '../../../core/providers/presence_provider.dart';
 import '../../workspaces/providers/workspace_providers.dart';
 import '../../workspaces/data/workspace_repository.dart';
@@ -535,7 +536,8 @@ class _MemberProfileSheetState extends ConsumerState<_MemberProfileSheet> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            failure?.message ?? AppLocalizations.of(context).errorGeneric,
+            failure?.localizedMessage(context) ??
+                AppLocalizations.of(context).errorGeneric,
           ),
         ),
       );
@@ -555,9 +557,9 @@ class _MemberProfileSheetState extends ConsumerState<_MemberProfileSheet> {
     if (!mounted) return;
     setState(() => _busy = false);
     if (failure != null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(failure.message)));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(failure.localizedMessage(context))),
+      );
       return;
     }
     ref.invalidate(teamMembersProvider(widget.workspaceId));
@@ -591,9 +593,9 @@ class _MemberProfileSheetState extends ConsumerState<_MemberProfileSheet> {
     if (!mounted) return;
     setState(() => _busy = false);
     if (failure != null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(failure.message)));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(failure.localizedMessage(context))),
+      );
       return;
     }
     ref.invalidate(teamMembersProvider(widget.workspaceId));

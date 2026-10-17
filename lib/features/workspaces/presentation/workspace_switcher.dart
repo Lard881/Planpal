@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/network/app_failure.dart';
+import '../../../core/network/failure_localizer.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
 import '../../../core/theme/app_theme.dart';
@@ -66,22 +67,28 @@ class _WorkspaceSwitcherPopover extends ConsumerWidget {
                   padding: const EdgeInsets.fromLTRB(16, 14, 16, 8),
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Text('Switch workspace',
-                      style: AppText.caption.copyWith(color: c.textMuted)),
+                    child: Text(
+                      'Switch workspace',
+                      style: AppText.caption.copyWith(color: c.textMuted),
+                    ),
                   ),
                 ),
                 workspacesAsync.when(
                   data: (list) => Column(
-                    children: list.map((w) =>
-                      _WorkspaceRow(
-                        workspace: w,
-                        isCurrentRow: w.id == currentId,
-                        onTap: () {
-                          ref.read(currentWorkspaceIdProvider.notifier).set(w.id);
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ).toList(),
+                    children: list
+                        .map(
+                          (w) => _WorkspaceRow(
+                            workspace: w,
+                            isCurrentRow: w.id == currentId,
+                            onTap: () {
+                              ref
+                                  .read(currentWorkspaceIdProvider.notifier)
+                                  .set(w.id);
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        )
+                        .toList(),
                   ),
                   loading: () => const Padding(
                     padding: EdgeInsets.all(16),
@@ -89,7 +96,7 @@ class _WorkspaceSwitcherPopover extends ConsumerWidget {
                   ),
                   error: (error, _) => ErrorState(
                     message: error is AppFailure
-                        ? error.message
+                        ? error.localizedMessage(context)
                         : AppLocalizations.of(context).errorGeneric,
                     requestId: error is AppFailure ? error.requestId : null,
                     retryLabel: AppLocalizations.of(context).btnRetry,
@@ -137,7 +144,8 @@ class _WorkspaceSwitcherSheet extends ConsumerWidget {
       decoration: BoxDecoration(
         color: c.surface,
         borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(AppRadius.panel)),
+          top: Radius.circular(AppRadius.panel),
+        ),
       ),
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
       child: SafeArea(
@@ -149,7 +157,8 @@ class _WorkspaceSwitcherSheet extends ConsumerWidget {
             // Drag handle
             Center(
               child: Container(
-                width: 40, height: 4,
+                width: 40,
+                height: 4,
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
                   color: c.border,
@@ -157,29 +166,35 @@ class _WorkspaceSwitcherSheet extends ConsumerWidget {
                 ),
               ),
             ),
-            Text('Switch workspace',
-              style: AppText.sectionTitle.copyWith(color: c.textPrimary)),
+            Text(
+              'Switch workspace',
+              style: AppText.sectionTitle.copyWith(color: c.textPrimary),
+            ),
             const SizedBox(height: 16),
             workspacesAsync.when(
               data: (list) => Column(
-                children: list.map((w) =>
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: _WorkspaceRowCard(
-                      workspace: w,
-                      isCurrent: w.id == currentId,
-                      onTap: () {
-                        ref.read(currentWorkspaceIdProvider.notifier).set(w.id);
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ),
-                ).toList(),
+                children: list
+                    .map(
+                      (w) => Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: _WorkspaceRowCard(
+                          workspace: w,
+                          isCurrent: w.id == currentId,
+                          onTap: () {
+                            ref
+                                .read(currentWorkspaceIdProvider.notifier)
+                                .set(w.id);
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ),
+                    )
+                    .toList(),
               ),
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (error, _) => ErrorState(
                 message: error is AppFailure
-                    ? error.message
+                    ? error.localizedMessage(context)
                     : AppLocalizations.of(context).errorGeneric,
                 requestId: error is AppFailure ? error.requestId : null,
                 retryLabel: AppLocalizations.of(context).btnRetry,
@@ -205,13 +220,16 @@ class _WorkspaceSwitcherSheet extends ConsumerWidget {
                   context.push('/workspace/join');
                 },
                 icon: Icon(LucideIcons.key, size: 16, color: c.textPrimary),
-                label: Text('Join with code',
-                  style: AppText.bodyMedium.copyWith(color: c.textPrimary)),
+                label: Text(
+                  'Join with code',
+                  style: AppText.bodyMedium.copyWith(color: c.textPrimary),
+                ),
                 style: OutlinedButton.styleFrom(
                   backgroundColor: c.surfaceAlt,
                   side: BorderSide.none,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppRadius.control)),
+                    borderRadius: BorderRadius.circular(AppRadius.control),
+                  ),
                 ),
               ),
             ),
@@ -227,7 +245,11 @@ class _WorkspaceRow extends StatelessWidget {
   final WorkspaceModel workspace;
   final bool isCurrentRow;
   final VoidCallback onTap;
-  const _WorkspaceRow({required this.workspace, required this.isCurrentRow, required this.onTap});
+  const _WorkspaceRow({
+    required this.workspace,
+    required this.isCurrentRow,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -249,16 +271,19 @@ class _WorkspaceRow extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(workspace.name,
+                  Text(
+                    workspace.name,
                     style: AppText.bodyStrong.copyWith(color: c.textPrimary),
-                    overflow: TextOverflow.ellipsis),
-                  Text(_subtitle(workspace),
-                    style: AppText.caption.copyWith(color: c.textMuted)),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    _subtitle(workspace),
+                    style: AppText.caption.copyWith(color: c.textMuted),
+                  ),
                 ],
               ),
             ),
-            if (workspace.role != null)
-              RoleBadge(role: workspace.role!),
+            if (workspace.role != null) RoleBadge(role: workspace.role!),
           ],
         ),
       ),
@@ -270,7 +295,11 @@ class _WorkspaceRowCard extends StatelessWidget {
   final WorkspaceModel workspace;
   final bool isCurrent;
   final VoidCallback onTap;
-  const _WorkspaceRowCard({required this.workspace, required this.isCurrent, required this.onTap});
+  const _WorkspaceRowCard({
+    required this.workspace,
+    required this.isCurrent,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -292,15 +321,18 @@ class _WorkspaceRowCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(workspace.name,
-                    style: AppText.bodyStrong.copyWith(color: c.textPrimary)),
-                  Text(_subtitle(workspace),
-                    style: AppText.caption.copyWith(color: c.textMuted)),
+                  Text(
+                    workspace.name,
+                    style: AppText.bodyStrong.copyWith(color: c.textPrimary),
+                  ),
+                  Text(
+                    _subtitle(workspace),
+                    style: AppText.caption.copyWith(color: c.textMuted),
+                  ),
                 ],
               ),
             ),
-            if (workspace.role != null)
-              RoleBadge(role: workspace.role!),
+            if (workspace.role != null) RoleBadge(role: workspace.role!),
           ],
         ),
       ),
@@ -318,12 +350,21 @@ class _WorkspaceAvatar extends StatelessWidget {
     final colors = [c.primary, c.violet, c.sky, c.success];
     final color = colors[workspace.name.hashCode.abs() % colors.length];
     return Container(
-      width: 36, height: 36,
-      decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(10)),
+      width: 36,
+      height: 36,
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(10),
+      ),
       child: Center(
-        child: Text(workspace.initial,
-          style: const TextStyle(color: Colors.white,
-              fontSize: 16, fontWeight: FontWeight.w700)),
+        child: Text(
+          workspace.initial,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
       ),
     );
   }
@@ -333,7 +374,11 @@ class _ActionRow extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback onTap;
-  const _ActionRow({required this.icon, required this.label, required this.onTap});
+  const _ActionRow({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -346,7 +391,10 @@ class _ActionRow extends StatelessWidget {
           children: [
             Icon(icon, size: 18, color: c.primary),
             const SizedBox(width: 10),
-            Text(label, style: AppText.bodyMedium.copyWith(color: c.textPrimary)),
+            Text(
+              label,
+              style: AppText.bodyMedium.copyWith(color: c.textPrimary),
+            ),
           ],
         ),
       ),

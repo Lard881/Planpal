@@ -20,6 +20,7 @@ import '../../../core/widgets/app_card.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/network/app_failure.dart';
+import '../../../core/network/failure_localizer.dart';
 import '../data/task_repository.dart';
 import '../models/task_model.dart';
 import '../models/task_permissions.dart';
@@ -555,7 +556,7 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
           ? l10n.errorNetwork
           : failure is ServerUnreachableFailure || failure is TimeoutFailure
           ? l10n.errorServer
-          : failure.message;
+          : failure.localizedMessage(context);
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(message)));
@@ -572,7 +573,7 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
         ? l10n.syncSaved
         : isQueuedFailure
         ? l10n.syncWaitingShort
-        : failure.message;
+        : failure.localizedMessage(context);
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(message)));
@@ -611,7 +612,7 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
         ? l10n.syncSaved
         : isQueuedFailure
         ? l10n.syncWaitingShort
-        : failure.message;
+        : failure.localizedMessage(context);
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(message)));
@@ -676,12 +677,12 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
           ? AppLocalizations.of(context).syncSaved
           : isQueuedFailure
           ? AppLocalizations.of(context).syncWaitingShort
-          : failure.message;
+          : failure.localizedMessage(context);
     });
     if (failure != null && !isQueuedFailure) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(failure.message)));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(failure.localizedMessage(context))),
+      );
     }
   }
 
@@ -800,7 +801,7 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
         ? l10n.syncSaved
         : isQueuedFailure
         ? l10n.syncWaitingShort
-        : failure.message;
+        : failure.localizedMessage(context);
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(message)));

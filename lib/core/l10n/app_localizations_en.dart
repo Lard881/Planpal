@@ -282,6 +282,50 @@ class AppLocalizationsEn extends AppLocalizations {
       'Your session has expired. Please log in again.';
 
   @override
+  String get errorAuthRequired => 'Please log in to continue.';
+
+  @override
+  String get errorInvalidRequest =>
+      'Please check the information and try again.';
+
+  @override
+  String get errorConflict =>
+      'This change conflicts with a newer update. Refresh and try again.';
+
+  @override
+  String get errorRateLimited =>
+      'Too many requests. Please wait and try again.';
+
+  @override
+  String get errorTimeout =>
+      'The request timed out. Check your connection and try again.';
+
+  @override
+  String get errorInvalidInviteCode => 'This invite code is invalid.';
+
+  @override
+  String get errorInviteCodeExpired => 'This invite code has expired.';
+
+  @override
+  String get errorInviteCodeRevoked => 'This invite code has been revoked.';
+
+  @override
+  String get errorInviteCodeExhausted =>
+      'This invite code has reached its use limit.';
+
+  @override
+  String get errorAlreadyMember =>
+      'You are already a member of this workspace.';
+
+  @override
+  String get errorTransferAdminFirst =>
+      'Transfer workspace ownership before deleting your account.';
+
+  @override
+  String get errorChatPersonalOnly =>
+      'Chat is only available in team workspaces.';
+
+  @override
   String get bannerOffline =>
       'You\'re offline. Your changes are saved on this device and will sync when you\'re back online.';
 
@@ -1421,6 +1465,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsAppearance => 'Appearance';
+
+  @override
+  String get settingsAppearanceSaved =>
+      'Appearance settings saved to your account.';
+
+  @override
+  String get settingsAppearanceQueued =>
+      'Saved on this device. It will sync when the server is available.';
+
+  @override
+  String get settingsAppearanceSaveFailed =>
+      'The appearance changed on this device but could not be saved to your account.';
 
   @override
   String get settingsSecurity => 'Security';

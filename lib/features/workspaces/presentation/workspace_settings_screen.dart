@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/network/app_failure.dart';
+import '../../../core/network/failure_localizer.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
 import '../../../core/theme/app_theme.dart';
@@ -75,7 +76,7 @@ class _WorkspaceSettingsScreenState
       error: (error, _) => Scaffold(
         body: ErrorState(
           message: error is AppFailure
-              ? error.message
+              ? error.localizedMessage(context)
               : AppLocalizations.of(context).errorGeneric,
           requestId: error is AppFailure ? error.requestId : null,
           retryLabel: AppLocalizations.of(context).btnRetry,
@@ -230,9 +231,9 @@ class _WorkspaceSettingsScreenState
                     .read(workspaceRepositoryProvider)
                     .createInviteCode(widget.workspaceId, role);
                 if (err != null && mounted) {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text(err.message)));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(err.localizedMessage(context))),
+                  );
                 }
                 if (mounted) {
                   ref.invalidate(_inviteCodesProvider(widget.workspaceId));
@@ -323,9 +324,9 @@ class _MemberRow extends ConsumerWidget {
                     .read(workspaceRepositoryProvider)
                     .updateMemberRole(workspaceId, member.userId, newRole);
                 if (err != null && context.mounted) {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text(err.message)));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(err.localizedMessage(context))),
+                  );
                 } else {
                   ref.invalidate(_membersProvider(workspaceId));
                 }
@@ -340,9 +341,9 @@ class _MemberRow extends ConsumerWidget {
                     .read(workspaceRepositoryProvider)
                     .removeMember(workspaceId, member.userId);
                 if (err != null && context.mounted) {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text(err.message)));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(err.localizedMessage(context))),
+                  );
                 } else {
                   ref.invalidate(_membersProvider(workspaceId));
                 }
@@ -573,9 +574,9 @@ class _InviteCodeRow extends ConsumerWidget {
                     .read(workspaceRepositoryProvider)
                     .revokeInviteCode(workspaceId, code.id);
                 if (err != null && context.mounted) {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text(err.message)));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(err.localizedMessage(context))),
+                  );
                 } else {
                   ref.invalidate(_inviteCodesProvider(workspaceId));
                 }

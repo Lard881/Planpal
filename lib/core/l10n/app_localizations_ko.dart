@@ -275,6 +275,42 @@ class AppLocalizationsKo extends AppLocalizations {
   String get errorSessionExpired => '세션이 만료되었습니다. 다시 로그인해 주세요.';
 
   @override
+  String get errorAuthRequired => '계속하려면 로그인하세요.';
+
+  @override
+  String get errorInvalidRequest => '정보를 확인한 후 다시 시도하세요.';
+
+  @override
+  String get errorConflict => '최신 변경 사항과 충돌합니다. 새로 고친 후 다시 시도하세요.';
+
+  @override
+  String get errorRateLimited => '요청이 너무 많습니다. 잠시 후 다시 시도하세요.';
+
+  @override
+  String get errorTimeout => '요청 시간이 초과되었습니다. 연결을 확인한 후 다시 시도하세요.';
+
+  @override
+  String get errorInvalidInviteCode => '초대 코드가 올바르지 않습니다.';
+
+  @override
+  String get errorInviteCodeExpired => '초대 코드가 만료되었습니다.';
+
+  @override
+  String get errorInviteCodeRevoked => '초대 코드가 취소되었습니다.';
+
+  @override
+  String get errorInviteCodeExhausted => '초대 코드의 사용 한도에 도달했습니다.';
+
+  @override
+  String get errorAlreadyMember => '이미 이 워크스페이스의 멤버입니다.';
+
+  @override
+  String get errorTransferAdminFirst => '계정을 삭제하기 전에 워크스페이스 소유권을 이전하세요.';
+
+  @override
+  String get errorChatPersonalOnly => '채팅은 팀 워크스페이스에서만 사용할 수 있습니다.';
+
+  @override
   String get bannerOffline => '오프라인 상태입니다. 변경 사항이 기기에 저장되었으며 온라인 복구 시 동기화됩니다.';
 
   @override
@@ -1364,6 +1400,15 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get settingsAppearance => '외관';
+
+  @override
+  String get settingsAppearanceSaved => '외관 설정이 계정에 저장되었습니다.';
+
+  @override
+  String get settingsAppearanceQueued => '이 기기에 저장되었습니다. 서버에 연결되면 동기화됩니다.';
+
+  @override
+  String get settingsAppearanceSaveFailed => '이 기기에서 외관을 변경했지만 계정에 저장하지 못했습니다.';
 
   @override
   String get settingsSecurity => '보안';

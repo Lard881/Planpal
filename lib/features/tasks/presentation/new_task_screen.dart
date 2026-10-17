@@ -16,6 +16,7 @@ import '../../../core/connectivity/connectivity_service.dart';
 import '../../../core/widgets/planpal_button.dart';
 import '../../../core/widgets/planpal_text_field.dart';
 import '../../../core/l10n/app_localizations.dart';
+import '../../../core/network/failure_localizer.dart';
 import '../../workspaces/providers/workspace_providers.dart';
 import '../../documents/data/documents_repository.dart';
 import '../data/task_repository.dart';
@@ -184,7 +185,9 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
         );
         return;
       }
-      messenger.showSnackBar(SnackBar(content: Text(err.message)));
+      messenger.showSnackBar(
+        SnackBar(content: Text(err.localizedMessage(context))),
+      );
     }
   }
 

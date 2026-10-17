@@ -7,6 +7,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../widgets/empty_state.dart';
 import '../config/env.dart';
 
+ConnectivityState classifyReachability({
+  required bool hasNetwork,
+  required bool hasInternet,
+  required bool backendReachable,
+}) {
+  if (!hasNetwork || !hasInternet) return ConnectivityState.offline;
+  return backendReachable
+      ? ConnectivityState.online
+      : ConnectivityState.serverUnreachable;
+}
+
 class ConnectivityService extends StateNotifier<ConnectivityState> {
   ConnectivityService() : super(ConnectivityState.online) {
     _init();
@@ -32,20 +43,52 @@ class ConnectivityService extends StateNotifier<ConnectivityState> {
       final dio = Dio(BaseOptions(connectTimeout: const Duration(seconds: 5)));
       final healthUrl = Env.apiBaseUrl.replaceAll('/api/v1', '/health');
       await dio.get(healthUrl);
-      state = ConnectivityState.online;
+      state = classifyReachability(
+        hasNetwork: true,
+        hasInternet: true,
+        backendReachable: true,
+      );
     } on DioException catch (e) {
-      if (e.type == DioExceptionType.connectionTimeout ||
-          e.type == DioExceptionType.connectionError) {
-        // Check if it's just the server waking up (first few seconds after cold start)
-        state = ConnectivityState.serverUnreachable;
-      } else if (e.response?.statusCode != null) {
+      if (e.response?.statusCode != null) {
         // Server responded (even with error) — it's up
-        state = ConnectivityState.online;
+        state = classifyReachability(
+          hasNetwork: true,
+          hasInternet: true,
+          backendReachable: true,
+        );
       } else {
-        state = ConnectivityState.serverUnreachable;
+        state = classifyReachability(
+          hasNetwork: true,
+          hasInternet: await _hasInternetConnection(),
+          backendReachable: false,
+        );
       }
     } catch (_) {
-      state = ConnectivityState.serverUnreachable;
+      state = classifyReachability(
+        hasNetwork: true,
+        hasInternet: await _hasInternetConnection(),
+        backendReachable: false,
+      );
+    }
+  }
+
+  Future<bool> _hasInternetConnection() async {
+    final dio = Dio(
+      BaseOptions(
+        connectTimeout: const Duration(seconds: 5),
+        receiveTimeout: const Duration(seconds: 5),
+      ),
+    );
+    try {
+      await dio.get(
+        'https://www.google.com/generate_204',
+        options: Options(validateStatus: (status) => status == 204),
+      );
+      return true;
+    } on DioException catch (error) {
+      return error.response?.statusCode == 204;
+    } catch (_) {
+      return false;
     }
   }
 
@@ -63,8 +106,8 @@ class ConnectivityService extends StateNotifier<ConnectivityState> {
 
 final connectivityServiceProvider =
     StateNotifierProvider<ConnectivityService, ConnectivityState>(
-  (ref) => ConnectivityService(),
-);
+      (ref) => ConnectivityService(),
+    );
 
 final isOnlineProvider = Provider<bool>((ref) {
   return ref.watch(connectivityServiceProvider) == ConnectivityState.online;

@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text.dart';
+import '../l10n/app_localizations.dart';
+import '../network/failure_localizer.dart';
 import 'planpal_button.dart';
 
 class EmptyState extends StatelessWidget {
@@ -31,13 +33,15 @@ class EmptyState extends StatelessWidget {
           children: [
             Icon(icon, size: 48, color: c.textMuted),
             const SizedBox(height: 16),
-            Text(title,
+            Text(
+              title,
               style: AppText.cardTitle.copyWith(color: c.textPrimary),
               textAlign: TextAlign.center,
             ),
             if (subtitle != null) ...[
               const SizedBox(height: 8),
-              Text(subtitle!,
+              Text(
+                subtitle!,
                 style: AppText.body.copyWith(color: c.textMuted),
                 textAlign: TextAlign.center,
               ),
@@ -57,7 +61,7 @@ class ErrorState extends StatelessWidget {
   final String message;
   final String? code;
   final String? requestId;
-  final String retryLabel;
+  final String? retryLabel;
   final VoidCallback? onRetry;
 
   const ErrorState({
@@ -65,13 +69,14 @@ class ErrorState extends StatelessWidget {
     required this.message,
     this.code,
     this.requestId,
-    this.retryLabel = 'Try again',
+    this.retryLabel,
     this.onRetry,
   });
 
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -80,15 +85,18 @@ class ErrorState extends StatelessWidget {
           children: [
             Icon(Icons.error_outline, size: 48, color: c.danger),
             const SizedBox(height: 16),
-            Text(message,
+            Text(
+              localizeFailureText(l10n, message),
               style: AppText.cardTitle.copyWith(color: c.textPrimary),
               textAlign: TextAlign.center,
             ),
             if (code != null || requestId != null) ...[
               const SizedBox(height: 8),
               Text(
-                [if (code != null) 'Code: $code',
-                 if (requestId != null) 'ID: $requestId'].join(' · '),
+                [
+                  if (code != null) 'Code: $code',
+                  if (requestId != null) 'ID: $requestId',
+                ].join(' · '),
                 style: AppText.caption.copyWith(color: c.textMuted),
                 textAlign: TextAlign.center,
               ),
@@ -96,7 +104,7 @@ class ErrorState extends StatelessWidget {
             if (onRetry != null) ...[
               const SizedBox(height: 24),
               PlanPalButton(
-                label: retryLabel,
+                label: retryLabel ?? l10n.btnRetry,
                 onPressed: onRetry,
                 variant: PlanPalButtonVariant.outline,
               ),
@@ -144,21 +152,27 @@ class ConnectivityBanner extends StatelessWidget {
     Color bg;
     Color fg;
     String msg;
+    final l10n = AppLocalizations.of(context);
     if (state == ConnectivityState.offline) {
       bg = c.warningSoft;
       fg = c.warningText;
-      msg = "You're offline. Your changes are saved on this device and will sync when you're back online.";
+      msg = l10n.bannerOffline;
     } else if (state == ConnectivityState.serverUnreachable) {
-      bg = c.dangerSoft; fg = c.danger;
-      msg = "Can't reach the server. Check your connection.";
+      bg = c.dangerSoft;
+      fg = c.danger;
+      msg = l10n.bannerServerUnreachable;
     } else if (state == ConnectivityState.wakingUp) {
-      bg = c.primarySoft; fg = c.primary;
-      msg = 'Waking up the server, this can take up to a minute.';
+      bg = c.primarySoft;
+      fg = c.primary;
+      msg = l10n.bannerWakingUp;
     } else if (state == ConnectivityState.backOnline) {
-      bg = c.successSoft; fg = c.success;
-      msg = 'Back online. Syncing...';
+      bg = c.successSoft;
+      fg = c.success;
+      msg = l10n.bannerBackOnline;
     } else {
-      bg = c.surface; fg = c.textPrimary; msg = '';
+      bg = c.surface;
+      fg = c.textPrimary;
+      msg = '';
     }
 
     if (state == ConnectivityState.online) return const SizedBox.shrink();
@@ -167,7 +181,8 @@ class ConnectivityBanner extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       color: bg,
-      child: Text(msg,
+      child: Text(
+        msg,
         style: AppText.caption.copyWith(color: fg),
         textAlign: TextAlign.center,
       ),
@@ -175,4 +190,10 @@ class ConnectivityBanner extends StatelessWidget {
   }
 }
 
-enum ConnectivityState { online, offline, serverUnreachable, wakingUp, backOnline }
+enum ConnectivityState {
+  online,
+  offline,
+  serverUnreachable,
+  wakingUp,
+  backOnline,
+}

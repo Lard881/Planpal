@@ -283,6 +283,52 @@ class AppLocalizationsEs extends AppLocalizations {
       'Tu sesión expiró. Por favor inicia sesión de nuevo.';
 
   @override
+  String get errorAuthRequired => 'Inicia sesión para continuar.';
+
+  @override
+  String get errorInvalidRequest =>
+      'Revisa la información e inténtalo de nuevo.';
+
+  @override
+  String get errorConflict =>
+      'Este cambio entra en conflicto con una actualización más reciente. Actualiza e inténtalo de nuevo.';
+
+  @override
+  String get errorRateLimited =>
+      'Demasiadas solicitudes. Espera e inténtalo de nuevo.';
+
+  @override
+  String get errorTimeout =>
+      'La solicitud agotó el tiempo de espera. Comprueba tu conexión e inténtalo de nuevo.';
+
+  @override
+  String get errorInvalidInviteCode =>
+      'Este código de invitación no es válido.';
+
+  @override
+  String get errorInviteCodeExpired => 'Este código de invitación ha caducado.';
+
+  @override
+  String get errorInviteCodeRevoked =>
+      'Este código de invitación ha sido revocado.';
+
+  @override
+  String get errorInviteCodeExhausted =>
+      'Este código de invitación alcanzó su límite de usos.';
+
+  @override
+  String get errorAlreadyMember =>
+      'Ya eres miembro de este espacio de trabajo.';
+
+  @override
+  String get errorTransferAdminFirst =>
+      'Transfiere la propiedad del espacio de trabajo antes de eliminar tu cuenta.';
+
+  @override
+  String get errorChatPersonalOnly =>
+      'El chat solo está disponible en espacios de equipo.';
+
+  @override
   String get bannerOffline =>
       'Sin conexión. Tus cambios están guardados y se sincronizarán cuando vuelvas en línea.';
 
@@ -1430,6 +1476,18 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsAppearance => 'Apariencia';
+
+  @override
+  String get settingsAppearanceSaved =>
+      'Los ajustes de apariencia se guardaron en tu cuenta.';
+
+  @override
+  String get settingsAppearanceQueued =>
+      'Guardado en este dispositivo. Se sincronizará cuando el servidor esté disponible.';
+
+  @override
+  String get settingsAppearanceSaveFailed =>
+      'La apariencia cambió en este dispositivo, pero no se pudo guardar en tu cuenta.';
 
   @override
   String get settingsSecurity => 'Seguridad';

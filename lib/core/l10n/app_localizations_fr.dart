@@ -285,6 +285,49 @@ class AppLocalizationsFr extends AppLocalizations {
       'Votre session a expiré. Veuillez vous reconnecter.';
 
   @override
+  String get errorAuthRequired => 'Connectez-vous pour continuer.';
+
+  @override
+  String get errorInvalidRequest => 'Vérifiez les informations et réessayez.';
+
+  @override
+  String get errorConflict =>
+      'Cette modification entre en conflit avec une mise à jour plus récente. Actualisez puis réessayez.';
+
+  @override
+  String get errorRateLimited =>
+      'Trop de requêtes. Veuillez patienter puis réessayer.';
+
+  @override
+  String get errorTimeout =>
+      'La requête a expiré. Vérifiez votre connexion puis réessayez.';
+
+  @override
+  String get errorInvalidInviteCode => 'Ce code d’invitation est invalide.';
+
+  @override
+  String get errorInviteCodeExpired => 'Ce code d’invitation a expiré.';
+
+  @override
+  String get errorInviteCodeRevoked => 'Ce code d’invitation a été révoqué.';
+
+  @override
+  String get errorInviteCodeExhausted =>
+      'Ce code d’invitation a atteint sa limite d’utilisation.';
+
+  @override
+  String get errorAlreadyMember =>
+      'Vous êtes déjà membre de cet espace de travail.';
+
+  @override
+  String get errorTransferAdminFirst =>
+      'Transférez la propriété de l’espace de travail avant de supprimer votre compte.';
+
+  @override
+  String get errorChatPersonalOnly =>
+      'Le chat est disponible uniquement dans les espaces d’équipe.';
+
+  @override
   String get bannerOffline =>
       'Vous êtes hors ligne. Vos modifications sont enregistrées et seront synchronisées à la reconnexion.';
 
@@ -1433,6 +1476,18 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get settingsAppearance => 'Apparence';
+
+  @override
+  String get settingsAppearanceSaved =>
+      'Les paramètres d’apparence ont été enregistrés sur votre compte.';
+
+  @override
+  String get settingsAppearanceQueued =>
+      'Enregistré sur cet appareil. La synchronisation aura lieu lorsque le serveur sera disponible.';
+
+  @override
+  String get settingsAppearanceSaveFailed =>
+      'L’apparence a changé sur cet appareil, mais n’a pas pu être enregistrée sur votre compte.';
 
   @override
   String get settingsSecurity => 'Sécurité';

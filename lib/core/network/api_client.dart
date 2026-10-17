@@ -1,4 +1,3 @@
-// app/lib/core/network/api_client.dart
 // Dio client: base path /api/v1, bearer token, retry once on AUTH_EXPIRED.
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -9,7 +8,12 @@ import '../config/env.dart';
 class ApiClient {
   late final Dio _dio;
 
-  ApiClient({required VoidCallback onSessionExpired}) {
+  ApiClient({
+    required VoidCallback onSessionExpired,
+    Future<String?> Function()? accessTokenProvider,
+    Future<String?> Function()? refreshAccessToken,
+    Future<void> Function()? signOut,
+  }) {
     _dio = Dio(
       BaseOptions(
         baseUrl: Env.apiBaseUrl,
@@ -20,7 +24,23 @@ class ApiClient {
       ),
     );
 
-    _dio.interceptors.add(_AuthInterceptor(_dio, onSessionExpired));
+    _dio.interceptors.add(
+      _AuthInterceptor(
+        _dio,
+        onSessionExpired,
+        accessTokenProvider ??
+            (() async =>
+                Supabase.instance.client.auth.currentSession?.accessToken),
+        refreshAccessToken ??
+            (() async {
+              final auth = Supabase.instance.client.auth;
+              final response = await auth.refreshSession();
+              return response.session?.accessToken ??
+                  auth.currentSession?.accessToken;
+            }),
+        signOut ?? (() => Supabase.instance.client.auth.signOut()),
+      ),
+    );
     _dio.interceptors.add(
       LogInterceptor(requestBody: false, responseBody: false, error: true),
     );
@@ -32,40 +52,70 @@ class ApiClient {
 class _AuthInterceptor extends Interceptor {
   final Dio dio;
   final VoidCallback onSessionExpired;
-  _AuthInterceptor(this.dio, this.onSessionExpired);
+  final Future<String?> Function() accessTokenProvider;
+  final Future<String?> Function() refreshAccessToken;
+  final Future<void> Function() signOut;
+
+  _AuthInterceptor(
+    this.dio,
+    this.onSessionExpired,
+    this.accessTokenProvider,
+    this.refreshAccessToken,
+    this.signOut,
+  );
 
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    final session = Supabase.instance.client.auth.currentSession;
-    if (session != null) {
-      options.headers['Authorization'] = 'Bearer ${session.accessToken}';
+  void onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
+    try {
+      if (options.extra['authRetry'] == true &&
+          options.headers['Authorization'] != null) {
+        handler.next(options);
+        return;
+      }
+      final token = await accessTokenProvider();
+      if (token == null || token.isEmpty) {
+        options.headers.remove('Authorization');
+      } else {
+        options.headers['Authorization'] = 'Bearer $token';
+      }
+      handler.next(options);
+    } catch (error, stackTrace) {
+      FlutterError.reportError(
+        FlutterErrorDetails(
+          exception: error,
+          stack: stackTrace,
+          library: 'session access token',
+        ),
+      );
+      handler.reject(
+        DioException(
+          requestOptions: options,
+          error: error,
+          stackTrace: stackTrace,
+        ),
+      );
     }
-    handler.next(options);
   }
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    // Retry once on 401 AUTH_EXPIRED — refresh the session first
     if (err.response?.statusCode == 401) {
       final data = err.response?.data;
-      final Map? errorMap = (data is Map) ? data['error'] as Map? : null;
-      final code = errorMap?['code'];
-      if (code == 'AUTH_EXPIRED') {
+      final rawError = data is Map ? data['error'] : null;
+      final Map? errorMap = rawError is Map ? rawError : null;
+      if (errorMap?['code'] == 'AUTH_EXPIRED') {
         final requestOptions = err.requestOptions;
         if (requestOptions.extra['authRetry'] == true) {
           await _signOutAfterRefreshFailure();
           return handler.next(err);
         }
+
+        String? refreshedToken;
         try {
-          await Supabase.instance.client.auth.refreshSession();
-          final session = Supabase.instance.client.auth.currentSession;
-          if (session != null) {
-            requestOptions.extra['authRetry'] = true;
-            final opts = err.requestOptions;
-            opts.headers['Authorization'] = 'Bearer ${session.accessToken}';
-            final response = await dio.fetch(opts);
-            return handler.resolve(response);
-          }
+          refreshedToken = await refreshAccessToken();
         } catch (error, stackTrace) {
           FlutterError.reportError(
             FlutterErrorDetails(
@@ -75,7 +125,19 @@ class _AuthInterceptor extends Interceptor {
             ),
           );
         }
-        await _signOutAfterRefreshFailure();
+        if (refreshedToken == null || refreshedToken.isEmpty) {
+          await _signOutAfterRefreshFailure();
+          return handler.next(err);
+        }
+
+        requestOptions.extra['authRetry'] = true;
+        requestOptions.headers['Authorization'] = 'Bearer $refreshedToken';
+        try {
+          final response = await dio.fetch(requestOptions);
+          return handler.resolve(response);
+        } on DioException catch (retryError) {
+          return handler.next(retryError);
+        }
       }
     }
     handler.next(err);
@@ -84,7 +146,7 @@ class _AuthInterceptor extends Interceptor {
   Future<void> _signOutAfterRefreshFailure() async {
     onSessionExpired();
     try {
-      await Supabase.instance.client.auth.signOut();
+      await signOut();
     } catch (error, stackTrace) {
       FlutterError.reportError(
         FlutterErrorDetails(

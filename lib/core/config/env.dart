@@ -15,7 +15,7 @@ class Env {
 
   static const apiBaseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://localhost:3000/api/v1',
+    defaultValue: 'https://planpalbackend.onrender.com/api/v1',
   );
 
   static bool get isConfigured =>

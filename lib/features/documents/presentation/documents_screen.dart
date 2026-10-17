@@ -14,6 +14,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/connectivity/connectivity_service.dart';
 import '../../../core/network/app_failure.dart';
+import '../../../core/network/failure_localizer.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
 import '../../../core/theme/app_theme.dart';
@@ -227,7 +228,7 @@ class _DesktopDocumentsState extends ConsumerState<_DesktopDocuments> {
                                   Padding(
                                     padding: const EdgeInsets.only(bottom: 12),
                                     child: Text(
-                                      state.error!,
+                                      localizeFailureText(l10n, state.error!),
                                       style: AppText.caption.copyWith(
                                         color: c.warning,
                                       ),
@@ -636,7 +637,7 @@ class _DocumentUploadDialogState extends ConsumerState<_DocumentUploadDialog> {
             LinearProgressIndicator(value: _progress == 0 ? null : _progress),
           if (_failure != null) ...[
             const SizedBox(height: 12),
-            Text(_failure!.message),
+            Text(_failure!.localizedMessage(context)),
           ],
         ],
       ),
@@ -676,7 +677,8 @@ Future<void> _openDocument(
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          failure?.message ?? AppLocalizations.of(context).errorGeneric,
+          failure?.localizedMessage(context) ??
+              AppLocalizations.of(context).errorGeneric,
         ),
       ),
     );
@@ -783,9 +785,9 @@ void _showFolderMenu(BuildContext context, WidgetRef ref, FolderModel folder) {
                 if (updated != null) {
                   await ref.read(documentsProvider.notifier).refresh();
                 } else if (failure != null && context.mounted) {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text(failure.message)));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(failure.localizedMessage(context))),
+                  );
                 }
               } else if (parentId != null) {
                 final (updated, failure) = await ref
@@ -798,9 +800,9 @@ void _showFolderMenu(BuildContext context, WidgetRef ref, FolderModel folder) {
                 if (updated != null) {
                   await ref.read(documentsProvider.notifier).refresh();
                 } else if (failure != null && context.mounted) {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text(failure.message)));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(failure.localizedMessage(context))),
+                  );
                 }
               }
             },
@@ -1137,7 +1139,7 @@ class _MobileDocuments extends ConsumerWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Text(
-                        state.error!,
+                        localizeFailureText(l10n, state.error!),
                         style: AppText.caption.copyWith(color: c.warning),
                       ),
                     ),
@@ -1319,7 +1321,13 @@ class DocumentEditorScreen extends ConsumerWidget {
     return docAsync.when(
       loading: () =>
           const Scaffold(body: Center(child: CircularProgressIndicator())),
-      error: (e, _) => Scaffold(body: ErrorState(message: e.toString())),
+      error: (e, _) => Scaffold(
+        body: ErrorState(
+          message: e is AppFailure
+              ? e.localizedMessage(context)
+              : AppLocalizations.of(context).errorGeneric,
+        ),
+      ),
       data: (doc) {
         if (doc == null) {
           return const Scaffold(
@@ -1412,7 +1420,7 @@ class _QuillEditorContentState extends State<_QuillEditorContent> {
       setState(() {
         _saving = false;
         _saveStatus = failure != null
-            ? failure.message
+            ? failure.localizedMessage(context)
             : widget.widgetRef.read(isOnlineProvider)
             ? l10n.documentSaved
             : l10n.documentSavedLocally;

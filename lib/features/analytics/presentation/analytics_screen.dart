@@ -13,6 +13,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/layout/breakpoints.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../../../core/l10n/app_localizations.dart';
+import '../../../core/network/failure_localizer.dart';
 import '../data/analytics_repository.dart';
 import '../models/analytics_models.dart';
 import '../providers/analytics_providers.dart';
@@ -39,9 +40,12 @@ class AnalyticsScreen extends ConsumerWidget {
             // Header
             Row(
               children: [
-                Text(l10n.analyticsTitle,
-                  style: (isDesktop ? AppText.pageTitle : AppText.pageTitleMobile)
-                      .copyWith(color: c.textPrimary)),
+                Text(
+                  l10n.analyticsTitle,
+                  style:
+                      (isDesktop ? AppText.pageTitle : AppText.pageTitleMobile)
+                          .copyWith(color: c.textPrimary),
+                ),
                 const Spacer(),
                 // Range selector
                 _RangeDropdown(
@@ -75,7 +79,9 @@ class AnalyticsScreen extends ConsumerWidget {
                 child: EmptyState(
                   icon: LucideIcons.barChart2,
                   title: l10n.emptyStateNoAnalytics,
-                  subtitle: l10n.emptyStateNoAnalyticsDesc))
+                  subtitle: l10n.emptyStateNoAnalyticsDesc,
+                ),
+              )
             else
               Expanded(
                 child: SingleChildScrollView(
@@ -119,12 +125,20 @@ class _RangeDropdown extends StatelessWidget {
           value: value,
           icon: Icon(LucideIcons.chevronDown, size: 14, color: c.textMuted),
           style: AppText.bodyMedium.copyWith(color: c.textPrimary),
-          items: labels.entries.map((e) =>
-            DropdownMenuItem(value: e.key, child: Text(e.value))).toList(),
-          onChanged: (v) { if (v != null) onChanged(v); },
-          selectedItemBuilder: (_) => labels.entries.map((e) =>
-            Text(e.value, style: AppText.bodyMedium.copyWith(color: c.textPrimary))
-          ).toList(),
+          items: labels.entries
+              .map((e) => DropdownMenuItem(value: e.key, child: Text(e.value)))
+              .toList(),
+          onChanged: (v) {
+            if (v != null) onChanged(v);
+          },
+          selectedItemBuilder: (_) => labels.entries
+              .map(
+                (e) => Text(
+                  e.value,
+                  style: AppText.bodyMedium.copyWith(color: c.textPrimary),
+                ),
+              )
+              .toList(),
         ),
       ),
     );
@@ -148,7 +162,11 @@ class _ExportButton extends ConsumerWidget {
           if (!context.mounted) return;
           if (failure != null || csv == null) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(failure?.message ?? l10n.errorGeneric)),
+              SnackBar(
+                content: Text(
+                  failure?.localizedMessage(context) ?? l10n.errorGeneric,
+                ),
+              ),
             );
             return;
           }
@@ -167,11 +185,7 @@ class _ExportButton extends ConsumerWidget {
               ShareParams(
                 title: l10n.analyticsExportCSV,
                 files: [
-                  XFile.fromData(
-                    bytes,
-                    name: fileName,
-                    mimeType: 'text/csv',
-                  ),
+                  XFile.fromData(bytes, name: fileName, mimeType: 'text/csv'),
                 ],
                 fileNameOverrides: [fileName],
               ),
@@ -179,12 +193,15 @@ class _ExportButton extends ConsumerWidget {
           }
         },
         icon: Icon(LucideIcons.download, size: 16, color: c.textPrimary),
-        label: Text(l10n.analyticsExportCSV,
-          style: AppText.bodyMedium.copyWith(color: c.textPrimary)),
+        label: Text(
+          l10n.analyticsExportCSV,
+          style: AppText.bodyMedium.copyWith(color: c.textPrimary),
+        ),
         style: OutlinedButton.styleFrom(
           side: BorderSide(color: c.border),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppRadius.control)),
+            borderRadius: BorderRadius.circular(AppRadius.control),
+          ),
         ),
       ),
     );
@@ -205,27 +222,32 @@ class _AnalyticsBody extends StatelessWidget {
     final statCards = [
       _StatCard(
         icon: LucideIcons.checkCircle,
-        iconBg: c.successSoft, iconFg: c.success,
+        iconBg: c.successSoft,
+        iconFg: c.success,
         value: '${data.summary.tasksCompleted}',
         label: isDesktop ? l10n.analyticsTasksCompleted : l10n.homeCompleted,
         subLine: data.summary.changeVsPrevious != null
-            ? _changeLabel(data.summary.changeVsPrevious!, c) : null,
+            ? _changeLabel(data.summary.changeVsPrevious!, c)
+            : null,
       ),
       _StatCard(
         icon: LucideIcons.timer,
-        iconBg: c.primarySoft, iconFg: c.primary,
+        iconBg: c.primarySoft,
+        iconFg: c.primary,
         value: '${data.summary.avgCompletionDays.toStringAsFixed(1)} days',
         label: l10n.analyticsAvgTime,
       ),
       _StatCard(
         icon: LucideIcons.zap,
-        iconBg: c.violetSoft, iconFg: c.violet,
+        iconBg: c.violetSoft,
+        iconFg: c.violet,
         value: '${data.summary.onTimeRate.toStringAsFixed(0)}%',
         label: l10n.analyticsVelocity,
       ),
       _StatCard(
         icon: LucideIcons.flame,
-        iconBg: c.warningSoft, iconFg: c.warningText,
+        iconBg: c.warningSoft,
+        iconFg: c.warningText,
         value: '${data.summary.streak} days',
         label: l10n.analyticsStreak,
       ),
@@ -238,24 +260,33 @@ class _AnalyticsBody extends StatelessWidget {
         isDesktop
             ? Row(
                 children: statCards
-                    .map((c) => Expanded(child: Padding(
-                        padding: const EdgeInsets.only(right: 16),
-                        child: c)))
+                    .map(
+                      (c) => Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 16),
+                          child: c,
+                        ),
+                      ),
+                    )
                     .toList(),
               )
             : Column(
                 children: [
-                  Row(children: [
-                    Expanded(child: statCards[0]),
-                    const SizedBox(width: 12),
-                    Expanded(child: statCards[1]),
-                  ]),
+                  Row(
+                    children: [
+                      Expanded(child: statCards[0]),
+                      const SizedBox(width: 12),
+                      Expanded(child: statCards[1]),
+                    ],
+                  ),
                   const SizedBox(height: 12),
-                  Row(children: [
-                    Expanded(child: statCards[2]),
-                    const SizedBox(width: 12),
-                    Expanded(child: statCards[3]),
-                  ]),
+                  Row(
+                    children: [
+                      Expanded(child: statCards[2]),
+                      const SizedBox(width: 12),
+                      Expanded(child: statCards[3]),
+                    ],
+                  ),
                 ],
               ),
         const SizedBox(height: 24),
@@ -264,13 +295,12 @@ class _AnalyticsBody extends StatelessWidget {
             ? Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    flex: 6,
-                    child: _WeeklyChart(weekly: data.weekly)),
+                  Expanded(flex: 6, child: _WeeklyChart(weekly: data.weekly)),
                   const SizedBox(width: 16),
                   Expanded(
                     flex: 4,
-                    child: _CategoryDonut(categories: data.categories)),
+                    child: _CategoryDonut(categories: data.categories),
+                  ),
                 ],
               )
             : Column(
@@ -288,9 +318,10 @@ class _AnalyticsBody extends StatelessWidget {
     final isPositive = change >= 0;
     final label =
         '${isPositive ? '+' : ''}${change.toStringAsFixed(1)}% this period';
-    return Text(label,
-      style: AppText.caption.copyWith(
-        color: isPositive ? c.success : c.danger));
+    return Text(
+      label,
+      style: AppText.caption.copyWith(color: isPositive ? c.success : c.danger),
+    );
   }
 }
 
@@ -303,8 +334,12 @@ class _StatCard extends StatelessWidget {
   final Widget? subLine;
 
   const _StatCard({
-    required this.icon, required this.iconBg, required this.iconFg,
-    required this.value, required this.label, this.subLine,
+    required this.icon,
+    required this.iconBg,
+    required this.iconFg,
+    required this.value,
+    required this.label,
+    this.subLine,
   });
 
   @override
@@ -321,22 +356,22 @@ class _StatCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 36, height: 36,
+            width: 36,
+            height: 36,
             decoration: BoxDecoration(
               color: iconBg,
-              borderRadius: BorderRadius.circular(AppRadius.control)),
+              borderRadius: BorderRadius.circular(AppRadius.control),
+            ),
             child: Icon(icon, size: 18, color: iconFg),
           ),
           const SizedBox(height: 12),
-          Text(value,
-            style: AppText.statNumberLarge.copyWith(color: c.textPrimary)),
+          Text(
+            value,
+            style: AppText.statNumberLarge.copyWith(color: c.textPrimary),
+          ),
           const SizedBox(height: 4),
-          Text(label,
-            style: AppText.body.copyWith(color: c.textMuted)),
-          if (subLine != null) ...[
-            const SizedBox(height: 2),
-            subLine!,
-          ],
+          Text(label, style: AppText.body.copyWith(color: c.textMuted)),
+          if (subLine != null) ...[const SizedBox(height: 2), subLine!],
         ],
       ),
     );
@@ -362,7 +397,9 @@ class _WeeklyChart extends StatelessWidget {
       return day;
     });
 
-    final maxVal = data.map((d) => d.completed).fold(0, (a, b) => a > b ? a : b);
+    final maxVal = data
+        .map((d) => d.completed)
+        .fold(0, (a, b) => a > b ? a : b);
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -374,8 +411,10 @@ class _WeeklyChart extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(l10n.analyticsWeeklyOutput,
-            style: AppText.sectionTitle.copyWith(color: c.textPrimary)),
+          Text(
+            l10n.analyticsWeeklyOutput,
+            style: AppText.sectionTitle.copyWith(color: c.textPrimary),
+          ),
           const SizedBox(height: 20),
           SizedBox(
             height: 160,
@@ -386,11 +425,14 @@ class _WeeklyChart extends StatelessWidget {
                 barTouchData: BarTouchData(enabled: true),
                 titlesData: FlTitlesData(
                   leftTitles: AxisTitles(
-                    sideTitles: SideTitles(showTitles: false)),
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
                   rightTitles: AxisTitles(
-                    sideTitles: SideTitles(showTitles: false)),
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
                   topTitles: AxisTitles(
-                    sideTitles: SideTitles(showTitles: false)),
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
                   bottomTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
@@ -403,9 +445,10 @@ class _WeeklyChart extends StatelessWidget {
                         }
                         return Padding(
                           padding: const EdgeInsets.only(top: 4),
-                          child: Text(data[idx].label,
-                            style: AppText.caption.copyWith(
-                              color: c.textMuted)),
+                          child: Text(
+                            data[idx].label,
+                            style: AppText.caption.copyWith(color: c.textMuted),
+                          ),
                         );
                       },
                     ),
@@ -425,7 +468,8 @@ class _WeeklyChart extends StatelessWidget {
                             : c.primary.withValues(alpha: 0.2),
                         width: 24,
                         borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(6)),
+                          top: Radius.circular(6),
+                        ),
                       ),
                     ],
                   );
@@ -449,14 +493,14 @@ class _CategoryDonut extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
 
     // Top 3 + Other
-    final sorted = [...categories]
-      ..sort((a, b) => b.total.compareTo(a.total));
+    final sorted = [...categories]..sort((a, b) => b.total.compareTo(a.total));
     final top3 = sorted.take(3).toList();
     final otherTotal = sorted.skip(3).fold(0, (s, e) => s + e.total);
     if (otherTotal > 0) {
       final l10n = AppLocalizations.of(context);
-      top3.add(CategoryData(
-          label: l10n.all, color: '#6B7185', total: otherTotal));
+      top3.add(
+        CategoryData(label: l10n.all, color: '#6B7185', total: otherTotal),
+      );
     }
     final total = top3.fold(0, (s, e) => s + e.total);
 
@@ -470,12 +514,18 @@ class _CategoryDonut extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(l10n.analyticsCategoryMix,
-            style: AppText.sectionTitle.copyWith(color: c.textPrimary)),
+          Text(
+            l10n.analyticsCategoryMix,
+            style: AppText.sectionTitle.copyWith(color: c.textPrimary),
+          ),
           const SizedBox(height: 20),
           if (top3.isEmpty)
-            Center(child: Text(l10n.emptyStateNoAnalytics,
-              style: AppText.body.copyWith(color: c.textMuted)))
+            Center(
+              child: Text(
+                l10n.emptyStateNoAnalytics,
+                style: AppText.body.copyWith(color: c.textMuted),
+              ),
+            )
           else ...[
             // Donut chart
             SizedBox(
@@ -490,9 +540,12 @@ class _CategoryDonut extends StatelessWidget {
                       sections: top3.map((cat) {
                         Color color;
                         try {
-                          color = Color(int.parse(
+                          color = Color(
+                            int.parse(
                               'FF${cat.color.replaceAll('#', '')}',
-                              radix: 16));
+                              radix: 16,
+                            ),
+                          );
                         } catch (_) {
                           color = c.primary;
                         }
@@ -509,11 +562,16 @@ class _CategoryDonut extends StatelessWidget {
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('$total',
+                      Text(
+                        '$total',
                         style: AppText.statNumber.copyWith(
-                          color: c.textPrimary)),
-                      Text(l10n.navTasks.toLowerCase(),
-                        style: AppText.caption.copyWith(color: c.textMuted)),
+                          color: c.textPrimary,
+                        ),
+                      ),
+                      Text(
+                        l10n.navTasks.toLowerCase(),
+                        style: AppText.caption.copyWith(color: c.textMuted),
+                      ),
                     ],
                   ),
                 ],
@@ -524,27 +582,36 @@ class _CategoryDonut extends StatelessWidget {
             ...top3.map((cat) {
               Color color;
               try {
-                color = Color(int.parse(
-                    'FF${cat.color.replaceAll('#', '')}', radix: 16));
+                color = Color(
+                  int.parse('FF${cat.color.replaceAll('#', '')}', radix: 16),
+                );
               } catch (_) {
                 color = c.primary;
               }
-              final pct = total > 0
-                  ? (100 * cat.total / total).round() : 0;
+              final pct = total > 0 ? (100 * cat.total / total).round() : 0;
               return Padding(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: Row(
                   children: [
                     Container(
-                      width: 10, height: 10,
+                      width: 10,
+                      height: 10,
                       decoration: BoxDecoration(
-                        color: color, shape: BoxShape.circle)),
+                        color: color,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
                     const SizedBox(width: 8),
                     Expanded(
-                      child: Text(cat.label,
-                        style: AppText.body.copyWith(color: c.textPrimary))),
-                    Text('$pct%',
-                      style: AppText.bodyMedium.copyWith(color: c.textMuted)),
+                      child: Text(
+                        cat.label,
+                        style: AppText.body.copyWith(color: c.textPrimary),
+                      ),
+                    ),
+                    Text(
+                      '$pct%',
+                      style: AppText.bodyMedium.copyWith(color: c.textMuted),
+                    ),
                   ],
                 ),
               );

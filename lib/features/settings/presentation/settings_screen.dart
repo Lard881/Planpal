@@ -23,6 +23,8 @@ import '../../../core/providers/theme_provider.dart';
 import '../../../core/providers/locale_provider.dart';
 import '../../../core/services/fcm_service.dart';
 import '../../../core/network/api_client.dart';
+import '../../../core/network/failure_localizer.dart';
+import '../../../core/network/auth_error_mapper.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../workspaces/providers/workspace_providers.dart';
 import '../../workspaces/data/workspace_repository.dart';
@@ -30,6 +32,7 @@ import '../../auth/presentation/auth_notifier.dart';
 import '../../auth/presentation/auth_failure_message.dart';
 import '../../notifications/providers/notification_preferences.dart';
 import '../../../core/providers/user_profile_provider.dart';
+import '../data/appearance_settings_repository.dart';
 import 'sync_status_screen.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -417,7 +420,9 @@ class _ProfileSectionState extends ConsumerState<_ProfileSection> {
                               .upload(file, mime);
                           if (err != null && context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(err.message)),
+                              SnackBar(
+                                content: Text(err.localizedMessage(context)),
+                              ),
                             );
                           } else if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -454,7 +459,9 @@ class _ProfileSectionState extends ConsumerState<_ProfileSection> {
                               .removeAvatar();
                           if (err != null && context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(err.message)),
+                              SnackBar(
+                                content: Text(err.localizedMessage(context)),
+                              ),
                             );
                           }
                         },
@@ -706,28 +713,38 @@ class _AppearanceSection extends ConsumerWidget {
     required ThemeMode theme,
     required Locale? locale,
   }) async {
-    final l10n = AppLocalizations.of(context);
-    final profile = ref.read(meProvider).valueOrNull;
-    final selectedLocale = locale?.languageCode ?? profile?.language ?? 'en';
     try {
-      await ref
-          .read(apiClientProvider)
-          .dio
-          .patch(
-            '/me',
-            data: {'theme': theme.name, 'language': selectedLocale},
-          );
       await ref.read(themeModeProvider.notifier).setTheme(theme);
       if (locale != null) {
         await ref.read(localeProvider.notifier).setLocale(locale);
       }
-      ref.invalidate(meProvider);
-    } catch (error) {
+      final profile = ref.read(meProvider).valueOrNull;
+      final result = await ref
+          .read(appearanceSettingsRepositoryProvider)
+          .save(
+            theme: theme.name,
+            language: locale?.languageCode ?? profile?.language ?? 'en',
+          );
+      if (result == AppearanceSaveResult.saved) {
+        ref.invalidate(meProvider);
+      }
+      if (context.mounted) {
+        final l10n = AppLocalizations.of(context);
+        final message = switch (result) {
+          AppearanceSaveResult.saved => l10n.settingsAppearanceSaved,
+          AppearanceSaveResult.queued => l10n.settingsAppearanceQueued,
+          AppearanceSaveResult.failed => l10n.settingsAppearanceSaveFailed,
+        };
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(message)));
+      }
+    } catch (_) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              error.toString().isEmpty ? l10n.errorGeneric : error.toString(),
+              AppLocalizations.of(context).settingsAppearanceSaveFailed,
             ),
           ),
         );
@@ -859,9 +876,16 @@ class _SecuritySectionState extends ConsumerState<_SecuritySection> {
       }
     } on AuthException catch (error) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(error.message)));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              authFailureMessage(
+                AppLocalizations.of(context),
+                mapAuthException(error),
+              ),
+            ),
+          ),
+        );
       }
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -875,9 +899,16 @@ class _SecuritySectionState extends ConsumerState<_SecuritySection> {
       if (mounted) context.go('/login');
     } on AuthException catch (error) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(error.message)));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              authFailureMessage(
+                AppLocalizations.of(context),
+                mapAuthException(error),
+              ),
+            ),
+          ),
+        );
       }
     }
   }
@@ -1243,7 +1274,7 @@ class _WorkspaceSectionState extends ConsumerState<_WorkspaceSection> {
     if (err != null && mounted) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(err.message)));
+      ).showSnackBar(SnackBar(content: Text(err.localizedMessage(context))));
     } else if (mounted) {
       final l10n = AppLocalizations.of(context);
       ref.invalidate(workspacesProvider);
@@ -1285,7 +1316,7 @@ class _WorkspaceSectionState extends ConsumerState<_WorkspaceSection> {
     if (err != null && mounted) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(err.message)));
+      ).showSnackBar(SnackBar(content: Text(err.localizedMessage(context))));
     } else if (mounted) {
       ref.read(currentWorkspaceIdProvider.notifier).clear();
       ref.invalidate(workspacesProvider);
@@ -1323,7 +1354,7 @@ class _WorkspaceSectionState extends ConsumerState<_WorkspaceSection> {
     if (err != null && mounted) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(err.message)));
+      ).showSnackBar(SnackBar(content: Text(err.localizedMessage(context))));
     } else if (mounted) {
       ref.read(currentWorkspaceIdProvider.notifier).clear();
       ref.invalidate(workspacesProvider);

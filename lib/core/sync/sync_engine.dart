@@ -48,10 +48,21 @@ class SyncState {
 class SyncEngine extends StateNotifier<SyncState> {
   final Dio _dio;
   final AppDatabase _db;
+  final Future<String?> Function(String key) _readCheckpoint;
+  final Future<void> Function(String key, String value) _writeCheckpoint;
   Timer? _periodicTimer;
   bool _syncing = false;
 
-  SyncEngine(this._dio, this._db) : super(const SyncState()) {
+  SyncEngine(
+    this._dio,
+    this._db, {
+    Future<String?> Function(String key)? readCheckpoint,
+    Future<void> Function(String key, String value)? writeCheckpoint,
+  }) : _readCheckpoint = readCheckpoint ?? ((key) => _storage.read(key: key)),
+       _writeCheckpoint =
+           writeCheckpoint ??
+           ((key, value) => _storage.write(key: key, value: value)),
+       super(const SyncState()) {
     _startPeriodicSync();
   }
 
@@ -61,13 +72,21 @@ class SyncEngine extends StateNotifier<SyncState> {
 
   // ── Pull (S6.4) ────────────────────────────────────────────────────────────
   Future<void> pull(String workspaceId) async {
-    String? since = await _storage.read(key: '$_kLastSyncPrefix$workspaceId');
+    final checkpointKey = '$_kLastSyncPrefix$workspaceId';
+    final since = await _readCheckpoint(checkpointKey);
+    String? cursor;
+    String? nextCheckpoint;
     bool hasMore = true;
+    var completed = false;
 
     while (hasMore) {
       try {
         final params = <String, dynamic>{};
-        if (since != null) params['since'] = since;
+        if (cursor != null) {
+          params['cursor'] = cursor;
+        } else if (since != null) {
+          params['since'] = since;
+        }
 
         final res = await _dio.get(
           '/workspaces/$workspaceId/sync',
@@ -76,30 +95,53 @@ class SyncEngine extends StateNotifier<SyncState> {
 
         final data = res.data as Map<String, dynamic>;
         hasMore = data['hasMore'] == true;
-
-        // Store serverTime as next since — never use device clock
         final serverTime = data['serverTime'] as String?;
-        if (serverTime != null) {
-          since = serverTime;
-          await _storage.write(
-            key: '$_kLastSyncPrefix$workspaceId',
-            value: serverTime,
-          );
-        } else {
-          hasMore = false;
-        }
+        nextCheckpoint = serverTime ?? nextCheckpoint;
 
         // Merge into Drift
         await _mergeSync(data, workspaceId);
+
+        if (!hasMore) {
+          completed = true;
+          break;
+        }
+
+        final nextCursor = data['nextCursor'];
+        if (nextCursor is! String || nextCursor.isEmpty) break;
+        cursor = nextCursor;
       } on DioException catch (e) {
         if (e.response?.statusCode == 401) rethrow;
         break; // temporary failure — stop pull, try later
       }
     }
+
+    // Keep the starting checkpoint intact unless every page was merged.
+    if (completed && nextCheckpoint != null) {
+      await _writeCheckpoint(checkpointKey, nextCheckpoint);
+    }
   }
 
   Future<void> _mergeSync(Map<String, dynamic> data, String workspaceId) async {
     await _db.transaction(() async {
+      final membershipRows =
+          data['workspaceMemberships'] ??
+          data['workspace_memberships'] ??
+          data['workspaceMembers'] ??
+          data['workspace_members'] ??
+          data['memberships'];
+      if (membershipRows is List) {
+        for (final row in membershipRows) {
+          if (row is! Map<String, dynamic> || row['deleted_at'] == null) {
+            continue;
+          }
+          final removedWorkspaceId =
+              row['workspace_id'] as String? ?? row['workspaceId'] as String?;
+          if (removedWorkspaceId != null) {
+            await _removeWorkspaceData(removedWorkspaceId);
+          }
+        }
+      }
+
       // Tasks
       final tasks = data['tasks'] as List? ?? [];
       for (final t in tasks) {
@@ -297,6 +339,64 @@ class SyncEngine extends StateNotifier<SyncState> {
     });
   }
 
+  Future<void> _removeWorkspaceData(String workspaceId) async {
+    final taskIds =
+        await (_db.select(_db.tasks)
+              ..where((table) => table.workspaceId.equals(workspaceId)))
+            .map((row) => row.id)
+            .get();
+    final eventIds =
+        await (_db.select(_db.events)
+              ..where((table) => table.workspaceId.equals(workspaceId)))
+            .map((row) => row.id)
+            .get();
+
+    if (taskIds.isNotEmpty) {
+      await (_db.delete(
+        _db.taskAttachments,
+      )..where((table) => table.taskId.isIn(taskIds))).go();
+      await (_db.delete(
+        _db.taskComments,
+      )..where((table) => table.taskId.isIn(taskIds))).go();
+      await (_db.delete(
+        _db.subtasks,
+      )..where((table) => table.taskId.isIn(taskIds))).go();
+    }
+    if (eventIds.isNotEmpty) {
+      await (_db.delete(
+        _db.eventAttendees,
+      )..where((table) => table.eventId.isIn(eventIds))).go();
+    }
+
+    await (_db.delete(
+      _db.tasks,
+    )..where((table) => table.workspaceId.equals(workspaceId))).go();
+    await (_db.delete(
+      _db.labels,
+    )..where((table) => table.workspaceId.equals(workspaceId))).go();
+    await (_db.delete(
+      _db.events,
+    )..where((table) => table.workspaceId.equals(workspaceId))).go();
+    await (_db.delete(
+      _db.folders,
+    )..where((table) => table.workspaceId.equals(workspaceId))).go();
+    await (_db.delete(
+      _db.documents,
+    )..where((table) => table.workspaceId.equals(workspaceId))).go();
+    await (_db.delete(
+      _db.notifications,
+    )..where((table) => table.workspaceId.equals(workspaceId))).go();
+    await (_db.delete(
+      _db.chatMessages,
+    )..where((table) => table.workspaceId.equals(workspaceId))).go();
+    await (_db.delete(
+      _db.chatChannels,
+    )..where((table) => table.workspaceId.equals(workspaceId))).go();
+    await (_db.delete(
+      _db.workspaces,
+    )..where((table) => table.id.equals(workspaceId))).go();
+  }
+
   // ── Push / Outbox (S6.5, S6.6) ────────────────────────────────────────────
   Future<void> push() async {
     final entries =
@@ -349,11 +449,9 @@ class SyncEngine extends StateNotifier<SyncState> {
               if (payload['fileId'] != null) 'fileId': payload['fileId'],
             },
           );
-          await (_db.update(
-            _db.chatMessages,
-          )..where((row) => row.id.equals(entityId))).write(
-            const ChatMessagesCompanion(status: Value('sent')),
-          );
+          await (_db.update(_db.chatMessages)
+                ..where((row) => row.id.equals(entityId)))
+              .write(const ChatMessagesCompanion(status: Value('sent')));
         case 'comment_create':
           await _dio.post(
             '/tasks/${payload['taskId']}/comments',
@@ -382,11 +480,9 @@ class SyncEngine extends StateNotifier<SyncState> {
           ),
         );
         if (entityType == 'chat_messages') {
-          await (_db.update(
-            _db.chatMessages,
-          )..where((row) => row.id.equals(entityId))).write(
-            const ChatMessagesCompanion(status: Value('failed')),
-          );
+          await (_db.update(_db.chatMessages)
+                ..where((row) => row.id.equals(entityId)))
+              .write(const ChatMessagesCompanion(status: Value('failed')));
         }
       } else {
         // Keep transient failures pending so long outages do not need manual retry.

@@ -21,6 +21,7 @@ import 'core/db/app_database.dart';
 import 'core/network/api_client.dart';
 import 'core/services/fcm_service.dart';
 import 'features/workspaces/providers/workspace_providers.dart';
+import 'features/settings/data/appearance_settings_repository.dart';
 import 'core/l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -89,6 +90,9 @@ class PlanPalApp extends ConsumerWidget {
 
     // Trigger sync when connectivity comes back online
     ref.listen(connectivityServiceProvider, (prev, next) {
+      if (next == ConnectivityState.online) {
+        unawaited(ref.read(appearanceSettingsRepositoryProvider).syncPending());
+      }
       if (prev != ConnectivityState.online &&
           next == ConnectivityState.online &&
           ref.read(currentUserProvider) != null) {
@@ -110,6 +114,7 @@ class PlanPalApp extends ConsumerWidget {
     ref.listen<AsyncValue<User?>>(authStateProvider, (prev, next) {
       if (prev?.valueOrNull == null && next.valueOrNull != null) {
         // User just became logged in (either fresh login or session restore)
+        unawaited(ref.read(appearanceSettingsRepositoryProvider).syncPending());
         unawaited(FcmService.initialize(ref));
         loadMeAndApply(ref);
       }

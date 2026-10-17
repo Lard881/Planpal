@@ -9,6 +9,7 @@ import '../../../core/theme/app_text.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/layout/breakpoints.dart';
 import '../../../core/widgets/planpal_button.dart';
+import '../../../core/network/failure_localizer.dart';
 import '../data/workspace_repository.dart';
 import '../providers/workspace_providers.dart';
 
@@ -86,7 +87,7 @@ class _JoinWorkspaceScreenState extends ConsumerState<JoinWorkspaceScreen> {
     if (!mounted) return;
     setState(() => _loading = false);
     if (failure != null) {
-      setState(() => _error = _mapJoinError(failure.message));
+      setState(() => _error = failure.localizedMessage(context));
       return;
     }
     if (workspace != null) {
@@ -99,30 +100,6 @@ class _JoinWorkspaceScreenState extends ConsumerState<JoinWorkspaceScreen> {
         context.go('/home');
       }
     }
-  }
-
-  String _mapJoinError(String msg) {
-    final lower = msg.toLowerCase();
-    if (lower.contains('invalid_code') || lower.contains('not found')) {
-      return 'This code is not valid. Check it and try again.';
-    }
-    if (lower.contains('code_expired') || lower.contains('expired')) {
-      return 'This invite code has expired.';
-    }
-    if (lower.contains('code_revoked') || lower.contains('revoked')) {
-      return 'This invite code has been revoked.';
-    }
-    if (lower.contains('code_used_up') || lower.contains('max uses')) {
-      return 'This invite code has reached its maximum uses.';
-    }
-    if (lower.contains('already_member') ||
-        lower.contains('already a member')) {
-      return 'You are already a member of this workspace.';
-    }
-    if (lower.contains('rate_limited') || lower.contains('rate limit')) {
-      return 'Too many attempts. Please wait before trying again.';
-    }
-    return msg;
   }
 
   @override

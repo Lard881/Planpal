@@ -18,6 +18,7 @@ import '../../../core/widgets/avatar.dart';
 import '../../../core/providers/presence_provider.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../../../core/l10n/app_localizations.dart';
+import '../../../core/network/failure_localizer.dart';
 import '../../workspaces/providers/workspace_providers.dart';
 import '../../workspaces/data/workspace_repository.dart';
 import '../models/chat_models.dart';
@@ -38,7 +39,7 @@ Future<void> _showNewChannelDialog(
   if (failure != null) {
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(SnackBar(content: Text(failure.message)));
+    ).showSnackBar(SnackBar(content: Text(failure.localizedMessage(context))));
     return;
   }
 
@@ -129,7 +130,11 @@ Future<void> _showNewChannelDialog(
   if (!context.mounted) return;
   if (createFailure != null || channel == null) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(createFailure?.message ?? l10n.errorGeneric)),
+      SnackBar(
+        content: Text(
+          createFailure?.localizedMessage(context) ?? l10n.errorGeneric,
+        ),
+      ),
     );
     return;
   }
@@ -150,7 +155,7 @@ Future<void> _showNewDmPicker(
   if (failure != null) {
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(SnackBar(content: Text(failure.message)));
+    ).showSnackBar(SnackBar(content: Text(failure.localizedMessage(context))));
     return;
   }
   final currentUserId = Supabase.instance.client.auth.currentUser?.id;
@@ -206,7 +211,11 @@ Future<void> _showNewDmPicker(
   if (!context.mounted) return;
   if (createFailure != null || channel == null) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(createFailure?.message ?? l10n.errorGeneric)),
+      SnackBar(
+        content: Text(
+          createFailure?.localizedMessage(context) ?? l10n.errorGeneric,
+        ),
+      ),
     );
     return;
   }
@@ -228,7 +237,7 @@ Future<void> _manageChannelMembers(
   if (failure != null) {
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(SnackBar(content: Text(failure.message)));
+    ).showSnackBar(SnackBar(content: Text(failure.localizedMessage(context))));
     return;
   }
   final selected = Set<String>.from(channel.memberIds);
@@ -281,9 +290,9 @@ Future<void> _manageChannelMembers(
     if (updateFailure != null) {
       ref.invalidate(channelsProvider(workspaceId));
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(updateFailure.message)));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(updateFailure.localizedMessage(context))),
+        );
       }
       return;
     }
@@ -293,9 +302,9 @@ Future<void> _manageChannelMembers(
     if (updateFailure != null) {
       ref.invalidate(channelsProvider(workspaceId));
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(updateFailure.message)));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(updateFailure.localizedMessage(context))),
+        );
       }
       return;
     }
@@ -1256,9 +1265,9 @@ class _MessageBubble extends ConsumerWidget {
             )
             .edit(message.id, body);
         if (failure != null && context.mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(failure.message)));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(failure.localizedMessage(context))),
+          );
         }
       }
     } else if (action == 'delete') {
@@ -1289,9 +1298,9 @@ class _MessageBubble extends ConsumerWidget {
           )
           .delete(message.id);
       if (failure != null && context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(failure.message)));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(failure.localizedMessage(context))),
+        );
       }
     }
   }

@@ -632,6 +632,78 @@ abstract class AppLocalizations {
   /// **'Your session has expired. Please log in again.'**
   String get errorSessionExpired;
 
+  /// No description provided for @errorAuthRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please log in to continue.'**
+  String get errorAuthRequired;
+
+  /// No description provided for @errorInvalidRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Please check the information and try again.'**
+  String get errorInvalidRequest;
+
+  /// No description provided for @errorConflict.
+  ///
+  /// In en, this message translates to:
+  /// **'This change conflicts with a newer update. Refresh and try again.'**
+  String get errorConflict;
+
+  /// No description provided for @errorRateLimited.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many requests. Please wait and try again.'**
+  String get errorRateLimited;
+
+  /// No description provided for @errorTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'The request timed out. Check your connection and try again.'**
+  String get errorTimeout;
+
+  /// No description provided for @errorInvalidInviteCode.
+  ///
+  /// In en, this message translates to:
+  /// **'This invite code is invalid.'**
+  String get errorInvalidInviteCode;
+
+  /// No description provided for @errorInviteCodeExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'This invite code has expired.'**
+  String get errorInviteCodeExpired;
+
+  /// No description provided for @errorInviteCodeRevoked.
+  ///
+  /// In en, this message translates to:
+  /// **'This invite code has been revoked.'**
+  String get errorInviteCodeRevoked;
+
+  /// No description provided for @errorInviteCodeExhausted.
+  ///
+  /// In en, this message translates to:
+  /// **'This invite code has reached its use limit.'**
+  String get errorInviteCodeExhausted;
+
+  /// No description provided for @errorAlreadyMember.
+  ///
+  /// In en, this message translates to:
+  /// **'You are already a member of this workspace.'**
+  String get errorAlreadyMember;
+
+  /// No description provided for @errorTransferAdminFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer workspace ownership before deleting your account.'**
+  String get errorTransferAdminFirst;
+
+  /// No description provided for @errorChatPersonalOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat is only available in team workspaces.'**
+  String get errorChatPersonalOnly;
+
   /// No description provided for @bannerOffline.
   ///
   /// In en, this message translates to:
@@ -2659,6 +2731,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Appearance'**
   String get settingsAppearance;
+
+  /// No description provided for @settingsAppearanceSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance settings saved to your account.'**
+  String get settingsAppearanceSaved;
+
+  /// No description provided for @settingsAppearanceQueued.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved on this device. It will sync when the server is available.'**
+  String get settingsAppearanceQueued;
+
+  /// No description provided for @settingsAppearanceSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The appearance changed on this device but could not be saved to your account.'**
+  String get settingsAppearanceSaveFailed;
 
   /// No description provided for @settingsSecurity.
   ///

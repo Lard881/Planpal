@@ -9,13 +9,15 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/layout/breakpoints.dart';
 import '../../../core/widgets/planpal_button.dart';
 import '../../../core/widgets/planpal_text_field.dart';
+import '../../../core/network/failure_localizer.dart';
 import '../data/workspace_repository.dart';
 import '../providers/workspace_providers.dart';
 
 class CreateWorkspaceScreen extends ConsumerStatefulWidget {
   const CreateWorkspaceScreen({super.key});
   @override
-  ConsumerState<CreateWorkspaceScreen> createState() => _CreateWorkspaceScreenState();
+  ConsumerState<CreateWorkspaceScreen> createState() =>
+      _CreateWorkspaceScreenState();
 }
 
 class _CreateWorkspaceScreenState extends ConsumerState<CreateWorkspaceScreen> {
@@ -25,7 +27,10 @@ class _CreateWorkspaceScreenState extends ConsumerState<CreateWorkspaceScreen> {
   String? _error;
 
   @override
-  void dispose() { _nameCtrl.dispose(); super.dispose(); }
+  void dispose() {
+    _nameCtrl.dispose();
+    super.dispose();
+  }
 
   Future<void> _submit() async {
     final name = _nameCtrl.text.trim();
@@ -33,12 +38,17 @@ class _CreateWorkspaceScreenState extends ConsumerState<CreateWorkspaceScreen> {
       setState(() => _nameError = 'Workspace name is required.');
       return;
     }
-    setState(() { _loading = true; _error = null; });
-    final (workspace, failure) = await ref.read(workspaceRepositoryProvider).createWorkspace(name);
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    final (workspace, failure) = await ref
+        .read(workspaceRepositoryProvider)
+        .createWorkspace(name);
     if (!mounted) return;
     setState(() => _loading = false);
     if (failure != null) {
-      setState(() => _error = failure.message);
+      setState(() => _error = failure.localizedMessage(context));
       return;
     }
     if (workspace != null) {
@@ -125,11 +135,15 @@ class _CreateWorkspaceScreenState extends ConsumerState<CreateWorkspaceScreen> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text('Create workspace',
-                  style: AppText.pageTitle.copyWith(color: c.textPrimary)),
+                Text(
+                  'Create workspace',
+                  style: AppText.pageTitle.copyWith(color: c.textPrimary),
+                ),
                 const SizedBox(height: 8),
-                Text('Give your new space a friendly name.',
-                  style: AppText.body.copyWith(color: c.textMuted)),
+                Text(
+                  'Give your new space a friendly name.',
+                  style: AppText.body.copyWith(color: c.textMuted),
+                ),
                 const SizedBox(height: 24),
                 form,
               ],
@@ -151,18 +165,25 @@ class _CreateWorkspaceScreenState extends ConsumerState<CreateWorkspaceScreen> {
               GestureDetector(
                 onTap: () => context.pop(),
                 child: Container(
-                  width: 36, height: 36,
+                  width: 36,
+                  height: 36,
                   decoration: BoxDecoration(
                     color: c.surface,
                     borderRadius: BorderRadius.circular(AppRadius.control),
                     border: Border.all(color: c.border),
                   ),
-                  child: Icon(LucideIcons.arrowLeft, size: 18, color: c.textPrimary),
+                  child: Icon(
+                    LucideIcons.arrowLeft,
+                    size: 18,
+                    color: c.textPrimary,
+                  ),
                 ),
               ),
               const SizedBox(height: 24),
-              Text('Create workspace',
-                style: AppText.pageTitle.copyWith(color: c.textPrimary)),
+              Text(
+                'Create workspace',
+                style: AppText.pageTitle.copyWith(color: c.textPrimary),
+              ),
               const SizedBox(height: 24),
               form,
             ],

@@ -275,6 +275,42 @@ class AppLocalizationsZh extends AppLocalizations {
   String get errorSessionExpired => '您的会话已过期，请重新登录。';
 
   @override
+  String get errorAuthRequired => '请登录后继续。';
+
+  @override
+  String get errorInvalidRequest => '请检查信息后重试。';
+
+  @override
+  String get errorConflict => '此更改与较新的更新冲突。请刷新后重试。';
+
+  @override
+  String get errorRateLimited => '请求过多，请稍后重试。';
+
+  @override
+  String get errorTimeout => '请求超时。请检查网络后重试。';
+
+  @override
+  String get errorInvalidInviteCode => '此邀请代码无效。';
+
+  @override
+  String get errorInviteCodeExpired => '此邀请代码已过期。';
+
+  @override
+  String get errorInviteCodeRevoked => '此邀请代码已撤销。';
+
+  @override
+  String get errorInviteCodeExhausted => '此邀请代码已达到使用次数上限。';
+
+  @override
+  String get errorAlreadyMember => '您已经是此工作区的成员。';
+
+  @override
+  String get errorTransferAdminFirst => '删除账户前，请先转移工作区所有权。';
+
+  @override
+  String get errorChatPersonalOnly => '聊天功能仅适用于团队工作区。';
+
+  @override
   String get bannerOffline => '您处于离线状态。更改已保存在设备上，联网后将自动同步。';
 
   @override
@@ -1363,6 +1399,15 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsAppearance => '外观';
+
+  @override
+  String get settingsAppearanceSaved => '外观设置已保存到您的账户。';
+
+  @override
+  String get settingsAppearanceQueued => '已保存在此设备。服务器可用时将自动同步。';
+
+  @override
+  String get settingsAppearanceSaveFailed => '外观已在此设备更改，但无法保存到您的账户。';
 
   @override
   String get settingsSecurity => '安全';

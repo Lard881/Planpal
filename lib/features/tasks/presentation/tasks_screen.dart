@@ -7,6 +7,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/network/app_failure.dart';
+import '../../../core/network/failure_localizer.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
 import '../../../core/theme/app_theme.dart';
@@ -452,7 +453,7 @@ class _MobileTasksScreenState extends ConsumerState<_MobileTasksScreen> {
         ? l10n.syncSaved
         : isQueuedFailure
         ? l10n.syncWaitingShort
-        : failure.message;
+        : failure.localizedMessage(context);
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(message)));
@@ -1265,7 +1266,7 @@ class _TaskListError extends StatelessWidget {
         children: [
           Flexible(
             child: Text(
-              message ?? l10n.errorGeneric,
+              localizeFailureText(l10n, message ?? l10n.errorGeneric),
               style: AppText.body.copyWith(color: c.danger),
               textAlign: TextAlign.center,
             ),

@@ -9,6 +9,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/layout/breakpoints.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../../../core/l10n/app_localizations.dart';
+import '../../../core/network/failure_localizer.dart';
 import '../models/notification_model.dart';
 import '../providers/notifications_providers.dart';
 
@@ -38,9 +39,9 @@ class _DesktopNotifications extends ConsumerWidget {
       if (next.error != null &&
           next.error != previous?.error &&
           next.notifications.isNotEmpty) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(next.error!)));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(localizeFailureText(l10n, next.error!))),
+        );
       }
     });
 
@@ -121,9 +122,9 @@ class _MobileNotifications extends ConsumerWidget {
       if (next.error != null &&
           next.error != previous?.error &&
           next.notifications.isNotEmpty) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(next.error!)));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(localizeFailureText(l10n, next.error!))),
+        );
       }
     });
 
