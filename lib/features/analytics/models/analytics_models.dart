@@ -15,13 +15,22 @@ class AnalyticsSummary {
   });
 
   factory AnalyticsSummary.fromJson(Map<String, dynamic> j) => AnalyticsSummary(
-    tasksCompleted: j['tasks_completed'] as int? ?? 0,
+    tasksCompleted: j['completed'] as int? ?? 0,
     avgCompletionDays: (j['avg_completion_days'] as num?)?.toDouble() ?? 0,
     onTimeRate: (j['on_time_rate'] as num?)?.toDouble() ?? 0,
     streak: j['streak'] as int? ?? 0,
-    changeVsPrevious: j['change_vs_previous'] != null
-        ? (j['change_vs_previous'] as num).toDouble() : null,
+    changeVsPrevious: j['changeVsPrevious'] != null
+        ? (j['changeVsPrevious'] as num).toDouble()
+        : null,
   );
+
+  Map<String, dynamic> toJson() => {
+    'completed': tasksCompleted,
+    'avg_completion_days': avgCompletionDays,
+    'on_time_rate': onTimeRate,
+    'streak': streak,
+    'changeVsPrevious': changeVsPrevious,
+  };
 }
 
 class WeeklyData {
@@ -36,9 +45,14 @@ class WeeklyData {
   }
 
   factory WeeklyData.fromJson(Map<String, dynamic> j) => WeeklyData(
-    weekday: j['weekday'] as int? ?? 1,
+    weekday: j['weekday'] as int? ?? j['dow'] as int? ?? 1,
     completed: j['completed'] as int? ?? 0,
   );
+
+  Map<String, dynamic> toJson() => {
+    'weekday': weekday,
+    'completed': completed,
+  };
 }
 
 class CategoryData {
@@ -54,6 +68,12 @@ class CategoryData {
     color: j['color'] as String? ?? '#6B7185',
     total: j['total'] as int? ?? 0,
   );
+
+  Map<String, dynamic> toJson() => {
+    'label': label,
+    'color': color,
+    'total': total,
+  };
 }
 
 class AnalyticsData {
@@ -69,7 +89,10 @@ class AnalyticsData {
 
   factory AnalyticsData.fromJson(Map<String, dynamic> j) => AnalyticsData(
     summary: AnalyticsSummary.fromJson(
-        j['summary'] as Map<String, dynamic>? ?? {}),
+      {
+        ...(j['summary'] as Map<String, dynamic>? ?? {}),
+        'streak': j['streak'] as int? ?? 0,
+      }),
     weekly: (j['weekly'] as List? ?? [])
         .map((w) => WeeklyData.fromJson(w as Map<String, dynamic>))
         .toList(),
@@ -77,4 +100,10 @@ class AnalyticsData {
         .map((c) => CategoryData.fromJson(c as Map<String, dynamic>))
         .toList(),
   );
+
+  Map<String, dynamic> toJson() => {
+    'summary': summary.toJson(),
+    'weekly': weekly.map((item) => item.toJson()).toList(),
+    'categories': categories.map((item) => item.toJson()).toList(),
+  };
 }

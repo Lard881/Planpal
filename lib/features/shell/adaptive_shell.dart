@@ -2,6 +2,7 @@
 // Adaptive navigation shell: sidebar (desktop) / rail (tablet) / bottom bar (mobile)
 // Layout matches DesktopHome.png and MobileHome.png exactly.
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -52,7 +53,13 @@ class _DesktopShell extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
-    return Scaffold(
+    return CallbackShortcuts(
+      bindings: {
+        const SingleActivator(LogicalKeyboardKey.keyK, control: true): () {
+          context.push('/search');
+        },
+      },
+      child: Scaffold(
       backgroundColor: c.background,
       body: Row(
         children: [
@@ -66,6 +73,7 @@ class _DesktopShell extends ConsumerWidget {
             ),
           ),
         ],
+      ),
       ),
     );
   }

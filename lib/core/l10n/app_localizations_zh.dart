@@ -42,6 +42,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get searchPlaceholder => '搜索任务、文档、人员...';
 
   @override
+  String get searchOfflineNotice => '离线：显示此设备上的搜索结果。';
+
+  @override
   String get searchCtrlK => 'Ctrl K';
 
   @override
@@ -1143,6 +1146,51 @@ class AppLocalizationsZh extends AppLocalizations {
   String get notificationsMarkUnread => '标为未读';
 
   @override
+  String get notificationTaskAssigned => '任务已分配';
+
+  @override
+  String get notificationTaskUpdated => '任务已更新';
+
+  @override
+  String get notificationTaskComment => '任务有新评论';
+
+  @override
+  String get notificationMention => '有人提到了你';
+
+  @override
+  String get notificationDeadline => '截止日期临近';
+
+  @override
+  String get notificationOverdue => '任务已逾期';
+
+  @override
+  String get notificationEventReminder => '活动提醒';
+
+  @override
+  String get notificationChatMessage => '收到新聊天消息';
+
+  @override
+  String get notificationMemberJoined => '新成员已加入';
+
+  @override
+  String get notificationJustNow => '刚刚';
+
+  @override
+  String notificationMinutesAgo(int count) {
+    return '$count 分钟前';
+  }
+
+  @override
+  String notificationHoursAgo(int count) {
+    return '$count 小时前';
+  }
+
+  @override
+  String notificationDaysAgo(int count) {
+    return '$count 天前';
+  }
+
+  @override
   String get analyticsTitle => '分析';
 
   @override
@@ -1233,6 +1281,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get teamUpdatedTask => '任务已更新';
 
   @override
+  String get teamUpdateTask => '任务已更新';
+
+  @override
+  String get teamUpdateDocument => '文档已更新';
+
+  @override
+  String get teamUpdateFile => '文件已更新';
+
+  @override
+  String get teamUpdateMemberJoined => '成员已加入';
+
+  @override
   String get teamMemberProfile => '成员资料';
 
   @override
@@ -1264,6 +1324,42 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsNotifications => '通知';
+
+  @override
+  String get settingsTimezone => '时区';
+
+  @override
+  String get settingsPushNotifications => '推送通知';
+
+  @override
+  String get settingsInAppNotifications => '应用内通知';
+
+  @override
+  String get settingsNotifyAssignments => '任务分配';
+
+  @override
+  String get settingsNotifyComments => '评论';
+
+  @override
+  String get settingsNotifyMentions => '提及';
+
+  @override
+  String get settingsNotifyDeadlines => '截止日期和提醒';
+
+  @override
+  String get settingsNotifyChat => '聊天消息';
+
+  @override
+  String get settingsChangePassword => '更改密码';
+
+  @override
+  String get settingsCurrentPassword => '当前密码';
+
+  @override
+  String get settingsPasswordChanged => '密码已更改。';
+
+  @override
+  String get settingsSignOutEverywhere => '在所有设备上退出登录';
 
   @override
   String get settingsAppearance => '外观';
@@ -1304,6 +1400,11 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String settingsComingSoon(String section) {
     return '$section 设置即将推出。';
+  }
+
+  @override
+  String analyticsLastUpdated(String time) {
+    return '上次更新：$time';
   }
 
   @override

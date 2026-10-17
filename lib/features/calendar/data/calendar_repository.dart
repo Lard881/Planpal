@@ -135,6 +135,71 @@ class CalendarRepository {
     String eventId,
     Map<String, dynamic> updates,
   ) async {
+    final row = await (_db.select(
+      _db.events,
+    )..where((event) => event.id.equals(eventId))).getSingleOrNull();
+    if (row == null) {
+      final failure = await _sendEventUpdate(eventId, updates);
+      if (failure != null && _isTemporaryFailure(failure)) {
+        await _sync.queueUpdate('events', eventId, updates);
+      }
+      return failure;
+    }
+    final attendeeRows = await (_db.select(
+      _db.eventAttendees,
+    )..where((attendee) => attendee.eventId.equals(eventId))).get();
+    final original = EventModel(
+      id: row.id,
+      workspaceId: row.workspaceId,
+      title: row.title,
+      description: row.description,
+      startsAt: row.startsAt,
+      endsAt: row.endsAt,
+      allDay: row.allDay,
+      color: row.color,
+      taskId: row.taskId,
+      reminderMinutesBefore: row.reminderMinutesBefore,
+      createdBy: row.createdBy,
+      attendeeIds: attendeeRows.map((attendee) => attendee.userId).toList(),
+    );
+    final changed = EventModel(
+      id: original.id,
+      workspaceId: original.workspaceId,
+      title: updates['title'] as String? ?? original.title,
+      description: updates['description'] as String? ?? original.description,
+      startsAt: updates['startsAt'] == null
+          ? original.startsAt
+          : DateTime.parse(updates['startsAt'] as String).toLocal(),
+      endsAt: updates['endsAt'] == null
+          ? original.endsAt
+          : DateTime.parse(updates['endsAt'] as String).toLocal(),
+      allDay: updates['allDay'] as bool? ?? original.allDay,
+      color: updates['color'] as String? ?? original.color,
+      taskId: original.taskId,
+      reminderMinutesBefore:
+          updates['reminderMinutesBefore'] as int? ??
+          original.reminderMinutesBefore,
+      createdBy: original.createdBy,
+      attendeeIds:
+          (updates['attendeeIds'] as List<dynamic>?)?.cast<String>() ??
+          original.attendeeIds,
+    );
+    await _cacheEvent(changed);
+    final failure = await _sendEventUpdate(eventId, updates);
+    if (failure != null) {
+      if (_isTemporaryFailure(failure)) {
+        await _sync.queueUpdate('events', eventId, updates);
+      } else {
+        await _cacheEvent(original);
+      }
+    }
+    return failure;
+  }
+
+  Future<AppFailure?> _sendEventUpdate(
+    String eventId,
+    Map<String, dynamic> updates,
+  ) async {
     try {
       await _dio.patch('/events/$eventId', data: updates);
       return null;

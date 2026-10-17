@@ -42,6 +42,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get searchPlaceholder => '작업, 문서, 사람 검색...';
 
   @override
+  String get searchOfflineNotice => '오프라인: 이 기기의 검색 결과를 표시합니다.';
+
+  @override
   String get searchCtrlK => 'Ctrl K';
 
   @override
@@ -1144,6 +1147,51 @@ class AppLocalizationsKo extends AppLocalizations {
   String get notificationsMarkUnread => '읽지 않음으로 표시';
 
   @override
+  String get notificationTaskAssigned => '작업이 할당됨';
+
+  @override
+  String get notificationTaskUpdated => '작업이 업데이트됨';
+
+  @override
+  String get notificationTaskComment => '새 작업 댓글';
+
+  @override
+  String get notificationMention => '멘션되었습니다';
+
+  @override
+  String get notificationDeadline => '마감일 임박';
+
+  @override
+  String get notificationOverdue => '작업 기한 초과';
+
+  @override
+  String get notificationEventReminder => '일정 알림';
+
+  @override
+  String get notificationChatMessage => '새 채팅 메시지';
+
+  @override
+  String get notificationMemberJoined => '새 멤버가 참여함';
+
+  @override
+  String get notificationJustNow => '방금';
+
+  @override
+  String notificationMinutesAgo(int count) {
+    return '$count분 전';
+  }
+
+  @override
+  String notificationHoursAgo(int count) {
+    return '$count시간 전';
+  }
+
+  @override
+  String notificationDaysAgo(int count) {
+    return '$count일 전';
+  }
+
+  @override
   String get analyticsTitle => '분석';
 
   @override
@@ -1234,6 +1282,18 @@ class AppLocalizationsKo extends AppLocalizations {
   String get teamUpdatedTask => '작업 업데이트됨';
 
   @override
+  String get teamUpdateTask => '작업 업데이트됨';
+
+  @override
+  String get teamUpdateDocument => '문서 업데이트됨';
+
+  @override
+  String get teamUpdateFile => '파일 업데이트됨';
+
+  @override
+  String get teamUpdateMemberJoined => '멤버가 참여함';
+
+  @override
   String get teamMemberProfile => '멤버 프로필';
 
   @override
@@ -1265,6 +1325,42 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get settingsNotifications => '알림';
+
+  @override
+  String get settingsTimezone => '시간대';
+
+  @override
+  String get settingsPushNotifications => '푸시 알림';
+
+  @override
+  String get settingsInAppNotifications => '앱 내 알림';
+
+  @override
+  String get settingsNotifyAssignments => '작업 할당';
+
+  @override
+  String get settingsNotifyComments => '댓글';
+
+  @override
+  String get settingsNotifyMentions => '멘션';
+
+  @override
+  String get settingsNotifyDeadlines => '마감일 및 알림';
+
+  @override
+  String get settingsNotifyChat => '채팅 메시지';
+
+  @override
+  String get settingsChangePassword => '비밀번호 변경';
+
+  @override
+  String get settingsCurrentPassword => '현재 비밀번호';
+
+  @override
+  String get settingsPasswordChanged => '비밀번호가 변경되었습니다.';
+
+  @override
+  String get settingsSignOutEverywhere => '모든 기기에서 로그아웃';
 
   @override
   String get settingsAppearance => '외관';
@@ -1305,6 +1401,11 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String settingsComingSoon(String section) {
     return '$section 설정 출시 예정.';
+  }
+
+  @override
+  String analyticsLastUpdated(String time) {
+    return '마지막 업데이트: $time';
   }
 
   @override

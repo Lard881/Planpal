@@ -42,6 +42,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get searchPlaceholder => 'Buscar tareas, docs, personas...';
 
   @override
+  String get searchOfflineNotice =>
+      'Sin conexión: se muestran los resultados de este dispositivo.';
+
+  @override
   String get searchCtrlK => 'Ctrl K';
 
   @override
@@ -1207,6 +1211,51 @@ class AppLocalizationsEs extends AppLocalizations {
   String get notificationsMarkUnread => 'Marcar como no leído';
 
   @override
+  String get notificationTaskAssigned => 'Tarea asignada';
+
+  @override
+  String get notificationTaskUpdated => 'Tarea actualizada';
+
+  @override
+  String get notificationTaskComment => 'Nuevo comentario en la tarea';
+
+  @override
+  String get notificationMention => 'Te mencionaron';
+
+  @override
+  String get notificationDeadline => 'Se acerca la fecha límite';
+
+  @override
+  String get notificationOverdue => 'Tarea vencida';
+
+  @override
+  String get notificationEventReminder => 'Recordatorio de evento';
+
+  @override
+  String get notificationChatMessage => 'Nuevo mensaje de chat';
+
+  @override
+  String get notificationMemberJoined => 'Se unió una persona';
+
+  @override
+  String get notificationJustNow => 'Ahora mismo';
+
+  @override
+  String notificationMinutesAgo(int count) {
+    return 'Hace $count min';
+  }
+
+  @override
+  String notificationHoursAgo(int count) {
+    return 'Hace $count h';
+  }
+
+  @override
+  String notificationDaysAgo(int count) {
+    return 'Hace $count d';
+  }
+
+  @override
   String get analyticsTitle => 'Analíticas';
 
   @override
@@ -1297,6 +1346,18 @@ class AppLocalizationsEs extends AppLocalizations {
   String get teamUpdatedTask => 'Tarea actualizada';
 
   @override
+  String get teamUpdateTask => 'Tarea actualizada';
+
+  @override
+  String get teamUpdateDocument => 'Documento actualizado';
+
+  @override
+  String get teamUpdateFile => 'Archivo actualizado';
+
+  @override
+  String get teamUpdateMemberJoined => 'Se unió un miembro';
+
+  @override
   String get teamMemberProfile => 'Perfil del miembro';
 
   @override
@@ -1329,6 +1390,43 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsNotifications => 'Notificaciones';
+
+  @override
+  String get settingsTimezone => 'Zona horaria';
+
+  @override
+  String get settingsPushNotifications => 'Notificaciones push';
+
+  @override
+  String get settingsInAppNotifications => 'Notificaciones en la aplicación';
+
+  @override
+  String get settingsNotifyAssignments => 'Asignaciones de tareas';
+
+  @override
+  String get settingsNotifyComments => 'Comentarios';
+
+  @override
+  String get settingsNotifyMentions => 'Menciones';
+
+  @override
+  String get settingsNotifyDeadlines => 'Fechas límite y recordatorios';
+
+  @override
+  String get settingsNotifyChat => 'Mensajes de chat';
+
+  @override
+  String get settingsChangePassword => 'Cambiar contraseña';
+
+  @override
+  String get settingsCurrentPassword => 'Contraseña actual';
+
+  @override
+  String get settingsPasswordChanged => 'Contraseña cambiada.';
+
+  @override
+  String get settingsSignOutEverywhere =>
+      'Cerrar sesión en todos los dispositivos';
 
   @override
   String get settingsAppearance => 'Apariencia';
@@ -1370,6 +1468,11 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String settingsComingSoon(String section) {
     return 'Ajustes de $section próximamente.';
+  }
+
+  @override
+  String analyticsLastUpdated(String time) {
+    return 'Última actualización: $time';
   }
 
   @override

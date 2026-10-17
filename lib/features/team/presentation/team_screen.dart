@@ -20,7 +20,7 @@ import '../../workspaces/models/workspace_model.dart';
 import '../../chat/data/chat_repository.dart';
 import '../../chat/providers/chat_providers.dart';
 import '../../tasks/data/task_repository.dart';
-import '../../tasks/models/task_model.dart';
+import '../../documents/data/documents_repository.dart';
 
 final teamMembersProvider = FutureProvider.autoDispose
     .family<List<MemberModel>, String>((ref, workspaceId) async {
@@ -31,13 +31,66 @@ final teamMembersProvider = FutureProvider.autoDispose
       return members;
     });
 
-final teamLatestTaskUpdatesProvider = FutureProvider.autoDispose
-    .family<List<TaskModel>, String>((ref, workspaceId) async {
-      final (tasks, _, failure) = await ref
+class TeamActivity {
+  final String type;
+  final String title;
+  final String id;
+  final DateTime updatedAt;
+
+  const TeamActivity({
+    required this.type,
+    required this.title,
+    required this.id,
+    required this.updatedAt,
+  });
+}
+
+final teamLatestActivityProvider = FutureProvider.autoDispose
+    .family<List<TeamActivity>, String>((ref, workspaceId) async {
+      final (tasks, _, taskFailure) = await ref
           .read(taskRepositoryProvider)
           .getTasks(workspaceId, sort: 'updated_at');
-      if (failure != null) throw failure;
-      return tasks;
+      if (taskFailure != null) throw taskFailure;
+      final (documents, documentFailure) = await ref
+          .read(documentsRepositoryProvider)
+          .getDocuments(workspaceId, recent: true);
+      if (documentFailure != null) throw documentFailure;
+      final (members, memberFailure) = await ref
+          .read(workspaceRepositoryProvider)
+          .getMembers(workspaceId);
+      if (memberFailure != null) throw memberFailure;
+
+      final updates = <TeamActivity>[
+        ...tasks.map(
+          (task) => TeamActivity(
+            type: 'task',
+            title: task.title,
+            id: task.id,
+            updatedAt: task.updatedAt,
+          ),
+        ),
+        ...documents.map(
+          (document) => TeamActivity(
+            type: document.kind == 'file' ? 'file' : 'document',
+            title: document.title,
+            id: document.id,
+            updatedAt: document.updatedAt,
+          ),
+        ),
+        ...members
+            .where((member) => member.joinedAt != null)
+            .map(
+              (member) => TeamActivity(
+                type: 'member',
+                title: member.fullName.isNotEmpty
+                    ? member.fullName
+                    : member.email,
+                id: member.userId,
+                updatedAt: member.joinedAt!,
+              ),
+            ),
+      ]..sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+      return updates.take(8).toList();
     });
 
 class TeamScreen extends ConsumerStatefulWidget {
@@ -183,7 +236,7 @@ class _TeamScreenState extends ConsumerState<TeamScreen> {
                             const SizedBox(width: 20),
                             SizedBox(
                               width: 280,
-                              child: _LatestTaskUpdates(workspaceId: wsId),
+                              child: _LatestActivity(workspaceId: wsId),
                             ),
                           ],
                         )
@@ -548,15 +601,15 @@ class _MemberProfileSheetState extends ConsumerState<_MemberProfileSheet> {
   }
 }
 
-class _LatestTaskUpdates extends ConsumerWidget {
+class _LatestActivity extends ConsumerWidget {
   final String workspaceId;
-  const _LatestTaskUpdates({required this.workspaceId});
+  const _LatestActivity({required this.workspaceId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
     final l10n = AppLocalizations.of(context);
-    final updatesAsync = ref.watch(teamLatestTaskUpdatesProvider(workspaceId));
+    final updatesAsync = ref.watch(teamLatestActivityProvider(workspaceId));
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -580,9 +633,9 @@ class _LatestTaskUpdates extends ConsumerWidget {
                 message: error.toString(),
                 retryLabel: l10n.btnRetry,
                 onRetry: () =>
-                    ref.invalidate(teamLatestTaskUpdatesProvider(workspaceId)),
+                    ref.invalidate(teamLatestActivityProvider(workspaceId)),
               ),
-              data: (tasks) => tasks.isEmpty
+              data: (updates) => updates.isEmpty
                   ? Center(
                       child: Text(
                         l10n.teamNoActivity,
@@ -590,25 +643,36 @@ class _LatestTaskUpdates extends ConsumerWidget {
                       ),
                     )
                   : ListView.separated(
-                      itemCount: tasks.length > 8 ? 8 : tasks.length,
+                      itemCount: updates.length,
                       separatorBuilder: (_, __) => const Divider(height: 16),
                       itemBuilder: (context, index) {
-                        final task = tasks[index];
+                        final update = updates[index];
                         final updatedAt =
-                            '${MaterialLocalizations.of(context).formatMediumDate(task.updatedAt)} · '
-                            '${MaterialLocalizations.of(context).formatTimeOfDay(TimeOfDay.fromDateTime(task.updatedAt))}';
+                            '${MaterialLocalizations.of(context).formatMediumDate(update.updatedAt)} · '
+                            '${MaterialLocalizations.of(context).formatTimeOfDay(TimeOfDay.fromDateTime(update.updatedAt))}';
+                        final activityLabel = switch (update.type) {
+                          'task' => l10n.teamUpdateTask,
+                          'file' => l10n.teamUpdateFile,
+                          'member' => l10n.teamUpdateMemberJoined,
+                          _ => l10n.teamUpdateDocument,
+                        };
                         return ListTile(
                           contentPadding: EdgeInsets.zero,
                           dense: true,
                           title: Text(
-                            task.title,
+                            update.title,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
-                          subtitle: Text(
-                            '${l10n.teamUpdatedTask} · $updatedAt',
-                          ),
-                          onTap: () => context.push('/tasks/${task.id}'),
+                          subtitle: Text('$activityLabel · $updatedAt'),
+                          onTap: () {
+                            if (update.type == 'task') {
+                              context.push('/tasks/${update.id}');
+                            } else if (update.type == 'file' ||
+                                update.type == 'document') {
+                              context.push('/documents/${update.id}');
+                            }
+                          },
                         );
                       },
                     ),

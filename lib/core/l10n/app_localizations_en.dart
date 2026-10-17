@@ -42,6 +42,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchPlaceholder => 'Search tasks, docs, people...';
 
   @override
+  String get searchOfflineNotice =>
+      'Offline: showing results from this device.';
+
+  @override
   String get searchCtrlK => 'Ctrl K';
 
   @override
@@ -1199,6 +1203,51 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notificationsMarkUnread => 'Mark as unread';
 
   @override
+  String get notificationTaskAssigned => 'Task assigned';
+
+  @override
+  String get notificationTaskUpdated => 'Task updated';
+
+  @override
+  String get notificationTaskComment => 'New task comment';
+
+  @override
+  String get notificationMention => 'You were mentioned';
+
+  @override
+  String get notificationDeadline => 'Deadline approaching';
+
+  @override
+  String get notificationOverdue => 'Task overdue';
+
+  @override
+  String get notificationEventReminder => 'Event reminder';
+
+  @override
+  String get notificationChatMessage => 'New chat message';
+
+  @override
+  String get notificationMemberJoined => 'A member joined';
+
+  @override
+  String get notificationJustNow => 'Just now';
+
+  @override
+  String notificationMinutesAgo(int count) {
+    return '$count min ago';
+  }
+
+  @override
+  String notificationHoursAgo(int count) {
+    return '${count}h ago';
+  }
+
+  @override
+  String notificationDaysAgo(int count) {
+    return '${count}d ago';
+  }
+
+  @override
   String get analyticsTitle => 'Analytics';
 
   @override
@@ -1289,6 +1338,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get teamUpdatedTask => 'Task updated';
 
   @override
+  String get teamUpdateTask => 'Task updated';
+
+  @override
+  String get teamUpdateDocument => 'Document updated';
+
+  @override
+  String get teamUpdateFile => 'File updated';
+
+  @override
+  String get teamUpdateMemberJoined => 'Member joined';
+
+  @override
   String get teamMemberProfile => 'Member profile';
 
   @override
@@ -1321,6 +1382,42 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsNotifications => 'Notifications';
+
+  @override
+  String get settingsTimezone => 'Time zone';
+
+  @override
+  String get settingsPushNotifications => 'Push notifications';
+
+  @override
+  String get settingsInAppNotifications => 'In-app notifications';
+
+  @override
+  String get settingsNotifyAssignments => 'Task assignments';
+
+  @override
+  String get settingsNotifyComments => 'Comments';
+
+  @override
+  String get settingsNotifyMentions => 'Mentions';
+
+  @override
+  String get settingsNotifyDeadlines => 'Deadlines and reminders';
+
+  @override
+  String get settingsNotifyChat => 'Chat messages';
+
+  @override
+  String get settingsChangePassword => 'Change password';
+
+  @override
+  String get settingsCurrentPassword => 'Current password';
+
+  @override
+  String get settingsPasswordChanged => 'Password changed.';
+
+  @override
+  String get settingsSignOutEverywhere => 'Sign out everywhere';
 
   @override
   String get settingsAppearance => 'Appearance';
@@ -1362,6 +1459,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String settingsComingSoon(String section) {
     return '$section settings coming soon.';
+  }
+
+  @override
+  String analyticsLastUpdated(String time) {
+    return 'Last updated: $time';
   }
 
   @override

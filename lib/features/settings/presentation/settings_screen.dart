@@ -1,9 +1,15 @@
 // app/lib/features/settings/presentation/settings_screen.dart
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:timezone/data/latest.dart' as timezone_data;
+import 'package:timezone/timezone.dart' as timezone;
+import '../../../core/platform/platform_info.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
 import '../../../core/theme/app_theme.dart';
@@ -15,12 +21,15 @@ import '../../../core/services/avatar_upload_service.dart';
 import '../../../core/widgets/avatar_crop_dialog.dart';
 import '../../../core/providers/theme_provider.dart';
 import '../../../core/providers/locale_provider.dart';
+import '../../../core/services/fcm_service.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../workspaces/providers/workspace_providers.dart';
 import '../../workspaces/data/workspace_repository.dart';
 import '../../auth/presentation/auth_notifier.dart';
 import '../../auth/presentation/auth_failure_message.dart';
+import '../../notifications/providers/notification_preferences.dart';
+import '../../../core/providers/user_profile_provider.dart';
 import 'sync_status_screen.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -247,6 +256,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         return _AppearanceSection();
       case 'account':
         return _AccountSection();
+      case 'notifications':
+        return const _NotificationSettingsSection();
+      case 'security':
+        return const _SecuritySection();
       case 'workspace':
         return _WorkspaceSection();
       case 'sync':
@@ -270,15 +283,21 @@ class _ProfileSection extends ConsumerStatefulWidget {
 
 class _ProfileSectionState extends ConsumerState<_ProfileSection> {
   late TextEditingController _nameCtrl;
+  late final List<String> _timezones;
+  String? _selectedTimezone;
+  String _deviceTimezone = 'UTC';
   bool _saving = false;
 
   @override
   void initState() {
     super.initState();
+    timezone_data.initializeTimeZones();
+    _timezones = timezone.timeZoneDatabase.locations.keys.toList()..sort();
     final user = Supabase.instance.client.auth.currentUser;
     _nameCtrl = TextEditingController(
       text: user?.userMetadata?['full_name'] as String? ?? '',
     );
+    unawaited(_loadDeviceTimezone());
   }
 
   @override
@@ -291,22 +310,59 @@ class _ProfileSectionState extends ConsumerState<_ProfileSection> {
     final l10n = AppLocalizations.of(context);
     setState(() => _saving = true);
     try {
-      // Update Supabase auth metadata
-      await Supabase.instance.client.auth.updateUser(
-        UserAttributes(data: {'full_name': _nameCtrl.text.trim()}),
-      );
-      // Also PATCH /me on the backend so the profile table stays in sync
+      final profile = ref.read(meProvider).valueOrNull;
+      final selectedTimezone =
+          _selectedTimezone ?? profile?.timezone ?? _deviceTimezone;
       await ref
           .read(apiClientProvider)
           .dio
-          .patch('/me', data: {'fullName': _nameCtrl.text.trim()});
+          .patch(
+            '/me',
+            data: {
+              'fullName': _nameCtrl.text.trim(),
+              'timezone': selectedTimezone,
+              'theme': ref.read(themeModeProvider).name,
+              'language':
+                  ref.read(localeProvider)?.languageCode ??
+                  profile?.language ??
+                  'en',
+            },
+          );
+      await Supabase.instance.client.auth.updateUser(
+        UserAttributes(data: {'full_name': _nameCtrl.text.trim()}),
+      );
+      ref.invalidate(meProvider);
       if (mounted) {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text(l10n.syncSaved)));
       }
-    } catch (_) {}
-    setState(() => _saving = false);
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(error.toString())));
+      }
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
+  }
+
+  Future<void> _loadDeviceTimezone() async {
+    try {
+      final local = await FlutterTimezone.getLocalTimezone();
+      if (mounted && _timezones.contains(local.identifier)) {
+        setState(() => _deviceTimezone = local.identifier);
+      }
+    } catch (error, stackTrace) {
+      FlutterError.reportError(
+        FlutterErrorDetails(
+          exception: error,
+          stack: stackTrace,
+          library: 'device time-zone lookup',
+        ),
+      );
+    }
   }
 
   @override
@@ -314,6 +370,7 @@ class _ProfileSectionState extends ConsumerState<_ProfileSection> {
     final c = context.colors;
     final l10n = AppLocalizations.of(context);
     final user = Supabase.instance.client.auth.currentUser;
+    final profile = ref.watch(meProvider).valueOrNull;
     final name = user?.userMetadata?['full_name'] as String? ?? '';
     final email = user?.email ?? '';
     final perms = ref.watch(currentRolePermissionsProvider);
@@ -421,6 +478,27 @@ class _ProfileSectionState extends ConsumerState<_ProfileSection> {
             const SizedBox(width: 16),
             Expanded(child: _ReadOnlyField(l10n.fieldEmail, email)),
           ],
+        ),
+        const SizedBox(height: 24),
+        DropdownButtonFormField<String>(
+          // The profile loads asynchronously, so this field must stay controlled.
+          // ignore: deprecated_member_use
+          value:
+              _timezones.contains(
+                _selectedTimezone ?? profile?.timezone ?? _deviceTimezone,
+              )
+              ? _selectedTimezone ?? profile?.timezone ?? _deviceTimezone
+              : _deviceTimezone,
+          decoration: InputDecoration(labelText: l10n.settingsTimezone),
+          items: _timezones
+              .map(
+                (zone) => DropdownMenuItem<String>(
+                  value: zone,
+                  child: Text(zone, overflow: TextOverflow.ellipsis),
+                ),
+              )
+              .toList(),
+          onChanged: (zone) => setState(() => _selectedTimezone = zone),
         ),
         const SizedBox(height: 24),
         PlanPalButton(
@@ -540,8 +618,12 @@ class _AppearanceSection extends ConsumerWidget {
               child: Padding(
                 padding: const EdgeInsets.only(right: 12),
                 child: GestureDetector(
-                  onTap: () =>
-                      ref.read(themeModeProvider.notifier).setTheme(t.$1),
+                  onTap: () => _saveAppearance(
+                    context,
+                    ref,
+                    theme: t.$1,
+                    locale: locale,
+                  ),
                   child: Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
@@ -597,9 +679,12 @@ class _AppearanceSection extends ConsumerWidget {
               final selected = (locale?.languageCode ?? 'en') == lang.$1;
               return ListTile(
                 dense: true,
-                onTap: () => ref
-                    .read(localeProvider.notifier)
-                    .setLocale(Locale(lang.$1)),
+                onTap: () => _saveAppearance(
+                  context,
+                  ref,
+                  theme: themeMode,
+                  locale: Locale(lang.$1),
+                ),
                 title: Text(
                   lang.$2,
                   style: AppText.bodyMedium.copyWith(color: c.textPrimary),
@@ -610,6 +695,227 @@ class _AppearanceSection extends ConsumerWidget {
               );
             }).toList(),
           ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _saveAppearance(
+    BuildContext context,
+    WidgetRef ref, {
+    required ThemeMode theme,
+    required Locale? locale,
+  }) async {
+    final l10n = AppLocalizations.of(context);
+    final profile = ref.read(meProvider).valueOrNull;
+    final selectedLocale = locale?.languageCode ?? profile?.language ?? 'en';
+    try {
+      await ref
+          .read(apiClientProvider)
+          .dio
+          .patch(
+            '/me',
+            data: {'theme': theme.name, 'language': selectedLocale},
+          );
+      await ref.read(themeModeProvider.notifier).setTheme(theme);
+      if (locale != null) {
+        await ref.read(localeProvider.notifier).setLocale(locale);
+      }
+      ref.invalidate(meProvider);
+    } catch (error) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              error.toString().isEmpty ? l10n.errorGeneric : error.toString(),
+            ),
+          ),
+        );
+      }
+    }
+  }
+}
+
+class _NotificationSettingsSection extends ConsumerWidget {
+  const _NotificationSettingsSection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final preferences = ref.watch(notificationPreferencesProvider);
+    final notifier = ref.read(notificationPreferencesProvider.notifier);
+
+    Future<void> update(NotificationPreferences next) async {
+      try {
+        await notifier.update(next);
+        if (next.push != preferences.push) {
+          await FcmService.setPushEnabled(ref, next.push);
+        }
+      } catch (error) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(error.toString())));
+        }
+      }
+    }
+
+    Widget preferenceSwitch(
+      String label,
+      bool value,
+      NotificationPreferences Function(bool) change,
+    ) => SwitchListTile(
+      contentPadding: EdgeInsets.zero,
+      title: Text(label),
+      value: value,
+      onChanged: (enabled) => update(change(enabled)),
+    );
+
+    return ListView(
+      shrinkWrap: true,
+      children: [
+        Text(
+          l10n.settingsNotifications,
+          style: AppText.authTitle.copyWith(color: context.colors.textPrimary),
+        ),
+        if (PlatformInfo.isAndroid)
+          preferenceSwitch(
+            l10n.settingsPushNotifications,
+            preferences.push,
+            (value) => preferences.copyWith(push: value),
+          ),
+        preferenceSwitch(
+          l10n.settingsInAppNotifications,
+          preferences.inApp,
+          (value) => preferences.copyWith(inApp: value),
+        ),
+        preferenceSwitch(
+          l10n.settingsNotifyAssignments,
+          preferences.assignments,
+          (value) => preferences.copyWith(assignments: value),
+        ),
+        preferenceSwitch(
+          l10n.settingsNotifyComments,
+          preferences.comments,
+          (value) => preferences.copyWith(comments: value),
+        ),
+        preferenceSwitch(
+          l10n.settingsNotifyMentions,
+          preferences.mentions,
+          (value) => preferences.copyWith(mentions: value),
+        ),
+        preferenceSwitch(
+          l10n.settingsNotifyDeadlines,
+          preferences.deadlines,
+          (value) => preferences.copyWith(deadlines: value),
+        ),
+        preferenceSwitch(
+          l10n.settingsNotifyChat,
+          preferences.chat,
+          (value) => preferences.copyWith(chat: value),
+        ),
+      ],
+    );
+  }
+}
+
+class _SecuritySection extends ConsumerStatefulWidget {
+  const _SecuritySection();
+
+  @override
+  ConsumerState<_SecuritySection> createState() => _SecuritySectionState();
+}
+
+class _SecuritySectionState extends ConsumerState<_SecuritySection> {
+  final _currentPassword = TextEditingController();
+  final _newPassword = TextEditingController();
+  bool _saving = false;
+
+  @override
+  void dispose() {
+    _currentPassword.dispose();
+    _newPassword.dispose();
+    super.dispose();
+  }
+
+  Future<void> _changePassword() async {
+    final client = Supabase.instance.client;
+    final email = client.auth.currentUser?.email;
+    final current = _currentPassword.text;
+    final next = _newPassword.text;
+    if (email == null || current.isEmpty || next.isEmpty) return;
+    setState(() => _saving = true);
+    try {
+      await client.auth.signInWithPassword(email: email, password: current);
+      await client.auth.updateUser(UserAttributes(password: next));
+      _currentPassword.clear();
+      _newPassword.clear();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context).settingsPasswordChanged),
+          ),
+        );
+      }
+    } on AuthException catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(error.message)));
+      }
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
+  }
+
+  Future<void> _signOutEverywhere() async {
+    try {
+      await FcmService.unregister(ref);
+      await Supabase.instance.client.auth.signOut(scope: SignOutScope.global);
+      if (mounted) context.go('/login');
+    } on AuthException catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(error.message)));
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final c = context.colors;
+    return ListView(
+      shrinkWrap: true,
+      children: [
+        Text(
+          l10n.settingsSecurity,
+          style: AppText.authTitle.copyWith(color: c.textPrimary),
+        ),
+        const SizedBox(height: 16),
+        TextField(
+          controller: _currentPassword,
+          obscureText: true,
+          decoration: InputDecoration(labelText: l10n.settingsCurrentPassword),
+        ),
+        const SizedBox(height: 12),
+        TextField(
+          controller: _newPassword,
+          obscureText: true,
+          decoration: InputDecoration(labelText: l10n.fieldNewPassword),
+        ),
+        const SizedBox(height: 16),
+        PlanPalButton(
+          label: l10n.settingsChangePassword,
+          loading: _saving,
+          onPressed: _saving ? null : _changePassword,
+        ),
+        const SizedBox(height: 24),
+        PlanPalButton(
+          label: l10n.settingsSignOutEverywhere,
+          variant: PlanPalButtonVariant.outline,
+          onPressed: _signOutEverywhere,
         ),
       ],
     );

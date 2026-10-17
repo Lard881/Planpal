@@ -1,9 +1,12 @@
 // app/lib/features/notifications/providers/notifications_providers.dart
 import 'dart:async';
+import '../../../core/platform/platform_info.dart';
+import '../../../core/services/fcm_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../data/notifications_repository.dart';
 import '../models/notification_model.dart';
+import 'notification_preferences.dart';
 
 class NotificationsState {
   final List<NotificationModel> notifications;
@@ -38,9 +41,10 @@ class NotificationsState {
 
 class NotificationsNotifier extends StateNotifier<NotificationsState> {
   final NotificationsRepository _repo;
+  final NotificationPreferences Function() _preferences;
   RealtimeChannel? _channel;
 
-  NotificationsNotifier(this._repo, String? userId)
+  NotificationsNotifier(this._repo, String? userId, this._preferences)
     : super(const NotificationsState()) {
     load();
     if (userId != null) _subscribe(userId);
@@ -58,7 +62,21 @@ class NotificationsNotifier extends StateNotifier<NotificationsState> {
             column: 'user_id',
             value: userId,
           ),
-          callback: (_) => unawaited(load()),
+          callback: (payload) {
+            unawaited(load());
+            if (PlatformInfo.isWindows) {
+              final notification =
+                  Map<String, dynamic>.from(payload.newRecord);
+              final preferences = _preferences();
+              if (preferences.allowsInAppType(
+                notification['type'] as String?,
+              )) {
+                unawaited(
+                  FcmService.showRealtimeNotification(notification),
+                );
+              }
+            }
+          },
         )
         .subscribe();
   }
@@ -212,6 +230,7 @@ final notificationsProvider =
       (ref) => NotificationsNotifier(
         ref.watch(notificationsRepositoryProvider),
         Supabase.instance.client.auth.currentUser?.id,
+        () => ref.read(notificationPreferencesProvider),
       ),
     );
 

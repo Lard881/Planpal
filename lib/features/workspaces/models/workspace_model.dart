@@ -44,6 +44,7 @@ class MemberModel {
   final String email;
   final String? avatarUrl;
   final String role;
+  final DateTime? joinedAt;
 
   const MemberModel({
     required this.userId,
@@ -51,6 +52,7 @@ class MemberModel {
     required this.email,
     this.avatarUrl,
     required this.role,
+    this.joinedAt,
   });
 
   factory MemberModel.fromJson(Map<String, dynamic> j) {
@@ -66,6 +68,9 @@ class MemberModel {
           (j['avatarUrl'] ?? profile['avatar_url'] ?? profile['avatarUrl'])
               as String?,
       role: j['role'] as String? ?? 'member',
+      joinedAt: (j['joinedAt'] ?? j['joined_at']) is String
+          ? DateTime.parse((j['joinedAt'] ?? j['joined_at']) as String)
+          : null,
     );
   }
 }

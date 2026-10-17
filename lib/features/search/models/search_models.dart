@@ -34,6 +34,9 @@ class SearchResults {
   final List<SearchResult> documents;
   final List<SearchResult> people;
   final int totalCount;
+  final int taskCount;
+  final int documentCount;
+  final int peopleCount;
   final bool isOffline;
 
   const SearchResults({
@@ -41,6 +44,9 @@ class SearchResults {
     this.documents = const [],
     this.people = const [],
     this.totalCount = 0,
+    this.taskCount = 0,
+    this.documentCount = 0,
+    this.peopleCount = 0,
     this.isOffline = false,
   });
 

@@ -261,6 +261,7 @@ class _NotificationRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
+    final l10n = AppLocalizations.of(context);
     final n = notification;
     final notifier = ref.read(notificationsProvider.notifier);
 
@@ -289,7 +290,7 @@ class _NotificationRow extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  n.title,
+                  n.localizedTitle(l10n),
                   style: AppText.bodyMedium.copyWith(
                     color: c.textPrimary,
                     fontWeight: n.isUnread ? FontWeight.w600 : FontWeight.w400,
@@ -303,7 +304,7 @@ class _NotificationRow extends ConsumerWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 Text(
-                  n.relativeTime,
+                  n.relativeTime(l10n),
                   style: AppText.caption.copyWith(color: c.textMuted),
                 ),
               ],
@@ -368,6 +369,8 @@ class _NotificationRow extends ConsumerWidget {
       context.push('/chat/$id');
     } else if (type == 'document' && id != null) {
       context.push('/documents/$id');
+    } else if (type == 'event') {
+      context.push('/calendar');
     }
   }
 

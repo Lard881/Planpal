@@ -1,5 +1,6 @@
 // app/lib/features/notifications/models/notification_model.dart
 import 'package:flutter/material.dart';
+import '../../../core/l10n/app_localizations.dart';
 
 class NotificationModel {
   final String id;
@@ -28,13 +29,26 @@ class NotificationModel {
 
   bool get isUnread => readAt == null;
 
-  String get relativeTime {
+  String localizedTitle(AppLocalizations l10n) => switch (type) {
+    'task_assigned' => l10n.notificationTaskAssigned,
+    'task_updated' => l10n.notificationTaskUpdated,
+    'task_comment' => l10n.notificationTaskComment,
+    'mention' => l10n.notificationMention,
+    'deadline_approaching' => l10n.notificationDeadline,
+    'task_overdue' => l10n.notificationOverdue,
+    'event_reminder' => l10n.notificationEventReminder,
+    'chat_message' => l10n.notificationChatMessage,
+    'member_joined' => l10n.notificationMemberJoined,
+    _ => title,
+  };
+
+  String relativeTime(AppLocalizations l10n) {
     final diff = DateTime.now().difference(createdAt);
-    if (diff.inMinutes < 1) return 'Just now';
-    if (diff.inMinutes < 60) return '${diff.inMinutes} min ago';
-    if (diff.inHours < 24) return '${diff.inHours}h ago';
-    if (diff.inDays == 1) return 'Yesterday';
-    return '${diff.inDays}d ago';
+    if (diff.inMinutes < 1) return l10n.notificationJustNow;
+    if (diff.inMinutes < 60) return l10n.notificationMinutesAgo(diff.inMinutes);
+    if (diff.inHours < 24) return l10n.notificationHoursAgo(diff.inHours);
+    if (diff.inDays == 1) return l10n.yesterday;
+    return l10n.notificationDaysAgo(diff.inDays);
   }
 
   IconData get icon {

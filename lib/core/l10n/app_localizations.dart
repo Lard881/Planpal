@@ -170,6 +170,12 @@ abstract class AppLocalizations {
   /// **'Search tasks, docs, people...'**
   String get searchPlaceholder;
 
+  /// No description provided for @searchOfflineNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline: showing results from this device.'**
+  String get searchOfflineNotice;
+
   /// No description provided for @searchCtrlK.
   ///
   /// In en, this message translates to:
@@ -2228,6 +2234,84 @@ abstract class AppLocalizations {
   /// **'Mark as unread'**
   String get notificationsMarkUnread;
 
+  /// No description provided for @notificationTaskAssigned.
+  ///
+  /// In en, this message translates to:
+  /// **'Task assigned'**
+  String get notificationTaskAssigned;
+
+  /// No description provided for @notificationTaskUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Task updated'**
+  String get notificationTaskUpdated;
+
+  /// No description provided for @notificationTaskComment.
+  ///
+  /// In en, this message translates to:
+  /// **'New task comment'**
+  String get notificationTaskComment;
+
+  /// No description provided for @notificationMention.
+  ///
+  /// In en, this message translates to:
+  /// **'You were mentioned'**
+  String get notificationMention;
+
+  /// No description provided for @notificationDeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Deadline approaching'**
+  String get notificationDeadline;
+
+  /// No description provided for @notificationOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Task overdue'**
+  String get notificationOverdue;
+
+  /// No description provided for @notificationEventReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Event reminder'**
+  String get notificationEventReminder;
+
+  /// No description provided for @notificationChatMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'New chat message'**
+  String get notificationChatMessage;
+
+  /// No description provided for @notificationMemberJoined.
+  ///
+  /// In en, this message translates to:
+  /// **'A member joined'**
+  String get notificationMemberJoined;
+
+  /// No description provided for @notificationJustNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get notificationJustNow;
+
+  /// No description provided for @notificationMinutesAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} min ago'**
+  String notificationMinutesAgo(int count);
+
+  /// No description provided for @notificationHoursAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}h ago'**
+  String notificationHoursAgo(int count);
+
+  /// No description provided for @notificationDaysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}d ago'**
+  String notificationDaysAgo(int count);
+
   /// No description provided for @analyticsTitle.
   ///
   /// In en, this message translates to:
@@ -2408,6 +2492,30 @@ abstract class AppLocalizations {
   /// **'Task updated'**
   String get teamUpdatedTask;
 
+  /// No description provided for @teamUpdateTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Task updated'**
+  String get teamUpdateTask;
+
+  /// No description provided for @teamUpdateDocument.
+  ///
+  /// In en, this message translates to:
+  /// **'Document updated'**
+  String get teamUpdateDocument;
+
+  /// No description provided for @teamUpdateFile.
+  ///
+  /// In en, this message translates to:
+  /// **'File updated'**
+  String get teamUpdateFile;
+
+  /// No description provided for @teamUpdateMemberJoined.
+  ///
+  /// In en, this message translates to:
+  /// **'Member joined'**
+  String get teamUpdateMemberJoined;
+
   /// No description provided for @teamMemberProfile.
   ///
   /// In en, this message translates to:
@@ -2473,6 +2581,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Notifications'**
   String get settingsNotifications;
+
+  /// No description provided for @settingsTimezone.
+  ///
+  /// In en, this message translates to:
+  /// **'Time zone'**
+  String get settingsTimezone;
+
+  /// No description provided for @settingsPushNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Push notifications'**
+  String get settingsPushNotifications;
+
+  /// No description provided for @settingsInAppNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'In-app notifications'**
+  String get settingsInAppNotifications;
+
+  /// No description provided for @settingsNotifyAssignments.
+  ///
+  /// In en, this message translates to:
+  /// **'Task assignments'**
+  String get settingsNotifyAssignments;
+
+  /// No description provided for @settingsNotifyComments.
+  ///
+  /// In en, this message translates to:
+  /// **'Comments'**
+  String get settingsNotifyComments;
+
+  /// No description provided for @settingsNotifyMentions.
+  ///
+  /// In en, this message translates to:
+  /// **'Mentions'**
+  String get settingsNotifyMentions;
+
+  /// No description provided for @settingsNotifyDeadlines.
+  ///
+  /// In en, this message translates to:
+  /// **'Deadlines and reminders'**
+  String get settingsNotifyDeadlines;
+
+  /// No description provided for @settingsNotifyChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat messages'**
+  String get settingsNotifyChat;
+
+  /// No description provided for @settingsChangePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Change password'**
+  String get settingsChangePassword;
+
+  /// No description provided for @settingsCurrentPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Current password'**
+  String get settingsCurrentPassword;
+
+  /// No description provided for @settingsPasswordChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Password changed.'**
+  String get settingsPasswordChanged;
+
+  /// No description provided for @settingsSignOutEverywhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out everywhere'**
+  String get settingsSignOutEverywhere;
 
   /// No description provided for @settingsAppearance.
   ///
@@ -2551,6 +2731,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{section} settings coming soon.'**
   String settingsComingSoon(String section);
+
+  /// No description provided for @analyticsLastUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Last updated: {time}'**
+  String analyticsLastUpdated(String time);
 
   /// No description provided for @syncStatusTitle.
   ///

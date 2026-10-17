@@ -19,6 +19,7 @@ import 'core/providers/user_profile_provider.dart';
 import 'core/providers/auth_provider.dart';
 import 'core/db/app_database.dart';
 import 'core/network/api_client.dart';
+import 'core/services/fcm_service.dart';
 import 'features/workspaces/providers/workspace_providers.dart';
 import 'core/l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -109,6 +110,7 @@ class PlanPalApp extends ConsumerWidget {
     ref.listen<AsyncValue<User?>>(authStateProvider, (prev, next) {
       if (prev?.valueOrNull == null && next.valueOrNull != null) {
         // User just became logged in (either fresh login or session restore)
+        unawaited(FcmService.initialize(ref));
         loadMeAndApply(ref);
       }
       if (prev?.valueOrNull != null && next.valueOrNull == null) {

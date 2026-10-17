@@ -1,9 +1,11 @@
 // app/lib/features/search/presentation/search_screen.dart
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import '../../../core/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
 import '../../../core/theme/app_theme.dart';
@@ -56,7 +58,13 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final state = ref.watch(searchProvider);
     final c = context.colors;
 
-    return Scaffold(
+    return CallbackShortcuts(
+      bindings: {
+        const SingleActivator(LogicalKeyboardKey.escape): () {
+          if (context.canPop()) context.pop();
+        },
+      },
+      child: Scaffold(
       backgroundColor: c.background,
       body: SafeArea(
         child: Column(
@@ -164,16 +172,29 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   children: [
                     _SearchChip('All', 'all', state.results.totalCount, state.filter),
                     const SizedBox(width: 8),
-                    _SearchChip('Tasks', 'task', state.results.tasks.length, state.filter),
+                    _SearchChip('Tasks', 'task', state.results.taskCount, state.filter),
                     const SizedBox(width: 8),
                     _SearchChip(isDesktop ? 'Documents' : 'Docs',
-                        'document', state.results.documents.length, state.filter),
+                        'document', state.results.documentCount, state.filter),
                     const SizedBox(width: 8),
-                    _SearchChip('People', 'person', state.results.people.length, state.filter),
+                    _SearchChip('People', 'person', state.results.peopleCount, state.filter),
                   ],
                 ),
               ),
             ],
+            if (state.results.isOffline)
+              Padding(
+                padding: EdgeInsets.fromLTRB(
+                  isDesktop ? 32 : 16,
+                  8,
+                  isDesktop ? 32 : 16,
+                  0,
+                ),
+                child: Text(
+                  AppLocalizations.of(context).searchOfflineNotice,
+                  style: AppText.caption.copyWith(color: c.textMuted),
+                ),
+              ),
             const SizedBox(height: 16),
             // Results
             Expanded(
@@ -195,6 +216,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             ),
           ],
         ),
+      ),
       ),
     );
   }

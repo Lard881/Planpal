@@ -1,18 +1,22 @@
 // app/lib/features/analytics/presentation/analytics_screen.dart
+import 'dart:typed_data';
+
 import 'package:fl_chart/fl_chart.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/layout/breakpoints.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../../../core/l10n/app_localizations.dart';
+import '../data/analytics_repository.dart';
 import '../models/analytics_models.dart';
 import '../providers/analytics_providers.dart';
-import '../../../core/network/api_client.dart';
+import '../../../core/platform/platform_info.dart';
 import '../../workspaces/providers/workspace_providers.dart';
 
 class AnalyticsScreen extends ConsumerWidget {
@@ -45,13 +49,22 @@ class AnalyticsScreen extends ConsumerWidget {
                   onChanged: (r) =>
                       ref.read(analyticsProvider.notifier).setRange(r),
                 ),
-                if (isDesktop) ...[
-                  const SizedBox(width: 8),
-                  _ExportButton(),
-                ],
+                const SizedBox(width: 8),
+                _ExportButton(),
               ],
             ),
             const SizedBox(height: 20),
+            if (state.lastUpdated != null)
+              Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  l10n.analyticsLastUpdated(
+                    '${MaterialLocalizations.of(context).formatMediumDate(state.lastUpdated!)} '
+                    '${MaterialLocalizations.of(context).formatTimeOfDay(TimeOfDay.fromDateTime(state.lastUpdated!))}',
+                  ),
+                  style: AppText.caption.copyWith(color: c.textMuted),
+                ),
+              ),
             // Content
             if (state.loading)
               const Expanded(child: Center(child: CircularProgressIndicator()))
@@ -129,19 +142,40 @@ class _ExportButton extends ConsumerWidget {
       height: 40,
       child: OutlinedButton.icon(
         onPressed: () async {
-          try {
-            final baseUrl = ref.read(apiClientProvider).dio.options.baseUrl;
-            final url = '$baseUrl/workspaces/$wsId/analytics/export.csv'
-                '?range=${state.range}';
-            final uri = Uri.parse(url);
-            if (await canLaunchUrl(uri)) {
-              await launchUrl(uri, mode: LaunchMode.externalApplication);
-            }
-          } catch (_) {
-            if (context.mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Could not export CSV')));
-            }
+          final (csv, failure) = await ref
+              .read(analyticsRepositoryProvider)
+              .getCsv(wsId, state.range);
+          if (!context.mounted) return;
+          if (failure != null || csv == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(failure?.message ?? l10n.errorGeneric)),
+            );
+            return;
+          }
+          final bytes = Uint8List.fromList(csv);
+          final fileName = 'analytics-${state.range}.csv';
+          if (PlatformInfo.isWindows) {
+            await FilePicker.platform.saveFile(
+              dialogTitle: l10n.analyticsExportCSV,
+              fileName: fileName,
+              type: FileType.custom,
+              allowedExtensions: const ['csv'],
+              bytes: bytes,
+            );
+          } else {
+            await SharePlus.instance.share(
+              ShareParams(
+                title: l10n.analyticsExportCSV,
+                files: [
+                  XFile.fromData(
+                    bytes,
+                    name: fileName,
+                    mimeType: 'text/csv',
+                  ),
+                ],
+                fileNameOverrides: [fileName],
+              ),
+            );
           }
         },
         icon: Icon(LucideIcons.download, size: 16, color: c.textPrimary),
