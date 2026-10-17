@@ -1,8 +1,8 @@
 # PlanPal Desktop Manual Test Guide
 
 This guide is for the installed Windows desktop app only. Test the screens in
-order, with separate online and offline checks for each screen. This first
-version covers Home; the remaining screens will be added screen by screen.
+order, with separate online and offline checks for each screen. It currently
+covers Home and Tasks; the remaining screens will be added screen by screen.
 Login, Create Account, Confirm Account, and Forgot Password are reserved for
 the final group of screens.
 
@@ -86,6 +86,86 @@ passwords, access tokens, private messages, or other secrets in test notes.
   clears, the queued completion syncs once, and the task is shown as completed
   when checked in the task list or from another signed-in session. No duplicate
   task or repeated completion appears.
+  **Result:** Pass / Fail / Not tested. **Notes:**
+
+## 2. Tasks
+
+### Prepare for Tasks testing
+
+- Stay signed in and keep the intended workspace selected.
+- For online checks, use real workspace tasks with more than one status,
+  priority, and assignee if available. If a needed combination is unavailable,
+  mark that check **Not tested** rather than creating misleading test data.
+- Have two disposable tasks in a workspace that is safe to change: one to
+  complete and one to delete. Do not use tasks that must remain unchanged.
+- For the offline-create check, use a unique title and do not attach a file;
+  attachments require an online connection.
+- Load the task list while online before disconnecting Windows from the network.
+
+### Online
+
+- [ ] **T-ON-01 — Open Tasks.** Select **Tasks** in the sidebar. Confirm the list
+  belongs to the selected workspace, the task table shows real task names,
+  assignees, due dates, priorities, and statuses, and the heading counts update
+  to match the displayed tasks. If the workspace has no tasks, confirm the
+  empty state appears and that **Add Task** is available to roles that can
+  create tasks.
+  **Result:** Pass / Fail / Not tested. **Notes:**
+- [ ] **T-ON-02 — Create a task online.** Select **Add Task** and create one
+  real task with a unique title, description, priority, due date/time, and
+  assignee where available. Confirm submission succeeds, opens the created
+  task, and returning to Tasks shows the task once with the entered values.
+  **Result:** Pass / Fail / Not tested. **Notes:**
+- [ ] **T-ON-03 — Filter and sort.** Try status, priority, and assignee filters
+  separately, then try the available sort choices. Confirm the displayed rows
+  match each selected filter and are ordered by the selected sort. Clear the
+  filters and confirm the full task list returns. If a selected filter has no
+  matching real tasks, confirm the no-results state and clear-filters action.
+  **Result:** Pass / Fail / Not tested. **Notes:**
+- [ ] **T-ON-04 — Open a task and load more.** Open a row and confirm its detail
+  page is for that task; return to Tasks. If **Load More** appears, use it and
+  confirm additional rows appear without duplicates.
+  **Result:** Pass / Fail / Not tested. **Notes:**
+- [ ] **T-ON-05 — Complete a task.** Select the disposable task prepared for
+  completion, choose **Mark Complete**, and confirm the task is shown as
+  completed and the selection clears. Confirm the change is visible after
+  refreshing Tasks.
+  **Result:** Pass / Fail / Not tested. **Notes:**
+- [ ] **T-ON-06 — Delete confirmation.** Select the other disposable task and
+  choose **Delete Selected**. Cancel once and confirm it remains. Repeat and
+  confirm deletion; check that it no longer appears after refreshing.
+  **Result:** Pass / Fail / Not tested. **Notes:**
+- [ ] **T-ON-07 — Desktop layout.** Resize the window and scroll the task table.
+  Confirm the filter controls, table columns, row selection, bulk actions, and
+  load-more control remain usable without unintended clipping or overlap.
+  **Result:** Pass / Fail / Not tested. **Notes:**
+
+### Offline
+
+- [ ] **T-OFF-01 — Cached task list.** After loading Tasks online, disconnect
+  Windows from the network. Confirm the offline banner appears, the app stays
+  open, and cached task rows remain visible without a raw API error or retry
+  banner. These rows are cached and may not reflect recent server changes.
+  **Result:** Pass / Fail / Not tested. **Notes:**
+- [ ] **T-OFF-02 — Filter cached tasks.** While still offline, apply and clear
+  status or priority filters. Confirm the cached list responds to the filters
+  and can be restored without an error replacing the cached rows.
+  **Result:** Pass / Fail / Not tested. **Notes:**
+- [ ] **T-OFF-03 — Create a task offline.** From Tasks choose **Add Task** and
+  create a task with a unique title and no attachment. Confirm the task is
+  saved locally, the app reports that it is waiting to sync, and it appears
+  exactly once when you return to the task list. Confirm file attachment is
+  disabled with an offline explanation.
+  **Result:** Pass / Fail / Not tested. **Notes:**
+- [ ] **T-OFF-04 — Queue a completion offline.** Select the offline-created
+  disposable task from T-OFF-03 and choose **Mark Complete**. Confirm its
+  local status changes and the app reports that it is waiting to sync.
+  **Result:** Pass / Fail / Not tested. **Notes:**
+- [ ] **T-OFF-05 — Reconnect and sync.** Restore the network and wait for sync.
+  Confirm the offline banner clears, the offline-created task appears on the
+  server exactly once, and the queued completion is still completed. If
+  possible, verify from a second signed-in session. Confirm no duplicate task
+  appears.
   **Result:** Pass / Fail / Not tested. **Notes:**
 
 If a case cannot be tested (for example, no real task or event is available),
