@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/task_repository.dart';
 import '../models/task_model.dart';
 import '../../../core/network/api_client.dart';
+import '../../../core/connectivity/connectivity_service.dart';
 import '../../workspaces/providers/workspace_providers.dart';
 
 class TaskFilter {
@@ -177,11 +178,7 @@ class TaskListNotifier extends StateNotifier<TaskListState> {
         clearError: err == null,
       );
     } else {
-      state = state.copyWith(
-        loading: false,
-        cursor: cursor,
-        error: nextError,
-      );
+      state = state.copyWith(loading: false, cursor: cursor, error: nextError);
     }
   }
 
@@ -289,7 +286,7 @@ final taskDetailProvider = FutureProvider.family
     .autoDispose<TaskModel?, String>((ref, taskId) async {
       final (task, failure) = await ref
           .watch(taskRepositoryProvider)
-          .getTask(taskId);
+          .getTask(taskId, offline: !ref.watch(isOnlineProvider));
       if (task == null && failure != null) {
         throw failure;
       }

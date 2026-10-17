@@ -12,6 +12,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/layout/breakpoints.dart';
+import '../../../core/connectivity/connectivity_service.dart';
 import '../../../core/widgets/chips.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../../../core/widgets/avatar.dart';
@@ -913,7 +914,7 @@ class _DesktopTasksScreen extends ConsumerWidget {
                         style: AppText.pageTitle.copyWith(color: c.textPrimary),
                       ),
                       Text(
-                        '${state.tasks.length} tasks · ${state.dueToday} due today',
+                        l10n.tasksDueToday(state.tasks.length, state.dueToday),
                         style: AppText.body.copyWith(color: c.textMuted),
                       ),
                     ],
@@ -1099,7 +1100,7 @@ class _BulkBar extends StatelessWidget {
           ),
           const SizedBox(width: 12),
           Text(
-            '$count task${count == 1 ? '' : 's'} selected',
+            l10n.tasksSelected(count),
             style: AppText.bodyMedium.copyWith(color: c.textPrimary),
           ),
           const Spacer(),
@@ -1203,7 +1204,7 @@ class _TaskTable extends StatelessWidget {
                 Expanded(
                   flex: 2,
                   child: Text(
-                    l10n.navTasks,
+                    l10n.fieldStatus,
                     style: AppText.caption.copyWith(color: c.textMuted),
                   ),
                 ),
@@ -1470,33 +1471,37 @@ class _AssigneeFilterDropdown extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
     final l10n = AppLocalizations.of(context);
+    final isOnline = ref.watch(isOnlineProvider);
     final membersAsync = ref.watch(workspaceMembersProvider(workspaceId));
 
     return membersAsync.when(
       loading: () => _buildDropdown(context, c, l10n, const [], null),
-      error: (_, __) => InkWell(
-        onTap: () => ref.invalidate(workspaceMembersProvider(workspaceId)),
-        child: Container(
-          height: 40,
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            color: c.surface,
-            borderRadius: BorderRadius.circular(AppRadius.control),
-            border: Border.all(color: c.border),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                '${l10n.fieldAssignee}: ${l10n.errorGeneric}',
-                style: AppText.bodyMedium.copyWith(color: c.danger),
+      error: (_, __) => isOnline
+          ? InkWell(
+              onTap: () =>
+                  ref.invalidate(workspaceMembersProvider(workspaceId)),
+              child: Container(
+                height: 40,
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                decoration: BoxDecoration(
+                  color: c.surface,
+                  borderRadius: BorderRadius.circular(AppRadius.control),
+                  border: Border.all(color: c.border),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      '${l10n.fieldAssignee}: ${l10n.errorGeneric}',
+                      style: AppText.bodyMedium.copyWith(color: c.danger),
+                    ),
+                    const SizedBox(width: 8),
+                    Icon(LucideIcons.refreshCw, size: 14, color: c.textMuted),
+                  ],
+                ),
               ),
-              const SizedBox(width: 8),
-              Icon(LucideIcons.refreshCw, size: 14, color: c.textMuted),
-            ],
-          ),
-        ),
-      ),
+            )
+          : _buildDropdown(context, c, l10n, const [], null),
       data: (members) => _buildDropdown(
         context,
         c,

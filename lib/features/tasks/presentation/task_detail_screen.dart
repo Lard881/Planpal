@@ -11,6 +11,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/connectivity/connectivity_service.dart';
+import '../../../core/layout/breakpoints.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
 import '../../../core/theme/app_theme.dart';
@@ -41,7 +42,14 @@ class TaskDetailScreen extends ConsumerWidget {
     return taskAsync.when(
       loading: () =>
           const Scaffold(body: Center(child: CircularProgressIndicator())),
-      error: (e, _) => Scaffold(body: ErrorState(message: e.toString())),
+      error: (e, _) => Scaffold(
+        body: ErrorState(
+          message: e is AppFailure
+              ? e.localizedMessage(context)
+              : l10n.errorGeneric,
+          onRetry: () => ref.invalidate(taskDetailProvider(taskId)),
+        ),
+      ),
       data: (task) {
         if (task == null) {
           return Scaffold(
@@ -836,745 +844,724 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
         ? _reminderOverride
         : task.reminderMinutesBefore;
 
-    return Scaffold(
-      backgroundColor: c.background,
-      body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            // Header
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                child: Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () => context.pop(),
-                      child: Container(
-                        width: 36,
-                        height: 36,
-                        decoration: BoxDecoration(
-                          color: c.surface,
-                          borderRadius: BorderRadius.circular(
-                            AppRadius.control,
-                          ),
-                          border: Border.all(color: c.border),
-                        ),
-                        child: Icon(
-                          LucideIcons.arrowLeft,
-                          size: 18,
-                          color: c.textPrimary,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                          l10n.tasksDetailTitle,
-                          style: AppText.cardTitle.copyWith(
-                            color: c.textPrimary,
-                          ),
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      tooltip: l10n.tasksDetailTitle,
-                      onPressed: () => _showTaskMenu(task, permissions),
-                      icon: Icon(
-                        LucideIcons.moreHorizontal,
-                        color: c.textMuted,
-                      ),
-                    ),
-                  ],
+    final screenSlivers = <SliverToBoxAdapter>[
+      // Header
+      SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+          child: Row(
+            children: [
+              GestureDetector(
+                onTap: () => context.pop(),
+                child: Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: c.surface,
+                    borderRadius: BorderRadius.circular(AppRadius.control),
+                    border: Border.all(color: c.border),
+                  ),
+                  child: Icon(
+                    LucideIcons.arrowLeft,
+                    size: 18,
+                    color: c.textPrimary,
+                  ),
                 ),
               ),
-            ),
-            // Priority + Status chips
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 4,
-                ),
-                child: Row(
-                  children: [
-                    if (permissions.canEditFields)
-                      PopupMenuButton<String>(
-                        tooltip: l10n.fieldPriority,
-                        onSelected: (priority) =>
-                            _saveTaskUpdates({'priority': priority}),
-                        itemBuilder: (_) => [
-                          PopupMenuItem(
-                            value: 'high',
-                            child: Text(l10n.priorityHigh),
-                          ),
-                          PopupMenuItem(
-                            value: 'medium',
-                            child: Text(l10n.priorityMedium),
-                          ),
-                          PopupMenuItem(
-                            value: 'low',
-                            child: Text(l10n.priorityLow),
-                          ),
-                        ],
-                        child: PriorityChip(priority: task.priority),
-                      )
-                    else
-                      Tooltip(
-                        message: l10n.errorPermission,
-                        child: PriorityChip(priority: task.priority),
-                      ),
-                    const SizedBox(width: 8),
-                    if (permissions.canChangeStatus)
-                      PopupMenuButton<String>(
-                        tooltip: l10n.fieldStatus,
-                        onSelected: (status) =>
-                            _saveTaskUpdates({'status': status}),
-                        itemBuilder: (_) => [
-                          PopupMenuItem(
-                            value: 'todo',
-                            child: Text(l10n.statusTodo),
-                          ),
-                          PopupMenuItem(
-                            value: 'in_progress',
-                            child: Text(l10n.statusInProgress),
-                          ),
-                          PopupMenuItem(
-                            value: 'completed',
-                            child: Text(l10n.statusCompleted),
-                          ),
-                        ],
-                        child: StatusChip(
-                          status: isOverdue ? 'overdue' : task.status,
-                        ),
-                      )
-                    else
-                      Tooltip(
-                        message: l10n.errorPermission,
-                        child: StatusChip(
-                          status: isOverdue ? 'overdue' : task.status,
-                        ),
-                      ),
-                  ],
+              Expanded(
+                child: Center(
+                  child: Text(
+                    l10n.tasksDetailTitle,
+                    style: AppText.cardTitle.copyWith(color: c.textPrimary),
+                  ),
                 ),
               ),
+              IconButton(
+                tooltip: l10n.tasksDetailTitle,
+                onPressed: () => _showTaskMenu(task, permissions),
+                icon: Icon(LucideIcons.moreHorizontal, color: c.textMuted),
+              ),
+            ],
+          ),
+        ),
+      ),
+      // Priority + Status chips
+      SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          child: Row(
+            children: [
+              if (permissions.canEditFields)
+                PopupMenuButton<String>(
+                  tooltip: l10n.fieldPriority,
+                  onSelected: (priority) =>
+                      _saveTaskUpdates({'priority': priority}),
+                  itemBuilder: (_) => [
+                    PopupMenuItem(
+                      value: 'high',
+                      child: Text(l10n.priorityHigh),
+                    ),
+                    PopupMenuItem(
+                      value: 'medium',
+                      child: Text(l10n.priorityMedium),
+                    ),
+                    PopupMenuItem(value: 'low', child: Text(l10n.priorityLow)),
+                  ],
+                  child: PriorityChip(priority: task.priority),
+                )
+              else
+                Tooltip(
+                  message: l10n.errorPermission,
+                  child: PriorityChip(priority: task.priority),
+                ),
+              const SizedBox(width: 8),
+              if (permissions.canChangeStatus)
+                PopupMenuButton<String>(
+                  tooltip: l10n.fieldStatus,
+                  onSelected: (status) => _saveTaskUpdates({'status': status}),
+                  itemBuilder: (_) => [
+                    PopupMenuItem(value: 'todo', child: Text(l10n.statusTodo)),
+                    PopupMenuItem(
+                      value: 'in_progress',
+                      child: Text(l10n.statusInProgress),
+                    ),
+                    PopupMenuItem(
+                      value: 'completed',
+                      child: Text(l10n.statusCompleted),
+                    ),
+                  ],
+                  child: StatusChip(
+                    status: isOverdue ? 'overdue' : task.status,
+                  ),
+                )
+              else
+                Tooltip(
+                  message: l10n.errorPermission,
+                  child: StatusChip(
+                    status: isOverdue ? 'overdue' : task.status,
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+      // Title
+      SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+          child: TextField(
+            controller: _titleController,
+            readOnly: !permissions.canEditFields,
+            minLines: 1,
+            maxLines: 3,
+            onChanged: (value) => _scheduleInlineTextSave('title', value),
+            style: AppText.pageTitle.copyWith(color: c.textPrimary),
+            decoration: InputDecoration(
+              hintText: l10n.fieldTaskNameHint,
+              border: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              contentPadding: EdgeInsets.zero,
             ),
-            // Title
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-                child: TextField(
-                  controller: _titleController,
+          ),
+        ),
+      ),
+      SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          child: Row(
+            children: [
+              Icon(LucideIcons.calendar, size: 16, color: c.textMuted),
+              const SizedBox(width: 8),
+              Expanded(
+                child: InkWell(
+                  onTap: permissions.canEditFields ? _editDueDate : null,
+                  child: Text(
+                    task.dueAt == null
+                        ? l10n.taskNoDueDate
+                        : '${l10n.fieldDueDate} · ${_formatDue(task.dueAt!)}',
+                    style: AppText.body.copyWith(
+                      color: isOverdue ? c.danger : c.textMuted,
+                    ),
+                  ),
+                ),
+              ),
+              if (task.dueAt != null)
+                IconButton(
+                  onPressed: permissions.canEditFields ? _clearDueDate : null,
+                  tooltip: permissions.canEditFields
+                      ? l10n.taskClearDueDate
+                      : l10n.errorPermission,
+                  icon: Icon(LucideIcons.x, size: 18, color: c.textMuted),
+                ),
+            ],
+          ),
+        ),
+      ),
+      SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          child: AppCard(
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.fieldTaskReminder,
+                        style: AppText.cardTitle.copyWith(color: c.textPrimary),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        task.dueAt == null
+                            ? l10n.validationTaskReminderRequiresDueDate
+                            : reminderMinutesBefore == null
+                            ? l10n.taskReminderDefault
+                            : l10n.taskReminderCustom(reminderMinutesBefore),
+                        style: AppText.body.copyWith(color: c.textMuted),
+                      ),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  onPressed: !permissions.canEditFields || task.dueAt == null
+                      ? null
+                      : _editReminder,
+                  tooltip: !permissions.canEditFields
+                      ? l10n.errorPermission
+                      : l10n.fieldTaskReminder,
+                  icon: Icon(
+                    LucideIcons.pencil,
+                    color: task.dueAt == null ? c.textMuted : c.primary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      // Description card
+      SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          child: AppCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.tasksDescriptionLabel,
+                  style: AppText.cardTitle.copyWith(color: c.textPrimary),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: _descriptionController,
                   readOnly: !permissions.canEditFields,
-                  minLines: 1,
-                  maxLines: 3,
-                  onChanged: (value) => _scheduleInlineTextSave('title', value),
-                  style: AppText.pageTitle.copyWith(color: c.textPrimary),
+                  minLines: 2,
+                  maxLines: null,
+                  keyboardType: TextInputType.multiline,
+                  onChanged: (value) =>
+                      _scheduleInlineTextSave('description', value),
+                  style: AppText.body.copyWith(color: c.textPrimary),
                   decoration: InputDecoration(
-                    hintText: l10n.fieldTaskNameHint,
+                    hintText: l10n.tasksNoDescription,
                     border: InputBorder.none,
                     enabledBorder: InputBorder.none,
                     focusedBorder: InputBorder.none,
                     contentPadding: EdgeInsets.zero,
                   ),
                 ),
-              ),
+                if (_inlineTextStatus != null) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    _inlineTextStatus!,
+                    style: AppText.caption.copyWith(color: c.textMuted),
+                  ),
+                ],
+              ],
             ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                child: Row(
+          ),
+        ),
+      ),
+      // Subtasks card
+      SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          child: AppCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
                   children: [
-                    Icon(LucideIcons.calendar, size: 16, color: c.textMuted),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: InkWell(
-                        onTap: permissions.canEditFields ? _editDueDate : null,
-                        child: Text(
-                          task.dueAt == null
-                              ? l10n.taskNoDueDate
-                              : '${l10n.fieldDueDate} · ${_formatDue(task.dueAt!)}',
-                          style: AppText.body.copyWith(
-                            color: isOverdue ? c.danger : c.textMuted,
-                          ),
-                        ),
+                    Text(
+                      totalCount > 0
+                          ? l10n.tasksSubtasksLabel(doneCount, totalCount)
+                          : l10n.tasksSubtasksTitle,
+                      style: AppText.cardTitle.copyWith(color: c.textPrimary),
+                    ),
+                    const Spacer(),
+                    TextButton(
+                      onPressed: permissions.canEditFields
+                          ? () => _showAddSubtask(context, l10n)
+                          : null,
+                      child: Text(
+                        l10n.btnAdd,
+                        style: AppText.bodyMedium.copyWith(color: c.primary),
                       ),
                     ),
-                    if (task.dueAt != null)
-                      IconButton(
-                        onPressed: permissions.canEditFields
-                            ? _clearDueDate
-                            : null,
-                        tooltip: permissions.canEditFields
-                            ? l10n.taskClearDueDate
-                            : l10n.errorPermission,
-                        icon: Icon(LucideIcons.x, size: 18, color: c.textMuted),
-                      ),
                   ],
                 ),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                child: AppCard(
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                if (totalCount > 0) ...[
+                  const SizedBox(height: 8),
+                  // Progress bar
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(3),
+                    child: LinearProgressIndicator(
+                      value: totalCount > 0 ? doneCount / totalCount : 0,
+                      minHeight: 6,
+                      backgroundColor: c.surfaceAlt,
+                      valueColor: AlwaysStoppedAnimation(c.primary),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  ReorderableListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    buildDefaultDragHandles: false,
+                    itemCount: task.subtasks.length,
+                    onReorderItem: permissions.canEditFields
+                        ? _reorderSubtasks
+                        : (_, __) {},
+                    itemBuilder: (context, index) {
+                      final subtask = task.subtasks[index];
+                      return Padding(
+                        key: ValueKey(subtask.id),
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: Row(
                           children: [
-                            Text(
-                              l10n.fieldTaskReminder,
-                              style: AppText.cardTitle.copyWith(
-                                color: c.textPrimary,
+                            if (permissions.canEditFields)
+                              ReorderableDelayedDragStartListener(
+                                index: index,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 8),
+                                  child: Icon(
+                                    LucideIcons.gripVertical,
+                                    size: 18,
+                                    color: c.textMuted,
+                                  ),
+                                ),
+                              ),
+                            GestureDetector(
+                              onTap: permissions.canEditFields
+                                  ? () => _toggleSubtask(subtask)
+                                  : null,
+                              child: Container(
+                                width: 22,
+                                height: 22,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: subtask.isDone
+                                      ? c.primary
+                                      : Colors.transparent,
+                                  border: subtask.isDone
+                                      ? null
+                                      : Border.all(color: c.border, width: 1.5),
+                                ),
+                                child: subtask.isDone
+                                    ? const Icon(
+                                        Icons.check,
+                                        size: 12,
+                                        color: Colors.white,
+                                      )
+                                    : null,
                               ),
                             ),
-                            const SizedBox(height: 4),
-                            Text(
-                              task.dueAt == null
-                                  ? l10n.validationTaskReminderRequiresDueDate
-                                  : reminderMinutesBefore == null
-                                  ? l10n.taskReminderDefault
-                                  : l10n.taskReminderCustom(
-                                      reminderMinutesBefore,
-                                    ),
-                              style: AppText.body.copyWith(color: c.textMuted),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                subtask.title,
+                                style: AppText.body.copyWith(
+                                  color: subtask.isDone
+                                      ? c.textMuted
+                                      : c.textPrimary,
+                                  decoration: subtask.isDone
+                                      ? TextDecoration.lineThrough
+                                      : null,
+                                ),
+                              ),
                             ),
+                            if (permissions.canEditFields)
+                              IconButton(
+                                tooltip: l10n.btnDelete,
+                                visualDensity: VisualDensity.compact,
+                                onPressed: () => _deleteSubtask(subtask, l10n),
+                                icon: Icon(
+                                  LucideIcons.trash2,
+                                  size: 16,
+                                  color: c.textMuted,
+                                ),
+                              ),
                           ],
                         ),
+                      );
+                    },
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+      // Assignee & Label card
+      SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          child: AppCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.tasksAssigneeLabel,
+                  style: AppText.cardTitle.copyWith(color: c.textPrimary),
+                ),
+                const SizedBox(height: 12),
+                _TaskAssigneePicker(
+                  workspaceId: task.workspaceId,
+                  selectedId: task.assigneeId,
+                  selectedName: task.assigneeName,
+                  enabled: permissions.canEditFields,
+                  onChanged: (assigneeId) =>
+                      _saveTaskUpdates({'assigneeId': assigneeId}),
+                ),
+                const SizedBox(height: 12),
+                _TaskLabelPicker(
+                  workspaceId: task.workspaceId,
+                  selectedId: task.labelId,
+                  selectedName: task.labelName,
+                  selectedColor: task.labelColor,
+                  enabled: permissions.canEditFields,
+                  onChanged: (labelId) =>
+                      _saveTaskUpdates({'labelId': labelId}),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      // Attachments
+      SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          child: AppCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        l10n.tasksAttachments,
+                        style: AppText.cardTitle.copyWith(color: c.textPrimary),
                       ),
+                    ),
+                    if (permissions.canEditFields)
                       IconButton(
-                        onPressed:
-                            !permissions.canEditFields || task.dueAt == null
-                            ? null
-                            : _editReminder,
-                        tooltip: !permissions.canEditFields
-                            ? l10n.errorPermission
-                            : l10n.fieldTaskReminder,
-                        icon: Icon(
-                          LucideIcons.pencil,
-                          color: task.dueAt == null ? c.textMuted : c.primary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            // Description card
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                child: AppCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l10n.tasksDescriptionLabel,
-                        style: AppText.cardTitle.copyWith(color: c.textPrimary),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        controller: _descriptionController,
-                        readOnly: !permissions.canEditFields,
-                        minLines: 2,
-                        maxLines: null,
-                        keyboardType: TextInputType.multiline,
-                        onChanged: (value) =>
-                            _scheduleInlineTextSave('description', value),
-                        style: AppText.body.copyWith(color: c.textPrimary),
-                        decoration: InputDecoration(
-                          hintText: l10n.tasksNoDescription,
-                          border: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          contentPadding: EdgeInsets.zero,
-                        ),
-                      ),
-                      if (_inlineTextStatus != null) ...[
-                        const SizedBox(height: 8),
-                        Text(
-                          _inlineTextStatus!,
-                          style: AppText.caption.copyWith(color: c.textMuted),
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            // Subtasks card
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                child: AppCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            totalCount > 0
-                                ? l10n.tasksSubtasksLabel(doneCount, totalCount)
-                                : l10n.tasksSubtasksTitle,
-                            style: AppText.cardTitle.copyWith(
-                              color: c.textPrimary,
-                            ),
-                          ),
-                          const Spacer(),
-                          TextButton(
-                            onPressed: permissions.canEditFields
-                                ? () => _showAddSubtask(context, l10n)
-                                : null,
-                            child: Text(
-                              l10n.btnAdd,
-                              style: AppText.bodyMedium.copyWith(
-                                color: c.primary,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      if (totalCount > 0) ...[
-                        const SizedBox(height: 8),
-                        // Progress bar
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(3),
-                          child: LinearProgressIndicator(
-                            value: totalCount > 0 ? doneCount / totalCount : 0,
-                            minHeight: 6,
-                            backgroundColor: c.surfaceAlt,
-                            valueColor: AlwaysStoppedAnimation(c.primary),
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        ReorderableListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          buildDefaultDragHandles: false,
-                          itemCount: task.subtasks.length,
-                          onReorderItem: permissions.canEditFields
-                              ? _reorderSubtasks
-                              : (_, __) {},
-                          itemBuilder: (context, index) {
-                            final subtask = task.subtasks[index];
-                            return Padding(
-                              key: ValueKey(subtask.id),
-                              padding: const EdgeInsets.only(bottom: 10),
-                              child: Row(
-                                children: [
-                                  if (permissions.canEditFields)
-                                    ReorderableDelayedDragStartListener(
-                                      index: index,
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(
-                                          right: 8,
-                                        ),
-                                        child: Icon(
-                                          LucideIcons.gripVertical,
-                                          size: 18,
-                                          color: c.textMuted,
-                                        ),
-                                      ),
-                                    ),
-                                  GestureDetector(
-                                    onTap: permissions.canEditFields
-                                        ? () => _toggleSubtask(subtask)
-                                        : null,
-                                    child: Container(
-                                      width: 22,
-                                      height: 22,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: subtask.isDone
-                                            ? c.primary
-                                            : Colors.transparent,
-                                        border: subtask.isDone
-                                            ? null
-                                            : Border.all(
-                                                color: c.border,
-                                                width: 1.5,
-                                              ),
-                                      ),
-                                      child: subtask.isDone
-                                          ? const Icon(
-                                              Icons.check,
-                                              size: 12,
-                                              color: Colors.white,
-                                            )
-                                          : null,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Expanded(
-                                    child: Text(
-                                      subtask.title,
-                                      style: AppText.body.copyWith(
-                                        color: subtask.isDone
-                                            ? c.textMuted
-                                            : c.textPrimary,
-                                        decoration: subtask.isDone
-                                            ? TextDecoration.lineThrough
-                                            : null,
-                                      ),
-                                    ),
-                                  ),
-                                  if (permissions.canEditFields)
-                                    IconButton(
-                                      tooltip: l10n.btnDelete,
-                                      visualDensity: VisualDensity.compact,
-                                      onPressed: () =>
-                                          _deleteSubtask(subtask, l10n),
-                                      icon: Icon(
-                                        LucideIcons.trash2,
-                                        size: 16,
-                                        color: c.textMuted,
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            // Assignee & Label card
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                child: AppCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l10n.tasksAssigneeLabel,
-                        style: AppText.cardTitle.copyWith(color: c.textPrimary),
-                      ),
-                      const SizedBox(height: 12),
-                      _TaskAssigneePicker(
-                        workspaceId: task.workspaceId,
-                        selectedId: task.assigneeId,
-                        enabled: permissions.canEditFields,
-                        onChanged: (assigneeId) =>
-                            _saveTaskUpdates({'assigneeId': assigneeId}),
-                      ),
-                      const SizedBox(height: 12),
-                      _TaskLabelPicker(
-                        workspaceId: task.workspaceId,
-                        selectedId: task.labelId,
-                        selectedName: task.labelName,
-                        selectedColor: task.labelColor,
-                        enabled: permissions.canEditFields,
-                        onChanged: (labelId) =>
-                            _saveTaskUpdates({'labelId': labelId}),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            // Attachments
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                child: AppCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              l10n.tasksAttachments,
-                              style: AppText.cardTitle.copyWith(
-                                color: c.textPrimary,
-                              ),
-                            ),
-                          ),
-                          if (permissions.canEditFields)
-                            IconButton(
-                              tooltip: l10n.taskAttachFile,
-                              onPressed: isOnline && !_uploadingAttachment
-                                  ? _pickAndAttachFile
-                                  : null,
-                              icon: _uploadingAttachment
-                                  ? const SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                      ),
-                                    )
-                                  : const Icon(LucideIcons.paperclip),
-                            ),
-                        ],
-                      ),
-                      if (!isOnline) ...[
-                        const SizedBox(height: 6),
-                        Text(
-                          l10n.taskAttachmentOffline,
-                          style: AppText.caption.copyWith(color: c.textMuted),
-                        ),
-                      ],
-                      const SizedBox(height: 8),
-                      if (task.attachments.isEmpty)
-                        Text(
-                          l10n.taskNoAttachments,
-                          style: AppText.body.copyWith(color: c.textMuted),
-                        )
-                      else
-                        ...task.attachments.map(
-                          (attachment) => ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            leading: Icon(LucideIcons.file, color: c.primary),
-                            title: Text(
-                              attachment.name,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: AppText.bodyMedium.copyWith(
-                                color: c.textPrimary,
-                              ),
-                            ),
-                            subtitle: Text(
-                              attachment.sizeLabel,
-                              style: AppText.caption.copyWith(
-                                color: c.textMuted,
-                              ),
-                            ),
-                            trailing: Icon(
-                              LucideIcons.download,
-                              color: isOnline ? c.primary : c.textMuted,
-                            ),
-                            onTap: isOnline
-                                ? () => _openAttachment(attachment)
-                                : null,
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            // Comments card
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-                child: AppCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l10n.tasksComments,
-                        style: AppText.cardTitle.copyWith(color: c.textPrimary),
-                      ),
-                      const SizedBox(height: 12),
-                      ...task.comments.map(
-                        (comment) => Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
-                          child: Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: c.surfaceAlt,
-                              borderRadius: BorderRadius.circular(
-                                AppRadius.control,
-                              ),
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Avatar(
-                                  userId: comment.authorId,
-                                  name:
-                                      comment.authorName?.trim().isNotEmpty ==
-                                          true
-                                      ? comment.authorName!.trim()
-                                      : l10n.roleMember,
-                                  avatarUrl: comment.authorAvatarUrl,
-                                  size: 32,
-                                ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                              comment.authorName
-                                                          ?.trim()
-                                                          .isNotEmpty ==
-                                                      true
-                                                  ? comment.authorName!.trim()
-                                                  : l10n.roleMember,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: AppText.bodyMedium
-                                                  .copyWith(
-                                                    color: c.textPrimary,
-                                                  ),
-                                            ),
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Text(
-                                            _commentRelativeTime(
-                                              comment.createdAt,
-                                              l10n,
-                                            ),
-                                            style: AppText.caption.copyWith(
-                                              color: c.textMuted,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        comment.body,
-                                        style: AppText.body.copyWith(
-                                          color: c.textPrimary,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      // Comment composer
-                      if (permissions.canComment)
-                        Container(
-                          height: 44,
-                          decoration: BoxDecoration(
-                            color: c.surfaceAlt,
-                            borderRadius: BorderRadius.circular(
-                              AppRadius.control,
-                            ),
-                          ),
-                          child: Row(
-                            children: [
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: TextField(
-                                  controller: _commentCtrl,
-                                  decoration: InputDecoration(
-                                    hintText: l10n.fieldWriteComment,
-                                    hintStyle: AppText.body.copyWith(
-                                      color: c.textMuted,
-                                    ),
-                                    border: InputBorder.none,
-                                    filled: false,
-                                    contentPadding: EdgeInsets.zero,
-                                  ),
-                                  onSubmitted: (_) => _sendComment(),
-                                ),
-                              ),
-                              IconButton(
-                                icon: Icon(
-                                  LucideIcons.sendHorizonal,
-                                  size: 18,
-                                  color: c.primary,
-                                ),
-                                onPressed: _sendComment,
-                              ),
-                            ],
-                          ),
-                        )
-                      else
-                        Tooltip(
-                          message: l10n.errorPermission,
-                          child: TextField(
-                            enabled: false,
-                            decoration: InputDecoration(
-                              hintText: l10n.errorPermission,
-                            ),
-                          ),
-                        ),
-                      if (permissions.canComment && _activeMention != null)
-                        mentionMembersAsync.when(
-                          loading: () => const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 12),
-                            child: Center(
-                              child: SizedBox(
+                        tooltip: l10n.taskAttachFile,
+                        onPressed: isOnline && !_uploadingAttachment
+                            ? _pickAndAttachFile
+                            : null,
+                        icon: _uploadingAttachment
+                            ? const SizedBox(
                                 width: 20,
                                 height: 20,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
                                 ),
-                              ),
-                            ),
-                          ),
-                          error: (_, _) => TextButton.icon(
-                            onPressed: () => ref.invalidate(
-                              workspaceMembersProvider(task.workspaceId),
-                            ),
-                            icon: const Icon(LucideIcons.refreshCw, size: 16),
-                            label: Text(l10n.errorGeneric),
-                          ),
-                          data: (members) {
-                            final query = _activeMention!.query.toLowerCase();
-                            final matches = members
-                                .where((member) {
-                                  final name = member.fullName.toLowerCase();
-                                  final email = member.email.toLowerCase();
-                                  return name.contains(query) ||
-                                      email.contains(query);
-                                })
-                                .take(5);
-                            return Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: matches
-                                  .map(
-                                    (member) => ListTile(
-                                      dense: true,
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                            horizontal: 8,
-                                          ),
-                                      leading: Avatar(
-                                        userId: member.userId,
-                                        name: member.fullName.isNotEmpty
-                                            ? member.fullName
-                                            : member.email,
-                                        avatarUrl: member.avatarUrl,
-                                        size: 32,
-                                      ),
-                                      title: Text(
-                                        member.fullName.isNotEmpty
-                                            ? member.fullName
-                                            : member.email,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      subtitle: member.email.isNotEmpty
-                                          ? Text(
-                                              member.email,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            )
-                                          : null,
-                                      onTap: () => _insertMention(member),
-                                    ),
-                                  )
-                                  .toList(),
-                            );
-                          },
-                        ),
-                    ],
-                  ),
+                              )
+                            : const Icon(LucideIcons.paperclip),
+                      ),
+                  ],
                 ),
-              ),
+                if (!isOnline) ...[
+                  const SizedBox(height: 6),
+                  Text(
+                    l10n.taskAttachmentOffline,
+                    style: AppText.caption.copyWith(color: c.textMuted),
+                  ),
+                ],
+                const SizedBox(height: 8),
+                if (task.attachments.isEmpty)
+                  Text(
+                    l10n.taskNoAttachments,
+                    style: AppText.body.copyWith(color: c.textMuted),
+                  )
+                else
+                  ...task.attachments.map(
+                    (attachment) => ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: Icon(LucideIcons.file, color: c.primary),
+                      title: Text(
+                        attachment.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppText.bodyMedium.copyWith(
+                          color: c.textPrimary,
+                        ),
+                      ),
+                      subtitle: Text(
+                        attachment.sizeLabel,
+                        style: AppText.caption.copyWith(color: c.textMuted),
+                      ),
+                      trailing: Icon(
+                        LucideIcons.download,
+                        color: isOnline ? c.primary : c.textMuted,
+                      ),
+                      onTap: isOnline
+                          ? () => _openAttachment(attachment)
+                          : null,
+                    ),
+                  ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
+      // Comments card
+      SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+          child: AppCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.tasksComments,
+                  style: AppText.cardTitle.copyWith(color: c.textPrimary),
+                ),
+                const SizedBox(height: 12),
+                ...task.comments.map(
+                  (comment) => Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: c.surfaceAlt,
+                        borderRadius: BorderRadius.circular(AppRadius.control),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Avatar(
+                            userId: comment.authorId,
+                            name: comment.authorName?.trim().isNotEmpty == true
+                                ? comment.authorName!.trim()
+                                : l10n.roleMember,
+                            avatarUrl: comment.authorAvatarUrl,
+                            size: 32,
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        comment.authorName?.trim().isNotEmpty ==
+                                                true
+                                            ? comment.authorName!.trim()
+                                            : l10n.roleMember,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: AppText.bodyMedium.copyWith(
+                                          color: c.textPrimary,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      _commentRelativeTime(
+                                        comment.createdAt,
+                                        l10n,
+                                      ),
+                                      style: AppText.caption.copyWith(
+                                        color: c.textMuted,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  comment.body,
+                                  style: AppText.body.copyWith(
+                                    color: c.textPrimary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                // Comment composer
+                if (permissions.canComment)
+                  Container(
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: c.surfaceAlt,
+                      borderRadius: BorderRadius.circular(AppRadius.control),
+                    ),
+                    child: Row(
+                      children: [
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: TextField(
+                            controller: _commentCtrl,
+                            decoration: InputDecoration(
+                              hintText: l10n.fieldWriteComment,
+                              hintStyle: AppText.body.copyWith(
+                                color: c.textMuted,
+                              ),
+                              border: InputBorder.none,
+                              filled: false,
+                              contentPadding: EdgeInsets.zero,
+                            ),
+                            onSubmitted: (_) => _sendComment(),
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            LucideIcons.sendHorizonal,
+                            size: 18,
+                            color: c.primary,
+                          ),
+                          onPressed: _sendComment,
+                        ),
+                      ],
+                    ),
+                  )
+                else
+                  Tooltip(
+                    message: l10n.errorPermission,
+                    child: TextField(
+                      enabled: false,
+                      decoration: InputDecoration(
+                        hintText: l10n.errorPermission,
+                      ),
+                    ),
+                  ),
+                if (permissions.canComment && _activeMention != null)
+                  mentionMembersAsync.when(
+                    loading: () => const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 12),
+                      child: Center(
+                        child: SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      ),
+                    ),
+                    error: (_, _) => TextButton.icon(
+                      onPressed: () => ref.invalidate(
+                        workspaceMembersProvider(task.workspaceId),
+                      ),
+                      icon: const Icon(LucideIcons.refreshCw, size: 16),
+                      label: Text(l10n.errorGeneric),
+                    ),
+                    data: (members) {
+                      final query = _activeMention!.query.toLowerCase();
+                      final matches = members
+                          .where((member) {
+                            final name = member.fullName.toLowerCase();
+                            final email = member.email.toLowerCase();
+                            return name.contains(query) ||
+                                email.contains(query);
+                          })
+                          .take(5);
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: matches
+                            .map(
+                              (member) => ListTile(
+                                dense: true,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                ),
+                                leading: Avatar(
+                                  userId: member.userId,
+                                  name: member.fullName.isNotEmpty
+                                      ? member.fullName
+                                      : member.email,
+                                  avatarUrl: member.avatarUrl,
+                                  size: 32,
+                                ),
+                                title: Text(
+                                  member.fullName.isNotEmpty
+                                      ? member.fullName
+                                      : member.email,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                subtitle: member.email.isNotEmpty
+                                    ? Text(
+                                        member.email,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      )
+                                    : null,
+                                onTap: () => _insertMention(member),
+                              ),
+                            )
+                            .toList(),
+                      );
+                    },
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ];
+    final arrangedSlivers = context.isDesktopLayout
+        ? <Widget>[
+            ...screenSlivers.take(5),
+            SliverToBoxAdapter(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: Column(
+                      children: [
+                        screenSlivers[5].child!,
+                        screenSlivers[6].child!,
+                        screenSlivers[8].child!,
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Column(
+                      children: [
+                        screenSlivers[7].child!,
+                        screenSlivers[9].child!,
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ]
+        : screenSlivers;
+
+    return Scaffold(
+      backgroundColor: c.background,
+      body: SafeArea(child: CustomScrollView(slivers: arrangedSlivers)),
     );
   }
 
@@ -1638,12 +1625,14 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
 class _TaskAssigneePicker extends ConsumerWidget {
   final String workspaceId;
   final String? selectedId;
+  final String? selectedName;
   final bool enabled;
   final ValueChanged<String?> onChanged;
 
   const _TaskAssigneePicker({
     required this.workspaceId,
     required this.selectedId,
+    required this.selectedName,
     required this.enabled,
     required this.onChanged,
   });
@@ -1652,26 +1641,37 @@ class _TaskAssigneePicker extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
     final l10n = AppLocalizations.of(context);
+    final isOnline = ref.watch(isOnlineProvider);
     final membersAsync = ref.watch(workspaceMembersProvider(workspaceId));
 
     return membersAsync.when(
       loading: () => const LinearProgressIndicator(),
-      error: (_, __) => Row(
-        children: [
-          Expanded(
-            child: Text(
-              l10n.errorGeneric,
-              style: AppText.body.copyWith(color: c.danger),
+      error: (error, _) => isOnline
+          ? Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    error is AppFailure
+                        ? error.localizedMessage(context)
+                        : l10n.errorGeneric,
+                    style: AppText.body.copyWith(color: c.danger),
+                  ),
+                ),
+                IconButton(
+                  tooltip: l10n.btnRetry,
+                  onPressed: () =>
+                      ref.invalidate(workspaceMembersProvider(workspaceId)),
+                  icon: Icon(LucideIcons.refreshCw, color: c.textMuted),
+                ),
+              ],
+            )
+          : Tooltip(
+              message: l10n.bannerOffline,
+              child: Text(
+                selectedName ?? l10n.tasksUnassigned,
+                style: AppText.body.copyWith(color: c.textMuted),
+              ),
             ),
-          ),
-          IconButton(
-            tooltip: l10n.errorGeneric,
-            onPressed: () =>
-                ref.invalidate(workspaceMembersProvider(workspaceId)),
-            icon: Icon(LucideIcons.refreshCw, color: c.textMuted),
-          ),
-        ],
-      ),
       data: (members) {
         final validIds = members.map((member) => member.userId).toSet();
         final value = selectedId != null && validIds.contains(selectedId)
@@ -1734,25 +1734,46 @@ class _TaskLabelPicker extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
     final l10n = AppLocalizations.of(context);
+    final isOnline = ref.watch(isOnlineProvider);
     final labelsAsync = ref.watch(labelsProvider(workspaceId));
 
     return labelsAsync.when(
       loading: () => const LinearProgressIndicator(),
-      error: (_, __) => Row(
-        children: [
-          Expanded(
-            child: Text(
-              l10n.errorGeneric,
-              style: AppText.body.copyWith(color: c.danger),
+      error: (error, _) => isOnline
+          ? Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    error is AppFailure
+                        ? error.localizedMessage(context)
+                        : l10n.errorGeneric,
+                    style: AppText.body.copyWith(color: c.danger),
+                  ),
+                ),
+                IconButton(
+                  tooltip: l10n.btnRetry,
+                  onPressed: () => ref.invalidate(labelsProvider(workspaceId)),
+                  icon: Icon(LucideIcons.refreshCw, color: c.textMuted),
+                ),
+              ],
+            )
+          : Tooltip(
+              message: l10n.bannerOffline,
+              child: Row(
+                children: [
+                  if (selectedColor != null) ...[
+                    _LabelDot(
+                      color: _taskLabelColor(selectedColor!, c.primary),
+                    ),
+                    const SizedBox(width: 8),
+                  ],
+                  Text(
+                    selectedName ?? l10n.fieldLabelOptional,
+                    style: AppText.body.copyWith(color: c.textMuted),
+                  ),
+                ],
+              ),
             ),
-          ),
-          IconButton(
-            tooltip: l10n.errorGeneric,
-            onPressed: () => ref.invalidate(labelsProvider(workspaceId)),
-            icon: Icon(LucideIcons.refreshCw, color: c.textMuted),
-          ),
-        ],
-      ),
       data: (labels) {
         final matchingLabels = labels.where((label) => label.id == selectedId);
         final selectedLabel = matchingLabels.isEmpty

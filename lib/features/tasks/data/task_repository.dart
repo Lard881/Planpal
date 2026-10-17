@@ -190,7 +190,15 @@ class TaskRepository {
   }
 
   // ── Get single ────────────────────────────────────────────────────────────
-  Future<(TaskModel?, AppFailure?)> getTask(String taskId) async {
+  Future<(TaskModel?, AppFailure?)> getTask(
+    String taskId, {
+    bool offline = false,
+  }) async {
+    if (offline) {
+      final cachedTask = await _getCachedTask(taskId);
+      if (cachedTask != null) return (cachedTask, null);
+    }
+
     try {
       final res = await _dio.get('/tasks/$taskId');
       final task = TaskModel.fromJson(res.data['task'] as Map<String, dynamic>);
@@ -198,9 +206,19 @@ class TaskRepository {
       return (task, null);
     } on DioException catch (e) {
       final failure = mapDioError(e);
+      final pendingCreate =
+          failure is NotFoundFailure &&
+          await (_db.select(_db.outboxEntries)..where(
+                    (entry) =>
+                        entry.entityId.equals(taskId) &
+                        entry.operation.equals('create'),
+                  ))
+                  .getSingleOrNull() !=
+              null;
       if (failure is! NetworkFailure &&
           failure is! ServerUnreachableFailure &&
-          failure is! TimeoutFailure) {
+          failure is! TimeoutFailure &&
+          !pendingCreate) {
         return (null, failure);
       }
       final cachedTask = await _getCachedTask(taskId);

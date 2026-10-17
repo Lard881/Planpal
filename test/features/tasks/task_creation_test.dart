@@ -128,4 +128,95 @@ void main() {
       expect(request!.data['id'], createdTask.id);
     },
   );
+
+  test('opens a cached offline task without requesting the server', () async {
+    var requestCount = 0;
+    final dio = Dio(BaseOptions(baseUrl: 'https://planpal.test/api/v1'))
+      ..interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) {
+            requestCount++;
+            handler.reject(
+              DioException(
+                requestOptions: options,
+                type: DioExceptionType.connectionError,
+              ),
+            );
+          },
+        ),
+      );
+    sync = SyncEngine(dio, database);
+    final repository = TaskRepository(
+      dio,
+      database,
+      sync,
+      currentUserId: () => 'user-1',
+    );
+    final (createdTask, _) = await repository.createTask(
+      'workspace-1',
+      title: 'Offline detail task',
+    );
+    final requestsAfterCreate = requestCount;
+
+    final (task, failure) = await repository.getTask(
+      createdTask!.id,
+      offline: true,
+    );
+
+    expect(task?.title, 'Offline detail task');
+    expect(failure, isNull);
+    expect(requestCount, requestsAfterCreate);
+  });
+
+  test(
+    'uses the cached task when its queued create is not on the server',
+    () async {
+      final dio = Dio(BaseOptions(baseUrl: 'https://planpal.test/api/v1'))
+        ..interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) {
+              if (options.method == 'POST') {
+                handler.reject(
+                  DioException(
+                    requestOptions: options,
+                    type: DioExceptionType.connectionError,
+                  ),
+                );
+                return;
+              }
+              final response = Response(
+                requestOptions: options,
+                statusCode: 404,
+                data: {
+                  'error': {'code': 'NOT_FOUND'},
+                },
+              );
+              handler.reject(
+                DioException(
+                  requestOptions: options,
+                  type: DioExceptionType.badResponse,
+                  response: response,
+                ),
+              );
+            },
+          ),
+        );
+      sync = SyncEngine(dio, database);
+      final repository = TaskRepository(
+        dio,
+        database,
+        sync,
+        currentUserId: () => 'user-1',
+      );
+      final (createdTask, _) = await repository.createTask(
+        'workspace-1',
+        title: 'Queued detail task',
+      );
+
+      final (task, failure) = await repository.getTask(createdTask!.id);
+
+      expect(task?.title, 'Queued detail task');
+      expect(failure, isNull);
+    },
+  );
 }

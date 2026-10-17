@@ -32,7 +32,6 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
   final _titleCtrl = TextEditingController();
   final _descCtrl = TextEditingController();
   final _subtaskCtrl = TextEditingController();
-  final _reminderCtrl = TextEditingController();
   String _priority = 'medium';
   DateTime? _dueDate;
   TimeOfDay? _dueTime;
@@ -42,14 +41,12 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
   final List<PlatformFile> _pendingAttachments = [];
   bool _loading = false;
   String? _titleError;
-  String? _reminderError;
 
   @override
   void dispose() {
     _titleCtrl.dispose();
     _descCtrl.dispose();
     _subtaskCtrl.dispose();
-    _reminderCtrl.dispose();
     super.dispose();
   }
 
@@ -77,25 +74,9 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
       setState(() => _titleError = l10n.validationTaskNameRequired);
       return;
     }
-    final reminderText = _reminderCtrl.text.trim();
-    final reminderMinutesBefore = reminderText.isEmpty
-        ? null
-        : int.tryParse(reminderText);
-    if (reminderText.isNotEmpty && _dueDate == null) {
-      setState(
-        () => _reminderError = l10n.validationTaskReminderRequiresDueDate,
-      );
-      return;
-    }
-    if (reminderText.isNotEmpty &&
-        (reminderMinutesBefore == null || reminderMinutesBefore < 5)) {
-      setState(() => _reminderError = l10n.validationTaskReminderMinimum);
-      return;
-    }
     setState(() {
       _loading = true;
       _titleError = null;
-      _reminderError = null;
     });
     final wsId = ref.read(currentWorkspaceIdProvider) ?? '';
     final documents = ref.read(documentsRepositoryProvider);
@@ -157,7 +138,6 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
           description: _descCtrl.text.trim(),
           priority: _priority,
           dueAt: dueAt,
-          reminderMinutesBefore: reminderMinutesBefore,
           assigneeId: _assigneeId,
           labelId: _labelId,
           subtaskTitles: _subtasks,
@@ -250,52 +230,65 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
     if (isDesktop) {
       return Scaffold(
         backgroundColor: c.scrim,
-        body: Center(
-          child: Container(
-            width: 480,
-            constraints: const BoxConstraints(maxHeight: 700),
-            decoration: BoxDecoration(
-              color: c.surface,
-              borderRadius: BorderRadius.circular(AppRadius.panel),
-            ),
-            child: Column(
-              children: [
-                // Dialog header
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 20, 16, 0),
-                  child: Row(
-                    children: [
-                      Text(
-                        l10n.tasksNewTitle,
-                        style: AppText.cardTitle.copyWith(color: c.textPrimary),
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            final dialogWidth = (constraints.maxWidth - 32)
+                .clamp(0.0, 680.0)
+                .toDouble();
+            final dialogHeight = (constraints.maxHeight - 32)
+                .clamp(0.0, 840.0)
+                .toDouble();
+            return Center(
+              child: Container(
+                width: dialogWidth,
+                height: dialogHeight,
+                decoration: BoxDecoration(
+                  color: c.surface,
+                  borderRadius: BorderRadius.circular(AppRadius.panel),
+                  border: Border.all(color: c.border),
+                  boxShadow: AppShadows.card(Theme.of(context).brightness),
+                ),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 20, 16, 8),
+                      child: Row(
+                        children: [
+                          Text(
+                            l10n.tasksNewTitle,
+                            style: AppText.pageTitle.copyWith(
+                              color: c.textPrimary,
+                            ),
+                          ),
+                          const Spacer(),
+                          IconButton(
+                            tooltip: l10n.btnCancel,
+                            icon: Icon(LucideIcons.x, color: c.textMuted),
+                            onPressed: () => context.pop(),
+                          ),
+                        ],
                       ),
-                      const Spacer(),
-                      IconButton(
-                        icon: Icon(LucideIcons.x, color: c.textMuted),
-                        onPressed: () => context.pop(),
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.fromLTRB(24, 8, 24, 16),
+                        child: _buildForm(c, l10n, isDesktop: true),
                       ),
-                    ],
-                  ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: PlanPalButton(
+                        label: l10n.btnCreateTask,
+                        onPressed: _submit,
+                        loading: _loading,
+                        width: double.infinity,
+                      ),
+                    ),
+                  ],
                 ),
-                const Divider(),
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(24),
-                    child: _buildForm(c, l10n),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: PlanPalButton(
-                    label: l10n.btnCreateTask,
-                    onPressed: _submit,
-                    loading: _loading,
-                    width: double.infinity,
-                  ),
-                ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
       );
     }
@@ -343,7 +336,7 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(16),
-                child: _buildForm(c, l10n),
+                child: _buildForm(c, l10n, isDesktop: false),
               ),
             ),
             Padding(
@@ -361,7 +354,11 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
     );
   }
 
-  Widget _buildForm(PlanPalColors c, AppLocalizations l10n) {
+  Widget _buildForm(
+    PlanPalColors c,
+    AppLocalizations l10n, {
+    required bool isDesktop,
+  }) {
     final workspaceId = ref.watch(currentWorkspaceIdProvider) ?? '';
     final workspace = ref.watch(currentWorkspaceProvider);
     final isOnline = ref.watch(isOnlineProvider);
@@ -481,19 +478,6 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
           ],
         ),
         const SizedBox(height: 16),
-        PlanPalTextField(
-          label: l10n.fieldTaskReminder,
-          hint: _dueDate == null
-              ? l10n.validationTaskReminderRequiresDueDate
-              : l10n.fieldTaskReminderHint,
-          controller: _reminderCtrl,
-          errorText: _reminderError,
-          keyboardType: TextInputType.number,
-          textInputAction: TextInputAction.next,
-          enabled: _dueDate != null,
-          onChanged: (_) => setState(() => _reminderError = null),
-        ),
-        const SizedBox(height: 16),
         // Priority segmented control
         Text(
           l10n.fieldPriority,
@@ -505,43 +489,64 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
           onChanged: (v) => setState(() => _priority = v),
         ),
         const SizedBox(height: 16),
-        // Assignee
-        Text(
-          l10n.fieldAssignee,
-          style: AppText.label.copyWith(color: c.textPrimary),
-        ),
-        const SizedBox(height: 6),
-        _AssigneePicker(
-          workspaceId: workspaceId,
-          selectedId: _assigneeId,
-          enabled: !isPersonalWorkspace,
-          onChanged: (id) => setState(() => _assigneeId = id),
-        ),
+        if (isDesktop)
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: _buildAssigneeField(
+                  c,
+                  l10n,
+                  workspaceId,
+                  isPersonalWorkspace,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(child: _buildLabelField(c, l10n, workspaceId)),
+            ],
+          )
+        else ...[
+          _buildAssigneeField(c, l10n, workspaceId, isPersonalWorkspace),
+          const SizedBox(height: 16),
+          _buildLabelField(c, l10n, workspaceId),
+        ],
         const SizedBox(height: 16),
-        // Label
-        Text(
-          l10n.fieldLabel,
-          style: AppText.label.copyWith(color: c.textPrimary),
+        // Subtasks
+        ..._subtasks.map(
+          (s) => Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Row(
+              children: [
+                Icon(LucideIcons.circle, size: 16, color: c.textMuted),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    s,
+                    style: AppText.body.copyWith(color: c.textPrimary),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => setState(() => _subtasks.remove(s)),
+                  child: Icon(LucideIcons.x, size: 16, color: c.textMuted),
+                ),
+              ],
+            ),
+          ),
         ),
-        const SizedBox(height: 6),
-        _LabelPicker(
-          workspaceId: workspaceId,
-          selectedId: _labelId,
-          onChanged: (id) => setState(() => _labelId = id),
-        ),
-        const SizedBox(height: 16),
-        Text(
-          l10n.tasksAttachments,
-          style: AppText.label.copyWith(color: c.textPrimary),
-        ),
-        const SizedBox(height: 6),
-        OutlinedButton.icon(
-          onPressed: isOnline && !_loading
-              ? () => _pickAttachments(l10n)
-              : null,
-          icon: const Icon(LucideIcons.paperclip),
-          label: Text(l10n.taskAttachFile),
-        ),
+        const SizedBox(height: 8),
+        if (isDesktop)
+          Row(
+            children: [
+              Expanded(child: _buildAddSubtaskButton(c, l10n)),
+              const SizedBox(width: 12),
+              Expanded(child: _buildAttachmentButton(l10n, isOnline)),
+            ],
+          )
+        else ...[
+          _buildAddSubtaskButton(c, l10n),
+          const SizedBox(height: 8),
+          _buildAttachmentButton(l10n, isOnline),
+        ],
         if (!isOnline) ...[
           const SizedBox(height: 4),
           Text(
@@ -568,54 +573,81 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
             ),
           ),
         ),
-        const SizedBox(height: 16),
-        // Subtasks
-        ..._subtasks.map(
-          (s) => Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Row(
-              children: [
-                Icon(LucideIcons.circle, size: 16, color: c.textMuted),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    s,
-                    style: AppText.body.copyWith(color: c.textPrimary),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () => setState(() => _subtasks.remove(s)),
-                  child: Icon(LucideIcons.x, size: 16, color: c.textMuted),
-                ),
-              ],
-            ),
-          ),
-        ),
-        // Add subtask dashed button
-        GestureDetector(
-          onTap: () => _showAddSubtaskDialog(l10n),
-          child: Container(
-            height: 44,
-            decoration: BoxDecoration(
-              border: Border.all(color: c.border, style: BorderStyle.solid),
-              borderRadius: BorderRadius.circular(AppRadius.control),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(LucideIcons.plus, size: 16, color: c.textMuted),
-                const SizedBox(width: 8),
-                Text(
-                  l10n.tasksAddSubtask,
-                  style: AppText.bodyMedium.copyWith(color: c.textMuted),
-                ),
-              ],
-            ),
-          ),
-        ),
       ],
     );
   }
+
+  Widget _buildAssigneeField(
+    PlanPalColors c,
+    AppLocalizations l10n,
+    String workspaceId,
+    bool isPersonalWorkspace,
+  ) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        l10n.fieldAssignee,
+        style: AppText.label.copyWith(color: c.textPrimary),
+      ),
+      const SizedBox(height: 6),
+      _AssigneePicker(
+        workspaceId: workspaceId,
+        selectedId: _assigneeId,
+        enabled: !isPersonalWorkspace,
+        onChanged: (id) => setState(() => _assigneeId = id),
+      ),
+    ],
+  );
+
+  Widget _buildLabelField(
+    PlanPalColors c,
+    AppLocalizations l10n,
+    String workspaceId,
+  ) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        l10n.fieldLabel,
+        style: AppText.label.copyWith(color: c.textPrimary),
+      ),
+      const SizedBox(height: 6),
+      _LabelPicker(
+        workspaceId: workspaceId,
+        selectedId: _labelId,
+        onChanged: (id) => setState(() => _labelId = id),
+      ),
+    ],
+  );
+
+  Widget _buildAddSubtaskButton(PlanPalColors c, AppLocalizations l10n) =>
+      GestureDetector(
+        onTap: () => _showAddSubtaskDialog(l10n),
+        child: Container(
+          height: 44,
+          decoration: BoxDecoration(
+            border: Border.all(color: c.border),
+            borderRadius: BorderRadius.circular(AppRadius.control),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(LucideIcons.plus, size: 16, color: c.textMuted),
+              const SizedBox(width: 8),
+              Text(
+                l10n.tasksAddSubtask,
+                style: AppText.bodyMedium.copyWith(color: c.textMuted),
+              ),
+            ],
+          ),
+        ),
+      );
+
+  Widget _buildAttachmentButton(AppLocalizations l10n, bool isOnline) =>
+      OutlinedButton.icon(
+        onPressed: isOnline && !_loading ? () => _pickAttachments(l10n) : null,
+        icon: const Icon(LucideIcons.paperclip),
+        label: Text(l10n.taskAttachFile),
+      );
 
   void _showAddSubtaskDialog(AppLocalizations l10n) {
     _subtaskCtrl.clear();
@@ -680,6 +712,7 @@ class _AssigneePicker extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
     final l10n = AppLocalizations.of(context);
+    final isOnline = ref.watch(isOnlineProvider);
     final membersAsync = ref.watch(workspaceMembersProvider(workspaceId));
 
     return membersAsync.when(
@@ -697,29 +730,49 @@ class _AssigneePicker extends ConsumerWidget {
           ),
         ),
       ),
-      error: (_, __) => InkWell(
-        onTap: () => ref.invalidate(workspaceMembersProvider(workspaceId)),
-        child: Container(
-          height: 44,
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            color: c.surfaceAlt,
-            borderRadius: BorderRadius.circular(AppRadius.control),
-          ),
-          child: Row(
-            children: [
-              Expanded(
+      error: (_, __) => isOnline
+          ? InkWell(
+              onTap: () =>
+                  ref.invalidate(workspaceMembersProvider(workspaceId)),
+              child: Container(
+                height: 44,
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                decoration: BoxDecoration(
+                  color: c.surfaceAlt,
+                  borderRadius: BorderRadius.circular(AppRadius.control),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        l10n.errorGeneric,
+                        style: AppText.body.copyWith(color: c.danger),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Icon(LucideIcons.refreshCw, size: 16, color: c.textMuted),
+                  ],
+                ),
+              ),
+            )
+          : Tooltip(
+              message: l10n.bannerOffline,
+              child: Container(
+                height: 44,
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                alignment: Alignment.centerLeft,
+                decoration: BoxDecoration(
+                  color: c.surfaceAlt,
+                  borderRadius: BorderRadius.circular(AppRadius.control),
+                ),
                 child: Text(
-                  l10n.errorGeneric,
-                  style: AppText.body.copyWith(color: c.danger),
+                  Supabase.instance.client.auth.currentUser?.email ??
+                      l10n.fieldAssigneeOptional,
+                  style: AppText.body.copyWith(color: c.textMuted),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              Icon(LucideIcons.refreshCw, size: 16, color: c.textMuted),
-            ],
-          ),
-        ),
-      ),
+            ),
       data: (members) {
         final memberIds = members.map((member) => member.userId).toSet();
         final value = selectedId != null && memberIds.contains(selectedId)
@@ -840,6 +893,7 @@ class _LabelPicker extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
     final l10n = AppLocalizations.of(context);
+    final isOnline = ref.watch(isOnlineProvider);
     final labelsAsync = ref.watch(labelsProvider(workspaceId));
 
     return labelsAsync.when(
@@ -857,28 +911,45 @@ class _LabelPicker extends ConsumerWidget {
           ),
         ),
       ),
-      error: (_, __) => InkWell(
-        onTap: () => ref.invalidate(labelsProvider(workspaceId)),
-        child: Container(
-          height: 44,
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            color: c.surfaceAlt,
-            borderRadius: BorderRadius.circular(AppRadius.control),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  l10n.errorGeneric,
-                  style: AppText.body.copyWith(color: c.danger),
+      error: (_, __) => isOnline
+          ? InkWell(
+              onTap: () => ref.invalidate(labelsProvider(workspaceId)),
+              child: Container(
+                height: 44,
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                decoration: BoxDecoration(
+                  color: c.surfaceAlt,
+                  borderRadius: BorderRadius.circular(AppRadius.control),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        l10n.errorGeneric,
+                        style: AppText.body.copyWith(color: c.danger),
+                      ),
+                    ),
+                    Icon(LucideIcons.refreshCw, size: 16, color: c.textMuted),
+                  ],
                 ),
               ),
-              Icon(LucideIcons.refreshCw, size: 16, color: c.textMuted),
-            ],
-          ),
-        ),
-      ),
+            )
+          : Tooltip(
+              message: l10n.bannerOffline,
+              child: Container(
+                height: 44,
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                alignment: Alignment.centerLeft,
+                decoration: BoxDecoration(
+                  color: c.surfaceAlt,
+                  borderRadius: BorderRadius.circular(AppRadius.control),
+                ),
+                child: Text(
+                  l10n.fieldLabelOptional,
+                  style: AppText.body.copyWith(color: c.textMuted),
+                ),
+              ),
+            ),
       data: (labels) {
         if (labels.isEmpty) {
           return Container(
