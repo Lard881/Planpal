@@ -70,8 +70,13 @@ class AnalyticsScreen extends ConsumerWidget {
                 ),
               ),
             // Content
-            if (state.loading)
-              const Expanded(child: Center(child: CircularProgressIndicator()))
+            if (state.loading && state.data == null)
+              const Expanded(
+                child: ContentLoadingSkeleton(
+                  kind: LoadingSkeletonKind.dashboard,
+                  padding: EdgeInsets.zero,
+                ),
+              )
             else if (state.error != null)
               Expanded(child: ErrorState(message: state.error!))
             else if (state.data == null)

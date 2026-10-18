@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../../../core/connectivity/connectivity_service.dart';
 import '../data/workspace_repository.dart';
 import '../models/workspace_model.dart';
 
@@ -13,18 +14,20 @@ const _storage = FlutterSecureStorage();
 
 // All workspaces the user belongs to
 final workspacesProvider = FutureProvider<List<WorkspaceModel>>((ref) async {
+  final offline = !ref.watch(isOnlineProvider);
   final (list, failure) = await ref
       .watch(workspaceRepositoryProvider)
-      .getWorkspaces();
+      .getWorkspaces(offline: offline);
   if (failure != null) throw failure;
   return list;
 });
 
 final workspaceMembersProvider = FutureProvider.autoDispose
     .family<List<MemberModel>, String>((ref, id) async {
+      final offline = !ref.watch(isOnlineProvider);
       final (members, failure) = await ref
           .watch(workspaceRepositoryProvider)
-          .getMembers(id);
+          .getMembers(id, offline: offline);
       if (failure != null) throw failure;
       return members;
     });

@@ -8,6 +8,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/layout/breakpoints.dart';
+import '../../../core/widgets/empty_state.dart';
 import '../../../core/widgets/planpal_button.dart';
 import '../../../core/widgets/planpal_text_field.dart';
 import '../../auth/presentation/auth_failure_message.dart';
@@ -549,7 +550,11 @@ class _AttendeePicker extends ConsumerWidget {
     return ref
         .watch(workspaceMembersProvider(workspaceId))
         .when(
-          loading: () => const Center(child: CircularProgressIndicator()),
+          loading: () => const ContentLoadingSkeleton(
+            kind: LoadingSkeletonKind.rows,
+            itemCount: 3,
+            padding: EdgeInsets.zero,
+          ),
           error: (_, _) => Text(
             l10n.errorGeneric,
             style: AppText.caption.copyWith(color: c.danger),

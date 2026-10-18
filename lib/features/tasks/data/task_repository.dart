@@ -1,6 +1,7 @@
 // app/lib/features/tasks/data/task_repository.dart
 import 'package:dio/dio.dart';
 import 'package:drift/drift.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -8,6 +9,7 @@ import '../../../core/network/api_client.dart';
 import '../../../core/network/api_error_mapper.dart';
 import '../../../core/network/app_failure.dart';
 import '../../../core/db/app_database.dart';
+import '../../../core/services/fcm_service.dart';
 import '../../../core/sync/sync_engine.dart';
 import '../models/task_model.dart';
 
@@ -43,15 +45,26 @@ class TaskRepository {
   final AppDatabase _db;
   final SyncEngine _sync;
   final String? Function() _currentUserId;
+  final Future<void> Function(String, String, DateTime?, int?) _syncReminder;
 
   TaskRepository(
     this._dio,
     this._db,
     this._sync, {
     String? Function()? currentUserId,
+    Future<void> Function(String, String, DateTime?, int?)? syncReminder,
   }) : _currentUserId =
            currentUserId ??
-           (() => Supabase.instance.client.auth.currentUser?.id);
+           (() => Supabase.instance.client.auth.currentUser?.id),
+       _syncReminder =
+           syncReminder ??
+           ((taskId, title, dueAt, minutesBefore) =>
+               FcmService.syncTaskReminder(
+                 taskId: taskId,
+                 title: title,
+                 dueAt: dueAt,
+                 minutesBefore: minutesBefore,
+               ));
 
   // ── List ──────────────────────────────────────────────────────────────────
   /// Stream from Drift for offline-first display — shows cached data instantly.
@@ -127,6 +140,69 @@ class TaskRepository {
               )
               .toList(),
         );
+  }
+
+  Future<(List<TaskLabelModel>, AppFailure?)> getLabels(
+    String workspaceId, {
+    bool offline = false,
+  }) async {
+    if (offline) return (await _getCachedLabels(workspaceId), null);
+    try {
+      final response = await _dio.get('/workspaces/$workspaceId/labels');
+      final labels = (response.data['labels'] as List)
+          .map(
+            (label) => TaskLabelModel.fromJson(label as Map<String, dynamic>),
+          )
+          .toList();
+      await _db.transaction(() async {
+        await (_db.delete(
+          _db.labels,
+        )..where((label) => label.workspaceId.equals(workspaceId))).go();
+        final now = DateTime.now();
+        for (final label in labels) {
+          await _db
+              .into(_db.labels)
+              .insertOnConflictUpdate(
+                LabelsCompanion.insert(
+                  id: label.id,
+                  workspaceId: workspaceId,
+                  name: label.name,
+                  color: Value(label.color),
+                  createdAt: now,
+                  updatedAt: now,
+                ),
+              );
+        }
+      });
+      return (labels, null);
+    } on DioException catch (error) {
+      final cached = await _getCachedLabels(workspaceId);
+      if (cached.isNotEmpty) {
+        return (cached, null);
+      }
+      return (<TaskLabelModel>[], mapDioError(error));
+    }
+  }
+
+  Future<List<TaskLabelModel>> _getCachedLabels(String workspaceId) async {
+    final cached =
+        await (_db.select(_db.labels)
+              ..where(
+                (label) =>
+                    label.workspaceId.equals(workspaceId) &
+                    label.deletedAt.isNull(),
+              )
+              ..orderBy([(label) => OrderingTerm.asc(label.name)]))
+            .get();
+    return cached
+        .map(
+          (label) => TaskLabelModel(
+            id: label.id,
+            name: label.name,
+            color: label.color,
+          ),
+        )
+        .toList();
   }
 
   // ── Fetch from API and merge into Drift ───────────────────────────────────
@@ -570,10 +646,9 @@ class TaskRepository {
 
     try {
       final res = await _dio.post('/workspaces/$workspaceId/tasks', data: data);
-      return (
-        TaskModel.fromJson(res.data['task'] as Map<String, dynamic>),
-        null,
-      );
+      final task = TaskModel.fromJson(res.data['task'] as Map<String, dynamic>);
+      final reminderFailure = await _applyTaskReminder(task);
+      return (task, reminderFailure);
     } on DioException catch (e) {
       final failure = mapDioError(e);
       if (_isTemporaryFailure(failure)) {
@@ -582,34 +657,33 @@ class TaskRepository {
           clientId,
           data,
         );
-        return (
-          TaskModel(
-            id: clientId,
-            workspaceId: workspaceId,
-            title: title,
-            description: description,
-            status: 'todo',
-            priority: priority,
-            dueAt: dueAt,
-            reminderMinutesBefore: reminderMinutesBefore,
-            assigneeId: assigneeId,
-            labelId: labelId,
-            createdBy: currentUserId,
-            createdAt: now,
-            updatedAt: now,
-            subtasks: childSubtasks
-                .map(
-                  (subtask) => SubtaskModel(
-                    id: subtask['id']! as String,
-                    taskId: clientId,
-                    title: subtask['title']! as String,
-                    position: subtask['position']! as int,
-                  ),
-                )
-                .toList(),
-          ),
-          failure,
+        final task = TaskModel(
+          id: clientId,
+          workspaceId: workspaceId,
+          title: title,
+          description: description,
+          status: 'todo',
+          priority: priority,
+          dueAt: dueAt,
+          reminderMinutesBefore: reminderMinutesBefore,
+          assigneeId: assigneeId,
+          labelId: labelId,
+          createdBy: currentUserId,
+          createdAt: now,
+          updatedAt: now,
+          subtasks: childSubtasks
+              .map(
+                (subtask) => SubtaskModel(
+                  id: subtask['id']! as String,
+                  taskId: clientId,
+                  title: subtask['title']! as String,
+                  position: subtask['position']! as int,
+                ),
+              )
+              .toList(),
         );
+        final reminderFailure = await _applyTaskReminder(task);
+        return (task, reminderFailure ?? failure);
       }
 
       await (_db.delete(
@@ -634,11 +708,11 @@ class TaskRepository {
       await _writeLocalTaskUpdates(taskId, updates);
     }
 
+    AppFailure? failure;
     try {
       await _dio.patch('/tasks/$taskId', data: updates);
-      return null;
     } on DioException catch (e) {
-      final failure = mapDioError(e);
+      failure = mapDioError(e);
       if (failure is NetworkFailure ||
           failure is ServerUnreachableFailure ||
           failure is TimeoutFailure) {
@@ -660,9 +734,44 @@ class TaskRepository {
             updatedAt: Value(current.updatedAt),
           ),
         );
+        return failure;
       }
-      return failure;
     }
+
+    if (current != null &&
+        (updates.containsKey('dueAt') ||
+            updates.containsKey('reminderMinutesBefore') ||
+            updates.containsKey('status'))) {
+      final updated = await (_db.select(
+        _db.tasks,
+      )..where((task) => task.id.equals(taskId))).getSingle();
+      final reminderFailure = await _applyTaskReminder(
+        TaskModel(
+          id: updated.id,
+          workspaceId: updated.workspaceId,
+          title: updated.title,
+          description: updated.description,
+          status: updated.status,
+          priority: updated.priority,
+          dueAt: updated.dueAt,
+          reminderMinutesBefore: updated.status == 'completed'
+              ? null
+              : updated.reminderMinutesBefore,
+          assigneeId: updated.assigneeId,
+          labelId: updated.labelId,
+          createdBy: updated.createdBy,
+          completedAt: updated.completedAt,
+          createdAt: updated.createdAt,
+          updatedAt: updated.updatedAt,
+        ),
+        forceCancel:
+            current.reminderMinutesBefore != null &&
+            (updated.status == 'completed' ||
+                updated.reminderMinutesBefore == null),
+      );
+      if (reminderFailure != null) return failure ?? reminderFailure;
+    }
+    return failure;
   }
 
   Future<void> _writeLocalTaskUpdates(
@@ -717,6 +826,19 @@ class TaskRepository {
     await (_db.update(_db.tasks)..where((t) => t.id.equals(taskId))).write(
       TasksCompanion(deletedAt: Value(deletedAt)),
     );
+    if (current?.reminderMinutesBefore != null) {
+      try {
+        await _syncReminder(taskId, current!.title, null, null);
+      } catch (error, stackTrace) {
+        FlutterError.reportError(
+          FlutterErrorDetails(
+            exception: error,
+            stack: stackTrace,
+            library: 'task reminder cancellation',
+          ),
+        );
+      }
+    }
     try {
       await _dio.delete('/tasks/$taskId');
       return null;
@@ -739,34 +861,50 @@ class TaskRepository {
   }
 
   Future<AppFailure?> moveTask(String taskId, String targetWorkspaceId) async {
+    final task = await (_db.select(
+      _db.tasks,
+    )..where((row) => row.id.equals(taskId))).getSingleOrNull();
+    if (task == null) return const NotFoundFailure();
     try {
       final response = await _dio.post(
         '/tasks/$taskId/move',
         data: {'targetWorkspaceId': targetWorkspaceId},
       );
-      final task = TaskModel.fromJson(
+      final movedTask = TaskModel.fromJson(
         response.data['task'] as Map<String, dynamic>,
       );
       await (_db.update(
         _db.tasks,
       )..where((row) => row.id.equals(taskId))).write(
         TasksCompanion(
-          workspaceId: Value(task.workspaceId),
-          title: Value(task.title),
-          description: Value(task.description),
-          status: Value(task.status),
-          priority: Value(task.priority),
-          dueAt: Value(task.dueAt),
-          reminderMinutesBefore: Value(task.reminderMinutesBefore),
-          assigneeId: Value(task.assigneeId),
-          labelId: Value(task.labelId),
-          completedAt: Value(task.completedAt),
-          updatedAt: Value(task.updatedAt),
+          workspaceId: Value(movedTask.workspaceId),
+          title: Value(movedTask.title),
+          description: Value(movedTask.description),
+          status: Value(movedTask.status),
+          priority: Value(movedTask.priority),
+          dueAt: Value(movedTask.dueAt),
+          reminderMinutesBefore: Value(movedTask.reminderMinutesBefore),
+          assigneeId: Value(movedTask.assigneeId),
+          labelId: Value(movedTask.labelId),
+          completedAt: Value(movedTask.completedAt),
+          updatedAt: Value(movedTask.updatedAt),
         ),
       );
       return null;
     } on DioException catch (e) {
-      return mapDioError(e);
+      final failure = mapDioError(e);
+      if (!_isTemporaryFailure(failure)) return failure;
+
+      await (_db.update(
+        _db.tasks,
+      )..where((row) => row.id.equals(taskId))).write(
+        TasksCompanion(
+          workspaceId: Value(targetWorkspaceId),
+          updatedAt: Value(DateTime.now()),
+        ),
+      );
+      await _sync.queueTaskMove(taskId, targetWorkspaceId);
+      return failure;
     }
   }
 
@@ -814,6 +952,7 @@ class TaskRepository {
     await (_db.update(
       _db.tasks,
     )..where((task) => task.id.isIn(taskIds))).write(update);
+    await _cancelTaskReminders(taskIds);
   }
 
   Future<void> _queueBulkActionOffline(
@@ -840,6 +979,30 @@ class TaskRepository {
           TasksCompanion(deletedAt: Value(now), updatedAt: Value(now)),
         );
         await _sync.queueDelete('tasks', taskId);
+      }
+    }
+    await _cancelTaskReminders(taskIds);
+  }
+
+  Future<void> _cancelTaskReminders(List<String> taskIds) async {
+    final tasks =
+        await (_db.select(_db.tasks)..where(
+              (task) =>
+                  task.id.isIn(taskIds) &
+                  task.reminderMinutesBefore.isNotNull(),
+            ))
+            .get();
+    for (final task in tasks) {
+      try {
+        await _syncReminder(task.id, task.title, null, null);
+      } catch (error, stackTrace) {
+        FlutterError.reportError(
+          FlutterErrorDetails(
+            exception: error,
+            stack: stackTrace,
+            library: 'task reminder cancellation',
+          ),
+        );
       }
     }
   }
@@ -1055,6 +1218,33 @@ class TaskRepository {
       failure is NetworkFailure ||
       failure is ServerUnreachableFailure ||
       failure is TimeoutFailure;
+
+  Future<AppFailure?> _applyTaskReminder(
+    TaskModel task, {
+    bool forceCancel = false,
+  }) async {
+    if (task.reminderMinutesBefore == null && !forceCancel) return null;
+    try {
+      await _syncReminder(
+        task.id,
+        task.title,
+        task.dueAt,
+        task.status == 'completed' ? null : task.reminderMinutesBefore,
+      );
+      return null;
+    } catch (error, stackTrace) {
+      FlutterError.reportError(
+        FlutterErrorDetails(
+          exception: error,
+          stack: stackTrace,
+          library: 'task reminder scheduling',
+        ),
+      );
+      return const UnknownFailure(
+        'The task was saved, but its reminder could not be scheduled.',
+      );
+    }
+  }
 }
 
 final taskRepositoryProvider = Provider<TaskRepository>((ref) {

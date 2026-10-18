@@ -33,12 +33,13 @@ class PriorityChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.colors;
     final l10n = AppLocalizations.of(context);
-    return switch (priority.toLowerCase()) {
-      'high' => _Chip(label: l10n.priorityHigh, bg: c.dangerSoft, fg: c.danger),
-      'medium' => _Chip(label: l10n.priorityMedium, bg: c.warningSoft, fg: c.warningText),
-      'low' => _Chip(label: l10n.priorityLow, bg: c.successSoft, fg: c.success),
-      _ => _Chip(label: priority, bg: c.surfaceAlt, fg: c.textMuted),
+    final (label, color) = switch (priority.toLowerCase()) {
+      'high' => (l10n.priorityHigh, c.danger),
+      'medium' => (l10n.priorityMedium, c.warningText),
+      'low' => (l10n.priorityLow, c.success),
+      _ => (priority, c.textMuted),
     };
+    return Text(label, style: AppText.bodyMedium.copyWith(color: color));
   }
 }
 
@@ -50,13 +51,14 @@ class StatusChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.colors;
     final l10n = AppLocalizations.of(context);
-    return switch (status.toLowerCase()) {
-      'todo' => _Chip(label: l10n.statusTodo, bg: c.surfaceAlt, fg: c.textMuted),
-      'in_progress' => _Chip(label: l10n.statusInProgress, bg: c.primarySoft, fg: c.primary),
-      'completed' => _Chip(label: l10n.statusCompleted, bg: c.successSoft, fg: c.success),
-      'overdue' => _Chip(label: l10n.statusOverdue, bg: c.dangerSoft, fg: c.danger),
-      _ => _Chip(label: status, bg: c.surfaceAlt, fg: c.textMuted),
+    final (label, color) = switch (status.toLowerCase()) {
+      'todo' => (l10n.statusTodo, c.textMuted),
+      'in_progress' => (l10n.statusInProgress, c.primary),
+      'completed' => (l10n.statusCompleted, c.success),
+      'overdue' => (l10n.statusOverdue, c.danger),
+      _ => (status, c.textMuted),
     };
+    return Text(label, style: AppText.bodyMedium.copyWith(color: color));
   }
 }
 
@@ -71,7 +73,11 @@ class RoleBadge extends StatelessWidget {
     return switch (role.toLowerCase()) {
       'admin' => _Chip(label: l10n.roleAdmin, bg: c.primarySoft, fg: c.primary),
       'member' => _Chip(label: l10n.roleMember, bg: c.violetSoft, fg: c.violet),
-      'guest' => _Chip(label: l10n.roleGuest, bg: c.surfaceAlt, fg: c.textMuted),
+      'guest' => _Chip(
+        label: l10n.roleGuest,
+        bg: c.surfaceAlt,
+        fg: c.textMuted,
+      ),
       _ => _Chip(label: role, bg: c.surfaceAlt, fg: c.textMuted),
     };
   }
@@ -88,13 +94,17 @@ class FileTypeBadge extends StatelessWidget {
     Color bg;
     String label;
     if (ext == 'pdf') {
-      bg = c.danger; label = 'PDF';
+      bg = c.danger;
+      label = 'PDF';
     } else if (ext == 'doc' || ext == 'docx') {
-      bg = c.sky; label = 'DOC';
+      bg = c.sky;
+      label = 'DOC';
     } else if (ext == 'xls' || ext == 'xlsx') {
-      bg = c.success; label = 'XLS';
+      bg = c.success;
+      label = 'XLS';
     } else {
-      bg = c.textMuted; label = ext.toUpperCase();
+      bg = c.textMuted;
+      label = ext.toUpperCase();
     }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
@@ -102,7 +112,8 @@ class FileTypeBadge extends StatelessWidget {
         color: bg,
         borderRadius: BorderRadius.circular(4),
       ),
-      child: Text(label,
+      child: Text(
+        label,
         style: AppText.chip.copyWith(color: Colors.white, fontSize: 10),
       ),
     );
@@ -120,13 +131,14 @@ class LabelChip extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          width: 8, height: 8,
+          width: 8,
+          height: 8,
           decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
         const SizedBox(width: 4),
-        Text(name,
-          style: AppText.chip.copyWith(
-            color: context.colors.textPrimary),
+        Text(
+          name,
+          style: AppText.chip.copyWith(color: context.colors.textPrimary),
         ),
       ],
     );

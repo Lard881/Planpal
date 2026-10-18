@@ -354,7 +354,10 @@ class _MobileTasksScreenState extends ConsumerState<_MobileTasksScreen> {
                 ),
               if (state.loading && state.tasks.isEmpty)
                 const SliverFillRemaining(
-                  child: Center(child: CircularProgressIndicator()),
+                  child: ContentLoadingSkeleton(
+                    kind: LoadingSkeletonKind.rows,
+                    padding: EdgeInsets.fromLTRB(16, 12, 16, 100),
+                  ),
                 )
               else if (state.error != null && state.tasks.isEmpty)
                 SliverFillRemaining(
@@ -393,8 +396,8 @@ class _MobileTasksScreenState extends ConsumerState<_MobileTasksScreen> {
                         if (i == state.tasks.length) {
                           if (state.loadingMore) {
                             return const Padding(
-                              padding: EdgeInsets.all(16),
-                              child: Center(child: CircularProgressIndicator()),
+                              padding: EdgeInsets.symmetric(vertical: 12),
+                              child: LoadingSkeleton(width: 180, height: 18),
                             );
                           }
                           return Center(
@@ -1022,7 +1025,10 @@ class _DesktopTasksScreen extends ConsumerWidget {
               ),
             Expanded(
               child: state.loading && state.tasks.isEmpty
-                  ? const Center(child: CircularProgressIndicator())
+                  ? const ContentLoadingSkeleton(
+                      kind: LoadingSkeletonKind.table,
+                      padding: EdgeInsets.all(16),
+                    )
                   : state.error != null && state.tasks.isEmpty
                   ? _TaskListError(
                       message: state.error,
@@ -1240,8 +1246,8 @@ class _TaskTable extends StatelessWidget {
                 if (i == tasks.length) {
                   if (loadingMore) {
                     return const Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Center(child: CircularProgressIndicator()),
+                      padding: EdgeInsets.symmetric(vertical: 12),
+                      child: LoadingSkeleton(width: 180, height: 18),
                     );
                   }
                   final l10n = AppLocalizations.of(ctx);
@@ -1442,36 +1448,46 @@ class _DesktopFilterDropdown extends StatelessWidget {
     };
     final displayValue = displayFor(value);
 
-    return Container(
-      height: 40,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(
-        color: c.surface,
-        borderRadius: BorderRadius.circular(AppRadius.control),
-        border: Border.all(color: c.border),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: value,
-          icon: Icon(LucideIcons.chevronDown, size: 14, color: c.textMuted),
-          style: AppText.bodyMedium.copyWith(color: c.textPrimary),
-          hint: Text(
-            '$label: $displayValue',
-            style: AppText.bodyMedium.copyWith(color: c.textPrimary),
-          ),
-          items: options.map((o) {
-            return DropdownMenuItem(value: o, child: Text(displayFor(o)));
-          }).toList(),
-          onChanged: (v) {
-            if (v != null) onChanged(v);
-          },
-          selectedItemBuilder: (_) => options.map((o) {
-            final display = displayFor(o);
-            return Text(
-              '$label: $display',
-              style: AppText.bodyMedium.copyWith(color: c.textPrimary),
-            );
-          }).toList(),
+    return PopupMenuButton<String>(
+      tooltip: label,
+      onSelected: onChanged,
+      itemBuilder: (_) => options
+          .map(
+            (option) => PopupMenuItem<String>(
+              value: option,
+              child: Text(displayFor(option)),
+            ),
+          )
+          .toList(),
+      child: Container(
+        constraints: const BoxConstraints(minWidth: 118, maxWidth: 230),
+        height: 40,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        decoration: BoxDecoration(
+          color: c.surface,
+          borderRadius: BorderRadius.circular(AppRadius.control),
+          border: Border.all(color: c.border),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: Text(
+                '$label: $displayValue',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppText.bodyMedium.copyWith(color: c.textPrimary),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Icon(
+              label == l10n.tasksFilterSort
+                  ? LucideIcons.arrowUpDown
+                  : LucideIcons.chevronDown,
+              size: 14,
+              color: c.textMuted,
+            ),
+          ],
         ),
       ),
     );
@@ -1497,7 +1513,7 @@ class _AssigneeFilterDropdown extends ConsumerWidget {
     final membersAsync = ref.watch(workspaceMembersProvider(workspaceId));
 
     return membersAsync.when(
-      loading: () => _buildDropdown(context, c, l10n, const [], null),
+      loading: () => _buildDropdown(context, c, l10n, const [], selectedId),
       error: (_, __) => isOnline
           ? InkWell(
               onTap: () =>
@@ -1523,7 +1539,7 @@ class _AssigneeFilterDropdown extends ConsumerWidget {
                 ),
               ),
             )
-          : _buildDropdown(context, c, l10n, const [], null),
+          : _buildDropdown(context, c, l10n, const [], selectedId),
       data: (members) => _buildDropdown(
         context,
         c,
@@ -1555,49 +1571,45 @@ class _AssigneeFilterDropdown extends ConsumerWidget {
           : selectedMember.name;
     }
 
-    return Container(
-      height: 40,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(
-        color: colors.surface,
-        borderRadius: BorderRadius.circular(AppRadius.control),
-        border: Border.all(color: colors.border),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String?>(
-          value: selectedId,
-          icon: Icon(
-            LucideIcons.chevronDown,
-            size: 14,
-            color: colors.textMuted,
+    return PopupMenuButton<String>(
+      tooltip: l10n.fieldAssignee,
+      onSelected: (id) => onChanged(id.isEmpty ? null : id),
+      itemBuilder: (_) => [
+        PopupMenuItem<String>(value: '', child: Text(l10n.all)),
+        ...members.map(
+          (member) => PopupMenuItem<String>(
+            value: member.id,
+            child: Text(
+              member.name.trim().isEmpty ? l10n.fieldAssignee : member.name,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
-          style: AppText.bodyMedium.copyWith(color: colors.textPrimary),
-          items: [
-            DropdownMenuItem<String?>(value: null, child: Text(l10n.all)),
-            ...members.map(
-              (member) => DropdownMenuItem<String?>(
-                value: member.id,
-                child: Text(
-                  member.name.trim().isEmpty ? l10n.fieldAssignee : member.name,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ),
-          ],
-          selectedItemBuilder: (_) => [
-            Text(
-              '${l10n.fieldAssignee}: $selectedName',
-              style: AppText.bodyMedium.copyWith(color: colors.textPrimary),
-            ),
-            ...members.map(
-              (member) => Text(
-                '${l10n.fieldAssignee}: ${member.name.trim().isEmpty ? l10n.fieldAssignee : member.name}',
-                style: AppText.bodyMedium.copyWith(color: colors.textPrimary),
+        ),
+      ],
+      enabled: members.isNotEmpty,
+      child: Container(
+        constraints: const BoxConstraints(minWidth: 140, maxWidth: 230),
+        height: 40,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        decoration: BoxDecoration(
+          color: colors.surface,
+          borderRadius: BorderRadius.circular(AppRadius.control),
+          border: Border.all(color: colors.border),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: Text(
+                '${l10n.fieldAssignee}: $selectedName',
+                maxLines: 1,
                 overflow: TextOverflow.ellipsis,
+                style: AppText.bodyMedium.copyWith(color: colors.textPrimary),
               ),
             ),
+            const SizedBox(width: 8),
+            Icon(LucideIcons.chevronDown, size: 14, color: colors.textMuted),
           ],
-          onChanged: members.isEmpty ? null : onChanged,
         ),
       ),
     );

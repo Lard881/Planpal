@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:planpal/core/connectivity/connectivity_service.dart';
 import 'package:planpal/core/db/app_database.dart';
 import 'package:planpal/core/network/app_failure.dart';
 import 'package:planpal/features/workspaces/data/workspace_repository.dart';
@@ -15,7 +16,9 @@ class _FailingWorkspaceRepository extends WorkspaceRepository {
   final AppFailure failure;
 
   @override
-  Future<(List<WorkspaceModel>, AppFailure?)> getWorkspaces() async {
+  Future<(List<WorkspaceModel>, AppFailure?)> getWorkspaces({
+    bool offline = false,
+  }) async {
     return (<WorkspaceModel>[], failure);
   }
 }
@@ -27,6 +30,7 @@ void main() {
     addTearDown(database.close);
     final container = ProviderContainer(
       overrides: [
+        isOnlineProvider.overrideWith((ref) => true),
         workspaceRepositoryProvider.overrideWith(
           (ref) => _FailingWorkspaceRepository(failure, database),
         ),

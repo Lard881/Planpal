@@ -40,8 +40,12 @@ class TaskDetailScreen extends ConsumerWidget {
     final taskAsync = ref.watch(taskDetailProvider(taskId));
 
     return taskAsync.when(
-      loading: () =>
-          const Scaffold(body: Center(child: CircularProgressIndicator())),
+      loading: () => const Scaffold(
+        body: ContentLoadingSkeleton(
+          kind: LoadingSkeletonKind.detail,
+          padding: EdgeInsets.all(24),
+        ),
+      ),
       error: (e, _) => Scaffold(
         body: ErrorState(
           message: e is AppFailure
@@ -274,6 +278,7 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
         failure is NetworkFailure ||
         failure is ServerUnreachableFailure ||
         failure is TimeoutFailure;
+    _showTaskActionResult(failure);
     if (failure == null || queued) {
       _subtaskController.clear();
       ref.invalidate(taskDetailProvider(widget.task.id));
@@ -582,22 +587,16 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
         .read(taskRepositoryProvider)
         .moveTask(task.id, targetWorkspace.id);
     if (!mounted) return;
-    if (failure == null) {
+    final queued =
+        failure is NetworkFailure ||
+        failure is ServerUnreachableFailure ||
+        failure is TimeoutFailure;
+    if (failure == null || queued) {
       ref
         ..invalidate(taskListProvider(task.workspaceId))
         ..invalidate(taskListProvider(targetWorkspace.id))
         ..invalidate(taskDetailProvider(task.id));
       context.pop();
-    }
-    if (failure != null) {
-      final message = failure is NetworkFailure
-          ? l10n.errorNetwork
-          : failure is ServerUnreachableFailure || failure is TimeoutFailure
-          ? l10n.errorServer
-          : failure.localizedMessage(context);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(message)));
     }
   }
 
@@ -642,7 +641,7 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
         failure is NetworkFailure ||
         failure is ServerUnreachableFailure ||
         failure is TimeoutFailure;
-    if (failure == null || isQueuedFailure) {
+    if (failure == null || isQueuedFailure || failure is UnknownFailure) {
       ref.invalidate(taskDetailProvider(taskId));
       if (updates.containsKey('assigneeId')) {
         ref
@@ -831,7 +830,7 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
         failure is NetworkFailure ||
         failure is ServerUnreachableFailure ||
         failure is TimeoutFailure;
-    if (failure == null || isQueuedFailure) {
+    if (failure == null || isQueuedFailure || failure is UnknownFailure) {
       ref.invalidate(taskDetailProvider(task.id));
     }
     final message = failure == null

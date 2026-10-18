@@ -13,7 +13,10 @@ class WorkspaceRepository {
   final AppDatabase _db;
   WorkspaceRepository(this._dio, this._db);
 
-  Future<(List<WorkspaceModel>, AppFailure?)> getWorkspaces() async {
+  Future<(List<WorkspaceModel>, AppFailure?)> getWorkspaces({
+    bool offline = false,
+  }) async {
+    if (offline) return (await _getCachedWorkspaces(), null);
     try {
       final res = await _dio.get('/workspaces');
       final list = (res.data['workspaces'] as List)
@@ -32,6 +35,14 @@ class WorkspaceRepository {
     final now = DateTime.now();
     await _db.transaction(() async {
       await _db.delete(_db.workspaces).go();
+      final workspaceIds = workspaces.map((workspace) => workspace.id).toList();
+      if (workspaceIds.isEmpty) {
+        await _db.delete(_db.workspaceMembers).go();
+      } else {
+        await (_db.delete(
+          _db.workspaceMembers,
+        )..where((member) => member.workspaceId.isNotIn(workspaceIds))).go();
+      }
       for (final workspace in workspaces) {
         final createdBy = workspace.createdBy;
         if (createdBy == null) {
@@ -79,9 +90,14 @@ class WorkspaceRepository {
   }
 
   Future<void> _removeCachedWorkspace(String workspaceId) async {
-    await (_db.delete(
-      _db.workspaces,
-    )..where((workspace) => workspace.id.equals(workspaceId))).go();
+    await _db.transaction(() async {
+      await (_db.delete(
+        _db.workspaceMembers,
+      )..where((member) => member.workspaceId.equals(workspaceId))).go();
+      await (_db.delete(
+        _db.workspaces,
+      )..where((workspace) => workspace.id.equals(workspaceId))).go();
+    });
   }
 
   Future<(WorkspaceModel?, AppFailure?)> createWorkspace(String name) async {
@@ -112,17 +128,81 @@ class WorkspaceRepository {
   }
 
   Future<(List<MemberModel>, AppFailure?)> getMembers(
-    String workspaceId,
-  ) async {
+    String workspaceId, {
+    bool offline = false,
+  }) async {
+    if (offline) return (await _getCachedMembers(workspaceId), null);
     try {
       final res = await _dio.get('/workspaces/$workspaceId/members');
       final list = (res.data['members'] as List)
           .map((e) => MemberModel.fromJson(e as Map<String, dynamic>))
           .toList();
+      await _db.transaction(() async {
+        await (_db.delete(
+          _db.workspaceMembers,
+        )..where((member) => member.workspaceId.equals(workspaceId))).go();
+        for (final member in list) {
+          await _db
+              .into(_db.workspaceMembers)
+              .insertOnConflictUpdate(
+                WorkspaceMembersCompanion.insert(
+                  workspaceId: workspaceId,
+                  userId: member.userId,
+                  fullName: Value(member.fullName),
+                  email: Value(member.email),
+                  avatarUrl: Value(member.avatarUrl),
+                  role: Value(member.role),
+                  joinedAt: Value(member.joinedAt),
+                ),
+              );
+        }
+      });
       return (list, null);
     } on DioException catch (e) {
+      final cached =
+          await (_db.select(_db.workspaceMembers)
+                ..where((member) => member.workspaceId.equals(workspaceId))
+                ..orderBy([(member) => OrderingTerm.asc(member.fullName)]))
+              .get();
+      if (cached.isNotEmpty) {
+        return (
+          cached
+              .map(
+                (member) => MemberModel(
+                  userId: member.userId,
+                  fullName: member.fullName,
+                  email: member.email,
+                  avatarUrl: member.avatarUrl,
+                  role: member.role,
+                  joinedAt: member.joinedAt,
+                ),
+              )
+              .toList(),
+          null,
+        );
+      }
       return (<MemberModel>[], mapDioError(e));
     }
+  }
+
+  Future<List<MemberModel>> _getCachedMembers(String workspaceId) async {
+    final cached =
+        await (_db.select(_db.workspaceMembers)
+              ..where((member) => member.workspaceId.equals(workspaceId))
+              ..orderBy([(member) => OrderingTerm.asc(member.fullName)]))
+            .get();
+    return cached
+        .map(
+          (member) => MemberModel(
+            userId: member.userId,
+            fullName: member.fullName,
+            email: member.email,
+            avatarUrl: member.avatarUrl,
+            role: member.role,
+            joinedAt: member.joinedAt,
+          ),
+        )
+        .toList();
   }
 
   Future<AppFailure?> updateMemberRole(

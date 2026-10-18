@@ -509,6 +509,470 @@ class WorkspacesCompanion extends UpdateCompanion<Workspace> {
   }
 }
 
+class $WorkspaceMembersTable extends WorkspaceMembers
+    with TableInfo<$WorkspaceMembersTable, WorkspaceMember> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $WorkspaceMembersTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _workspaceIdMeta = const VerificationMeta(
+    'workspaceId',
+  );
+  @override
+  late final GeneratedColumn<String> workspaceId = GeneratedColumn<String>(
+    'workspace_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
+  late final GeneratedColumn<String> userId = GeneratedColumn<String>(
+    'user_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fullNameMeta = const VerificationMeta(
+    'fullName',
+  );
+  @override
+  late final GeneratedColumn<String> fullName = GeneratedColumn<String>(
+    'full_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _emailMeta = const VerificationMeta('email');
+  @override
+  late final GeneratedColumn<String> email = GeneratedColumn<String>(
+    'email',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _avatarUrlMeta = const VerificationMeta(
+    'avatarUrl',
+  );
+  @override
+  late final GeneratedColumn<String> avatarUrl = GeneratedColumn<String>(
+    'avatar_url',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _roleMeta = const VerificationMeta('role');
+  @override
+  late final GeneratedColumn<String> role = GeneratedColumn<String>(
+    'role',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('member'),
+  );
+  static const VerificationMeta _joinedAtMeta = const VerificationMeta(
+    'joinedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> joinedAt = GeneratedColumn<DateTime>(
+    'joined_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    workspaceId,
+    userId,
+    fullName,
+    email,
+    avatarUrl,
+    role,
+    joinedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'workspace_members';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<WorkspaceMember> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('workspace_id')) {
+      context.handle(
+        _workspaceIdMeta,
+        workspaceId.isAcceptableOrUnknown(
+          data['workspace_id']!,
+          _workspaceIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_workspaceIdMeta);
+    }
+    if (data.containsKey('user_id')) {
+      context.handle(
+        _userIdMeta,
+        userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_userIdMeta);
+    }
+    if (data.containsKey('full_name')) {
+      context.handle(
+        _fullNameMeta,
+        fullName.isAcceptableOrUnknown(data['full_name']!, _fullNameMeta),
+      );
+    }
+    if (data.containsKey('email')) {
+      context.handle(
+        _emailMeta,
+        email.isAcceptableOrUnknown(data['email']!, _emailMeta),
+      );
+    }
+    if (data.containsKey('avatar_url')) {
+      context.handle(
+        _avatarUrlMeta,
+        avatarUrl.isAcceptableOrUnknown(data['avatar_url']!, _avatarUrlMeta),
+      );
+    }
+    if (data.containsKey('role')) {
+      context.handle(
+        _roleMeta,
+        role.isAcceptableOrUnknown(data['role']!, _roleMeta),
+      );
+    }
+    if (data.containsKey('joined_at')) {
+      context.handle(
+        _joinedAtMeta,
+        joinedAt.isAcceptableOrUnknown(data['joined_at']!, _joinedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {workspaceId, userId};
+  @override
+  WorkspaceMember map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return WorkspaceMember(
+      workspaceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}workspace_id'],
+      )!,
+      userId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}user_id'],
+      )!,
+      fullName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}full_name'],
+      )!,
+      email: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}email'],
+      )!,
+      avatarUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}avatar_url'],
+      ),
+      role: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}role'],
+      )!,
+      joinedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}joined_at'],
+      ),
+    );
+  }
+
+  @override
+  $WorkspaceMembersTable createAlias(String alias) {
+    return $WorkspaceMembersTable(attachedDatabase, alias);
+  }
+}
+
+class WorkspaceMember extends DataClass implements Insertable<WorkspaceMember> {
+  final String workspaceId;
+  final String userId;
+  final String fullName;
+  final String email;
+  final String? avatarUrl;
+  final String role;
+  final DateTime? joinedAt;
+  const WorkspaceMember({
+    required this.workspaceId,
+    required this.userId,
+    required this.fullName,
+    required this.email,
+    this.avatarUrl,
+    required this.role,
+    this.joinedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['workspace_id'] = Variable<String>(workspaceId);
+    map['user_id'] = Variable<String>(userId);
+    map['full_name'] = Variable<String>(fullName);
+    map['email'] = Variable<String>(email);
+    if (!nullToAbsent || avatarUrl != null) {
+      map['avatar_url'] = Variable<String>(avatarUrl);
+    }
+    map['role'] = Variable<String>(role);
+    if (!nullToAbsent || joinedAt != null) {
+      map['joined_at'] = Variable<DateTime>(joinedAt);
+    }
+    return map;
+  }
+
+  WorkspaceMembersCompanion toCompanion(bool nullToAbsent) {
+    return WorkspaceMembersCompanion(
+      workspaceId: Value(workspaceId),
+      userId: Value(userId),
+      fullName: Value(fullName),
+      email: Value(email),
+      avatarUrl: avatarUrl == null && nullToAbsent
+          ? const Value.absent()
+          : Value(avatarUrl),
+      role: Value(role),
+      joinedAt: joinedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(joinedAt),
+    );
+  }
+
+  factory WorkspaceMember.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return WorkspaceMember(
+      workspaceId: serializer.fromJson<String>(json['workspaceId']),
+      userId: serializer.fromJson<String>(json['userId']),
+      fullName: serializer.fromJson<String>(json['fullName']),
+      email: serializer.fromJson<String>(json['email']),
+      avatarUrl: serializer.fromJson<String?>(json['avatarUrl']),
+      role: serializer.fromJson<String>(json['role']),
+      joinedAt: serializer.fromJson<DateTime?>(json['joinedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'workspaceId': serializer.toJson<String>(workspaceId),
+      'userId': serializer.toJson<String>(userId),
+      'fullName': serializer.toJson<String>(fullName),
+      'email': serializer.toJson<String>(email),
+      'avatarUrl': serializer.toJson<String?>(avatarUrl),
+      'role': serializer.toJson<String>(role),
+      'joinedAt': serializer.toJson<DateTime?>(joinedAt),
+    };
+  }
+
+  WorkspaceMember copyWith({
+    String? workspaceId,
+    String? userId,
+    String? fullName,
+    String? email,
+    Value<String?> avatarUrl = const Value.absent(),
+    String? role,
+    Value<DateTime?> joinedAt = const Value.absent(),
+  }) => WorkspaceMember(
+    workspaceId: workspaceId ?? this.workspaceId,
+    userId: userId ?? this.userId,
+    fullName: fullName ?? this.fullName,
+    email: email ?? this.email,
+    avatarUrl: avatarUrl.present ? avatarUrl.value : this.avatarUrl,
+    role: role ?? this.role,
+    joinedAt: joinedAt.present ? joinedAt.value : this.joinedAt,
+  );
+  WorkspaceMember copyWithCompanion(WorkspaceMembersCompanion data) {
+    return WorkspaceMember(
+      workspaceId: data.workspaceId.present
+          ? data.workspaceId.value
+          : this.workspaceId,
+      userId: data.userId.present ? data.userId.value : this.userId,
+      fullName: data.fullName.present ? data.fullName.value : this.fullName,
+      email: data.email.present ? data.email.value : this.email,
+      avatarUrl: data.avatarUrl.present ? data.avatarUrl.value : this.avatarUrl,
+      role: data.role.present ? data.role.value : this.role,
+      joinedAt: data.joinedAt.present ? data.joinedAt.value : this.joinedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WorkspaceMember(')
+          ..write('workspaceId: $workspaceId, ')
+          ..write('userId: $userId, ')
+          ..write('fullName: $fullName, ')
+          ..write('email: $email, ')
+          ..write('avatarUrl: $avatarUrl, ')
+          ..write('role: $role, ')
+          ..write('joinedAt: $joinedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    workspaceId,
+    userId,
+    fullName,
+    email,
+    avatarUrl,
+    role,
+    joinedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is WorkspaceMember &&
+          other.workspaceId == this.workspaceId &&
+          other.userId == this.userId &&
+          other.fullName == this.fullName &&
+          other.email == this.email &&
+          other.avatarUrl == this.avatarUrl &&
+          other.role == this.role &&
+          other.joinedAt == this.joinedAt);
+}
+
+class WorkspaceMembersCompanion extends UpdateCompanion<WorkspaceMember> {
+  final Value<String> workspaceId;
+  final Value<String> userId;
+  final Value<String> fullName;
+  final Value<String> email;
+  final Value<String?> avatarUrl;
+  final Value<String> role;
+  final Value<DateTime?> joinedAt;
+  final Value<int> rowid;
+  const WorkspaceMembersCompanion({
+    this.workspaceId = const Value.absent(),
+    this.userId = const Value.absent(),
+    this.fullName = const Value.absent(),
+    this.email = const Value.absent(),
+    this.avatarUrl = const Value.absent(),
+    this.role = const Value.absent(),
+    this.joinedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  WorkspaceMembersCompanion.insert({
+    required String workspaceId,
+    required String userId,
+    this.fullName = const Value.absent(),
+    this.email = const Value.absent(),
+    this.avatarUrl = const Value.absent(),
+    this.role = const Value.absent(),
+    this.joinedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : workspaceId = Value(workspaceId),
+       userId = Value(userId);
+  static Insertable<WorkspaceMember> custom({
+    Expression<String>? workspaceId,
+    Expression<String>? userId,
+    Expression<String>? fullName,
+    Expression<String>? email,
+    Expression<String>? avatarUrl,
+    Expression<String>? role,
+    Expression<DateTime>? joinedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (workspaceId != null) 'workspace_id': workspaceId,
+      if (userId != null) 'user_id': userId,
+      if (fullName != null) 'full_name': fullName,
+      if (email != null) 'email': email,
+      if (avatarUrl != null) 'avatar_url': avatarUrl,
+      if (role != null) 'role': role,
+      if (joinedAt != null) 'joined_at': joinedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  WorkspaceMembersCompanion copyWith({
+    Value<String>? workspaceId,
+    Value<String>? userId,
+    Value<String>? fullName,
+    Value<String>? email,
+    Value<String?>? avatarUrl,
+    Value<String>? role,
+    Value<DateTime?>? joinedAt,
+    Value<int>? rowid,
+  }) {
+    return WorkspaceMembersCompanion(
+      workspaceId: workspaceId ?? this.workspaceId,
+      userId: userId ?? this.userId,
+      fullName: fullName ?? this.fullName,
+      email: email ?? this.email,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
+      role: role ?? this.role,
+      joinedAt: joinedAt ?? this.joinedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (workspaceId.present) {
+      map['workspace_id'] = Variable<String>(workspaceId.value);
+    }
+    if (userId.present) {
+      map['user_id'] = Variable<String>(userId.value);
+    }
+    if (fullName.present) {
+      map['full_name'] = Variable<String>(fullName.value);
+    }
+    if (email.present) {
+      map['email'] = Variable<String>(email.value);
+    }
+    if (avatarUrl.present) {
+      map['avatar_url'] = Variable<String>(avatarUrl.value);
+    }
+    if (role.present) {
+      map['role'] = Variable<String>(role.value);
+    }
+    if (joinedAt.present) {
+      map['joined_at'] = Variable<DateTime>(joinedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WorkspaceMembersCompanion(')
+          ..write('workspaceId: $workspaceId, ')
+          ..write('userId: $userId, ')
+          ..write('fullName: $fullName, ')
+          ..write('email: $email, ')
+          ..write('avatarUrl: $avatarUrl, ')
+          ..write('role: $role, ')
+          ..write('joinedAt: $joinedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -9069,6 +9533,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $WorkspacesTable workspaces = $WorkspacesTable(this);
+  late final $WorkspaceMembersTable workspaceMembers = $WorkspaceMembersTable(
+    this,
+  );
   late final $TasksTable tasks = $TasksTable(this);
   late final $SubtasksTable subtasks = $SubtasksTable(this);
   late final $TaskCommentsTable taskComments = $TaskCommentsTable(this);
@@ -9091,6 +9558,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     workspaces,
+    workspaceMembers,
     tasks,
     subtasks,
     taskComments,
@@ -9360,6 +9828,252 @@ typedef $$WorkspacesTableProcessedTableManager =
       $$WorkspacesTableUpdateCompanionBuilder,
       (Workspace, BaseReferences<_$AppDatabase, $WorkspacesTable, Workspace>),
       Workspace,
+      PrefetchHooks Function()
+    >;
+typedef $$WorkspaceMembersTableCreateCompanionBuilder =
+    WorkspaceMembersCompanion Function({
+      required String workspaceId,
+      required String userId,
+      Value<String> fullName,
+      Value<String> email,
+      Value<String?> avatarUrl,
+      Value<String> role,
+      Value<DateTime?> joinedAt,
+      Value<int> rowid,
+    });
+typedef $$WorkspaceMembersTableUpdateCompanionBuilder =
+    WorkspaceMembersCompanion Function({
+      Value<String> workspaceId,
+      Value<String> userId,
+      Value<String> fullName,
+      Value<String> email,
+      Value<String?> avatarUrl,
+      Value<String> role,
+      Value<DateTime?> joinedAt,
+      Value<int> rowid,
+    });
+
+class $$WorkspaceMembersTableFilterComposer
+    extends Composer<_$AppDatabase, $WorkspaceMembersTable> {
+  $$WorkspaceMembersTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get workspaceId => $composableBuilder(
+    column: $table.workspaceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get fullName => $composableBuilder(
+    column: $table.fullName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get email => $composableBuilder(
+    column: $table.email,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get avatarUrl => $composableBuilder(
+    column: $table.avatarUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get role => $composableBuilder(
+    column: $table.role,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get joinedAt => $composableBuilder(
+    column: $table.joinedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$WorkspaceMembersTableOrderingComposer
+    extends Composer<_$AppDatabase, $WorkspaceMembersTable> {
+  $$WorkspaceMembersTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get workspaceId => $composableBuilder(
+    column: $table.workspaceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get fullName => $composableBuilder(
+    column: $table.fullName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get email => $composableBuilder(
+    column: $table.email,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get avatarUrl => $composableBuilder(
+    column: $table.avatarUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get role => $composableBuilder(
+    column: $table.role,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get joinedAt => $composableBuilder(
+    column: $table.joinedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$WorkspaceMembersTableAnnotationComposer
+    extends Composer<_$AppDatabase, $WorkspaceMembersTable> {
+  $$WorkspaceMembersTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get workspaceId => $composableBuilder(
+    column: $table.workspaceId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<String> get fullName =>
+      $composableBuilder(column: $table.fullName, builder: (column) => column);
+
+  GeneratedColumn<String> get email =>
+      $composableBuilder(column: $table.email, builder: (column) => column);
+
+  GeneratedColumn<String> get avatarUrl =>
+      $composableBuilder(column: $table.avatarUrl, builder: (column) => column);
+
+  GeneratedColumn<String> get role =>
+      $composableBuilder(column: $table.role, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get joinedAt =>
+      $composableBuilder(column: $table.joinedAt, builder: (column) => column);
+}
+
+class $$WorkspaceMembersTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $WorkspaceMembersTable,
+          WorkspaceMember,
+          $$WorkspaceMembersTableFilterComposer,
+          $$WorkspaceMembersTableOrderingComposer,
+          $$WorkspaceMembersTableAnnotationComposer,
+          $$WorkspaceMembersTableCreateCompanionBuilder,
+          $$WorkspaceMembersTableUpdateCompanionBuilder,
+          (
+            WorkspaceMember,
+            BaseReferences<
+              _$AppDatabase,
+              $WorkspaceMembersTable,
+              WorkspaceMember
+            >,
+          ),
+          WorkspaceMember,
+          PrefetchHooks Function()
+        > {
+  $$WorkspaceMembersTableTableManager(
+    _$AppDatabase db,
+    $WorkspaceMembersTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$WorkspaceMembersTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$WorkspaceMembersTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$WorkspaceMembersTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> workspaceId = const Value.absent(),
+                Value<String> userId = const Value.absent(),
+                Value<String> fullName = const Value.absent(),
+                Value<String> email = const Value.absent(),
+                Value<String?> avatarUrl = const Value.absent(),
+                Value<String> role = const Value.absent(),
+                Value<DateTime?> joinedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WorkspaceMembersCompanion(
+                workspaceId: workspaceId,
+                userId: userId,
+                fullName: fullName,
+                email: email,
+                avatarUrl: avatarUrl,
+                role: role,
+                joinedAt: joinedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String workspaceId,
+                required String userId,
+                Value<String> fullName = const Value.absent(),
+                Value<String> email = const Value.absent(),
+                Value<String?> avatarUrl = const Value.absent(),
+                Value<String> role = const Value.absent(),
+                Value<DateTime?> joinedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WorkspaceMembersCompanion.insert(
+                workspaceId: workspaceId,
+                userId: userId,
+                fullName: fullName,
+                email: email,
+                avatarUrl: avatarUrl,
+                role: role,
+                joinedAt: joinedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$WorkspaceMembersTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $WorkspaceMembersTable,
+      WorkspaceMember,
+      $$WorkspaceMembersTableFilterComposer,
+      $$WorkspaceMembersTableOrderingComposer,
+      $$WorkspaceMembersTableAnnotationComposer,
+      $$WorkspaceMembersTableCreateCompanionBuilder,
+      $$WorkspaceMembersTableUpdateCompanionBuilder,
+      (
+        WorkspaceMember,
+        BaseReferences<_$AppDatabase, $WorkspaceMembersTable, WorkspaceMember>,
+      ),
+      WorkspaceMember,
       PrefetchHooks Function()
     >;
 typedef $$TasksTableCreateCompanionBuilder =
@@ -13502,6 +14216,8 @@ class $AppDatabaseManager {
   $AppDatabaseManager(this._db);
   $$WorkspacesTableTableManager get workspaces =>
       $$WorkspacesTableTableManager(_db, _db.workspaces);
+  $$WorkspaceMembersTableTableManager get workspaceMembers =>
+      $$WorkspaceMembersTableTableManager(_db, _db.workspaceMembers);
   $$TasksTableTableManager get tasks =>
       $$TasksTableTableManager(_db, _db.tasks);
   $$SubtasksTableTableManager get subtasks =>

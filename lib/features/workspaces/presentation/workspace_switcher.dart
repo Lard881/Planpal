@@ -90,10 +90,7 @@ class _WorkspaceSwitcherPopover extends ConsumerWidget {
                         )
                         .toList(),
                   ),
-                  loading: () => const Padding(
-                    padding: EdgeInsets.all(16),
-                    child: CircularProgressIndicator(),
-                  ),
+                  loading: () => const _WorkspaceLoadingRows(),
                   error: (error, _) => ErrorState(
                     message: error is AppFailure
                         ? error.localizedMessage(context)
@@ -191,7 +188,7 @@ class _WorkspaceSwitcherSheet extends ConsumerWidget {
                     )
                     .toList(),
               ),
-              loading: () => const Center(child: CircularProgressIndicator()),
+              loading: () => const _WorkspaceLoadingRows(cards: true),
               error: (error, _) => ErrorState(
                 message: error is AppFailure
                     ? error.localizedMessage(context)
@@ -238,6 +235,46 @@ class _WorkspaceSwitcherSheet extends ConsumerWidget {
       ),
     );
   }
+}
+
+class _WorkspaceLoadingRows extends StatelessWidget {
+  final bool cards;
+
+  const _WorkspaceLoadingRows({this.cards = false});
+
+  @override
+  Widget build(BuildContext context) => Column(
+    children: [
+      for (var index = 0; index < 3; index++)
+        Container(
+          margin: EdgeInsets.symmetric(
+            horizontal: cards ? 0 : 8,
+            vertical: cards ? 0 : 2,
+          ),
+          padding: EdgeInsets.symmetric(
+            horizontal: cards ? 16 : 12,
+            vertical: cards ? 12 : 8,
+          ),
+          child: Row(
+            children: [
+              const LoadingSkeleton(width: 36, height: 36, radius: 10),
+              SizedBox(width: cards ? 12 : 10),
+              const Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    LoadingSkeleton(width: 148, height: 14),
+                    SizedBox(height: 6),
+                    LoadingSkeleton(width: 96, height: 11),
+                  ],
+                ),
+              ),
+              if (cards) const LoadingSkeleton(width: 48, height: 20),
+            ],
+          ),
+        ),
+    ],
+  );
 }
 
 // ── Shared Row Widgets ────────────────────────────────────────────────────────

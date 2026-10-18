@@ -75,8 +75,11 @@ class _DesktopNotifications extends ConsumerWidget {
             ),
             const SizedBox(height: 16),
             Expanded(
-              child: state.loading
-                  ? const Center(child: CircularProgressIndicator())
+              child: state.loading && state.notifications.isEmpty
+                  ? const ContentLoadingSkeleton(
+                      kind: LoadingSkeletonKind.rows,
+                      padding: EdgeInsets.zero,
+                    )
                   : state.error != null && state.notifications.isEmpty
                   ? ErrorState(message: state.error!, onRetry: notifier.load)
                   : state.notifications.isEmpty
@@ -168,9 +171,12 @@ class _MobileNotifications extends ConsumerWidget {
                 ),
               ),
               const SliverToBoxAdapter(child: SizedBox(height: 12)),
-              if (state.loading)
+              if (state.loading && state.notifications.isEmpty)
                 const SliverFillRemaining(
-                  child: Center(child: CircularProgressIndicator()),
+                  child: ContentLoadingSkeleton(
+                    kind: LoadingSkeletonKind.rows,
+                    padding: EdgeInsets.fromLTRB(16, 12, 16, 24),
+                  ),
                 )
               else if (state.error != null && state.notifications.isEmpty)
                 SliverFillRemaining(

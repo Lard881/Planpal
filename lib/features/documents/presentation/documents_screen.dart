@@ -206,8 +206,14 @@ class _DesktopDocumentsState extends ConsumerState<_DesktopDocuments> {
                       ),
                     ),
                   Expanded(
-                    child: state.loading
-                        ? const Center(child: CircularProgressIndicator())
+                    child:
+                        state.loading &&
+                            state.folders.isEmpty &&
+                            state.recentDocs.isEmpty
+                        ? const ContentLoadingSkeleton(
+                            kind: LoadingSkeletonKind.cards,
+                            padding: EdgeInsets.zero,
+                          )
                         : state.error != null &&
                               state.folders.isEmpty &&
                               state.recentDocs.isEmpty
@@ -1055,9 +1061,14 @@ class _MobileDocuments extends ConsumerWidget {
                   ),
                 ),
               ),
-              if (state.loading)
+              if (state.loading &&
+                  state.folders.isEmpty &&
+                  state.recentDocs.isEmpty)
                 const SliverFillRemaining(
-                  child: Center(child: CircularProgressIndicator()),
+                  child: ContentLoadingSkeleton(
+                    kind: LoadingSkeletonKind.cards,
+                    padding: EdgeInsets.fromLTRB(16, 12, 16, 24),
+                  ),
                 )
               else ...[
                 // Folders grid (2 per row)
@@ -1319,8 +1330,12 @@ class DocumentEditorScreen extends ConsumerWidget {
     final docAsync = ref.watch(documentDetailProvider(documentId));
 
     return docAsync.when(
-      loading: () =>
-          const Scaffold(body: Center(child: CircularProgressIndicator())),
+      loading: () => const Scaffold(
+        body: ContentLoadingSkeleton(
+          kind: LoadingSkeletonKind.detail,
+          padding: EdgeInsets.all(24),
+        ),
+      ),
       error: (e, _) => Scaffold(
         body: ErrorState(
           message: e is AppFailure

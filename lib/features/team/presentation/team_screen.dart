@@ -199,7 +199,10 @@ class _TeamScreenState extends ConsumerState<TeamScreen> {
             const SizedBox(height: 16),
             Expanded(
               child: membersAsync.when(
-                loading: () => const Center(child: CircularProgressIndicator()),
+                loading: () => const ContentLoadingSkeleton(
+                  kind: LoadingSkeletonKind.cards,
+                  padding: EdgeInsets.zero,
+                ),
                 error: (e, _) => ErrorState(
                   message: e.toString(),
                   retryLabel: l10n.btnRetry,
@@ -630,7 +633,11 @@ class _LatestActivity extends ConsumerWidget {
           const SizedBox(height: 12),
           Expanded(
             child: updatesAsync.when(
-              loading: () => const Center(child: CircularProgressIndicator()),
+              loading: () => const ContentLoadingSkeleton(
+                kind: LoadingSkeletonKind.rows,
+                itemCount: 4,
+                padding: EdgeInsets.zero,
+              ),
               error: (error, _) => ErrorState(
                 message: error.toString(),
                 retryLabel: l10n.btnRetry,

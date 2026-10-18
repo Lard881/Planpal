@@ -71,8 +71,12 @@ class _WorkspaceSettingsScreenState
         }
         return _buildWorkspaceSettings(context, routeWorkspace);
       },
-      loading: () =>
-          const Scaffold(body: Center(child: CircularProgressIndicator())),
+      loading: () => const Scaffold(
+        body: ContentLoadingSkeleton(
+          kind: LoadingSkeletonKind.rows,
+          padding: EdgeInsets.all(24),
+        ),
+      ),
       error: (error, _) => Scaffold(
         body: ErrorState(
           message: error is AppFailure
@@ -280,7 +284,11 @@ class _MembersTab extends ConsumerWidget {
           ),
         ),
       ),
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => const ContentLoadingSkeleton(
+        kind: LoadingSkeletonKind.rows,
+        itemCount: 4,
+        padding: EdgeInsets.zero,
+      ),
       error: (e, _) => ErrorState(message: e.toString()),
     );
   }
@@ -456,7 +464,11 @@ class _InviteCodesTab extends ConsumerWidget {
                     _InviteCodeRow(code: codes[i], workspaceId: workspaceId),
               ),
             ),
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => const ContentLoadingSkeleton(
+        kind: LoadingSkeletonKind.rows,
+        itemCount: 4,
+        padding: EdgeInsets.zero,
+      ),
       error: (e, _) => ErrorState(message: e.toString()),
     );
   }

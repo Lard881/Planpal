@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -122,6 +124,43 @@ void main() {
     )..where((row) => row.id.equals(entryId))).getSingleOrNull();
 
     expect(entry, isNull);
+  });
+
+  test('replays queued task moves through the move endpoint', () async {
+    RequestOptions? moveRequest;
+    engine.dispose();
+    engine = SyncEngine(
+      Dio(BaseOptions(baseUrl: 'https://example.invalid/api/v1'))
+        ..interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) {
+              moveRequest = options;
+              handler.resolve(
+                Response(requestOptions: options, statusCode: 200),
+              );
+            },
+          ),
+        ),
+      database,
+    );
+    await database
+        .into(database.outboxEntries)
+        .insert(
+          OutboxEntriesCompanion.insert(
+            operation: 'task_move',
+            entityType: 'tasks',
+            entityId: 'task-id',
+            payload: jsonEncode({'targetWorkspaceId': 'workspace-2'}),
+            createdAt: DateTime.now(),
+          ),
+        );
+
+    await engine.push();
+
+    expect(moveRequest?.method, 'POST');
+    expect(moveRequest?.path, '/tasks/task-id/move');
+    expect(moveRequest?.data, {'targetWorkspaceId': 'workspace-2'});
+    expect(await database.select(database.outboxEntries).get(), isEmpty);
   });
 
   test(

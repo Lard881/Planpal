@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/task_repository.dart';
 import '../models/task_model.dart';
-import '../../../core/network/api_client.dart';
 import '../../../core/connectivity/connectivity_service.dart';
 import '../../workspaces/providers/workspace_providers.dart';
 
@@ -355,25 +354,15 @@ final taskDetailProvider = FutureProvider.family
     });
 
 // Labels provider — loads workspace labels for the label picker
-class LabelModel {
-  final String id;
-  final String name;
-  final String color;
-  const LabelModel({required this.id, required this.name, required this.color});
-
-  factory LabelModel.fromJson(Map<String, dynamic> j) => LabelModel(
-    id: j['id'] as String,
-    name: j['name'] as String,
-    color: j['color'] as String? ?? '#3B82F6',
-  );
-}
+typedef LabelModel = TaskLabelModel;
 
 final labelsProvider = FutureProvider.family
     .autoDispose<List<LabelModel>, String>((ref, workspaceId) async {
       if (workspaceId.isEmpty) return [];
-      final dio = ref.watch(apiClientProvider).dio;
-      final res = await dio.get('/workspaces/$workspaceId/labels');
-      return (res.data['labels'] as List)
-          .map((l) => LabelModel.fromJson(l as Map<String, dynamic>))
-          .toList();
+      final offline = !ref.watch(isOnlineProvider);
+      final (labels, failure) = await ref
+          .watch(taskRepositoryProvider)
+          .getLabels(workspaceId, offline: offline);
+      if (failure != null) throw failure;
+      return labels;
     });

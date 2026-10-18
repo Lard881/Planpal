@@ -418,8 +418,11 @@ class _DesktopChat extends ConsumerWidget {
                 const Divider(),
                 Expanded(
                   child: channelsAsync.when(
-                    loading: () =>
-                        const Center(child: CircularProgressIndicator()),
+                    loading: () => const ContentLoadingSkeleton(
+                      kind: LoadingSkeletonKind.rows,
+                      itemCount: 5,
+                      padding: EdgeInsets.zero,
+                    ),
                     error: (error, _) => ErrorState(
                       message: error.toString(),
                       retryLabel: l10n.btnRetry,
@@ -1317,10 +1320,15 @@ class _MessageAttachment extends ConsumerWidget {
     return ref
         .watch(chatAttachmentUrlProvider(message.fileId!))
         .when(
-          loading: () => const SizedBox(
+          loading: () => Container(
             width: 150,
             height: 80,
-            child: Center(child: CircularProgressIndicator()),
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: colors.surfaceAlt,
+              borderRadius: BorderRadius.circular(AppRadius.control),
+            ),
+            child: const LoadingSkeleton(height: 46),
           ),
           error: (_, __) => Text(l10n.errorGeneric),
           data: (url) => InkWell(
@@ -1465,7 +1473,11 @@ class _MobileChatList extends ConsumerWidget {
             ),
             channelsAsync.when(
               loading: () => const SliverFillRemaining(
-                child: Center(child: CircularProgressIndicator()),
+                child: ContentLoadingSkeleton(
+                  kind: LoadingSkeletonKind.rows,
+                  itemCount: 5,
+                  padding: EdgeInsets.fromLTRB(16, 12, 16, 24),
+                ),
               ),
               error: (error, _) => SliverFillRemaining(
                 child: ErrorState(

@@ -7,6 +7,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:timezone/data/latest.dart' as timezone_data;
+import 'package:timezone/timezone.dart' as timezone;
 
 import '../platform/platform_info.dart';
 import '../router/app_router.dart';
@@ -20,6 +23,7 @@ class FcmService {
   static StreamSubscription<RemoteMessage>? _messageSubscription;
   static StreamSubscription<RemoteMessage>? _openSubscription;
   static bool _localNotificationsInitialized = false;
+  static bool _timezoneInitialized = false;
   static GoRouter? _router;
 
   static Future<void> initialize(WidgetRef ref) async {
@@ -124,6 +128,49 @@ class FcmService {
     );
   }
 
+  static Future<void> syncTaskReminder({
+    required String taskId,
+    required String title,
+    required DateTime? dueAt,
+    required int? minutesBefore,
+  }) async {
+    await _initializeLocalNotifications();
+    if (!_timezoneInitialized) {
+      timezone_data.initializeTimeZones();
+      final localTimezone = await FlutterTimezone.getLocalTimezone();
+      timezone.setLocalLocation(timezone.getLocation(localTimezone.identifier));
+      _timezoneInitialized = true;
+    }
+
+    final id = _taskReminderId(taskId);
+    final reminderAt = dueAt?.subtract(Duration(minutes: minutesBefore ?? 0));
+    if (reminderAt == null ||
+        minutesBefore == null ||
+        reminderAt.isBefore(DateTime.now())) {
+      await _localNotifications.cancel(id: id);
+      return;
+    }
+
+    await _localNotifications.zonedSchedule(
+      id: id,
+      title: title,
+      body: title,
+      scheduledDate: timezone.TZDateTime.from(reminderAt, timezone.local),
+      notificationDetails: const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'planpal_task_reminders',
+          'Task reminders',
+          channelDescription: 'Reminders for tasks with due dates',
+          importance: Importance.defaultImportance,
+          priority: Priority.defaultPriority,
+        ),
+        windows: WindowsNotificationDetails(),
+      ),
+      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+      payload: jsonEncode({'entityType': 'task', 'entityId': taskId}),
+    );
+  }
+
   static Future<void> _initializeLocalNotifications() async {
     if (_localNotificationsInitialized) return;
     await _localNotifications.initialize(
@@ -191,6 +238,14 @@ class FcmService {
       ),
       payload: jsonEncode(data),
     );
+  }
+
+  static int _taskReminderId(String taskId) {
+    var hash = 0x811c9dc5;
+    for (final codeUnit in taskId.codeUnits) {
+      hash = ((hash ^ codeUnit) * 0x01000193) & 0x7fffffff;
+    }
+    return hash;
   }
 
   static void _openMessage(WidgetRef ref, RemoteMessage message) {

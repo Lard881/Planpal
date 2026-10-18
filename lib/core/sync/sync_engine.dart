@@ -372,6 +372,9 @@ class SyncEngine extends StateNotifier<SyncState> {
       _db.tasks,
     )..where((table) => table.workspaceId.equals(workspaceId))).go();
     await (_db.delete(
+      _db.workspaceMembers,
+    )..where((table) => table.workspaceId.equals(workspaceId))).go();
+    await (_db.delete(
       _db.labels,
     )..where((table) => table.workspaceId.equals(workspaceId))).go();
     await (_db.delete(
@@ -456,6 +459,11 @@ class SyncEngine extends StateNotifier<SyncState> {
           await _dio.post(
             '/tasks/${payload['taskId']}/comments',
             data: {'id': entityId, 'body': payload['body']},
+          );
+        case 'task_move':
+          await _dio.post(
+            '/tasks/$entityId/move',
+            data: {'targetWorkspaceId': payload['targetWorkspaceId']},
           );
         case 'create':
           await _dio.post('/$entityType', data: payload);
@@ -617,6 +625,21 @@ class SyncEngine extends StateNotifier<SyncState> {
             entityType: entityType,
             entityId: entityId,
             payload: '{}',
+            createdAt: DateTime.now(),
+          ),
+        );
+    state = state.copyWith(pendingCount: state.pendingCount + 1);
+  }
+
+  Future<void> queueTaskMove(String taskId, String targetWorkspaceId) async {
+    await _db
+        .into(_db.outboxEntries)
+        .insert(
+          OutboxEntriesCompanion.insert(
+            operation: 'task_move',
+            entityType: 'tasks',
+            entityId: taskId,
+            payload: jsonEncode({'targetWorkspaceId': targetWorkspaceId}),
             createdAt: DateTime.now(),
           ),
         );

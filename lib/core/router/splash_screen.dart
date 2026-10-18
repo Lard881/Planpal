@@ -4,7 +4,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:go_router/go_router.dart';import '../config/env.dart';
+import 'package:go_router/go_router.dart';
+import '../config/env.dart';
 import '../providers/auth_provider.dart';
 import '../providers/user_profile_provider.dart';
 
@@ -78,8 +79,25 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
               height: 120,
             ),
             const SizedBox(height: 32),
-            const CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            Container(
+              width: 112,
+              height: 6,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.24),
+                borderRadius: BorderRadius.circular(3),
+              ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: FractionallySizedBox(
+                  widthFactor: 0.38,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.82),
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
         ),

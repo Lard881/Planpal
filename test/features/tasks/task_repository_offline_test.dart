@@ -67,6 +67,44 @@ void main() {
     expect(queuedUpdates.single.operation, 'update');
   });
 
+  test('moves an offline task locally and queues the workspace move', () async {
+    final failure = await repository.moveTask('task-1', 'workspace-2');
+
+    final task = await (database.select(
+      database.tasks,
+    )..where((row) => row.id.equals('task-1'))).getSingle();
+    final queuedMove = await (database.select(
+      database.outboxEntries,
+    )..where((entry) => entry.entityId.equals('task-1'))).getSingle();
+
+    expect(failure, isNotNull);
+    expect(task.workspaceId, 'workspace-2');
+    expect(queuedMove.operation, 'task_move');
+    expect(queuedMove.payload, contains('workspace-2'));
+  });
+
+  test('clearing a reminder cancels its local notification', () async {
+    await (database.update(database.tasks)
+          ..where((row) => row.id.equals('task-1')))
+        .write(const TasksCompanion(reminderMinutesBefore: Value(15)));
+    final reminderChanges = <int?>[];
+    final reminderRepository = TaskRepository(
+      Dio(BaseOptions(baseUrl: 'https://example.invalid/api/v1'))
+        ..interceptors.add(_UnavailableInterceptor()),
+      database,
+      sync,
+      syncReminder: (_, _, _, minutesBefore) async {
+        reminderChanges.add(minutesBefore);
+      },
+    );
+
+    await reminderRepository.updateTask('task-1', {
+      'reminderMinutesBefore': null,
+    });
+
+    expect(reminderChanges, [null]);
+  });
+
   test(
     'keeps an offline-created task visible after an empty API refresh',
     () async {

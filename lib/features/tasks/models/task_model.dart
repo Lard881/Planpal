@@ -95,6 +95,24 @@ class TaskModel {
   }
 }
 
+class TaskLabelModel {
+  final String id;
+  final String name;
+  final String color;
+
+  const TaskLabelModel({
+    required this.id,
+    required this.name,
+    required this.color,
+  });
+
+  factory TaskLabelModel.fromJson(Map<String, dynamic> json) => TaskLabelModel(
+    id: json['id'] as String,
+    name: json['name'] as String,
+    color: json['color'] as String? ?? '#3B82F6',
+  );
+}
+
 class SubtaskModel {
   final String id;
   final String taskId;

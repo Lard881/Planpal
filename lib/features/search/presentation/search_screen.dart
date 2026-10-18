@@ -65,158 +65,222 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         },
       },
       child: Scaffold(
-      backgroundColor: c.background,
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header with search field
-            Padding(
-              padding: EdgeInsets.fromLTRB(
-                  isDesktop ? 32 : 16, isDesktop ? 24 : 16,
-                  isDesktop ? 32 : 16, 0),
-              child: Row(
-                children: [
-                  if (!isDesktop)
-                    GestureDetector(
-                      onTap: () => context.pop(),
-                      child: Container(
-                        width: 36, height: 36, margin: const EdgeInsets.only(right: 12),
-                        decoration: BoxDecoration(
-                          color: c.surface,
-                          borderRadius: BorderRadius.circular(AppRadius.control),
-                          border: Border.all(color: c.border),
-                        ),
-                        child: Icon(LucideIcons.arrowLeft, size: 18, color: c.textPrimary),
-                      ),
-                    ),
-                  Expanded(
-                    child: Container(
-                      height: 44,
-                      decoration: BoxDecoration(
-                        color: c.surfaceAlt,
-                        borderRadius: BorderRadius.circular(AppRadius.control),
-                      ),
-                      child: Row(
-                        children: [
-                          const SizedBox(width: 12),
-                          Icon(LucideIcons.search, size: 16, color: c.textMuted),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: TextField(
-                              controller: _ctrl,
-                              autofocus: true,
-                              decoration: InputDecoration(
-                                hintText: 'Search tasks, docs, people...',
-                                hintStyle: AppText.body.copyWith(color: c.textMuted),
-                                border: InputBorder.none,
-                                filled: false,
-                                contentPadding: EdgeInsets.zero,
-                              ),
-                              onChanged: _onQueryChanged,
-                              onSubmitted: (q) =>
-                                  ref.read(searchProvider.notifier).search(q),
-                            ),
-                          ),
-                          if (_ctrl.text.isNotEmpty)
-                            IconButton(
-                              icon: Icon(LucideIcons.x, size: 16, color: c.textMuted),
-                              onPressed: () {
-                                _ctrl.clear();
-                                ref.read(searchProvider.notifier).search('');
-                              },
-                            ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  // Desktop: scope switch (fix F17)
-                  if (isDesktop) ...[
-                    const SizedBox(width: 16),
-                    Row(
-                      children: [
-                        Text(state.scopeAll ? 'All my workspaces' : 'This workspace',
-                          style: AppText.bodyMedium.copyWith(
-                            color: state.scopeAll ? c.primary : c.textMuted,
-                            fontWeight: state.scopeAll
-                                ? FontWeight.w600 : FontWeight.w400)),
-                        const SizedBox(width: 8),
-                        Switch(
-                          value: state.scopeAll,
-                          onChanged: (_) =>
-                              ref.read(searchProvider.notifier).toggleScope(),
-                        ),
-                      ],
-                    ),
-                  ],
-                ],
-              ),
-            ),
-            // Title
-            if (state.query.isNotEmpty) ...[
-              Padding(
-                padding: EdgeInsets.fromLTRB(
-                    isDesktop ? 32 : 16, 16, isDesktop ? 32 : 16, 0),
-                child: Text(
-                  'Results for "${state.query}"',
-                  style: (isDesktop ? AppText.pageTitle : AppText.pageTitleMobile)
-                      .copyWith(color: c.textPrimary),
-                ),
-              ),
-              const SizedBox(height: 12),
-              // Filter chips with counts
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                padding: EdgeInsets.symmetric(horizontal: isDesktop ? 32 : 16),
-                child: Row(
-                  children: [
-                    _SearchChip('All', 'all', state.results.totalCount, state.filter),
-                    const SizedBox(width: 8),
-                    _SearchChip('Tasks', 'task', state.results.taskCount, state.filter),
-                    const SizedBox(width: 8),
-                    _SearchChip(isDesktop ? 'Documents' : 'Docs',
-                        'document', state.results.documentCount, state.filter),
-                    const SizedBox(width: 8),
-                    _SearchChip('People', 'person', state.results.peopleCount, state.filter),
-                  ],
-                ),
-              ),
-            ],
-            if (state.results.isOffline)
+        backgroundColor: c.background,
+        body: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header with search field
               Padding(
                 padding: EdgeInsets.fromLTRB(
                   isDesktop ? 32 : 16,
-                  8,
+                  isDesktop ? 24 : 16,
                   isDesktop ? 32 : 16,
                   0,
                 ),
-                child: Text(
-                  AppLocalizations.of(context).searchOfflineNotice,
-                  style: AppText.caption.copyWith(color: c.textMuted),
+                child: Row(
+                  children: [
+                    if (!isDesktop)
+                      GestureDetector(
+                        onTap: () => context.pop(),
+                        child: Container(
+                          width: 36,
+                          height: 36,
+                          margin: const EdgeInsets.only(right: 12),
+                          decoration: BoxDecoration(
+                            color: c.surface,
+                            borderRadius: BorderRadius.circular(
+                              AppRadius.control,
+                            ),
+                            border: Border.all(color: c.border),
+                          ),
+                          child: Icon(
+                            LucideIcons.arrowLeft,
+                            size: 18,
+                            color: c.textPrimary,
+                          ),
+                        ),
+                      ),
+                    Expanded(
+                      child: Container(
+                        height: 44,
+                        decoration: BoxDecoration(
+                          color: c.surfaceAlt,
+                          borderRadius: BorderRadius.circular(
+                            AppRadius.control,
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            const SizedBox(width: 12),
+                            Icon(
+                              LucideIcons.search,
+                              size: 16,
+                              color: c.textMuted,
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: TextField(
+                                controller: _ctrl,
+                                autofocus: true,
+                                decoration: InputDecoration(
+                                  hintText: 'Search tasks, docs, people...',
+                                  hintStyle: AppText.body.copyWith(
+                                    color: c.textMuted,
+                                  ),
+                                  border: InputBorder.none,
+                                  filled: false,
+                                  contentPadding: EdgeInsets.zero,
+                                ),
+                                onChanged: _onQueryChanged,
+                                onSubmitted: (q) =>
+                                    ref.read(searchProvider.notifier).search(q),
+                              ),
+                            ),
+                            if (_ctrl.text.isNotEmpty)
+                              IconButton(
+                                icon: Icon(
+                                  LucideIcons.x,
+                                  size: 16,
+                                  color: c.textMuted,
+                                ),
+                                onPressed: () {
+                                  _ctrl.clear();
+                                  ref.read(searchProvider.notifier).search('');
+                                },
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    // Desktop: scope switch (fix F17)
+                    if (isDesktop) ...[
+                      const SizedBox(width: 16),
+                      Row(
+                        children: [
+                          Text(
+                            state.scopeAll
+                                ? 'All my workspaces'
+                                : 'This workspace',
+                            style: AppText.bodyMedium.copyWith(
+                              color: state.scopeAll ? c.primary : c.textMuted,
+                              fontWeight: state.scopeAll
+                                  ? FontWeight.w600
+                                  : FontWeight.w400,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Switch(
+                            value: state.scopeAll,
+                            onChanged: (_) =>
+                                ref.read(searchProvider.notifier).toggleScope(),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ],
                 ),
               ),
-            const SizedBox(height: 16),
-            // Results
-            Expanded(
-              child: state.query.isEmpty
-                  ? Center(
-                      child: Text('Type to search tasks, documents and people.',
-                        style: AppText.body.copyWith(color: c.textMuted)))
-                  : state.loading
-                      ? const Center(child: CircularProgressIndicator())
-                      : state.results.totalCount == 0
-                          ? EmptyState(
-                              icon: LucideIcons.searchX,
-                              title: 'No results for "${state.query}"')
-                          : _ResultsList(
-                              results: state.results,
-                              filter: state.filter,
-                              isDesktop: isDesktop,
-                            ),
-            ),
-          ],
+              // Title
+              if (state.query.isNotEmpty) ...[
+                Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    isDesktop ? 32 : 16,
+                    16,
+                    isDesktop ? 32 : 16,
+                    0,
+                  ),
+                  child: Text(
+                    'Results for "${state.query}"',
+                    style:
+                        (isDesktop
+                                ? AppText.pageTitle
+                                : AppText.pageTitleMobile)
+                            .copyWith(color: c.textPrimary),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                // Filter chips with counts
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isDesktop ? 32 : 16,
+                  ),
+                  child: Row(
+                    children: [
+                      _SearchChip(
+                        'All',
+                        'all',
+                        state.results.totalCount,
+                        state.filter,
+                      ),
+                      const SizedBox(width: 8),
+                      _SearchChip(
+                        'Tasks',
+                        'task',
+                        state.results.taskCount,
+                        state.filter,
+                      ),
+                      const SizedBox(width: 8),
+                      _SearchChip(
+                        isDesktop ? 'Documents' : 'Docs',
+                        'document',
+                        state.results.documentCount,
+                        state.filter,
+                      ),
+                      const SizedBox(width: 8),
+                      _SearchChip(
+                        'People',
+                        'person',
+                        state.results.peopleCount,
+                        state.filter,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+              if (state.results.isOffline)
+                Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    isDesktop ? 32 : 16,
+                    8,
+                    isDesktop ? 32 : 16,
+                    0,
+                  ),
+                  child: Text(
+                    AppLocalizations.of(context).searchOfflineNotice,
+                    style: AppText.caption.copyWith(color: c.textMuted),
+                  ),
+                ),
+              const SizedBox(height: 16),
+              // Results
+              Expanded(
+                child: state.query.isEmpty
+                    ? Center(
+                        child: Text(
+                          'Type to search tasks, documents and people.',
+                          style: AppText.body.copyWith(color: c.textMuted),
+                        ),
+                      )
+                    : state.loading && state.results.totalCount == 0
+                    ? const ContentLoadingSkeleton(
+                        kind: LoadingSkeletonKind.rows,
+                        padding: EdgeInsets.zero,
+                      )
+                    : state.results.totalCount == 0
+                    ? EmptyState(
+                        icon: LucideIcons.searchX,
+                        title: 'No results for "${state.query}"',
+                      )
+                    : _ResultsList(
+                        results: state.results,
+                        filter: state.filter,
+                        isDesktop: isDesktop,
+                      ),
+              ),
+            ],
+          ),
         ),
-      ),
       ),
     );
   }
@@ -241,9 +305,12 @@ class _SearchChip extends ConsumerWidget {
           color: selected ? c.primary : c.surfaceAlt,
           borderRadius: BorderRadius.circular(20),
         ),
-        child: Text('$label · $count',
+        child: Text(
+          '$label · $count',
           style: AppText.bodyMedium.copyWith(
-            color: selected ? Colors.white : c.textMuted)),
+            color: selected ? Colors.white : c.textMuted,
+          ),
+        ),
       ),
     );
   }
@@ -254,20 +321,28 @@ class _ResultsList extends StatelessWidget {
   final String filter;
   final bool isDesktop;
   const _ResultsList({
-    required this.results, required this.filter, required this.isDesktop});
+    required this.results,
+    required this.filter,
+    required this.isDesktop,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final List<SearchResult> tasks =
-        filter == 'all' || filter == 'task' ? results.tasks : [];
-    final List<SearchResult> docs =
-        filter == 'all' || filter == 'document' ? results.documents : [];
-    final List<SearchResult> people =
-        filter == 'all' || filter == 'person' ? results.people : [];
+    final List<SearchResult> tasks = filter == 'all' || filter == 'task'
+        ? results.tasks
+        : [];
+    final List<SearchResult> docs = filter == 'all' || filter == 'document'
+        ? results.documents
+        : [];
+    final List<SearchResult> people = filter == 'all' || filter == 'person'
+        ? results.people
+        : [];
 
     return ListView(
       padding: EdgeInsets.symmetric(
-          horizontal: isDesktop ? 32 : 16, vertical: 0),
+        horizontal: isDesktop ? 32 : 16,
+        vertical: 0,
+      ),
       children: [
         if (tasks.isNotEmpty) ...[
           _GroupHeader('TASKS'),
@@ -297,12 +372,14 @@ class _GroupHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8, top: 4),
-      child: Text(label,
+      child: Text(
+        label,
         style: AppText.caption.copyWith(
           color: context.colors.textMuted,
           fontWeight: FontWeight.w600,
           letterSpacing: 0.8,
-        )),
+        ),
+      ),
     );
   }
 }
@@ -330,26 +407,34 @@ class _TaskResultCard extends StatelessWidget {
           child: Row(
             children: [
               Container(
-                width: 20, height: 20,
+                width: 20,
+                height: 20,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: c.border, width: 1.5)),
+                  border: Border.all(color: c.border, width: 1.5),
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(result.title,
-                      style: AppText.bodyStrong.copyWith(color: c.textPrimary)),
+                    Text(
+                      result.title,
+                      style: AppText.bodyStrong.copyWith(color: c.textPrimary),
+                    ),
                     if (result.subtitle.isNotEmpty)
-                      Text(result.subtitle,
-                        style: AppText.caption.copyWith(color: c.textMuted)),
+                      Text(
+                        result.subtitle,
+                        style: AppText.caption.copyWith(color: c.textMuted),
+                      ),
                   ],
                 ),
               ),
-              Text('$pct%',
-                style: AppText.bodyStrong.copyWith(color: c.success)),
+              Text(
+                '$pct%',
+                style: AppText.bodyStrong.copyWith(color: c.success),
+              ),
             ],
           ),
         ),
@@ -381,10 +466,12 @@ class _DocumentResultCard extends StatelessWidget {
           child: Row(
             children: [
               Container(
-                width: 36, height: 36,
+                width: 36,
+                height: 36,
                 decoration: BoxDecoration(
                   color: c.primarySoft,
-                  borderRadius: BorderRadius.circular(AppRadius.control)),
+                  borderRadius: BorderRadius.circular(AppRadius.control),
+                ),
                 child: Icon(LucideIcons.fileText, size: 18, color: c.primary),
               ),
               const SizedBox(width: 12),
@@ -392,16 +479,22 @@ class _DocumentResultCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(result.title,
-                      style: AppText.bodyStrong.copyWith(color: c.textPrimary)),
+                    Text(
+                      result.title,
+                      style: AppText.bodyStrong.copyWith(color: c.textPrimary),
+                    ),
                     if (result.subtitle.isNotEmpty)
-                      Text(result.subtitle,
-                        style: AppText.caption.copyWith(color: c.textMuted)),
+                      Text(
+                        result.subtitle,
+                        style: AppText.caption.copyWith(color: c.textMuted),
+                      ),
                   ],
                 ),
               ),
-              Text('$pct%',
-                style: AppText.bodyStrong.copyWith(color: c.success)),
+              Text(
+                '$pct%',
+                style: AppText.bodyStrong.copyWith(color: c.success),
+              ),
             ],
           ),
         ),
@@ -436,11 +529,15 @@ class _PersonResultCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(result.title,
-                      style: AppText.bodyStrong.copyWith(color: c.textPrimary)),
+                    Text(
+                      result.title,
+                      style: AppText.bodyStrong.copyWith(color: c.textPrimary),
+                    ),
                     if (result.subtitle.isNotEmpty)
-                      Text(result.subtitle,
-                        style: AppText.caption.copyWith(color: c.textMuted)),
+                      Text(
+                        result.subtitle,
+                        style: AppText.caption.copyWith(color: c.textMuted),
+                      ),
                   ],
                 ),
               ),

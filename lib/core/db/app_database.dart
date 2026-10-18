@@ -25,6 +25,19 @@ class Workspaces extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+class WorkspaceMembers extends Table {
+  TextColumn get workspaceId => text()();
+  TextColumn get userId => text()();
+  TextColumn get fullName => text().withDefault(const Constant(''))();
+  TextColumn get email => text().withDefault(const Constant(''))();
+  TextColumn? get avatarUrl => text().nullable()();
+  TextColumn get role => text().withDefault(const Constant('member'))();
+  DateTimeColumn? get joinedAt => dateTime().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {workspaceId, userId};
+}
+
 class Tasks extends Table {
   TextColumn get id => text()();
   TextColumn get workspaceId => text()();
@@ -252,6 +265,7 @@ class OutboxEntries extends Table {
 @DriftDatabase(
   tables: [
     Workspaces,
+    WorkspaceMembers,
     Tasks,
     Subtasks,
     TaskComments,
@@ -286,13 +300,14 @@ class AppDatabase extends _$AppDatabase {
       await delete(chatMessages).go();
       await delete(chatChannels).go();
       await delete(profiles).go();
+      await delete(workspaceMembers).go();
       await delete(workspaces).go();
       await delete(outboxEntries).go();
     });
   }
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -322,6 +337,9 @@ class AppDatabase extends _$AppDatabase {
       if (from < 7) {
         await m.createTable(chatChannels);
         await m.createTable(chatMessages);
+      }
+      if (from < 8) {
+        await m.createTable(workspaceMembers);
       }
     },
   );
