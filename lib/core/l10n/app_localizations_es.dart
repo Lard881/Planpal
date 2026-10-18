@@ -880,6 +880,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tasksTitle => 'Tareas';
 
   @override
+  String get tasksBackToTasks => 'Volver a tareas';
+
+  @override
   String tasksDueToday(int count, int dueToday) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

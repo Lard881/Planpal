@@ -574,6 +574,8 @@
 
   "tasksTitle": "Tasks",
   "@tasksTitle": {},
+  "tasksBackToTasks": "Back to tasks",
+  "@tasksBackToTasks": {},
   "tasksDueToday": "{count, plural, =1{1 task · 1 due today} other{{count} tasks · {dueToday} due today}}",
   "@tasksDueToday": {
     "placeholders": {

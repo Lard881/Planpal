@@ -277,6 +277,7 @@
   "onboardingTeamSubtitle": "다른 사람들과 작업 공유.",
   "onboardingTeamSubtitleDesktop": "팀원 초대, 작업 공유, 함께 채팅.",
   "tasksTitle": "작업",
+  "tasksBackToTasks": "작업으로 돌아가기",
   "tasksDueToday": "{count, plural, =1{작업 1개 · 오늘 1개 마감} other{작업 {count}개 · 오늘 {dueToday}개 마감}}",
   "@tasksDueToday": { "placeholders": { "count": { "type": "int" }, "dueToday": { "type": "int" } } },
   "tasksSelected": "{count, plural, =1{작업 1개 선택됨} other{작업 {count}개 선택됨}}",

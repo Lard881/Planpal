@@ -80,8 +80,6 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
   Timer? _descriptionDebounce;
   final Map<String, String> _pendingTextUpdates = {};
   String? _inlineTextStatus;
-  int? _reminderOverride;
-  bool _hasReminderOverride = false;
   bool _uploadingAttachment = false;
   ({int start, int end, String query})? _activeMention;
 
@@ -179,10 +177,6 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
     if (oldWidget.task.description != widget.task.description &&
         _descriptionController.text == oldWidget.task.description) {
       _descriptionController.text = widget.task.description;
-    }
-    if (oldWidget.task.reminderMinutesBefore !=
-        widget.task.reminderMinutesBefore) {
-      _hasReminderOverride = false;
     }
   }
 
@@ -428,7 +422,8 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
               (workspace.isAdmin || workspace.isMember),
         );
     final canDelete = permissions.canDelete;
-    if (!canMove && !canDelete) {
+    final canEditReminder = permissions.canEditFields && task.dueAt != null;
+    if (!canMove && !canDelete && !canEditReminder) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(l10n.errorPermission)));
@@ -441,6 +436,12 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            if (canEditReminder)
+              ListTile(
+                leading: const Icon(LucideIcons.bell),
+                title: Text(l10n.fieldTaskReminder),
+                onTap: () => Navigator.pop(sheetContext, 'reminder'),
+              ),
             if (canMove)
               ListTile(
                 leading: const Icon(LucideIcons.arrowRightLeft),
@@ -458,6 +459,11 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
       ),
     );
     if (!mounted || action == null) return;
+
+    if (action == 'reminder') {
+      await _editReminder();
+      return;
+    }
 
     if (action == 'delete') {
       final confirmed = await showDialog<bool>(
@@ -797,12 +803,6 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
         failure is ServerUnreachableFailure ||
         failure is TimeoutFailure;
     if (failure == null || isQueuedFailure) {
-      setState(() {
-        _reminderOverride = result.minutes;
-        _hasReminderOverride = true;
-      });
-    }
-    if (failure == null || isQueuedFailure) {
       ref.invalidate(taskDetailProvider(task.id));
     }
     final message = failure == null
@@ -840,10 +840,6 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
       userId: Supabase.instance.client.auth.currentUser?.id,
       task: task,
     );
-    final reminderMinutesBefore = _hasReminderOverride
-        ? _reminderOverride
-        : task.reminderMinutesBefore;
-
     final screenSlivers = <SliverToBoxAdapter>[
       // Header
       SliverToBoxAdapter(
@@ -851,23 +847,26 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
           child: Row(
             children: [
-              GestureDetector(
-                onTap: () => context.pop(),
-                child: Container(
-                  width: 36,
-                  height: 36,
-                  decoration: BoxDecoration(
-                    color: c.surface,
-                    borderRadius: BorderRadius.circular(AppRadius.control),
-                    border: Border.all(color: c.border),
+              if (!context.isDesktopLayout)
+                GestureDetector(
+                  onTap: () => context.pop(),
+                  child: Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: c.surface,
+                      borderRadius: BorderRadius.circular(AppRadius.control),
+                      border: Border.all(color: c.border),
+                    ),
+                    child: Icon(
+                      LucideIcons.arrowLeft,
+                      size: 18,
+                      color: c.textPrimary,
+                    ),
                   ),
-                  child: Icon(
-                    LucideIcons.arrowLeft,
-                    size: 18,
-                    color: c.textPrimary,
-                  ),
-                ),
-              ),
+                )
+              else
+                const SizedBox(width: 36),
               Expanded(
                 child: Center(
                   child: Text(
@@ -876,11 +875,14 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
                   ),
                 ),
               ),
-              IconButton(
-                tooltip: l10n.tasksDetailTitle,
-                onPressed: () => _showTaskMenu(task, permissions),
-                icon: Icon(LucideIcons.moreHorizontal, color: c.textMuted),
-              ),
+              if (!context.isDesktopLayout)
+                IconButton(
+                  tooltip: l10n.tasksDetailTitle,
+                  onPressed: () => _showTaskMenu(task, permissions),
+                  icon: Icon(LucideIcons.moreHorizontal, color: c.textMuted),
+                )
+              else
+                const SizedBox(width: 48),
             ],
           ),
         ),
@@ -998,53 +1000,15 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
           ),
         ),
       ),
-      SliverToBoxAdapter(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-          child: AppCard(
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l10n.fieldTaskReminder,
-                        style: AppText.cardTitle.copyWith(color: c.textPrimary),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        task.dueAt == null
-                            ? l10n.validationTaskReminderRequiresDueDate
-                            : reminderMinutesBefore == null
-                            ? l10n.taskReminderDefault
-                            : l10n.taskReminderCustom(reminderMinutesBefore),
-                        style: AppText.body.copyWith(color: c.textMuted),
-                      ),
-                    ],
-                  ),
-                ),
-                IconButton(
-                  onPressed: !permissions.canEditFields || task.dueAt == null
-                      ? null
-                      : _editReminder,
-                  tooltip: !permissions.canEditFields
-                      ? l10n.errorPermission
-                      : l10n.fieldTaskReminder,
-                  icon: Icon(
-                    LucideIcons.pencil,
-                    color: task.dueAt == null ? c.textMuted : c.primary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
       // Description card
       SliverToBoxAdapter(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          padding: EdgeInsets.fromLTRB(
+            context.isDesktopLayout ? 0 : 16,
+            0,
+            context.isDesktopLayout ? 0 : 16,
+            8,
+          ),
           child: AppCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1086,7 +1050,12 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
       // Subtasks card
       SliverToBoxAdapter(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          padding: EdgeInsets.fromLTRB(
+            context.isDesktopLayout ? 0 : 16,
+            0,
+            context.isDesktopLayout ? 0 : 16,
+            8,
+          ),
           child: AppCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1215,7 +1184,12 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
       // Assignee & Label card
       SliverToBoxAdapter(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          padding: EdgeInsets.fromLTRB(
+            context.isDesktopLayout ? 0 : 16,
+            0,
+            context.isDesktopLayout ? 0 : 16,
+            8,
+          ),
           child: AppCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1251,7 +1225,12 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
       // Attachments
       SliverToBoxAdapter(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          padding: EdgeInsets.fromLTRB(
+            context.isDesktopLayout ? 0 : 16,
+            0,
+            context.isDesktopLayout ? 0 : 16,
+            8,
+          ),
           child: AppCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1329,7 +1308,12 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
       // Comments card
       SliverToBoxAdapter(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+          padding: EdgeInsets.fromLTRB(
+            context.isDesktopLayout ? 0 : 16,
+            0,
+            context.isDesktopLayout ? 0 : 16,
+            24,
+          ),
           child: AppCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1529,31 +1513,181 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
     ];
     final arrangedSlivers = context.isDesktopLayout
         ? <Widget>[
-            ...screenSlivers.take(5),
             SliverToBoxAdapter(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 3,
-                    child: Column(
-                      children: [
-                        screenSlivers[5].child!,
-                        screenSlivers[6].child!,
-                        screenSlivers[8].child!,
-                      ],
-                    ),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(32, 20, 32, 12),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton.icon(
+                    onPressed: () => context.pop(),
+                    icon: const Icon(LucideIcons.arrowLeft, size: 18),
+                    label: Text(l10n.tasksBackToTasks),
                   ),
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      children: [
-                        screenSlivers[7].child!,
-                        screenSlivers[9].child!,
-                      ],
-                    ),
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(32, 0, 32, 24),
+                child: AppCard(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          if (permissions.canEditFields)
+                            PopupMenuButton<String>(
+                              tooltip: l10n.fieldPriority,
+                              onSelected: (priority) =>
+                                  _saveTaskUpdates({'priority': priority}),
+                              itemBuilder: (_) => [
+                                PopupMenuItem(
+                                  value: 'high',
+                                  child: Text(l10n.priorityHigh),
+                                ),
+                                PopupMenuItem(
+                                  value: 'medium',
+                                  child: Text(l10n.priorityMedium),
+                                ),
+                                PopupMenuItem(
+                                  value: 'low',
+                                  child: Text(l10n.priorityLow),
+                                ),
+                              ],
+                              child: PriorityChip(priority: task.priority),
+                            )
+                          else
+                            PriorityChip(priority: task.priority),
+                          const SizedBox(width: 8),
+                          if (permissions.canChangeStatus)
+                            PopupMenuButton<String>(
+                              tooltip: l10n.fieldStatus,
+                              onSelected: (status) =>
+                                  _saveTaskUpdates({'status': status}),
+                              itemBuilder: (_) => [
+                                PopupMenuItem(
+                                  value: 'todo',
+                                  child: Text(l10n.statusTodo),
+                                ),
+                                PopupMenuItem(
+                                  value: 'in_progress',
+                                  child: Text(l10n.statusInProgress),
+                                ),
+                                PopupMenuItem(
+                                  value: 'completed',
+                                  child: Text(l10n.statusCompleted),
+                                ),
+                              ],
+                              child: StatusChip(
+                                status: isOverdue ? 'overdue' : task.status,
+                              ),
+                            )
+                          else
+                            StatusChip(
+                              status: isOverdue ? 'overdue' : task.status,
+                            ),
+                          const Spacer(),
+                          IconButton(
+                            tooltip: l10n.tasksDetailTitle,
+                            onPressed: () => _showTaskMenu(task, permissions),
+                            icon: Icon(
+                              LucideIcons.moreHorizontal,
+                              color: c.textMuted,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: _titleController,
+                        readOnly: !permissions.canEditFields,
+                        minLines: 1,
+                        maxLines: 2,
+                        onChanged: (value) =>
+                            _scheduleInlineTextSave('title', value),
+                        style: AppText.pageTitle.copyWith(color: c.textPrimary),
+                        decoration: InputDecoration(
+                          hintText: l10n.fieldTaskNameHint,
+                          border: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Icon(
+                            LucideIcons.calendar,
+                            size: 16,
+                            color: c.textMuted,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: InkWell(
+                              onTap: permissions.canEditFields
+                                  ? _editDueDate
+                                  : null,
+                              child: Text(
+                                task.dueAt == null
+                                    ? l10n.taskNoDueDate
+                                    : '${l10n.fieldDueDate} · ${_formatDue(task.dueAt!)}',
+                                style: AppText.body.copyWith(
+                                  color: isOverdue ? c.danger : c.textMuted,
+                                ),
+                              ),
+                            ),
+                          ),
+                          if (task.dueAt != null)
+                            IconButton(
+                              onPressed: permissions.canEditFields
+                                  ? _clearDueDate
+                                  : null,
+                              tooltip: permissions.canEditFields
+                                  ? l10n.taskClearDueDate
+                                  : l10n.errorPermission,
+                              icon: Icon(
+                                LucideIcons.x,
+                                size: 18,
+                                color: c.textMuted,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ],
                   ),
-                ],
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(32, 0, 32, 24),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: Column(
+                        children: [
+                          screenSlivers[4].child!,
+                          screenSlivers[5].child!,
+                          screenSlivers[7].child!,
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 24),
+                    Expanded(
+                      flex: 2,
+                      child: Column(
+                        children: [
+                          screenSlivers[6].child!,
+                          screenSlivers[8].child!,
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ]

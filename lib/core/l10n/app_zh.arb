@@ -277,6 +277,7 @@
   "onboardingTeamSubtitle": "与他人共享工作。",
   "onboardingTeamSubtitleDesktop": "邀请队友，共享任务，一起聊天。",
   "tasksTitle": "任务",
+  "tasksBackToTasks": "返回任务",
   "tasksDueToday": "{count, plural, =1{1 个任务 · 今天 1 个到期} other{{count} 个任务 · 今天 {dueToday} 个到期}}",
   "@tasksDueToday": { "placeholders": { "count": { "type": "int" }, "dueToday": { "type": "int" } } },
   "tasksSelected": "{count, plural, =1{已选择 1 个任务} other{已选择 {count} 个任务}}",

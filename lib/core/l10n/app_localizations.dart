@@ -1682,6 +1682,12 @@ abstract class AppLocalizations {
   /// **'Tasks'**
   String get tasksTitle;
 
+  /// No description provided for @tasksBackToTasks.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to tasks'**
+  String get tasksBackToTasks;
+
   /// No description provided for @tasksDueToday.
   ///
   /// In en, this message translates to:

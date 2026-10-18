@@ -832,6 +832,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tasksTitle => '任务';
 
   @override
+  String get tasksBackToTasks => '返回任务';
+
+  @override
   String tasksDueToday(int count, int dueToday) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

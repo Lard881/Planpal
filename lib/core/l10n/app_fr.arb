@@ -277,6 +277,7 @@
   "onboardingTeamSubtitle": "Partagez le travail avec d'autres.",
   "onboardingTeamSubtitleDesktop": "Invitez des coéquipiers, partagez des tâches et discutez ensemble.",
   "tasksTitle": "Tâches",
+  "tasksBackToTasks": "Retour aux tâches",
   "tasksDueToday": "{count, plural, =1{1 tâche · 1 à rendre aujourd'hui} other{{count} tâches · {dueToday} à rendre aujourd'hui}}",
   "@tasksDueToday": { "placeholders": { "count": { "type": "int" }, "dueToday": { "type": "int" } } },
   "tasksSelected": "{count, plural, =1{1 tâche sélectionnée} other{{count} tâches sélectionnées}}",

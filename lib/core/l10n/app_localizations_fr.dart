@@ -879,6 +879,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get tasksTitle => 'Tâches';
 
   @override
+  String get tasksBackToTasks => 'Retour aux tâches';
+
+  @override
   String tasksDueToday(int count, int dueToday) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

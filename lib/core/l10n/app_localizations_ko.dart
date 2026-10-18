@@ -833,6 +833,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get tasksTitle => '작업';
 
   @override
+  String get tasksBackToTasks => '작업으로 돌아가기';
+
+  @override
   String tasksDueToday(int count, int dueToday) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

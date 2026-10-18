@@ -380,8 +380,10 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
           label: l10n.fieldDescription,
           hint: l10n.fieldDescriptionHint,
           controller: _descCtrl,
-          maxLines: 3,
-          textInputAction: TextInputAction.newline,
+          maxLines: isDesktop ? 1 : 3,
+          textInputAction: isDesktop
+              ? TextInputAction.next
+              : TextInputAction.newline,
         ),
         const SizedBox(height: 16),
         // Due Date + Time side by side
@@ -417,7 +419,9 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           _dueDate != null
-                              ? '${_months[_dueDate!.month - 1]} ${_dueDate!.day}'
+                              ? MaterialLocalizations.of(
+                                  context,
+                                ).formatMediumDate(_dueDate!)
                               : l10n.fieldDueDateOptional,
                           style: AppText.body.copyWith(
                             color: _dueDate != null
@@ -622,32 +626,54 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
   Widget _buildAddSubtaskButton(PlanPalColors c, AppLocalizations l10n) =>
       GestureDetector(
         onTap: () => _showAddSubtaskDialog(l10n),
+        child: CustomPaint(
+          foregroundPainter: _DashedOutlinePainter(color: c.border),
+          child: Container(
+            height: 44,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(AppRadius.control),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(LucideIcons.plus, size: 16, color: c.textMuted),
+                const SizedBox(width: 8),
+                Text(
+                  l10n.tasksAddSubtask.replaceFirst(RegExp(r'^\+\s*'), ''),
+                  style: AppText.bodyMedium.copyWith(color: c.textMuted),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+  Widget _buildAttachmentButton(AppLocalizations l10n, bool isOnline) {
+    final c = context.colors;
+    return GestureDetector(
+      onTap: isOnline && !_loading ? () => _pickAttachments(l10n) : null,
+      child: CustomPaint(
+        foregroundPainter: _DashedOutlinePainter(color: c.border),
         child: Container(
           height: 44,
           decoration: BoxDecoration(
-            border: Border.all(color: c.border),
             borderRadius: BorderRadius.circular(AppRadius.control),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(LucideIcons.plus, size: 16, color: c.textMuted),
+              Icon(LucideIcons.paperclip, size: 16, color: c.textMuted),
               const SizedBox(width: 8),
               Text(
-                l10n.tasksAddSubtask,
+                l10n.taskAttachFile,
                 style: AppText.bodyMedium.copyWith(color: c.textMuted),
               ),
             ],
           ),
         ),
-      );
-
-  Widget _buildAttachmentButton(AppLocalizations l10n, bool isOnline) =>
-      OutlinedButton.icon(
-        onPressed: isOnline && !_loading ? () => _pickAttachments(l10n) : null,
-        icon: const Icon(LucideIcons.paperclip),
-        label: Text(l10n.taskAttachFile),
-      );
+      ),
+    );
+  }
 
   void _showAddSubtaskDialog(AppLocalizations l10n) {
     _subtaskCtrl.clear();
@@ -678,21 +704,37 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
       ),
     );
   }
+}
 
-  static const _months = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ];
+class _DashedOutlinePainter extends CustomPainter {
+  final Color color;
+
+  const _DashedOutlinePainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1;
+    final rect = Rect.fromLTWH(0.5, 0.5, size.width - 1, size.height - 1);
+    final path = Path()
+      ..addRRect(
+        RRect.fromRectAndRadius(rect, const Radius.circular(AppRadius.control)),
+      );
+    for (final metric in path.computeMetrics()) {
+      var distance = 0.0;
+      while (distance < metric.length) {
+        final end = (distance + 5).clamp(0.0, metric.length);
+        canvas.drawPath(metric.extractPath(distance, end), paint);
+        distance = end + 3;
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _DashedOutlinePainter oldDelegate) =>
+      color != oldDelegate.color;
 }
 
 class _AssigneePicker extends ConsumerWidget {
