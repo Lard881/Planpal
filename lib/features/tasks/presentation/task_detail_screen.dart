@@ -76,6 +76,8 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
   late TextEditingController _commentCtrl;
   late TextEditingController _titleController;
   late TextEditingController _descriptionController;
+  late TextEditingController _subtaskController;
+  final FocusNode _subtaskFocusNode = FocusNode();
   Timer? _titleDebounce;
   Timer? _descriptionDebounce;
   final Map<String, String> _pendingTextUpdates = {};
@@ -89,6 +91,7 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
     _commentCtrl = TextEditingController();
     _commentCtrl.addListener(_updateMentionQuery);
     _titleController = TextEditingController(text: widget.task.title);
+    _subtaskController = TextEditingController();
     _descriptionController = TextEditingController(
       text: widget.task.description,
     );
@@ -104,6 +107,8 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
       unawaited(_persistInlineText(entry.key, entry.value));
     }
     _titleController.dispose();
+    _subtaskController.dispose();
+    _subtaskFocusNode.dispose();
     _descriptionController.dispose();
     super.dispose();
   }
@@ -252,6 +257,25 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
         failure is NetworkFailure ||
         failure is ServerUnreachableFailure ||
         failure is TimeoutFailure) {
+      ref.invalidate(taskDetailProvider(widget.task.id));
+    }
+    _showTaskActionResult(failure);
+  }
+
+  Future<void> _submitInlineSubtask() async {
+    final title = _subtaskController.text.trim();
+    if (title.isEmpty) return;
+    final failure = await ref
+        .read(taskRepositoryProvider)
+        .addSubtask(widget.task.id, title);
+    if (!mounted) return;
+
+    final queued =
+        failure is NetworkFailure ||
+        failure is ServerUnreachableFailure ||
+        failure is TimeoutFailure;
+    if (failure == null || queued) {
+      _subtaskController.clear();
       ref.invalidate(taskDetailProvider(widget.task.id));
     }
     _showTaskActionResult(failure);
@@ -1074,15 +1098,16 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
                       style: AppText.cardTitle.copyWith(color: c.textPrimary),
                     ),
                     const Spacer(),
-                    TextButton(
-                      onPressed: permissions.canEditFields
-                          ? () => _showAddSubtask(context, l10n)
-                          : null,
-                      child: Text(
-                        l10n.btnAdd,
-                        style: AppText.bodyMedium.copyWith(color: c.primary),
+                    if (!context.isDesktopLayout)
+                      TextButton(
+                        onPressed: permissions.canEditFields
+                            ? () => _showAddSubtask(context, l10n)
+                            : null,
+                        child: Text(
+                          l10n.btnAdd,
+                          style: AppText.bodyMedium.copyWith(color: c.primary),
+                        ),
                       ),
-                    ),
                   ],
                 ),
                 if (totalCount > 0) ...[
@@ -1181,6 +1206,35 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
                     },
                   ),
                 ],
+                if (context.isDesktopLayout) ...[
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: _subtaskController,
+                    focusNode: _subtaskFocusNode,
+                    enabled: permissions.canEditFields,
+                    textInputAction: TextInputAction.done,
+                    onSubmitted: (_) => _submitInlineSubtask(),
+                    decoration: InputDecoration(
+                      hintText: l10n.fieldSubtaskHint,
+                      prefixIcon: Icon(
+                        LucideIcons.plus,
+                        size: 18,
+                        color: c.textMuted,
+                      ),
+                      suffixIcon: IconButton(
+                        tooltip: l10n.btnAdd,
+                        onPressed: permissions.canEditFields
+                            ? _submitInlineSubtask
+                            : null,
+                        icon: Icon(
+                          LucideIcons.arrowUp,
+                          size: 18,
+                          color: c.primary,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
@@ -1200,10 +1254,10 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  l10n.tasksAssigneeLabel,
+                  l10n.fieldAssignee,
                   style: AppText.cardTitle.copyWith(color: c.textPrimary),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 8),
                 _TaskAssigneePicker(
                   workspaceId: task.workspaceId,
                   selectedId: task.assigneeId,
@@ -1212,7 +1266,12 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
                   onChanged: (assigneeId) =>
                       _saveTaskUpdates({'assigneeId': assigneeId}),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 16),
+                Text(
+                  l10n.fieldLabel,
+                  style: AppText.cardTitle.copyWith(color: c.textPrimary),
+                ),
+                const SizedBox(height: 8),
                 _TaskLabelPicker(
                   workspaceId: task.workspaceId,
                   selectedId: task.labelId,
@@ -1324,7 +1383,7 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  l10n.tasksComments,
+                  '${l10n.tasksComments} (${task.comments.length})',
                   style: AppText.cardTitle.copyWith(color: c.textPrimary),
                 ),
                 const SizedBox(height: 12),
@@ -1700,7 +1759,19 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
 
     return Scaffold(
       backgroundColor: c.background,
-      body: SafeArea(child: CustomScrollView(slivers: arrangedSlivers)),
+      body: SafeArea(
+        child: context.isDesktopLayout
+            ? LayoutBuilder(
+                builder: (context, constraints) => Align(
+                  alignment: Alignment.topLeft,
+                  child: SizedBox(
+                    width: constraints.maxWidth.clamp(0.0, 1344.0).toDouble(),
+                    child: CustomScrollView(slivers: arrangedSlivers),
+                  ),
+                ),
+              )
+            : CustomScrollView(slivers: arrangedSlivers),
+      ),
     );
   }
 

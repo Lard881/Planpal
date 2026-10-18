@@ -178,7 +178,13 @@ class TaskListNotifier extends StateNotifier<TaskListState> {
         clearError: err == null,
       );
     } else {
-      state = state.copyWith(loading: false, cursor: cursor, error: nextError);
+      state = state.copyWith(
+        tasks: err == null ? tasks : null,
+        loading: false,
+        cursor: cursor,
+        error: nextError,
+        clearError: err == null,
+      );
     }
   }
 

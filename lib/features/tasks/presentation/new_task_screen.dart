@@ -152,10 +152,11 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
     final messenger = ScaffoldMessenger.of(context);
     if (task != null) {
       ref.invalidate(taskListProvider(wsId));
+      ref.invalidate(currentWorkspaceTasksProvider);
       if (err != null) {
         messenger.showSnackBar(SnackBar(content: Text(l10n.syncWaitingShort)));
       }
-      context.go('/tasks/${task.id}');
+      context.go('/tasks');
     } else if (err != null) {
       final cleanupFailed = await _removeUploadedFiles(
         documents,
