@@ -4,11 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../../core/l10n/app_localizations.dart';
+import '../../../core/network/app_failure.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/layout/breakpoints.dart';
 import '../../../core/widgets/planpal_button.dart';
+import '../../auth/presentation/auth_failure_message.dart';
 import '../models/event_model.dart';
 import '../providers/calendar_providers.dart';
 import 'schedule_event_screen.dart';
@@ -543,6 +545,49 @@ class _RightPanel extends ConsumerWidget {
                               ],
                             ),
                           ),
+                          PopupMenuButton<String>(
+                            icon: Icon(
+                              Icons.more_vert,
+                              size: 20,
+                              color: c.textMuted,
+                            ),
+                            onSelected: (action) => _handleEventAction(
+                              context,
+                              ref,
+                              event,
+                              action,
+                              l10n,
+                            ),
+                            itemBuilder: (context) => [
+                              PopupMenuItem(
+                                value: 'edit',
+                                child: Row(
+                                  children: [
+                                    const Icon(Icons.edit_outlined, size: 18),
+                                    const SizedBox(width: 10),
+                                    Text(l10n.btnEdit),
+                                  ],
+                                ),
+                              ),
+                              PopupMenuItem(
+                                value: 'delete',
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.delete_outline,
+                                      size: 18,
+                                      color: c.danger,
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Text(
+                                      l10n.btnDelete,
+                                      style: TextStyle(color: c.danger),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),
@@ -567,6 +612,61 @@ class _RightPanel extends ConsumerWidget {
             onPressed: () => showScheduleEventSheet(context, ref),
           ),
         ],
+      ),
+    );
+  }
+
+  Future<void> _handleEventAction(
+    BuildContext context,
+    WidgetRef ref,
+    EventModel event,
+    String action,
+    AppLocalizations l10n,
+  ) async {
+    if (action == 'edit') {
+      showScheduleEventSheet(context, ref, event: event);
+      return;
+    }
+    if (action != 'delete') return;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.calendarDeleteEvent),
+        content: Text(l10n.confirmDeleteBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text(l10n.btnCancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: Text(
+              l10n.btnDelete,
+              style: TextStyle(color: context.colors.danger),
+            ),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !context.mounted) return;
+
+    final failure = await ref
+        .read(calendarProvider.notifier)
+        .deleteEvent(event.id);
+    if (failure == null || !context.mounted) return;
+
+    final queuedOffline =
+        failure is NetworkFailure ||
+        failure is ServerUnreachableFailure ||
+        failure is TimeoutFailure;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          queuedOffline
+              ? l10n.calendarDeleteQueuedOffline
+              : authFailureMessage(l10n, failure),
+        ),
       ),
     );
   }

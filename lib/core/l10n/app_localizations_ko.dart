@@ -1062,6 +1062,16 @@ class AppLocalizationsKo extends AppLocalizations {
   String get scheduleEventTitle => '일정 추가';
 
   @override
+  String get calendarEditEvent => '일정 수정';
+
+  @override
+  String get calendarDeleteEvent => '이 일정을 삭제할까요?';
+
+  @override
+  String get calendarDeleteQueuedOffline =>
+      '일정이 이 기기에서 제거되었으며 온라인 상태가 되면 삭제됩니다.';
+
+  @override
   String get reminderNone => '알림 없음';
 
   @override

@@ -224,6 +224,47 @@ class CalendarNotifier extends StateNotifier<CalendarState> {
     }
     return failure;
   }
+
+  Future<AppFailure?> updateEvent(
+    String eventId,
+    Map<String, dynamic> updates,
+  ) async {
+    final failure = await _repo.updateEvent(eventId, updates);
+    if (failure == null ||
+        failure is NetworkFailure ||
+        failure is ServerUnreachableFailure ||
+        failure is TimeoutFailure) {
+      state = state.copyWith(
+        events: state.events.map((event) {
+          if (event.id != eventId) return event;
+          return EventModel(
+            id: event.id,
+            workspaceId: event.workspaceId,
+            title: updates['title'] as String? ?? event.title,
+            description: updates['description'] as String? ?? event.description,
+            startsAt: updates['startsAt'] == null
+                ? event.startsAt
+                : DateTime.parse(updates['startsAt'] as String).toLocal(),
+            endsAt: updates['endsAt'] == null
+                ? event.endsAt
+                : DateTime.parse(updates['endsAt'] as String).toLocal(),
+            allDay: updates['allDay'] as bool? ?? event.allDay,
+            color: updates['color'] as String? ?? event.color,
+            taskId: event.taskId,
+            reminderMinutesBefore:
+                updates['reminderMinutesBefore'] as int? ??
+                event.reminderMinutesBefore,
+            createdBy: event.createdBy,
+            attendeeIds:
+                (updates['attendeeIds'] as List<dynamic>?)?.cast<String>() ??
+                event.attendeeIds,
+            attendeeNames: event.attendeeNames,
+          );
+        }).toList(),
+      );
+    }
+    return failure;
+  }
 }
 
 final calendarProvider =

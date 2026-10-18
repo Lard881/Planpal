@@ -13,6 +13,7 @@ import '../../../core/widgets/planpal_button.dart';
 import '../../../core/widgets/planpal_text_field.dart';
 import '../../auth/presentation/auth_failure_message.dart';
 import '../../workspaces/providers/workspace_providers.dart';
+import '../models/event_model.dart';
 import '../providers/calendar_providers.dart';
 
 // The 6 event color choices
@@ -25,23 +26,50 @@ const _eventColors = [
   '#EF4444',
 ];
 
-void showScheduleEventSheet(BuildContext context, WidgetRef ref) {
+void showScheduleEventSheet(
+  BuildContext context,
+  WidgetRef ref, {
+  EventModel? event,
+}) {
   if (context.isDesktopLayout) {
     showDialog(
       context: context,
-      builder: (_) => _ScheduleEventDialog(ref: ref),
+      builder: (_) => _ScheduleEventDialog(ref: ref, event: event),
     );
   } else {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => ScheduleEventPage(widgetRef: ref)),
+      MaterialPageRoute(
+        builder: (_) => ScheduleEventPage(widgetRef: ref, event: event),
+      ),
     );
   }
 }
 
+Map<String, dynamic> _eventUpdates({
+  required String title,
+  required String description,
+  required DateTime startsAt,
+  required DateTime endsAt,
+  required bool allDay,
+  required String color,
+  required List<String> attendeeIds,
+  required int reminderMinutesBefore,
+}) => {
+  'title': title,
+  'description': description,
+  'startsAt': startsAt.toUtc().toIso8601String(),
+  'endsAt': endsAt.toUtc().toIso8601String(),
+  'allDay': allDay,
+  'color': color,
+  'attendeeIds': attendeeIds,
+  'reminderMinutesBefore': reminderMinutesBefore,
+};
+
 // ── Desktop Dialog ────────────────────────────────────────────────────────────
 class _ScheduleEventDialog extends StatefulWidget {
   final WidgetRef ref;
-  const _ScheduleEventDialog({required this.ref});
+  final EventModel? event;
+  const _ScheduleEventDialog({required this.ref, this.event});
   @override
   State<_ScheduleEventDialog> createState() => _ScheduleEventDialogState();
 }
@@ -56,6 +84,21 @@ class _ScheduleEventDialogState extends State<_ScheduleEventDialog> {
   int _reminderMinutes = 15;
   List<String> _attendeeIds = const [];
   bool _loading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final event = widget.event;
+    if (event == null) return;
+    _titleCtrl.text = event.title;
+    _descCtrl.text = event.description;
+    _startsAt = event.startsAt;
+    _endsAt = event.endsAt;
+    _allDay = event.allDay;
+    _color = event.color;
+    _reminderMinutes = event.reminderMinutesBefore;
+    _attendeeIds = event.attendeeIds;
+  }
 
   @override
   void dispose() {
@@ -75,18 +118,32 @@ class _ScheduleEventDialogState extends State<_ScheduleEventDialog> {
       return;
     }
     setState(() => _loading = true);
-    final failure = await widget.ref
-        .read(calendarProvider.notifier)
-        .createEvent(
-          title: _titleCtrl.text.trim(),
-          description: _descCtrl.text.trim(),
-          startsAt: _startsAt,
-          endsAt: _endsAt,
-          allDay: _allDay,
-          color: _color,
-          attendeeIds: _attendeeIds,
-          reminderMinutesBefore: _reminderMinutes,
-        );
+    final notifier = widget.ref.read(calendarProvider.notifier);
+    final event = widget.event;
+    final failure = event == null
+        ? await notifier.createEvent(
+            title: _titleCtrl.text.trim(),
+            description: _descCtrl.text.trim(),
+            startsAt: _startsAt,
+            endsAt: _endsAt,
+            allDay: _allDay,
+            color: _color,
+            attendeeIds: _attendeeIds,
+            reminderMinutesBefore: _reminderMinutes,
+          )
+        : await notifier.updateEvent(
+            event.id,
+            _eventUpdates(
+              title: _titleCtrl.text.trim(),
+              description: _descCtrl.text.trim(),
+              startsAt: _startsAt,
+              endsAt: _endsAt,
+              allDay: _allDay,
+              color: _color,
+              attendeeIds: _attendeeIds,
+              reminderMinutesBefore: _reminderMinutes,
+            ),
+          );
     if (!mounted) return;
     setState(() => _loading = false);
     if (failure != null) {
@@ -127,7 +184,9 @@ class _ScheduleEventDialogState extends State<_ScheduleEventDialog> {
               child: Row(
                 children: [
                   Text(
-                    l10n.scheduleEventTitle,
+                    widget.event == null
+                        ? l10n.scheduleEventTitle
+                        : l10n.calendarEditEvent,
                     style: AppText.cardTitle.copyWith(color: c.textPrimary),
                   ),
                   const Spacer(),
@@ -265,7 +324,8 @@ class _ScheduleEventDialogState extends State<_ScheduleEventDialog> {
 // ── Mobile Page ───────────────────────────────────────────────────────────────
 class ScheduleEventPage extends StatefulWidget {
   final WidgetRef widgetRef;
-  const ScheduleEventPage({super.key, required this.widgetRef});
+  final EventModel? event;
+  const ScheduleEventPage({super.key, required this.widgetRef, this.event});
   @override
   State<ScheduleEventPage> createState() => _ScheduleEventPageState();
 }
@@ -280,6 +340,21 @@ class _ScheduleEventPageState extends State<ScheduleEventPage> {
   int _reminderMinutes = 15;
   List<String> _attendeeIds = const [];
   bool _loading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final event = widget.event;
+    if (event == null) return;
+    _titleCtrl.text = event.title;
+    _descCtrl.text = event.description;
+    _startsAt = event.startsAt;
+    _endsAt = event.endsAt;
+    _allDay = event.allDay;
+    _color = event.color;
+    _reminderMinutes = event.reminderMinutesBefore;
+    _attendeeIds = event.attendeeIds;
+  }
 
   @override
   void dispose() {
@@ -299,18 +374,32 @@ class _ScheduleEventPageState extends State<ScheduleEventPage> {
       return;
     }
     setState(() => _loading = true);
-    final failure = await widget.widgetRef
-        .read(calendarProvider.notifier)
-        .createEvent(
-          title: _titleCtrl.text.trim(),
-          description: _descCtrl.text.trim(),
-          startsAt: _startsAt,
-          endsAt: _endsAt,
-          allDay: _allDay,
-          color: _color,
-          attendeeIds: _attendeeIds,
-          reminderMinutesBefore: _reminderMinutes,
-        );
+    final notifier = widget.widgetRef.read(calendarProvider.notifier);
+    final event = widget.event;
+    final failure = event == null
+        ? await notifier.createEvent(
+            title: _titleCtrl.text.trim(),
+            description: _descCtrl.text.trim(),
+            startsAt: _startsAt,
+            endsAt: _endsAt,
+            allDay: _allDay,
+            color: _color,
+            attendeeIds: _attendeeIds,
+            reminderMinutesBefore: _reminderMinutes,
+          )
+        : await notifier.updateEvent(
+            event.id,
+            _eventUpdates(
+              title: _titleCtrl.text.trim(),
+              description: _descCtrl.text.trim(),
+              startsAt: _startsAt,
+              endsAt: _endsAt,
+              allDay: _allDay,
+              color: _color,
+              attendeeIds: _attendeeIds,
+              reminderMinutesBefore: _reminderMinutes,
+            ),
+          );
     if (!mounted) return;
     setState(() => _loading = false);
     if (failure != null) {
@@ -366,7 +455,9 @@ class _ScheduleEventPageState extends State<ScheduleEventPage> {
                   Expanded(
                     child: Center(
                       child: Text(
-                        l10n.scheduleEventTitle,
+                        widget.event == null
+                            ? l10n.scheduleEventTitle
+                            : l10n.calendarEditEvent,
                         style: AppText.cardTitle.copyWith(color: c.textPrimary),
                       ),
                     ),

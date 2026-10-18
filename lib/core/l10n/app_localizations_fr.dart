@@ -1135,6 +1135,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get scheduleEventTitle => 'Planifier un événement';
 
   @override
+  String get calendarEditEvent => 'Modifier l’événement';
+
+  @override
+  String get calendarDeleteEvent => 'Supprimer cet événement ?';
+
+  @override
+  String get calendarDeleteQueuedOffline =>
+      'L’événement a été retiré de cet appareil et sera supprimé dès que vous serez de nouveau en ligne.';
+
+  @override
   String get reminderNone => 'Aucun rappel';
 
   @override

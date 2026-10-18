@@ -2072,6 +2072,24 @@ abstract class AppLocalizations {
   /// **'Schedule Event'**
   String get scheduleEventTitle;
 
+  /// No description provided for @calendarEditEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Event'**
+  String get calendarEditEvent;
+
+  /// No description provided for @calendarDeleteEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this event?'**
+  String get calendarDeleteEvent;
+
+  /// No description provided for @calendarDeleteQueuedOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Event removed from this device and will be deleted when you\'re back online.'**
+  String get calendarDeleteQueuedOffline;
+
   /// No description provided for @reminderNone.
   ///
   /// In en, this message translates to:

@@ -1061,6 +1061,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get scheduleEventTitle => '安排活动';
 
   @override
+  String get calendarEditEvent => '编辑活动';
+
+  @override
+  String get calendarDeleteEvent => '确定删除此活动吗？';
+
+  @override
+  String get calendarDeleteQueuedOffline => '活动已从此设备移除，联网后将删除。';
+
+  @override
   String get reminderNone => '无提醒';
 
   @override
