@@ -458,6 +458,8 @@
   "fieldLabel": "Label",
   "@fieldLabel": {},
   "fieldLabelOptional": "Label (optional)",
+  "taskCreateLabelTitle": "Create label",
+  "taskLabelNameHint": "Label name",
   "@fieldLabelOptional": {},
   "fieldTitle": "Title",
   "@fieldTitle": {},

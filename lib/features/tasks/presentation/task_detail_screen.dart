@@ -620,6 +620,11 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
         failure is TimeoutFailure;
     if (failure == null || isQueuedFailure) {
       ref.invalidate(taskDetailProvider(taskId));
+      if (updates.containsKey('assigneeId')) {
+        ref
+          ..invalidate(taskListProvider(widget.task.workspaceId))
+          ..invalidate(currentWorkspaceTasksProvider);
+      }
     }
 
     final message = failure == null

@@ -133,6 +133,32 @@ void main() {
 
       notifier.dispose();
     });
+
+    test(
+      'shows tasks assigned to other members when no assignee filter is set',
+      () async {
+        final assignedTask = TaskModel(
+          id: 'task-assigned',
+          workspaceId: 'workspace-1',
+          title: 'Assigned to teammate',
+          assigneeId: 'user-2',
+          createdBy: 'user-1',
+          createdAt: DateTime(2026),
+          updatedAt: DateTime(2026),
+        );
+        final repository = _FakeTaskRepository()
+          ..cache = [assignedTask]
+          ..result = [assignedTask];
+        final notifier = TaskListNotifier(repository, 'workspace-1');
+        await Future<void>.delayed(Duration.zero);
+        await Future<void>.delayed(Duration.zero);
+
+        expect(notifier.state.filter.assigneeId, isNull);
+        expect(notifier.state.tasks, [assignedTask]);
+
+        notifier.dispose();
+      },
+    );
   });
 }
 

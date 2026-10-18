@@ -222,6 +222,8 @@
   "fieldAssigneeOptional": "담당자 (선택)",
   "fieldLabel": "레이블",
   "fieldLabelOptional": "레이블 (선택)",
+  "taskCreateLabelTitle": "레이블 만들기",
+  "taskLabelNameHint": "레이블 이름",
   "fieldTitle": "제목",
   "fieldTitleHint": "디자인 검토",
   "fieldStarts": "시작",

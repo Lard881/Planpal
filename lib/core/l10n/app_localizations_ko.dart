@@ -673,6 +673,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get fieldLabelOptional => '레이블 (선택)';
 
   @override
+  String get taskCreateLabelTitle => '레이블 만들기';
+
+  @override
+  String get taskLabelNameHint => '레이블 이름';
+
+  @override
   String get fieldTitle => '제목';
 
   @override

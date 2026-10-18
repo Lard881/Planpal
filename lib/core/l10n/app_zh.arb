@@ -222,6 +222,8 @@
   "fieldAssigneeOptional": "负责人（可选）",
   "fieldLabel": "标签",
   "fieldLabelOptional": "标签（可选）",
+  "taskCreateLabelTitle": "创建标签",
+  "taskLabelNameHint": "标签名称",
   "fieldTitle": "标题",
   "fieldTitleHint": "设计评审",
   "fieldStarts": "开始",

@@ -1,6 +1,7 @@
 // app/lib/features/tasks/presentation/new_task_screen.dart
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,6 +17,8 @@ import '../../../core/connectivity/connectivity_service.dart';
 import '../../../core/widgets/planpal_button.dart';
 import '../../../core/widgets/planpal_text_field.dart';
 import '../../../core/l10n/app_localizations.dart';
+import '../../../core/network/api_client.dart';
+import '../../../core/network/api_error_mapper.dart';
 import '../../../core/network/failure_localizer.dart';
 import '../../workspaces/providers/workspace_providers.dart';
 import '../../documents/data/documents_repository.dart';
@@ -180,6 +183,83 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
       if (await documents.deleteFile(fileId) != null) failed = true;
     }
     return failed;
+  }
+
+  Future<void> _createLabel(String workspaceId) async {
+    final l10n = AppLocalizations.of(context);
+    if (!ref.read(isOnlineProvider)) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.errorNetwork)));
+      return;
+    }
+
+    final nameController = TextEditingController();
+    final name = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.taskCreateLabelTitle),
+        content: TextField(
+          controller: nameController,
+          autofocus: true,
+          maxLength: 40,
+          textCapitalization: TextCapitalization.sentences,
+          decoration: InputDecoration(hintText: l10n.taskLabelNameHint),
+          onSubmitted: (value) {
+            final trimmed = value.trim();
+            if (trimmed.isNotEmpty) Navigator.pop(dialogContext, trimmed);
+          },
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(l10n.btnCancel),
+          ),
+          FilledButton(
+            onPressed: () {
+              final trimmed = nameController.text.trim();
+              if (trimmed.isNotEmpty) {
+                Navigator.pop(dialogContext, trimmed);
+              }
+            },
+            child: Text(l10n.btnCreate),
+          ),
+        ],
+      ),
+    );
+    nameController.dispose();
+    if (!mounted || name == null) return;
+
+    try {
+      final response = await ref
+          .read(apiClientProvider)
+          .dio
+          .post(
+            '/workspaces/$workspaceId/labels',
+            data: {'name': name, 'color': '#3B82F6'},
+          );
+      final label = LabelModel.fromJson(
+        response.data['label'] as Map<String, dynamic>,
+      );
+      final refreshedLabels = await ref.refresh(
+        labelsProvider(workspaceId).future,
+      );
+      if (!refreshedLabels.any((entry) => entry.id == label.id)) {
+        if (mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(l10n.errorGeneric)));
+        }
+        return;
+      }
+      if (mounted) setState(() => _labelId = label.id);
+    } on DioException catch (error) {
+      if (!mounted) return;
+      final failure = mapDioError(error);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(failure.localizedMessage(context))),
+      );
+    }
   }
 
   Future<void> _pickAttachments(AppLocalizations l10n) async {
@@ -619,6 +699,7 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
         workspaceId: workspaceId,
         selectedId: _labelId,
         onChanged: (id) => setState(() => _labelId = id),
+        onCreateLabel: () => _createLabel(workspaceId),
       ),
     ],
   );
@@ -679,7 +760,7 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
     _subtaskCtrl.clear();
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: Text(l10n.tasksAddSubtask),
         content: TextField(
           controller: _subtaskCtrl,
@@ -688,7 +769,7 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext),
             child: Text(l10n.btnCancel),
           ),
           FilledButton(
@@ -696,7 +777,7 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
               if (_subtaskCtrl.text.trim().isNotEmpty) {
                 setState(() => _subtasks.add(_subtaskCtrl.text.trim()));
               }
-              Navigator.pop(context);
+              Navigator.pop(dialogContext);
             },
             child: Text(l10n.btnAdd),
           ),
@@ -922,13 +1003,17 @@ class _PrioritySegmented extends StatelessWidget {
 }
 
 class _LabelPicker extends ConsumerWidget {
+  static const _createLabelValue = '__create_label__';
+
   final String workspaceId;
   final String? selectedId;
   final ValueChanged<String?> onChanged;
+  final VoidCallback onCreateLabel;
   const _LabelPicker({
     required this.workspaceId,
     required this.selectedId,
     required this.onChanged,
+    required this.onCreateLabel,
   });
 
   @override
@@ -936,6 +1021,9 @@ class _LabelPicker extends ConsumerWidget {
     final c = context.colors;
     final l10n = AppLocalizations.of(context);
     final isOnline = ref.watch(isOnlineProvider);
+    final canCreateLabel = ref
+        .watch(currentRolePermissionsProvider)
+        .canCreateTask;
     final labelsAsync = ref.watch(labelsProvider(workspaceId));
 
     return labelsAsync.when(
@@ -993,24 +1081,6 @@ class _LabelPicker extends ConsumerWidget {
               ),
             ),
       data: (labels) {
-        if (labels.isEmpty) {
-          return Container(
-            height: 44,
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(
-              color: c.surfaceAlt,
-              borderRadius: BorderRadius.circular(AppRadius.control),
-            ),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                l10n.fieldLabelOptional,
-                style: AppText.body.copyWith(color: c.textMuted),
-              ),
-            ),
-          );
-        }
-
         return Container(
           height: 44,
           padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -1065,8 +1135,22 @@ class _LabelPicker extends ConsumerWidget {
                     ),
                   );
                 }),
+                if (isOnline && canCreateLabel)
+                  DropdownMenuItem<String?>(
+                    value: _createLabelValue,
+                    child: Text(
+                      l10n.taskCreateLabelTitle,
+                      style: AppText.bodyMedium.copyWith(color: c.primary),
+                    ),
+                  ),
               ],
-              onChanged: onChanged,
+              onChanged: (value) {
+                if (value == _createLabelValue) {
+                  onCreateLabel();
+                } else {
+                  onChanged(value);
+                }
+              },
             ),
           ),
         );

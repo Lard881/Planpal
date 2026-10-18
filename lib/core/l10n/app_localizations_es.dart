@@ -710,6 +710,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get fieldLabelOptional => 'Etiqueta (opcional)';
 
   @override
+  String get taskCreateLabelTitle => 'Crear etiqueta';
+
+  @override
+  String get taskLabelNameHint => 'Nombre de la etiqueta';
+
+  @override
   String get fieldTitle => 'Título';
 
   @override

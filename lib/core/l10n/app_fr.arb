@@ -222,6 +222,8 @@
   "fieldAssigneeOptional": "Assigné à (optionnel)",
   "fieldLabel": "Étiquette",
   "fieldLabelOptional": "Étiquette (optionnel)",
+  "taskCreateLabelTitle": "Créer une étiquette",
+  "taskLabelNameHint": "Nom de l’étiquette",
   "fieldTitle": "Titre",
   "fieldTitleHint": "Revue de conception",
   "fieldStarts": "Début",

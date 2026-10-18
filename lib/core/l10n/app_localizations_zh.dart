@@ -672,6 +672,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get fieldLabelOptional => '标签（可选）';
 
   @override
+  String get taskCreateLabelTitle => '创建标签';
+
+  @override
+  String get taskLabelNameHint => '标签名称';
+
+  @override
   String get fieldTitle => '标题';
 
   @override

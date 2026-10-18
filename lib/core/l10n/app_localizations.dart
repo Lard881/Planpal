@@ -1382,6 +1382,18 @@ abstract class AppLocalizations {
   /// **'Label (optional)'**
   String get fieldLabelOptional;
 
+  /// No description provided for @taskCreateLabelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create label'**
+  String get taskCreateLabelTitle;
+
+  /// No description provided for @taskLabelNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Label name'**
+  String get taskLabelNameHint;
+
   /// No description provided for @fieldTitle.
   ///
   /// In en, this message translates to:

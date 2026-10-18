@@ -709,6 +709,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get fieldLabelOptional => 'Étiquette (optionnel)';
 
   @override
+  String get taskCreateLabelTitle => 'Créer une étiquette';
+
+  @override
+  String get taskLabelNameHint => 'Nom de l’étiquette';
+
+  @override
   String get fieldTitle => 'Titre';
 
   @override
