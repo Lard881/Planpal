@@ -914,7 +914,10 @@ class _DesktopTasksScreen extends ConsumerWidget {
                         style: AppText.pageTitle.copyWith(color: c.textPrimary),
                       ),
                       Text(
-                        l10n.tasksDueToday(state.tasks.length, state.dueToday),
+                        l10n.tasksDueToday(
+                          state.totalCount ?? state.tasks.length,
+                          state.dueToday,
+                        ),
                         style: AppText.body.copyWith(color: c.textMuted),
                       ),
                     ],
@@ -1083,7 +1086,7 @@ class _BulkBar extends StatelessWidget {
     final c = context.colors;
     final l10n = AppLocalizations.of(context);
     return Container(
-      height: 56,
+      height: 72,
       padding: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
         color: c.surface,
@@ -1169,7 +1172,7 @@ class _TaskTable extends StatelessWidget {
         children: [
           // Header — column labels kept as-is per prompt
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             child: Row(
               children: [
                 const SizedBox(width: 36),
@@ -1302,7 +1305,7 @@ class _TableRow extends StatelessWidget {
       onTap: onTap,
       child: Container(
         color: selected ? c.primarySoft : Colors.transparent,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         child: Row(
           children: [
             GestureDetector(
@@ -1339,7 +1342,7 @@ class _TableRow extends StatelessWidget {
                           userId: task.assigneeId!,
                           name: task.assigneeName ?? '',
                           avatarUrl: task.assigneeAvatarUrl,
-                          size: 28,
+                          size: 32,
                         ),
                         const SizedBox(width: 8),
                         Flexible(

@@ -59,6 +59,7 @@ class TaskListState {
   final bool loading;
   final bool loadingMore;
   final String? cursor;
+  final int? totalCount;
   final String? error;
   final TaskFilter filter;
   final Set<String> selectedIds;
@@ -68,6 +69,7 @@ class TaskListState {
     this.loading = false,
     this.loadingMore = false,
     this.cursor,
+    this.totalCount,
     this.error,
     this.filter = const TaskFilter(),
     this.selectedIds = const {},
@@ -80,16 +82,19 @@ class TaskListState {
     bool? loading,
     bool? loadingMore,
     String? cursor,
+    int? totalCount,
     String? error,
     TaskFilter? filter,
     Set<String>? selectedIds,
     bool clearError = false,
     bool clearCursor = false,
+    bool clearTotalCount = false,
   }) => TaskListState(
     tasks: tasks ?? this.tasks,
     loading: loading ?? this.loading,
     loadingMore: loadingMore ?? this.loadingMore,
     cursor: clearCursor ? null : (cursor ?? this.cursor),
+    totalCount: clearTotalCount ? null : (totalCount ?? this.totalCount),
     error: clearError ? null : (error ?? this.error),
     filter: filter ?? this.filter,
     selectedIds: selectedIds ?? this.selectedIds,
@@ -100,6 +105,7 @@ class TaskListNotifier extends StateNotifier<TaskListState> {
   final TaskRepository _repo;
   final String workspaceId;
   StreamSubscription<List<TaskModel>>? _streamSub;
+  int _fetchRevision = 0;
 
   TaskListNotifier(this._repo, this.workspaceId)
     : super(const TaskListState()) {
@@ -122,6 +128,7 @@ class TaskListNotifier extends StateNotifier<TaskListState> {
           sort: f.sort,
         )
         .listen((tasks) {
+          final knownTasks = {for (final task in state.tasks) task.id: task};
           final query = f.q?.trim().toLowerCase();
           final visibleTasks = query == null || query.isEmpty
               ? tasks
@@ -133,9 +140,39 @@ class TaskListNotifier extends StateNotifier<TaskListState> {
                     )
                     .toList();
           state = state.copyWith(
-            tasks: visibleTasks,
-            loading: false,
-            clearError: true,
+            tasks: visibleTasks.map((task) {
+              final knownTask = knownTasks[task.id];
+              if (knownTask == null) return task;
+              return TaskModel(
+                id: task.id,
+                workspaceId: task.workspaceId,
+                title: task.title,
+                description: task.description,
+                status: task.status,
+                priority: task.priority,
+                dueAt: task.dueAt,
+                reminderMinutesBefore: task.reminderMinutesBefore,
+                assigneeId: task.assigneeId,
+                assigneeName: task.assigneeId == knownTask.assigneeId
+                    ? knownTask.assigneeName
+                    : null,
+                assigneeAvatarUrl: task.assigneeId == knownTask.assigneeId
+                    ? knownTask.assigneeAvatarUrl
+                    : null,
+                labelId: task.labelId,
+                labelName: task.labelId == knownTask.labelId
+                    ? knownTask.labelName
+                    : null,
+                labelColor: task.labelId == knownTask.labelId
+                    ? knownTask.labelColor
+                    : null,
+                createdBy: task.createdBy,
+                completedAt: task.completedAt,
+                createdAt: task.createdAt,
+                updatedAt: task.updatedAt,
+              );
+            }).toList(),
+            loading: state.loading && visibleTasks.isEmpty,
           );
         });
   }
@@ -152,11 +189,12 @@ class TaskListNotifier extends StateNotifier<TaskListState> {
   // A3: Fetch from API in background — merges into Drift, stream updates UI
   Future<void> _fetchFromApi() async {
     if (workspaceId.isEmpty) return;
+    final fetchRevision = ++_fetchRevision;
     state = state.copyWith(
       loading: state.tasks.isEmpty,
     ); // only show spinner if cache empty
     final f = state.filter;
-    final (tasks, cursor, err) = await _repo.getTasks(
+    final (tasks, cursor, err, totalCount) = await _repo.getTasks(
       workspaceId,
       status: f.status,
       priority: f.priority,
@@ -165,27 +203,18 @@ class TaskListNotifier extends StateNotifier<TaskListState> {
       sort: f.sort,
       q: f.q,
     );
+    if (fetchRevision != _fetchRevision) return;
     final shouldHideConnectivityError =
         _shouldHideConnectivityError(err?.message) && state.tasks.isNotEmpty;
     final nextError = shouldHideConnectivityError ? null : err?.message;
-    // If there's a search query, update state directly (not via stream)
-    if (f.q != null) {
-      state = state.copyWith(
-        tasks: err == null ? tasks : null,
-        loading: false,
-        cursor: cursor,
-        error: nextError,
-        clearError: err == null,
-      );
-    } else {
-      state = state.copyWith(
-        tasks: err == null ? tasks : null,
-        loading: false,
-        cursor: cursor,
-        error: nextError,
-        clearError: err == null,
-      );
-    }
+    state = state.copyWith(
+      tasks: err == null ? tasks : null,
+      loading: false,
+      cursor: cursor,
+      totalCount: totalCount,
+      error: nextError,
+      clearError: err == null,
+    );
   }
 
   Future<void> load({bool refresh = false}) async {
@@ -193,8 +222,10 @@ class TaskListNotifier extends StateNotifier<TaskListState> {
     if (refresh) {
       state = state.copyWith(
         loading: true,
+        loadingMore: false,
         clearError: true,
         clearCursor: true,
+        clearTotalCount: true,
       );
       _subscribeToCache(); // re-subscribe with updated filter
     }
@@ -203,9 +234,10 @@ class TaskListNotifier extends StateNotifier<TaskListState> {
 
   Future<void> loadMore() async {
     if (state.cursor == null || state.loadingMore) return;
+    final fetchRevision = _fetchRevision;
     state = state.copyWith(loadingMore: true);
     final f = state.filter;
-    final (more, cursor, error) = await _repo.getTasks(
+    final (more, cursor, error, totalCount) = await _repo.getTasks(
       workspaceId,
       status: f.status,
       priority: f.priority,
@@ -215,6 +247,7 @@ class TaskListNotifier extends StateNotifier<TaskListState> {
       q: f.q,
       cursor: state.cursor,
     );
+    if (fetchRevision != _fetchRevision) return;
     if (error != null) {
       state = state.copyWith(loadingMore: false, error: error.message);
       return;
@@ -227,6 +260,7 @@ class TaskListNotifier extends StateNotifier<TaskListState> {
       ],
       loadingMore: false,
       cursor: cursor,
+      totalCount: totalCount,
       clearCursor: cursor == null,
       clearError: true,
     );

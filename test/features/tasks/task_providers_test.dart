@@ -159,14 +159,91 @@ void main() {
         notifier.dispose();
       },
     );
+
+    test(
+      'keeps API assignee details when the local task stream updates',
+      () async {
+        final cachedTask = TaskModel(
+          id: 'task-assigned',
+          workspaceId: 'workspace-1',
+          title: 'Assigned to teammate',
+          assigneeId: 'user-2',
+          createdBy: 'user-1',
+          createdAt: DateTime(2026),
+          updatedAt: DateTime(2026),
+        );
+        final apiTask = TaskModel(
+          id: cachedTask.id,
+          workspaceId: cachedTask.workspaceId,
+          title: cachedTask.title,
+          assigneeId: 'user-2',
+          assigneeName: 'Teammate',
+          assigneeAvatarUrl: 'https://example.test/avatar.png',
+          createdBy: cachedTask.createdBy,
+          createdAt: cachedTask.createdAt,
+          updatedAt: cachedTask.updatedAt,
+        );
+        final repository = _FakeTaskRepository()
+          ..cache = [cachedTask]
+          ..result = [apiTask]
+          ..totalCount = 1;
+        final notifier = TaskListNotifier(repository, 'workspace-1');
+        await Future<void>.delayed(Duration.zero);
+        await Future<void>.delayed(Duration.zero);
+
+        repository.emitCache();
+
+        expect(notifier.state.totalCount, 1);
+        expect(notifier.state.tasks.single.assigneeId, 'user-2');
+        expect(notifier.state.tasks.single.assigneeName, 'Teammate');
+        expect(
+          notifier.state.tasks.single.assigneeAvatarUrl,
+          'https://example.test/avatar.png',
+        );
+
+        notifier.dispose();
+      },
+    );
+
+    test(
+      'keeps an empty cache loading until the API request finishes',
+      () async {
+        final repository = _FakeTaskRepository()
+          ..pendingResult =
+              Completer<(List<TaskModel>, String?, AppFailure?, int?)>();
+        final notifier = TaskListNotifier(repository, 'workspace-1');
+        await Future<void>.delayed(Duration.zero);
+
+        expect(notifier.state.loading, isTrue);
+
+        repository.pendingResult!.complete((
+          const <TaskModel>[],
+          null,
+          const NetworkFailure(),
+          null,
+        ));
+        await Future<void>.delayed(Duration.zero);
+
+        expect(notifier.state.loading, isFalse);
+        expect(notifier.state.error, isNotNull);
+
+        repository.emitCache();
+
+        expect(notifier.state.error, isNotNull);
+        notifier.dispose();
+      },
+    );
   });
 }
 
 class _FakeTaskRepository implements TaskRepository {
   final calls = <Map<String, Object?>>[];
+  void Function()? _publishCache;
   List<TaskModel> result = const [];
   List<TaskModel> cache = const [];
   String? nextCursor;
+  int? totalCount;
+  Completer<(List<TaskModel>, String?, AppFailure?, int?)>? pendingResult;
   AppFailure? failure;
   BulkTaskActionResult bulkResult = const BulkTaskActionResult();
 
@@ -178,10 +255,13 @@ class _FakeTaskRepository implements TaskRepository {
     String? assigneeId,
     String? view,
     String? sort,
-  }) => Stream.value(cache);
+  }) => Stream.multi((controller) {
+    controller.add(cache);
+    _publishCache = () => controller.add(cache);
+  });
 
   @override
-  Future<(List<TaskModel>, String?, AppFailure?)> getTasks(
+  Future<(List<TaskModel>, String?, AppFailure?, int?)> getTasks(
     String workspaceId, {
     String? status,
     String? priority,
@@ -201,8 +281,12 @@ class _FakeTaskRepository implements TaskRepository {
       'q': q,
       'cursor': cursor,
     });
-    return (result, nextCursor, failure);
+    final pendingResult = this.pendingResult;
+    if (pendingResult != null) return pendingResult.future;
+    return (result, nextCursor, failure, totalCount);
   }
+
+  void emitCache() => _publishCache?.call();
 
   @override
   Future<BulkTaskActionResult> bulkAction(

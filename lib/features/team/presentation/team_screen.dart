@@ -48,7 +48,7 @@ class TeamActivity {
 
 final teamLatestActivityProvider = FutureProvider.autoDispose
     .family<List<TeamActivity>, String>((ref, workspaceId) async {
-      final (tasks, _, taskFailure) = await ref
+      final (tasks, _, taskFailure, _) = await ref
           .read(taskRepositoryProvider)
           .getTasks(workspaceId, sort: 'updated_at');
       if (taskFailure != null) throw taskFailure;

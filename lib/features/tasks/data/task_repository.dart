@@ -130,7 +130,8 @@ class TaskRepository {
   }
 
   // ── Fetch from API and merge into Drift ───────────────────────────────────
-  Future<(List<TaskModel>, String? cursor, AppFailure?)> getTasks(
+  Future<(List<TaskModel>, String? cursor, AppFailure?, int? totalCount)>
+  getTasks(
     String workspaceId, {
     String? status,
     String? priority,
@@ -158,6 +159,7 @@ class TaskRepository {
           .map((t) => TaskModel.fromJson(t as Map<String, dynamic>))
           .toList();
       final nextCursor = res.data['nextCursor'] as String?;
+      final totalCount = res.data['totalCount'] as int?;
       // Merge into Drift so offline reads are up to date
       await _db.transaction(() async {
         for (final task in tasks) {
@@ -183,9 +185,9 @@ class TaskRepository {
               );
         }
       });
-      return (tasks, nextCursor, null);
+      return (tasks, nextCursor, null, totalCount);
     } on DioException catch (e) {
-      return (<TaskModel>[], null, mapDioError(e));
+      return (<TaskModel>[], null, mapDioError(e), null);
     }
   }
 

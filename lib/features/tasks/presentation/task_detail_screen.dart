@@ -1058,6 +1058,7 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
                   style: AppText.body.copyWith(color: c.textPrimary),
                   decoration: InputDecoration(
                     hintText: l10n.tasksNoDescription,
+                    filled: !context.isDesktopLayout,
                     border: InputBorder.none,
                     enabledBorder: InputBorder.none,
                     focusedBorder: InputBorder.none,
@@ -1098,16 +1099,20 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
                       style: AppText.cardTitle.copyWith(color: c.textPrimary),
                     ),
                     const Spacer(),
-                    if (!context.isDesktopLayout)
-                      TextButton(
-                        onPressed: permissions.canEditFields
-                            ? () => _showAddSubtask(context, l10n)
-                            : null,
-                        child: Text(
-                          l10n.btnAdd,
-                          style: AppText.bodyMedium.copyWith(color: c.primary),
+                    TextButton(
+                      onPressed: permissions.canEditFields
+                          ? context.isDesktopLayout
+                                ? _subtaskFocusNode.requestFocus
+                                : () => _showAddSubtask(context, l10n)
+                          : null,
+                      child: Text(
+                        l10n.tasksAddSubtask.replaceFirst(
+                          RegExp(r'^\+\s*'),
+                          '',
                         ),
+                        style: AppText.bodyMedium.copyWith(color: c.primary),
                       ),
+                    ),
                   ],
                 ),
                 if (totalCount > 0) ...[
@@ -1308,21 +1313,37 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
                       ),
                     ),
                     if (permissions.canEditFields)
-                      IconButton(
-                        tooltip: l10n.taskAttachFile,
-                        onPressed: isOnline && !_uploadingAttachment
-                            ? _pickAndAttachFile
-                            : null,
-                        icon: _uploadingAttachment
-                            ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                ),
-                              )
-                            : const Icon(LucideIcons.paperclip),
-                      ),
+                      context.isDesktopLayout
+                          ? TextButton.icon(
+                              onPressed: isOnline && !_uploadingAttachment
+                                  ? _pickAndAttachFile
+                                  : null,
+                              icon: _uploadingAttachment
+                                  ? const SizedBox(
+                                      width: 16,
+                                      height: 16,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : const Icon(LucideIcons.paperclip, size: 18),
+                              label: Text(l10n.taskAttachFile),
+                            )
+                          : IconButton(
+                              tooltip: l10n.taskAttachFile,
+                              onPressed: isOnline && !_uploadingAttachment
+                                  ? _pickAndAttachFile
+                                  : null,
+                              icon: _uploadingAttachment
+                                  ? const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : const Icon(LucideIcons.paperclip),
+                            ),
                   ],
                 ),
                 if (!isOnline) ...[
@@ -1673,6 +1694,7 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
                         style: AppText.pageTitle.copyWith(color: c.textPrimary),
                         decoration: InputDecoration(
                           hintText: l10n.fieldTaskNameHint,
+                          filled: false,
                           border: InputBorder.none,
                           enabledBorder: InputBorder.none,
                           focusedBorder: InputBorder.none,
@@ -1765,7 +1787,7 @@ class _TaskDetailContentState extends ConsumerState<_TaskDetailContent> {
                 builder: (context, constraints) => Align(
                   alignment: Alignment.topLeft,
                   child: SizedBox(
-                    width: constraints.maxWidth.clamp(0.0, 1344.0).toDouble(),
+                    width: constraints.maxWidth.clamp(0.0, 1280.0).toDouble(),
                     child: CustomScrollView(slivers: arrangedSlivers),
                   ),
                 ),
