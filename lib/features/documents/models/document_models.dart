@@ -24,7 +24,7 @@ class FolderModel {
     workspaceId: j['workspace_id'] as String,
     parentId: j['parent_id'] as String?,
     name: j['name'] as String,
-    fileCount: j['file_count'] as int? ?? 0,
+    fileCount: j['file_count'] as int? ?? j['fileCount'] as int? ?? 0,
     createdAt: DateTime.parse(j['created_at'] as String),
     updatedAt: DateTime.parse(j['updated_at'] as String),
   );
@@ -71,12 +71,22 @@ class DocumentModel {
 
   String get extension {
     final parts = title.split('.');
-    if (parts.length > 1) return parts.last.toLowerCase();
+    if (parts.length > 1) {
+      return parts.last.toLowerCase();
+    }
     if (mimeType != null) {
-      if (mimeType!.contains('pdf')) return 'pdf';
-      if (mimeType!.contains('word') || mimeType!.contains('doc')) return 'doc';
-      if (mimeType!.contains('excel') || mimeType!.contains('sheet')) return 'xls';
-      if (mimeType!.contains('image')) return 'img';
+      if (mimeType!.contains('pdf')) {
+        return 'pdf';
+      }
+      if (mimeType!.contains('word') || mimeType!.contains('doc')) {
+        return 'doc';
+      }
+      if (mimeType!.contains('excel') || mimeType!.contains('sheet')) {
+        return 'xls';
+      }
+      if (mimeType!.contains('image')) {
+        return 'img';
+      }
     }
     return isWritten ? 'doc' : 'file';
   }
@@ -96,8 +106,20 @@ class DocumentModel {
     if (diff.inMinutes < 60) return 'Edited ${diff.inMinutes}m ago';
     if (diff.inHours < 24) return 'Edited ${diff.inHours}h ago';
     if (diff.inDays == 1) return 'Edited Yesterday';
-    const months = ['Jan','Feb','Mar','Apr','May','Jun',
-                    'Jul','Aug','Sep','Oct','Nov','Dec'];
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
     return 'Edited ${months[updatedAt.month - 1]} ${updatedAt.day}';
   }
 

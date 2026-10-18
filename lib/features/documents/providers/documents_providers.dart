@@ -219,7 +219,7 @@ class DocumentsNotifier extends StateNotifier<DocumentsState> {
     return (null, err?.message);
   }
 
-  Future<void> deleteDocument(String documentId) async {
+  Future<AppFailure?> deleteDocument(String documentId) async {
     final failure = await _repo.deleteDocument(documentId);
     if (failure == null) {
       state = state.copyWith(
@@ -230,9 +230,10 @@ class DocumentsNotifier extends StateNotifier<DocumentsState> {
     } else {
       state = state.copyWith(error: failure.message);
     }
+    return failure;
   }
 
-  Future<void> deleteFolder(String folderId) async {
+  Future<AppFailure?> deleteFolder(String folderId) async {
     final err = await _repo.deleteFolder(workspaceId, folderId);
     if (err == null) {
       state = state.copyWith(
@@ -241,6 +242,7 @@ class DocumentsNotifier extends StateNotifier<DocumentsState> {
     } else {
       state = state.copyWith(error: err.message);
     }
+    return err;
   }
 }
 

@@ -8,8 +8,10 @@ import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:pdfrx/pdfrx.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/connectivity/connectivity_service.dart';
@@ -674,7 +676,12 @@ Future<void> _openDocument(
     context.push('/documents/${document.id}');
     return;
   }
-  if (document.fileId == null) return;
+  if (document.fileId == null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(AppLocalizations.of(context).errorGeneric)),
+    );
+    return;
+  }
   final (url, failure) = await ref
       .read(documentsRepositoryProvider)
       .getDownloadUrl(document.fileId!);
@@ -693,12 +700,124 @@ Future<void> _openDocument(
   if (document.mimeType?.startsWith('image/') == true) {
     await showDialog<void>(
       context: context,
-      builder: (_) =>
-          Dialog(child: InteractiveViewer(child: Image.network(url))),
+      builder: (_) => Dialog(
+        child: InteractiveViewer(
+          child: Image.network(
+            url,
+            errorBuilder: (_, _, _) =>
+                Center(child: Text(AppLocalizations.of(context).errorGeneric)),
+          ),
+        ),
+      ),
+    );
+  } else if (document.mimeType == 'application/pdf' ||
+      document.extension == 'pdf') {
+    final size = MediaQuery.sizeOf(context);
+    await showDialog<void>(
+      context: context,
+      builder: (_) => Dialog(
+        child: SizedBox(
+          width: size.width * 0.8,
+          height: size.height * 0.85,
+          child: PdfViewer.uri(Uri.parse(url)),
+        ),
+      ),
     );
   } else {
-    await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+    final launched = await launchUrl(
+      Uri.parse(url),
+      mode: LaunchMode.externalApplication,
+    );
+    if (!launched && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context).errorGeneric)),
+      );
+    }
   }
+}
+
+Future<bool> _confirmDocumentDeletion(BuildContext context) async {
+  final l10n = AppLocalizations.of(context);
+  return await showDialog<bool>(
+        context: context,
+        builder: (dialogContext) => AlertDialog(
+          title: Text(l10n.confirmDeleteTitle),
+          content: Text(l10n.confirmDeleteBody),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext, false),
+              child: Text(l10n.btnCancel),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext, true),
+              child: Text(l10n.btnDelete),
+            ),
+          ],
+        ),
+      ) ??
+      false;
+}
+
+Future<void> _downloadDocument(
+  BuildContext context,
+  WidgetRef ref,
+  DocumentModel document,
+) async {
+  final l10n = AppLocalizations.of(context);
+  if (!ref.read(isOnlineProvider)) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l10n.taskAttachmentOffline)));
+    return;
+  }
+  if (document.fileId == null) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l10n.errorGeneric)));
+    return;
+  }
+
+  final (url, urlFailure) = await ref
+      .read(documentsRepositoryProvider)
+      .getDownloadUrl(document.fileId!);
+  if (!context.mounted) return;
+  if (urlFailure != null || url == null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          urlFailure?.localizedMessage(context) ?? l10n.errorGeneric,
+        ),
+      ),
+    );
+    return;
+  }
+
+  String? path;
+  try {
+    path = await FilePicker.platform.saveFile(
+      dialogTitle: l10n.btnDownload,
+      fileName: document.title,
+    );
+  } on PlatformException {
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l10n.errorGeneric)));
+    return;
+  }
+  if (path == null || path.isEmpty || !context.mounted) return;
+
+  final failure = await ref
+      .read(documentsRepositoryProvider)
+      .downloadFile(url, path);
+  if (!context.mounted) return;
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(
+        failure?.localizedMessage(context) ?? l10n.documentDownloadComplete,
+      ),
+    ),
+  );
 }
 
 void _showDocumentMenu(
@@ -722,6 +841,15 @@ void _showDocumentMenu(
               _openDocument(context, ref, document);
             },
           ),
+          if (document.isFile)
+            ListTile(
+              leading: const Icon(LucideIcons.download),
+              title: Text(l10n.btnDownload),
+              onTap: () {
+                Navigator.pop(sheetContext);
+                _downloadDocument(context, ref, document);
+              },
+            ),
           ListTile(
             leading: const Icon(LucideIcons.fileEdit),
             title: Text(l10n.btnRename),
@@ -741,9 +869,20 @@ void _showDocumentMenu(
           ListTile(
             leading: Icon(LucideIcons.trash2, color: colors.danger),
             title: Text(l10n.btnDelete, style: TextStyle(color: colors.danger)),
-            onTap: () {
+            onTap: () async {
               Navigator.pop(sheetContext);
-              ref.read(documentsProvider.notifier).deleteDocument(document.id);
+              if (!await _confirmDocumentDeletion(context) ||
+                  !context.mounted) {
+                return;
+              }
+              final failure = await ref
+                  .read(documentsProvider.notifier)
+                  .deleteDocument(document.id);
+              if (failure != null && context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(failure.localizedMessage(context))),
+                );
+              }
             },
           ),
         ],
@@ -816,9 +955,20 @@ void _showFolderMenu(BuildContext context, WidgetRef ref, FolderModel folder) {
           ListTile(
             leading: Icon(LucideIcons.trash2, color: colors.danger),
             title: Text(l10n.btnDelete, style: TextStyle(color: colors.danger)),
-            onTap: () {
+            onTap: () async {
               Navigator.pop(sheetContext);
-              ref.read(documentsProvider.notifier).deleteFolder(folder.id);
+              if (!await _confirmDocumentDeletion(context) ||
+                  !context.mounted) {
+                return;
+              }
+              final failure = await ref
+                  .read(documentsProvider.notifier)
+                  .deleteFolder(folder.id);
+              if (failure != null && context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(failure.localizedMessage(context))),
+                );
+              }
             },
           ),
         ],

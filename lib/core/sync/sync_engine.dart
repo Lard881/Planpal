@@ -260,6 +260,13 @@ class SyncEngine extends StateNotifier<SyncState> {
       final folders = data['folders'] as List? ?? [];
       for (final row in folders) {
         final folder = row as Map<String, dynamic>;
+        final existingFolder =
+            await (_db.select(_db.folders)
+                  ..where((table) => table.id.equals(folder['id'] as String)))
+                .getSingleOrNull();
+        if (existingFolder?.deletedAt != null && folder['deleted_at'] == null) {
+          continue;
+        }
         if (folder['deleted_at'] != null) {
           await (_db.delete(
             _db.folders,
@@ -296,6 +303,14 @@ class SyncEngine extends StateNotifier<SyncState> {
       }
       for (final row in documents) {
         final document = row as Map<String, dynamic>;
+        final existingDocument =
+            await (_db.select(_db.documents)
+                  ..where((table) => table.id.equals(document['id'] as String)))
+                .getSingleOrNull();
+        if (existingDocument?.deletedAt != null &&
+            document['deleted_at'] == null) {
+          continue;
+        }
         if (document['deleted_at'] != null) {
           await (_db.delete(
             _db.documents,
@@ -468,11 +483,22 @@ class SyncEngine extends StateNotifier<SyncState> {
         case 'create':
           await _dio.post('/$entityType', data: payload);
         case 'update':
-          await _dio.patch('/$entityType/$entityId', data: payload);
+          final requestPayload = Map<String, dynamic>.from(payload)
+            ..remove('_previous');
+          await _dio.patch('/$entityType/$entityId', data: requestPayload);
         case 'delete':
           await _dio.delete('/$entityType/$entityId');
       }
       // Success — remove from outbox
+      if (entry.operation == 'delete' && entityType == 'folders') {
+        await (_db.delete(
+          _db.folders,
+        )..where((row) => row.id.equals(entityId))).go();
+      } else if (entry.operation == 'delete' && entityType == 'documents') {
+        await (_db.delete(
+          _db.documents,
+        )..where((row) => row.id.equals(entityId))).go();
+      }
       await (_db.delete(
         _db.outboxEntries,
       )..where((t) => t.id.equals(entry.id))).go();
@@ -491,6 +517,68 @@ class SyncEngine extends StateNotifier<SyncState> {
           await (_db.update(_db.chatMessages)
                 ..where((row) => row.id.equals(entityId)))
               .write(const ChatMessagesCompanion(status: Value('failed')));
+        }
+        if (status == 404 &&
+            entry.operation == 'delete' &&
+            (entityType == 'folders' || entityType == 'documents')) {
+          if (entityType == 'folders') {
+            await (_db.delete(
+              _db.folders,
+            )..where((row) => row.id.equals(entityId))).go();
+          } else {
+            await (_db.delete(
+              _db.documents,
+            )..where((row) => row.id.equals(entityId))).go();
+          }
+        } else if (entry.operation == 'delete' &&
+            (entityType == 'folders' || entityType == 'documents')) {
+          if (entityType == 'folders') {
+            await (_db.update(_db.folders)
+                  ..where((row) => row.id.equals(entityId)))
+                .write(const FoldersCompanion(deletedAt: Value(null)));
+          } else {
+            await (_db.update(_db.documents)
+                  ..where((row) => row.id.equals(entityId)))
+                .write(const DocumentsCompanion(deletedAt: Value(null)));
+          }
+        } else if (entry.operation == 'create' &&
+            entityType.startsWith('workspaces/') &&
+            entityType.endsWith('/folders')) {
+          await (_db.delete(
+            _db.folders,
+          )..where((row) => row.id.equals(entityId))).go();
+        } else if (entry.operation == 'update' &&
+            (entityType == 'folders' || entityType == 'documents') &&
+            payload['_previous'] is Map<String, dynamic>) {
+          final previous = payload['_previous'] as Map<String, dynamic>;
+          if (entityType == 'folders') {
+            await (_db.update(
+              _db.folders,
+            )..where((row) => row.id.equals(entityId))).write(
+              FoldersCompanion(
+                name: Value(previous['name'] as String),
+                parentId: Value(previous['parentId'] as String?),
+              ),
+            );
+          } else {
+            final previousContent = previous['content'];
+            await (_db.update(
+              _db.documents,
+            )..where((row) => row.id.equals(entityId))).write(
+              DocumentsCompanion(
+                title: Value(previous['title'] as String),
+                folderId: Value(previous['folderId'] as String?),
+                content: Value(
+                  previousContent == null
+                      ? null
+                      : previousContent is String
+                      ? previousContent
+                      : jsonEncode(previousContent),
+                ),
+                contentText: Value(previous['contentText'] as String),
+              ),
+            );
+          }
         }
       } else {
         // Keep transient failures pending so long outages do not need manual retry.

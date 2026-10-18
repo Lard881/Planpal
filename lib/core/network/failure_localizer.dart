@@ -24,6 +24,7 @@ String localizeFailureText(AppLocalizations l10n, String text) {
     'INVALID_REQUEST' || 'VALIDATION_ERROR' => l10n.errorInvalidRequest,
     'FORBIDDEN' || 'PERMISSION_DENIED' => l10n.errorPermission,
     'NOT_FOUND' => l10n.errorNotFound,
+    'FOLDER_NOT_EMPTY' => l10n.errorFolderNotEmpty,
     'CONFLICT' => l10n.errorConflict,
     'SERVER_ERROR' ||
     'INTERNAL_ERROR' ||

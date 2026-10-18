@@ -159,6 +159,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get btnOpen => '打开';
 
   @override
+  String get btnDownload => '下载';
+
+  @override
   String get btnRename => '重命名';
 
   @override
@@ -1116,6 +1119,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get documentNewTitle => '新建文档';
+
+  @override
+  String get documentDownloadComplete => '下载完成';
+
+  @override
+  String get errorFolderNotEmpty => '请先移动或删除其中的文件和文件夹。';
 
   @override
   String get documentUploadFile => '上传文件';

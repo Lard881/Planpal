@@ -159,6 +159,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get btnOpen => '열기';
 
   @override
+  String get btnDownload => '다운로드';
+
+  @override
   String get btnRename => '이름 변경';
 
   @override
@@ -1118,6 +1121,12 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get documentNewTitle => '새 문서';
+
+  @override
+  String get documentDownloadComplete => '다운로드 완료';
+
+  @override
+  String get errorFolderNotEmpty => '먼저 폴더 안의 파일과 폴더를 이동하거나 삭제하세요.';
 
   @override
   String get documentUploadFile => '파일 업로드';

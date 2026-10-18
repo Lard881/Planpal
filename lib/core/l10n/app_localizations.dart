@@ -404,6 +404,12 @@ abstract class AppLocalizations {
   /// **'Open'**
   String get btnOpen;
 
+  /// No description provided for @btnDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get btnDownload;
+
   /// No description provided for @btnRename.
   ///
   /// In en, this message translates to:
@@ -2185,6 +2191,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'New Document'**
   String get documentNewTitle;
+
+  /// No description provided for @documentDownloadComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Download completed'**
+  String get documentDownloadComplete;
+
+  /// No description provided for @errorFolderNotEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Move or delete the files and folders inside it first.'**
+  String get errorFolderNotEmpty;
 
   /// No description provided for @documentUploadFile.
   ///

@@ -160,6 +160,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get btnOpen => 'Abrir';
 
   @override
+  String get btnDownload => 'Descargar';
+
+  @override
   String get btnRename => 'Cambiar nombre';
 
   @override
@@ -1192,6 +1195,13 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get documentNewTitle => 'Nuevo documento';
+
+  @override
+  String get documentDownloadComplete => 'Descarga completada';
+
+  @override
+  String get errorFolderNotEmpty =>
+      'Primero mueve o elimina los archivos y carpetas que contiene.';
 
   @override
   String get documentUploadFile => 'Subir archivo';
