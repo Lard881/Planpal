@@ -160,9 +160,28 @@ class TaskRepository {
           .toList();
       final nextCursor = res.data['nextCursor'] as String?;
       final totalCount = res.data['totalCount'] as int?;
+      final pendingEntries =
+          await (_db.select(_db.outboxEntries)..where(
+                (entry) =>
+                    (entry.operation.equals('create') &
+                        entry.entityType.equals(
+                          'workspaces/$workspaceId/tasks',
+                        )) |
+                    (entry.entityType.equals('tasks') &
+                        entry.operation.isIn(['update', 'delete'])),
+              ))
+              .get();
+      final pendingOperations = <String, Set<String>>{};
+      for (final entry in pendingEntries) {
+        pendingOperations
+            .putIfAbsent(entry.entityId, () => <String>{})
+            .add(entry.operation);
+      }
+      final returnedIds = tasks.map((task) => task.id).toSet();
       // Merge into Drift so offline reads are up to date
       await _db.transaction(() async {
         for (final task in tasks) {
+          if (pendingOperations[task.id]?.isNotEmpty ?? false) continue;
           await _db
               .into(_db.tasks)
               .insertOnConflictUpdate(
@@ -185,10 +204,98 @@ class TaskRepository {
               );
         }
       });
-      return (tasks, nextCursor, null, totalCount);
+
+      final visibleTasks = <TaskModel>[];
+      for (final task in tasks) {
+        final operations = pendingOperations[task.id];
+        if (operations?.contains('delete') ?? false) continue;
+        if (operations?.contains('create') == true ||
+            operations?.contains('update') == true) {
+          final cachedTask = await _getCachedTask(task.id);
+          if (cachedTask != null &&
+              _matchesTaskFilter(
+                cachedTask,
+                status: status,
+                priority: priority,
+                assigneeId: assigneeId,
+                view: view,
+                q: q,
+              )) {
+            visibleTasks.add(cachedTask);
+          }
+        } else {
+          visibleTasks.add(task);
+        }
+      }
+
+      var localPendingCreates = 0;
+      for (final entry in pendingOperations.entries) {
+        if (returnedIds.contains(entry.key) ||
+            entry.value.contains('delete') ||
+            !(entry.value.contains('create') ||
+                entry.value.contains('update'))) {
+          continue;
+        }
+        final cachedTask = await _getCachedTask(entry.key);
+        if (cachedTask != null &&
+            cachedTask.workspaceId == workspaceId &&
+            _matchesTaskFilter(
+              cachedTask,
+              status: status,
+              priority: priority,
+              assigneeId: assigneeId,
+              view: view,
+              q: q,
+            )) {
+          visibleTasks.add(cachedTask);
+          if (entry.value.contains('create')) localPendingCreates++;
+        }
+      }
+
+      return (
+        visibleTasks,
+        nextCursor,
+        null,
+        totalCount == null ? null : totalCount + localPendingCreates,
+      );
     } on DioException catch (e) {
       return (<TaskModel>[], null, mapDioError(e), null);
     }
+  }
+
+  bool _matchesTaskFilter(
+    TaskModel task, {
+    String? status,
+    String? priority,
+    String? assigneeId,
+    String? view,
+    String? q,
+  }) {
+    if (status != null && task.status != status) return false;
+    if (priority != null && task.priority != priority) return false;
+    if (assigneeId != null && task.assigneeId != assigneeId) return false;
+    if (q != null &&
+        q.isNotEmpty &&
+        !task.title.toLowerCase().contains(q.toLowerCase()) &&
+        !task.description.toLowerCase().contains(q.toLowerCase())) {
+      return false;
+    }
+
+    final now = DateTime.now();
+    switch (view) {
+      case 'today':
+        if (!task.isToday) return false;
+      case 'week':
+        final dueAt = task.dueAt;
+        if (dueAt == null ||
+            dueAt.isBefore(now) ||
+            !dueAt.isBefore(now.add(const Duration(days: 7)))) {
+          return false;
+        }
+      case 'overdue':
+        if (!task.isOverdue) return false;
+    }
+    return true;
   }
 
   // ── Get single ────────────────────────────────────────────────────────────

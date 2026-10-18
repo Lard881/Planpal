@@ -233,6 +233,26 @@ void main() {
         notifier.dispose();
       },
     );
+
+    test(
+      'keeps a newly created task visible when it is beyond the API page',
+      () async {
+        final pendingResult =
+            Completer<(List<TaskModel>, String?, AppFailure?, int?)>();
+        final repository = _FakeTaskRepository()..pendingResult = pendingResult;
+        final notifier = TaskListNotifier(repository, 'workspace-1');
+        await Future<void>.delayed(Duration.zero);
+        final createdTask = _task(id: 'new-task', title: 'Just created');
+
+        notifier.includeCreatedTask(createdTask);
+        pendingResult.complete((const <TaskModel>[], null, null, 31));
+        await Future<void>.delayed(Duration.zero);
+
+        expect(notifier.state.tasks, [createdTask]);
+        expect(notifier.state.totalCount, 31);
+        notifier.dispose();
+      },
+    );
   });
 }
 

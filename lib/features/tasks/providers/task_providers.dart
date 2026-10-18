@@ -106,6 +106,7 @@ class TaskListNotifier extends StateNotifier<TaskListState> {
   final String workspaceId;
   StreamSubscription<List<TaskModel>>? _streamSub;
   int _fetchRevision = 0;
+  TaskModel? _recentlyCreatedTask;
 
   TaskListNotifier(this._repo, this.workspaceId)
     : super(const TaskListState()) {
@@ -207,14 +208,32 @@ class TaskListNotifier extends StateNotifier<TaskListState> {
     final shouldHideConnectivityError =
         _shouldHideConnectivityError(err?.message) && state.tasks.isNotEmpty;
     final nextError = shouldHideConnectivityError ? null : err?.message;
+    final visibleTasks = err == null ? _includeRecentTask(tasks) : null;
     state = state.copyWith(
-      tasks: err == null ? tasks : null,
+      tasks: visibleTasks,
       loading: false,
       cursor: cursor,
       totalCount: totalCount,
       error: nextError,
       clearError: err == null,
     );
+  }
+
+  List<TaskModel> _includeRecentTask(List<TaskModel> tasks) {
+    final recentTask = _recentlyCreatedTask;
+    if (recentTask == null) return tasks;
+    if (tasks.any((task) => task.id == recentTask.id)) {
+      _recentlyCreatedTask = null;
+      return tasks;
+    }
+    return [...tasks, recentTask];
+  }
+
+  void includeCreatedTask(TaskModel task) {
+    if (task.workspaceId != workspaceId) return;
+    _recentlyCreatedTask = task;
+    if (state.tasks.any((existing) => existing.id == task.id)) return;
+    state = state.copyWith(tasks: [...state.tasks, task]);
   }
 
   Future<void> load({bool refresh = false}) async {
@@ -252,11 +271,12 @@ class TaskListNotifier extends StateNotifier<TaskListState> {
       state = state.copyWith(loadingMore: false, error: error.message);
       return;
     }
+    final visibleMore = _includeRecentTask(more);
     final existingIds = state.tasks.map((task) => task.id).toSet();
     state = state.copyWith(
       tasks: [
         ...state.tasks,
-        ...more.where((task) => existingIds.add(task.id)),
+        ...visibleMore.where((task) => existingIds.add(task.id)),
       ],
       loadingMore: false,
       cursor: cursor,
@@ -267,6 +287,7 @@ class TaskListNotifier extends StateNotifier<TaskListState> {
   }
 
   void setFilter(TaskFilter filter) {
+    _recentlyCreatedTask = null;
     state = state.copyWith(filter: filter);
     load(refresh: true);
   }

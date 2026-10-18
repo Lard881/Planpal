@@ -115,6 +115,8 @@ passwords, access tokens, private messages, or other secrets in test notes.
   real task with a unique title, description, priority, due date/time, and
   assignee where available. Confirm submission succeeds, opens the created
   task, and returning to Tasks shows the task once with the entered values.
+  If the workspace has more than one page, confirm the new task still appears
+  immediately even when it is not in the first server page.
   **Result:** Pass / Fail / Not tested. **Notes:**
 - [ ] **T-ON-03 — Filter and sort.** Try status, priority, and assignee filters
   separately, then try the available sort choices. Confirm the displayed rows

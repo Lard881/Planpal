@@ -25,6 +25,7 @@ import '../providers/auth_provider.dart';
 import '../../features/settings/presentation/sync_status_screen.dart';
 import '../../features/tasks/presentation/new_task_screen.dart';
 import '../../features/tasks/presentation/task_detail_screen.dart';
+import '../../features/tasks/models/task_model.dart';
 import 'splash_screen.dart';
 
 // ── A1.2: One stable router — rebuilt once, never on auth events ──────────────
@@ -137,9 +138,13 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(path: '/home', builder: (_, __) => const HomeScreen()),
           GoRoute(
             path: '/tasks',
-            builder: (_, state) => TasksScreen(
-              initialView: state.uri.queryParameters['view'] ?? 'all',
-            ),
+            builder: (_, state) {
+              final extra = state.extra;
+              return TasksScreen(
+                initialView: state.uri.queryParameters['view'] ?? 'all',
+                createdTask: extra is TaskModel ? extra : null,
+              );
+            },
           ),
           GoRoute(
             path: '/calendar',

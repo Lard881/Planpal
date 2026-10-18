@@ -28,11 +28,13 @@ class TasksScreen extends ConsumerStatefulWidget {
   final String? taskId;
   final bool showNewTask;
   final String initialView;
+  final TaskModel? createdTask;
   const TasksScreen({
     super.key,
     this.taskId,
     this.showNewTask = false,
     this.initialView = 'all',
+    this.createdTask,
   });
 
   @override
@@ -51,10 +53,25 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
           : 'all';
       if (initialView == 'all') return;
       final workspaceId = ref.read(currentWorkspaceIdProvider) ?? '';
+      final notifier = ref.read(taskListProvider(workspaceId).notifier);
+      if (initialView != 'all') {
+        notifier.setFilter(TaskFilter(view: initialView));
+      }
+      final createdTask = widget.createdTask;
+      if (createdTask != null) notifier.includeCreatedTask(createdTask);
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant TasksScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final createdTask = widget.createdTask;
+    if (createdTask != null && oldWidget.createdTask?.id != createdTask.id) {
+      final workspaceId = ref.read(currentWorkspaceIdProvider) ?? '';
       ref
           .read(taskListProvider(workspaceId).notifier)
-          .setFilter(TaskFilter(view: initialView));
-    });
+          .includeCreatedTask(createdTask);
+    }
   }
 
   @override
@@ -1330,6 +1347,8 @@ class _TableRow extends StatelessWidget {
               flex: 5,
               child: Text(
                 task.title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: AppText.bodyMedium.copyWith(color: c.textPrimary),
               ),
             ),

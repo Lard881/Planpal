@@ -68,6 +68,104 @@ void main() {
   });
 
   test(
+    'keeps an offline-created task visible after an empty API refresh',
+    () async {
+      final offlineCreator = TaskRepository(
+        Dio(BaseOptions(baseUrl: 'https://example.invalid/api/v1'))
+          ..interceptors.add(_UnavailableInterceptor()),
+        database,
+        sync,
+        currentUserId: () => 'user-1',
+      );
+      final (createdTask, failure) = await offlineCreator.createTask(
+        'workspace-1',
+        title: 'Queued task',
+      );
+      expect(createdTask, isNotNull);
+      expect(failure, isNotNull);
+
+      final dio = Dio(BaseOptions(baseUrl: 'https://example.invalid/api/v1'))
+        ..interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) {
+              handler.resolve(
+                Response(
+                  requestOptions: options,
+                  statusCode: 200,
+                  data: {'tasks': [], 'nextCursor': null, 'totalCount': 0},
+                ),
+              );
+            },
+          ),
+        );
+      final onlineRepository = TaskRepository(dio, database, sync);
+
+      final (tasks, _, refreshFailure, totalCount) = await onlineRepository
+          .getTasks('workspace-1');
+
+      expect(refreshFailure, isNull);
+      expect(tasks.map((task) => task.id), contains(createdTask!.id));
+      expect(tasks.single.title, 'Queued task');
+      expect(totalCount, 1);
+    },
+  );
+
+  test('does not overwrite a queued edit with stale API task data', () async {
+    final updateFailure = await repository.updateTask('task-1', {
+      'title': 'After edit',
+    });
+    expect(updateFailure, isNotNull);
+
+    final dio = Dio(BaseOptions(baseUrl: 'https://example.invalid/api/v1'))
+      ..interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) {
+            handler.resolve(
+              Response(
+                requestOptions: options,
+                statusCode: 200,
+                data: {
+                  'tasks': [
+                    {
+                      'id': 'task-1',
+                      'workspace_id': 'workspace-1',
+                      'title': 'Before edit',
+                      'description': '',
+                      'status': 'todo',
+                      'priority': 'medium',
+                      'due_at': null,
+                      'reminder_minutes_before': null,
+                      'assignee_id': null,
+                      'label_id': null,
+                      'created_by': 'user-1',
+                      'completed_at': null,
+                      'created_at': DateTime.utc(2025).toIso8601String(),
+                      'updated_at': DateTime.utc(2025).toIso8601String(),
+                    },
+                  ],
+                  'nextCursor': null,
+                  'totalCount': 1,
+                },
+              ),
+            );
+          },
+        ),
+      );
+    final onlineRepository = TaskRepository(dio, database, sync);
+
+    final (tasks, _, refreshFailure, _) = await onlineRepository.getTasks(
+      'workspace-1',
+    );
+
+    expect(refreshFailure, isNull);
+    expect(tasks.single.title, 'After edit');
+    final cachedTask = await (database.select(
+      database.tasks,
+    )..where((row) => row.id.equals('task-1'))).getSingle();
+    expect(cachedTask.title, 'After edit');
+  });
+
+  test(
     'restores comment authors and attachments from offline detail cache',
     () async {
       final now = DateTime.utc(2025);
