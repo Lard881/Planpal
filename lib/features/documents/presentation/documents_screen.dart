@@ -10,6 +10,7 @@ import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:pdfrx/pdfrx.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -101,7 +102,7 @@ class _DesktopDocumentsState extends ConsumerState<_DesktopDocuments> {
   Widget build(BuildContext context) {
     final c = context.colors;
     final state = ref.watch(documentsProvider);
-    final wsName = ref.watch(currentWorkspaceProvider)?.name ?? 'Workspace';
+    final wsName = ref.watch(currentWorkspaceProvider)?.name;
     final l10n = AppLocalizations.of(context);
     final isOnline = ref.watch(isOnlineProvider);
 
@@ -131,9 +132,50 @@ class _DesktopDocumentsState extends ConsumerState<_DesktopDocuments> {
                               ref.read(documentsProvider.notifier).goUpFolder(),
                           icon: const Icon(LucideIcons.arrowLeft),
                         ),
-                      Text(
-                        '$wsName / ${l10n.documentsTitle}${state.folderPath.isEmpty ? '' : ' / ${state.folderPath.map((folder) => folder.name).join(' / ')}'}',
-                        style: AppText.caption.copyWith(color: c.textMuted),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              if (wsName != null) ...[
+                                Text(
+                                  wsName,
+                                  style: AppText.caption.copyWith(
+                                    color: c.textMuted,
+                                  ),
+                                ),
+                                const Text(' / '),
+                              ],
+                              TextButton(
+                                onPressed: state.folderPath.isEmpty
+                                    ? null
+                                    : () => ref
+                                          .read(documentsProvider.notifier)
+                                          .goToFolderPath(0),
+                                child: Text(l10n.documentsTitle),
+                              ),
+                              for (
+                                var index = 0;
+                                index < state.folderPath.length;
+                                index++
+                              ) ...[
+                                Text(
+                                  ' / ',
+                                  style: TextStyle(color: c.textMuted),
+                                ),
+                                TextButton(
+                                  onPressed:
+                                      index == state.folderPath.length - 1
+                                      ? null
+                                      : () => ref
+                                            .read(documentsProvider.notifier)
+                                            .goToFolderPath(index + 1),
+                                  child: Text(state.folderPath[index].name),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -160,6 +202,7 @@ class _DesktopDocumentsState extends ConsumerState<_DesktopDocuments> {
                           children: [
                             _ToggleBtn(
                               icon: LucideIcons.layoutGrid,
+                              tooltip: l10n.documentsGridView,
                               selected: state.gridView,
                               onTap: () => ref
                                   .read(documentsProvider.notifier)
@@ -167,6 +210,7 @@ class _DesktopDocumentsState extends ConsumerState<_DesktopDocuments> {
                             ),
                             _ToggleBtn(
                               icon: LucideIcons.list,
+                              tooltip: l10n.documentsListView,
                               selected: !state.gridView,
                               onTap: () => ref
                                   .read(documentsProvider.notifier)
@@ -219,7 +263,12 @@ class _DesktopDocumentsState extends ConsumerState<_DesktopDocuments> {
                         : state.error != null &&
                               state.folders.isEmpty &&
                               state.recentDocs.isEmpty
-                        ? ErrorState(message: state.error!)
+                        ? ErrorState(
+                            message: state.error!,
+                            retryLabel: l10n.btnRetry,
+                            onRetry: () =>
+                                ref.read(documentsProvider.notifier).refresh(),
+                          )
                         : state.folders.isEmpty && state.recentDocs.isEmpty
                         ? EmptyState(
                             icon: LucideIcons.fileText,
@@ -243,14 +292,29 @@ class _DesktopDocumentsState extends ConsumerState<_DesktopDocuments> {
                                     ),
                                   ),
                                 if (state.folders.isNotEmpty) ...[
-                                  _FoldersGrid(
-                                    folders: state.folders,
-                                    onOpen: (folder) => ref
-                                        .read(documentsProvider.notifier)
-                                        .openFolder(folder),
-                                    onMenu: (folder) =>
-                                        _showFolderMenu(context, ref, folder),
-                                  ),
+                                  state.gridView
+                                      ? _FoldersGrid(
+                                          folders: state.folders,
+                                          onOpen: (folder) => ref
+                                              .read(documentsProvider.notifier)
+                                              .openFolder(folder),
+                                          onMenu: (folder) => _showFolderMenu(
+                                            context,
+                                            ref,
+                                            folder,
+                                          ),
+                                        )
+                                      : _FoldersList(
+                                          folders: state.folders,
+                                          onOpen: (folder) => ref
+                                              .read(documentsProvider.notifier)
+                                              .openFolder(folder),
+                                          onMenu: (folder) => _showFolderMenu(
+                                            context,
+                                            ref,
+                                            folder,
+                                          ),
+                                        ),
                                   const SizedBox(height: 32),
                                 ],
                                 // Recent Documents
@@ -338,11 +402,15 @@ class _DesktopDocumentsState extends ConsumerState<_DesktopDocuments> {
             onPressed: () async {
               if (ctrl.text.trim().isEmpty) return;
               Navigator.pop(context);
-              final (id, _) = await ref
+              final (id, failure) = await ref
                   .read(documentsProvider.notifier)
                   .createWrittenDocument(ctrl.text.trim());
               if (id != null && context.mounted) {
                 context.push('/documents/$id');
+              } else if (failure != null && context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(localizeFailureText(l10n, failure))),
+                );
               }
             },
             child: Text(l10n.btnCreate),
@@ -355,10 +423,12 @@ class _DesktopDocumentsState extends ConsumerState<_DesktopDocuments> {
 
 class _ToggleBtn extends StatelessWidget {
   final IconData icon;
+  final String tooltip;
   final bool selected;
   final VoidCallback onTap;
   const _ToggleBtn({
     required this.icon,
+    required this.tooltip,
     required this.selected,
     required this.onTap,
   });
@@ -366,22 +436,25 @@ class _ToggleBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(AppRadius.control - 2),
-      child: Container(
-        width: 36,
-        height: 36,
-        margin: const EdgeInsets.all(2),
-        decoration: BoxDecoration(
-          color: selected ? c.surface : Colors.transparent,
-          borderRadius: BorderRadius.circular(AppRadius.control - 2),
-          boxShadow: selected ? AppShadows.card(Brightness.light) : null,
-        ),
-        child: Icon(
-          icon,
-          size: 16,
-          color: selected ? c.textPrimary : c.textMuted,
+    return Tooltip(
+      message: tooltip,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppRadius.control - 2),
+        child: Container(
+          width: 36,
+          height: 36,
+          margin: const EdgeInsets.all(2),
+          decoration: BoxDecoration(
+            color: selected ? c.surface : Colors.transparent,
+            borderRadius: BorderRadius.circular(AppRadius.control - 2),
+            boxShadow: selected ? AppShadows.card(Brightness.light) : null,
+          ),
+          child: Icon(
+            icon,
+            size: 16,
+            color: selected ? c.textPrimary : c.textMuted,
+          ),
         ),
       ),
     );
@@ -404,11 +477,11 @@ class _FoldersGrid extends StatelessWidget {
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 4,
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 350,
         crossAxisSpacing: 16,
         mainAxisSpacing: 12,
-        childAspectRatio: 5.5,
+        mainAxisExtent: 98,
       ),
       itemCount: folders.length,
       itemBuilder: (_, i) {
@@ -453,7 +526,9 @@ class _FoldersGrid extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
-                        '${f.fileCount} files',
+                        AppLocalizations.of(
+                          context,
+                        ).documentsFolderFileCount(f.fileCount),
                         style: AppText.caption.copyWith(color: c.textMuted),
                       ),
                     ],
@@ -472,6 +547,44 @@ class _FoldersGrid extends StatelessWidget {
   }
 }
 
+class _FoldersList extends StatelessWidget {
+  final List<FolderModel> folders;
+  final ValueChanged<FolderModel> onOpen;
+  final ValueChanged<FolderModel> onMenu;
+
+  const _FoldersList({
+    required this.folders,
+    required this.onOpen,
+    required this.onMenu,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final l10n = AppLocalizations.of(context);
+    return Column(
+      children: [
+        for (final folder in folders)
+          ListTile(
+            leading: Icon(LucideIcons.folder, color: colors.primary),
+            title: Text(
+              folder.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            subtitle: Text(l10n.documentsFolderFileCount(folder.fileCount)),
+            trailing: IconButton(
+              tooltip: l10n.btnDetails,
+              onPressed: () => onMenu(folder),
+              icon: Icon(LucideIcons.moreHorizontal, color: colors.textMuted),
+            ),
+            onTap: () => onOpen(folder),
+          ),
+      ],
+    );
+  }
+}
+
 class _RecentDocsGrid extends ConsumerWidget {
   final List<DocumentModel> docs;
   const _RecentDocsGrid({required this.docs});
@@ -482,8 +595,8 @@ class _RecentDocsGrid extends ConsumerWidget {
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 4,
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 350,
         crossAxisSpacing: 16,
         mainAxisSpacing: 16,
         childAspectRatio: 1.8,
@@ -525,10 +638,18 @@ class _RecentDocsGrid extends ConsumerWidget {
                   maxLines: 1,
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  doc.relativeTime(),
-                  style: AppText.caption.copyWith(color: c.textMuted),
-                ),
+                if (doc.sizeLabel.isNotEmpty)
+                  Text(
+                    doc.sizeLabel,
+                    style: AppText.caption.copyWith(color: c.textMuted),
+                  )
+                else
+                  Text(
+                    DateFormat.yMMMd(
+                      Localizations.localeOf(context).toString(),
+                    ).format(doc.updatedAt),
+                    style: AppText.caption.copyWith(color: c.textMuted),
+                  ),
               ],
             ),
           ),
@@ -679,6 +800,14 @@ Future<void> _openDocument(
   if (document.fileId == null) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(AppLocalizations.of(context).errorGeneric)),
+    );
+    return;
+  }
+  if (!ref.read(isOnlineProvider)) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(AppLocalizations.of(context).taskAttachmentOffline),
+      ),
     );
     return;
   }
@@ -913,42 +1042,28 @@ void _showFolderMenu(BuildContext context, WidgetRef ref, FolderModel folder) {
             title: Text(l10n.btnMove),
             onTap: () async {
               Navigator.pop(sheetContext);
-              final state = ref.read(documentsProvider);
               final parentId = await _chooseFolder(
                 context,
-                state.folders.where((item) => item.id != folder.id).toList(),
+                ref.read(documentsRepositoryProvider),
+                ref.read(documentsProvider.notifier).workspaceId,
                 l10n,
+                excludedFolderId: folder.id,
               );
-              if (parentId == _moveToRoot) {
-                final (updated, failure) = await ref
-                    .read(documentsRepositoryProvider)
-                    .updateFolder(
-                      folder.id,
-                      name: folder.name,
-                      moveToRoot: true,
-                    );
-                if (updated != null) {
-                  await ref.read(documentsProvider.notifier).refresh();
-                } else if (failure != null && context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(failure.localizedMessage(context))),
+              if (parentId == null || !context.mounted) return;
+              final (updated, failure) = await ref
+                  .read(documentsRepositoryProvider)
+                  .updateFolder(
+                    folder.id,
+                    name: folder.name,
+                    parentId: parentId == _moveToRoot ? null : parentId,
+                    moveToRoot: parentId == _moveToRoot,
                   );
-                }
-              } else if (parentId != null) {
-                final (updated, failure) = await ref
-                    .read(documentsRepositoryProvider)
-                    .updateFolder(
-                      folder.id,
-                      name: folder.name,
-                      parentId: parentId,
-                    );
-                if (updated != null) {
-                  await ref.read(documentsProvider.notifier).refresh();
-                } else if (failure != null && context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(failure.localizedMessage(context))),
-                  );
-                }
+              if (updated != null) {
+                await ref.read(documentsProvider.notifier).refresh();
+              } else if (failure != null && context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(failure.localizedMessage(context))),
+                );
               }
             },
           ),
@@ -981,24 +1096,17 @@ const _moveToRoot = '__root__';
 
 Future<String?> _chooseFolder(
   BuildContext context,
-  List<FolderModel> folders,
-  AppLocalizations l10n,
-) => showDialog<String>(
+  DocumentsRepository repository,
+  String workspaceId,
+  AppLocalizations l10n, {
+  String? excludedFolderId,
+}) => showDialog<String>(
   context: context,
-  builder: (dialogContext) => SimpleDialog(
-    title: Text(l10n.btnMove),
-    children: [
-      SimpleDialogOption(
-        onPressed: () => Navigator.pop(dialogContext, _moveToRoot),
-        child: Text(l10n.documentsTitle),
-      ),
-      ...folders.map(
-        (folder) => SimpleDialogOption(
-          onPressed: () => Navigator.pop(dialogContext, folder.id),
-          child: Text(folder.name),
-        ),
-      ),
-    ],
+  builder: (_) => _FolderDestinationDialog(
+    repository: repository,
+    workspaceId: workspaceId,
+    title: l10n.btnMove,
+    excludedFolderId: excludedFolderId,
   ),
 );
 
@@ -1007,20 +1115,214 @@ Future<void> _moveDocument(
   WidgetRef ref,
   DocumentModel document,
 ) async {
-  final state = ref.read(documentsProvider);
   final folderId = await _chooseFolder(
     context,
-    state.folders,
+    ref.read(documentsRepositoryProvider),
+    ref.read(documentsProvider.notifier).workspaceId,
     AppLocalizations.of(context),
   );
-  if (folderId == null) return;
-  await ref
+  if (folderId == null || !context.mounted) return;
+  final failure = await ref
       .read(documentsProvider.notifier)
       .moveDocument(
         document,
         folderId: folderId == _moveToRoot ? null : folderId,
         moveToRoot: folderId == _moveToRoot,
       );
+  if (failure != null && context.mounted) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(failure.localizedMessage(context))));
+  }
+}
+
+class _FolderDestinationDialog extends StatefulWidget {
+  final DocumentsRepository repository;
+  final String workspaceId;
+  final String title;
+  final String? excludedFolderId;
+
+  const _FolderDestinationDialog({
+    required this.repository,
+    required this.workspaceId,
+    required this.title,
+    this.excludedFolderId,
+  });
+
+  @override
+  State<_FolderDestinationDialog> createState() =>
+      _FolderDestinationDialogState();
+}
+
+class _FolderDestinationDialogState extends State<_FolderDestinationDialog> {
+  List<FolderModel> _path = [];
+  List<FolderModel> _folders = [];
+  AppFailure? _failure;
+  bool _loading = true;
+
+  String? get _parentId => _path.isEmpty ? null : _path.last.id;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFolders();
+  }
+
+  Future<void> _loadFolders() async {
+    setState(() {
+      _loading = true;
+      _failure = null;
+    });
+    final (folders, failure) = await widget.repository.getFolders(
+      widget.workspaceId,
+      parentId: _parentId,
+    );
+    if (!mounted) return;
+    setState(() {
+      _folders = folders
+          .where((folder) => folder.id != widget.excludedFolderId)
+          .toList();
+      _failure = failure;
+      _loading = false;
+    });
+  }
+
+  Future<void> _openFolder(FolderModel folder) async {
+    setState(() => _path = [..._path, folder]);
+    await _loadFolders();
+  }
+
+  Future<void> _goUp() async {
+    if (_path.isEmpty) return;
+    setState(() => _path = _path.sublist(0, _path.length - 1));
+    await _loadFolders();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final l10n = AppLocalizations.of(context);
+    return AlertDialog(
+      title: Row(
+        children: [
+          if (_path.isNotEmpty)
+            IconButton(
+              tooltip: l10n.btnCancel,
+              onPressed: _loading ? null : _goUp,
+              icon: const Icon(LucideIcons.arrowLeft),
+            ),
+          Expanded(
+            child: Text(
+              _path.isEmpty ? widget.title : _path.last.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+      content: SizedBox(
+        width: 420,
+        height: 360,
+        child: _loading
+            ? const ContentLoadingSkeleton(
+                kind: LoadingSkeletonKind.rows,
+                padding: EdgeInsets.zero,
+              )
+            : Column(
+                children: [
+                  if (_failure != null)
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            _failure!.localizedMessage(context),
+                            style: AppText.caption.copyWith(
+                              color: colors.warning,
+                            ),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: _loadFolders,
+                          child: Text(l10n.btnRetry),
+                        ),
+                      ],
+                    ),
+                  Expanded(
+                    child: ListView(
+                      children: [
+                        if (_path.isEmpty)
+                          ListTile(
+                            leading: Icon(
+                              LucideIcons.folder,
+                              color: colors.primary,
+                            ),
+                            title: Text(l10n.documentsTitle),
+                            trailing: IconButton(
+                              tooltip: l10n.btnMove,
+                              onPressed: () =>
+                                  Navigator.pop(context, _moveToRoot),
+                              icon: const Icon(LucideIcons.check),
+                            ),
+                            onTap: () => Navigator.pop(context, _moveToRoot),
+                          ),
+                        if (_path.isNotEmpty)
+                          ListTile(
+                            leading: Icon(
+                              LucideIcons.folder,
+                              color: colors.primary,
+                            ),
+                            title: Text(_path.last.name),
+                            trailing: IconButton(
+                              tooltip: l10n.btnMove,
+                              onPressed: () =>
+                                  Navigator.pop(context, _path.last.id),
+                              icon: const Icon(LucideIcons.check),
+                            ),
+                            onTap: () => Navigator.pop(context, _path.last.id),
+                          ),
+                        for (final folder in _folders)
+                          ListTile(
+                            leading: Icon(
+                              LucideIcons.folder,
+                              color: colors.primary,
+                            ),
+                            title: Text(
+                              folder.name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            trailing: IconButton(
+                              tooltip: l10n.btnMove,
+                              onPressed: () =>
+                                  Navigator.pop(context, folder.id),
+                              icon: const Icon(LucideIcons.check),
+                            ),
+                            onTap: () => _openFolder(folder),
+                          ),
+                        if (_folders.isEmpty && _path.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Text(
+                              l10n.emptyStateNoDocuments,
+                              style: AppText.body.copyWith(
+                                color: colors.textMuted,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(l10n.btnCancel),
+        ),
+      ],
+    );
+  }
 }
 
 Future<void> _renameDocument(
@@ -1048,9 +1350,14 @@ Future<void> _renameDocument(
   );
   controller.dispose();
   if (title != null && title.isNotEmpty) {
-    await ref
+    final failure = await ref
         .read(documentsProvider.notifier)
         .renameDocument(document.id, title);
+    if (failure != null && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(failure.localizedMessage(context))),
+      );
+    }
   }
 }
 
@@ -1079,7 +1386,14 @@ Future<void> _renameFolder(
   );
   controller.dispose();
   if (name != null && name.isNotEmpty) {
-    await ref.read(documentsProvider.notifier).renameFolder(folder, name);
+    final failure = await ref
+        .read(documentsProvider.notifier)
+        .renameFolder(folder, name);
+    if (failure != null && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(failure.localizedMessage(context))),
+      );
+    }
   }
 }
 
@@ -1104,7 +1418,14 @@ Future<void> _showNewFolderDialog(BuildContext context, WidgetRef ref) async {
   );
   controller.dispose();
   if (name != null && name.isNotEmpty) {
-    await ref.read(documentsProvider.notifier).createFolder(name);
+    final failure = await ref
+        .read(documentsProvider.notifier)
+        .createFolder(name);
+    if (failure != null && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(failure.localizedMessage(context))),
+      );
+    }
   }
 }
 
@@ -1121,8 +1442,27 @@ class _RecentDocsList extends ConsumerWidget {
             (document) => ListTile(
               leading: FileTypeBadge(extension: document.extension),
               title: Text(document.title),
-              subtitle: Text(document.relativeTime()),
-              trailing: Icon(LucideIcons.chevronRight, color: colors.textMuted),
+              subtitle: Text(
+                document.sizeLabel.isNotEmpty
+                    ? document.sizeLabel
+                    : DateFormat.yMMMd(
+                        Localizations.localeOf(context).toString(),
+                      ).format(document.updatedAt),
+              ),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    tooltip: AppLocalizations.of(context).btnDetails,
+                    onPressed: () => _showDocumentMenu(context, ref, document),
+                    icon: Icon(
+                      LucideIcons.moreHorizontal,
+                      color: colors.textMuted,
+                    ),
+                  ),
+                  Icon(LucideIcons.chevronRight, color: colors.textMuted),
+                ],
+              ),
               onTap: () => _openDocument(context, ref, document),
             ),
           )
@@ -1132,15 +1472,38 @@ class _RecentDocsList extends ConsumerWidget {
 }
 
 // ── MOBILE ────────────────────────────────────────────────────────────────────
-class _MobileDocuments extends ConsumerWidget {
+class _MobileDocuments extends ConsumerStatefulWidget {
   const _MobileDocuments();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_MobileDocuments> createState() => _MobileDocumentsState();
+}
+
+class _MobileDocumentsState extends ConsumerState<_MobileDocuments> {
+  final _searchController = TextEditingController();
+  String _query = '';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final c = context.colors;
     final state = ref.watch(documentsProvider);
     final l10n = AppLocalizations.of(context);
     final isOnline = ref.watch(isOnlineProvider);
+    final normalizedQuery = _query.trim().toLowerCase();
+    final visibleFolders = state.folders
+        .where((folder) => folder.name.toLowerCase().contains(normalizedQuery))
+        .toList();
+    final visibleDocuments = state.recentDocs
+        .where(
+          (document) => document.title.toLowerCase().contains(normalizedQuery),
+        )
+        .toList();
 
     return Scaffold(
       backgroundColor: c.background,
@@ -1160,25 +1523,24 @@ class _MobileDocuments extends ConsumerWidget {
                               ref.read(documentsProvider.notifier).goUpFolder(),
                           icon: const Icon(LucideIcons.arrowLeft),
                         ),
-                      Text(
-                        l10n.documentsTitle,
-                        style: AppText.pageTitleMobile.copyWith(
-                          color: c.textPrimary,
+                      Expanded(
+                        child: Text(
+                          state.folderPath.isEmpty
+                              ? l10n.documentsTitle
+                              : state.folderPath.last.name,
+                          style: AppText.pageTitleMobile.copyWith(
+                            color: c.textPrimary,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      const Spacer(),
-                      GestureDetector(
-                        onTap: () =>
+                      const SizedBox(width: 8),
+                      IconButton.filled(
+                        tooltip: l10n.documentNewTitle,
+                        onPressed: () =>
                             _showMobileMenu(context, ref, isOnline: isOnline),
-                        child: Container(
-                          width: 36,
-                          height: 36,
-                          decoration: BoxDecoration(
-                            color: c.primary,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(Icons.add, color: Colors.white),
-                        ),
+                        icon: const Icon(Icons.add),
                       ),
                     ],
                   ),
@@ -1191,26 +1553,40 @@ class _MobileDocuments extends ConsumerWidget {
                     horizontal: 16,
                     vertical: 4,
                   ),
-                  child: Container(
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: c.surfaceAlt,
-                      borderRadius: BorderRadius.circular(AppRadius.control),
-                    ),
-                    child: Row(
-                      children: [
-                        const SizedBox(width: 12),
-                        Icon(LucideIcons.search, size: 16, color: c.textMuted),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Search files...',
-                          style: AppText.body.copyWith(color: c.textMuted),
-                        ),
-                      ],
+                  child: TextField(
+                    controller: _searchController,
+                    onChanged: (value) => setState(() => _query = value),
+                    decoration: InputDecoration(
+                      hintText: l10n.searchFiles,
+                      prefixIcon: Icon(
+                        LucideIcons.search,
+                        size: 18,
+                        color: c.textMuted,
+                      ),
+                      suffixIcon: _query.isEmpty
+                          ? null
+                          : IconButton(
+                              tooltip: l10n.btnCancel,
+                              onPressed: () {
+                                _searchController.clear();
+                                setState(() => _query = '');
+                              },
+                              icon: const Icon(LucideIcons.x),
+                            ),
                     ),
                   ),
                 ),
               ),
+              if (!isOnline)
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                    child: Text(
+                      l10n.taskAttachmentOffline,
+                      style: AppText.caption.copyWith(color: c.textMuted),
+                    ),
+                  ),
+                ),
               if (state.loading &&
                   state.folders.isEmpty &&
                   state.recentDocs.isEmpty)
@@ -1222,7 +1598,7 @@ class _MobileDocuments extends ConsumerWidget {
                 )
               else ...[
                 // Folders grid (2 per row)
-                if (state.folders.isNotEmpty)
+                if (visibleFolders.isNotEmpty)
                   SliverPadding(
                     padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
                     sliver: SliverGrid(
@@ -1234,7 +1610,7 @@ class _MobileDocuments extends ConsumerWidget {
                             childAspectRatio: 3.2,
                           ),
                       delegate: SliverChildBuilderDelegate((_, i) {
-                        final f = state.folders[i];
+                        final f = visibleFolders[i];
                         final colorIdx = i % 4;
                         return InkWell(
                           onTap: () => ref
@@ -1272,7 +1648,9 @@ class _MobileDocuments extends ConsumerWidget {
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                       Text(
-                                        '${f.fileCount} files',
+                                        l10n.documentsFolderFileCount(
+                                          f.fileCount,
+                                        ),
                                         style: AppText.caption.copyWith(
                                           color: c.textMuted,
                                         ),
@@ -1292,10 +1670,21 @@ class _MobileDocuments extends ConsumerWidget {
                             ),
                           ),
                         );
-                      }, childCount: state.folders.length),
+                      }, childCount: visibleFolders.length),
                     ),
                   ),
-                if (state.error != null)
+                if (state.error != null &&
+                    state.folders.isEmpty &&
+                    state.recentDocs.isEmpty)
+                  SliverFillRemaining(
+                    child: ErrorState(
+                      message: localizeFailureText(l10n, state.error!),
+                      retryLabel: l10n.btnRetry,
+                      onRetry: () =>
+                          ref.read(documentsProvider.notifier).refresh(),
+                    ),
+                  )
+                else if (state.error != null)
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.all(16),
@@ -1306,12 +1695,12 @@ class _MobileDocuments extends ConsumerWidget {
                     ),
                   ),
                 // Recent section
-                if (state.recentDocs.isNotEmpty) ...[
+                if (visibleDocuments.isNotEmpty) ...[
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
                       child: Text(
-                        'Recent',
+                        l10n.documentsRecent,
                         style: AppText.sectionTitle.copyWith(
                           color: c.textPrimary,
                         ),
@@ -1322,25 +1711,26 @@ class _MobileDocuments extends ConsumerWidget {
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
                     sliver: SliverList(
                       delegate: SliverChildBuilderDelegate((_, i) {
-                        final doc = state.recentDocs[i];
+                        final doc = visibleDocuments[i];
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 8),
                           child: _MobileDocRow(doc: doc, ref: ref),
                         );
-                      }, childCount: state.recentDocs.length),
+                      }, childCount: visibleDocuments.length),
                     ),
                   ),
                 ],
-                if (state.folders.isEmpty && state.recentDocs.isEmpty)
+                if (visibleFolders.isEmpty &&
+                    visibleDocuments.isEmpty &&
+                    state.error == null &&
+                    !state.loading)
                   SliverFillRemaining(
-                    child: state.error != null
-                        ? ErrorState(message: state.error!)
-                        : EmptyState(
-                            icon: LucideIcons.fileText,
-                            title: l10n.emptyStateNoDocuments,
-                            actionLabel: l10n.btnNewDocument,
-                            onAction: () => _showNewDocDialog(context, ref),
-                          ),
+                    child: EmptyState(
+                      icon: LucideIcons.fileText,
+                      title: l10n.emptyStateNoDocuments,
+                      actionLabel: l10n.btnNewDocument,
+                      onAction: () => _showNewDocDialog(context, ref),
+                    ),
                   ),
               ],
             ],
@@ -1416,11 +1806,15 @@ class _MobileDocuments extends ConsumerWidget {
             onPressed: () async {
               if (ctrl.text.trim().isEmpty) return;
               Navigator.pop(context);
-              final (id, _) = await ref
+              final (id, failure) = await ref
                   .read(documentsProvider.notifier)
                   .createWrittenDocument(ctrl.text.trim());
               if (id != null && context.mounted) {
                 context.push('/documents/$id');
+              } else if (failure != null && context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(localizeFailureText(l10n, failure))),
+                );
               }
             },
             child: Text(l10n.btnCreate),
@@ -1495,10 +1889,10 @@ class DocumentEditorScreen extends ConsumerWidget {
       ),
       data: (doc) {
         if (doc == null) {
-          return const Scaffold(
+          return Scaffold(
             body: EmptyState(
               icon: LucideIcons.fileX,
-              title: 'Document not found',
+              title: AppLocalizations.of(context).errorNotFound,
             ),
           );
         }
@@ -1629,7 +2023,7 @@ class _QuillEditorContentState extends State<_QuillEditorContent> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'Documents / ${doc.title}',
+                      '${l10n.documentsTitle} / ${doc.title}',
                       style: AppText.body.copyWith(color: c.textMuted),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -1699,7 +2093,7 @@ class _QuillEditorContentState extends State<_QuillEditorContent> {
                             color: c.textPrimary,
                           ),
                           decoration: InputDecoration(
-                            hintText: 'Untitled',
+                            hintText: l10n.documentNewTitle,
                             hintStyle: AppText.pageTitle.copyWith(
                               color: c.textMuted,
                             ),
@@ -1719,7 +2113,13 @@ class _QuillEditorContentState extends State<_QuillEditorContent> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          '${doc.relativeTime()} · ${doc.createdByName ?? ''}',
+                          [
+                            DateFormat.yMMMd(
+                              Localizations.localeOf(context).toString(),
+                            ).format(doc.updatedAt),
+                            if (doc.createdByName?.isNotEmpty == true)
+                              doc.createdByName!,
+                          ].join(' · '),
                           style: AppText.caption.copyWith(color: c.textMuted),
                         ),
                         const SizedBox(height: 24),

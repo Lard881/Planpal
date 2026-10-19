@@ -53,6 +53,7 @@ class DocumentsState {
 class DocumentsNotifier extends StateNotifier<DocumentsState> {
   final DocumentsRepository _repo;
   final String workspaceId;
+  int _loadGeneration = 0;
 
   DocumentsNotifier(this._repo, this.workspaceId)
     : super(const DocumentsState()) {
@@ -61,6 +62,7 @@ class DocumentsNotifier extends StateNotifier<DocumentsState> {
 
   Future<void> load({String? folderId, bool resetFolder = false}) async {
     if (workspaceId.isEmpty) return; // Guard
+    final generation = ++_loadGeneration;
     final targetFolderId = resetFolder
         ? null
         : folderId ?? state.currentFolderId;
@@ -79,6 +81,7 @@ class DocumentsNotifier extends StateNotifier<DocumentsState> {
       folderId: targetFolderId,
       recent: targetFolderId == null,
     );
+    if (generation != _loadGeneration) return;
     state = state.copyWith(
       folders: folders,
       recentDocs: docs,
@@ -103,20 +106,30 @@ class DocumentsNotifier extends StateNotifier<DocumentsState> {
     );
   }
 
+  Future<void> goToFolderPath(int pathLength) async {
+    final path = state.folderPath.take(pathLength).toList();
+    state = state.copyWith(folderPath: path);
+    await load(
+      folderId: path.isEmpty ? null : path.last.id,
+      resetFolder: path.isEmpty,
+    );
+  }
+
   Future<void> refresh() => load();
 
   void setGridView(bool value) => state = state.copyWith(gridView: value);
 
-  Future<void> renameDocument(String id, String title) async {
+  Future<AppFailure?> renameDocument(String id, String title) async {
     final failure = await _repo.updateDocument(id, title: title);
     if (failure == null) {
       await load();
     } else {
       state = state.copyWith(error: failure.message);
     }
+    return failure;
   }
 
-  Future<void> moveDocument(
+  Future<AppFailure?> moveDocument(
     DocumentModel document, {
     String? folderId,
     bool moveToRoot = false,
@@ -131,9 +144,10 @@ class DocumentsNotifier extends StateNotifier<DocumentsState> {
     } else {
       state = state.copyWith(error: failure.message);
     }
+    return failure;
   }
 
-  Future<void> renameFolder(FolderModel folder, String name) async {
+  Future<AppFailure?> renameFolder(FolderModel folder, String name) async {
     final (updated, failure) = await _repo.updateFolder(
       folder.id,
       name: name,
@@ -151,9 +165,10 @@ class DocumentsNotifier extends StateNotifier<DocumentsState> {
     } else if (failure != null) {
       state = state.copyWith(error: failure.message);
     }
+    return failure;
   }
 
-  Future<void> createFolder(String name) async {
+  Future<AppFailure?> createFolder(String name) async {
     final (folder, err) = await _repo.createFolder(
       workspaceId,
       name,
@@ -164,6 +179,7 @@ class DocumentsNotifier extends StateNotifier<DocumentsState> {
     } else if (err != null) {
       state = state.copyWith(error: err.message);
     }
+    return err;
   }
 
   Future<AppFailure?> uploadFile(

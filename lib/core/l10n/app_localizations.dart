@@ -2162,6 +2162,18 @@ abstract class AppLocalizations {
   /// **'Recent'**
   String get documentsRecent;
 
+  /// No description provided for @documentsGridView.
+  ///
+  /// In en, this message translates to:
+  /// **'Grid view'**
+  String get documentsGridView;
+
+  /// No description provided for @documentsListView.
+  ///
+  /// In en, this message translates to:
+  /// **'List view'**
+  String get documentsListView;
+
   /// No description provided for @documentsRecentTitle.
   ///
   /// In en, this message translates to:
@@ -2227,6 +2239,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'New Folder'**
   String get documentNewFolder;
+
+  /// No description provided for @documentsFolderFileCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{0 files} one{1 file} other{{count} files}}'**
+  String documentsFolderFileCount(int count);
 
   /// No description provided for @chatTitle.
   ///

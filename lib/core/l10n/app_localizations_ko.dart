@@ -1108,6 +1108,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get documentsRecent => '최근';
 
   @override
+  String get documentsGridView => '그리드 보기';
+
+  @override
+  String get documentsListView => '목록 보기';
+
+  @override
   String get documentsRecentTitle => '최근 문서';
 
   @override
@@ -1139,6 +1145,11 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get documentNewFolder => '새 폴더';
+
+  @override
+  String documentsFolderFileCount(int count) {
+    return '$count개 파일';
+  }
 
   @override
   String get chatTitle => '메시지';

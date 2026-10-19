@@ -374,6 +374,8 @@
   "documentSavedLocally": "이 기기에 저장됨",
   "documentWaitingToSync": "동기화 대기 중",
   "documentsRecent": "최근",
+  "documentsGridView": "그리드 보기",
+  "documentsListView": "목록 보기",
   "documentsRecentTitle": "최근 문서",
   "documentEditorSave": "저장",
   "documentEditorStartWriting": "작성 시작...",
@@ -385,6 +387,14 @@
   "documentDropHint": "업로드할 파일을 여기에 놓으세요",
   "documentDropFilesOnly": "폴더가 아닌 파일을 여기에 놓으세요.",
   "documentNewFolder": "새 폴더",
+  "documentsFolderFileCount": "{count}개 파일",
+  "@documentsFolderFileCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "chatTitle": "메시지",
   "chatNewChannel": "새 채널",
   "chatChannels": "채널",

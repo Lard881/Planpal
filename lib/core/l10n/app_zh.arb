@@ -374,6 +374,8 @@
   "documentSavedLocally": "已保存到此设备",
   "documentWaitingToSync": "等待同步",
   "documentsRecent": "最近",
+  "documentsGridView": "网格视图",
+  "documentsListView": "列表视图",
   "documentsRecentTitle": "最近文档",
   "documentEditorSave": "保存",
   "documentEditorStartWriting": "开始写作...",
@@ -385,6 +387,14 @@
   "documentDropHint": "将文件拖放到此处以上传",
   "documentDropFilesOnly": "请在此处拖放文件，而不是文件夹。",
   "documentNewFolder": "新建文件夹",
+  "documentsFolderFileCount": "{count} 个文件",
+  "@documentsFolderFileCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "chatTitle": "消息",
   "chatNewChannel": "新建频道",
   "chatChannels": "频道",

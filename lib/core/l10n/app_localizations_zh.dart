@@ -1106,6 +1106,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get documentsRecent => '最近';
 
   @override
+  String get documentsGridView => '网格视图';
+
+  @override
+  String get documentsListView => '列表视图';
+
+  @override
   String get documentsRecentTitle => '最近文档';
 
   @override
@@ -1137,6 +1143,11 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get documentNewFolder => '新建文件夹';
+
+  @override
+  String documentsFolderFileCount(int count) {
+    return '$count 个文件';
+  }
 
   @override
   String get chatTitle => '消息';

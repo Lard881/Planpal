@@ -62,6 +62,22 @@ class DocumentsRepository {
         );
   }
 
+  Future<FolderModel?> _cachedFolderById(String folderId) async {
+    final row = await (_db.select(
+      _db.folders,
+    )..where((folder) => folder.id.equals(folderId))).getSingleOrNull();
+    if (row == null || row.deletedAt != null) return null;
+    return FolderModel(
+      id: row.id,
+      workspaceId: row.workspaceId,
+      parentId: row.parentId,
+      name: row.name,
+      fileCount: row.fileCount,
+      createdAt: row.createdAt,
+      updatedAt: row.updatedAt,
+    );
+  }
+
   Future<void> _cacheDocument(
     DocumentModel document, {
     bool preserveMissingContentText = false,
@@ -99,6 +115,35 @@ class DocumentsRepository {
           ),
         );
   }
+
+  Future<DocumentModel?> _cachedDocumentById(String documentId) async {
+    final row = await (_db.select(
+      _db.documents,
+    )..where((document) => document.id.equals(documentId))).getSingleOrNull();
+    if (row == null || row.deletedAt != null) return null;
+    return DocumentModel(
+      id: row.id,
+      workspaceId: row.workspaceId,
+      folderId: row.folderId,
+      kind: row.kind,
+      title: row.title,
+      fileId: row.fileId,
+      mimeType: row.mimeType,
+      sizeBytes: row.sizeBytes,
+      storagePath: row.storagePath,
+      content: row.content == null
+          ? null
+          : jsonDecode(row.content!) as Map<String, dynamic>,
+      contentText: row.contentText,
+      createdBy: row.createdBy,
+      createdAt: row.createdAt,
+      updatedAt: row.updatedAt,
+    );
+  }
+
+  Future<bool> _hasPendingMutation(String entityId) async => (await (_db.select(
+    _db.outboxEntries,
+  )..where((entry) => entry.entityId.equals(entityId))).get()).isNotEmpty;
 
   Future<List<FolderModel>> _cachedFolders(
     String workspaceId,
@@ -189,15 +234,42 @@ class DocumentsRepository {
       final list = (res.data['folders'] as List)
           .map((f) => FolderModel.fromJson(f as Map<String, dynamic>))
           .toList();
+      final cachedFolders = await _cachedFolders(workspaceId, parentId);
+      final cachedById = {
+        for (final folder in cachedFolders) folder.id: folder,
+      };
+      final remoteIds = list.map((folder) => folder.id).toSet();
       final visible = <FolderModel>[];
       for (final folder in list) {
         final cached = await (_db.select(
           _db.folders,
         )..where((row) => row.id.equals(folder.id))).getSingleOrNull();
         if (cached?.deletedAt != null) continue;
+        if (await _hasPendingMutation(folder.id)) {
+          final local =
+              cachedById[folder.id] ?? await _cachedFolderById(folder.id);
+          if (local != null && local.parentId == parentId) {
+            visible.add(local);
+          } else if (local == null) {
+            await _cacheFolder(folder);
+            visible.add(folder);
+          }
+          continue;
+        }
         await _cacheFolder(folder);
         visible.add(folder);
       }
+      for (final cached in cachedFolders) {
+        if (remoteIds.contains(cached.id)) continue;
+        if (await _hasPendingMutation(cached.id)) {
+          visible.add(cached);
+        } else {
+          await (_db.delete(
+            _db.folders,
+          )..where((row) => row.id.equals(cached.id))).go();
+        }
+      }
+      visible.sort((first, second) => first.name.compareTo(second.name));
       return (visible, null);
     } on DioException catch (e) {
       return (await _cachedFolders(workspaceId, parentId), mapDioError(e));
@@ -317,6 +389,12 @@ class DocumentsRepository {
       return (folder, null);
     } on DioException catch (e) {
       final failure = mapDioError(e);
+      if (failure is NotFoundFailure) {
+        await (_db.delete(
+          _db.folders,
+        )..where((row) => row.id.equals(folderId))).go();
+        return (null, failure);
+      }
       if (_isTemporaryFailure(failure)) {
         await _cacheFolder(changed);
         await _sync.queueUpdate('folders', folderId, {
@@ -348,14 +426,64 @@ class DocumentsRepository {
       final list = (res.data['documents'] as List)
           .map((d) => DocumentModel.fromJson(d as Map<String, dynamic>))
           .toList();
+      final cachedDocuments = await _cachedDocuments(
+        workspaceId,
+        folderId: folderId,
+        recent: recent,
+      );
+      final cachedById = {
+        for (final document in cachedDocuments) document.id: document,
+      };
+      final remoteIds = list.map((document) => document.id).toSet();
       final visible = <DocumentModel>[];
       for (final document in list) {
         final cached = await (_db.select(
           _db.documents,
         )..where((row) => row.id.equals(document.id))).getSingleOrNull();
         if (cached?.deletedAt != null) continue;
+        if (await _hasPendingMutation(document.id)) {
+          final local =
+              cachedById[document.id] ?? await _cachedDocumentById(document.id);
+          if (local != null) {
+            if (recent || local.folderId == folderId) {
+              visible.add(local);
+            }
+            continue;
+          }
+        }
         await _cacheDocument(document, preserveMissingContentText: true);
         visible.add(document);
+      }
+      final oldestRemote = list.isEmpty
+          ? null
+          : list.reduce(
+              (oldest, document) =>
+                  document.updatedAt.isBefore(oldest.updatedAt)
+                  ? document
+                  : oldest,
+            );
+      for (final cached in cachedDocuments) {
+        if (remoteIds.contains(cached.id)) continue;
+        if (await _hasPendingMutation(cached.id)) {
+          visible.add(cached);
+          continue;
+        }
+        final isOutsideRecentWindow =
+            recent &&
+            list.length >= 12 &&
+            oldestRemote != null &&
+            cached.updatedAt.isBefore(oldestRemote.updatedAt);
+        if (!isOutsideRecentWindow) {
+          await (_db.delete(
+            _db.documents,
+          )..where((row) => row.id.equals(cached.id))).go();
+        }
+      }
+      visible.sort(
+        (first, second) => second.updatedAt.compareTo(first.updatedAt),
+      );
+      if (recent && visible.length > 12) {
+        visible.removeRange(12, visible.length);
       }
       return (visible, null);
     } on DioException catch (e) {
@@ -381,6 +509,13 @@ class DocumentsRepository {
       await _cacheDocument(document);
       return (document, null);
     } on DioException catch (e) {
+      final failure = mapDioError(e);
+      if (failure is NotFoundFailure) {
+        await (_db.delete(
+          _db.documents,
+        )..where((item) => item.id.equals(documentId))).go();
+        return (null, failure);
+      }
       final row =
           await (_db.select(_db.documents)..where(
                 (item) => item.id.equals(documentId) & item.deletedAt.isNull(),
@@ -466,7 +601,7 @@ class DocumentsRepository {
         });
         return (document, null);
       }
-      return (null, mapDioError(e));
+      return (null, failure);
     }
   }
 
@@ -545,7 +680,7 @@ class DocumentsRepository {
         await (_db.delete(
           _db.documents,
         )..where((row) => row.id.equals(documentId))).go();
-        return null;
+        return failure;
       }
       if (existing != null && _isTemporaryFailure(failure)) {
         final nextContent =

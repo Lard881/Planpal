@@ -374,6 +374,8 @@
   "documentSavedLocally": "Enregistré sur cet appareil",
   "documentWaitingToSync": "En attente de synchronisation",
   "documentsRecent": "Récents",
+  "documentsGridView": "Vue en grille",
+  "documentsListView": "Vue en liste",
   "documentsRecentTitle": "Documents récents",
   "documentEditorSave": "Enregistrer",
   "documentEditorStartWriting": "Commencez à écrire...",
@@ -385,6 +387,14 @@
   "documentDropHint": "Déposez les fichiers ici pour les importer",
   "documentDropFilesOnly": "Déposez des fichiers ici, pas des dossiers.",
   "documentNewFolder": "Nouveau dossier",
+  "documentsFolderFileCount": "{count, plural, =0{0 fichier} one{1 fichier} other{{count} fichiers}}",
+  "@documentsFolderFileCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "chatTitle": "Messages",
   "chatNewChannel": "Nouveau canal",
   "chatChannels": "Canaux",

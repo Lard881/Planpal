@@ -730,6 +730,10 @@
   "documentWaitingToSync": "Waiting to sync",
   "documentsRecent": "Recent",
   "@documentsRecent": {},
+  "documentsGridView": "Grid view",
+  "@documentsGridView": {},
+  "documentsListView": "List view",
+  "@documentsListView": {},
   "documentsRecentTitle": "Recent Documents",
   "@documentsRecentTitle": {},
   "documentEditorSave": "Save",
@@ -752,6 +756,14 @@
   "@documentDropFilesOnly": {},
   "documentNewFolder": "New Folder",
   "@documentNewFolder": {},
+  "documentsFolderFileCount": "{count, plural, =0{0 files} one{1 file} other{{count} files}}",
+  "@documentsFolderFileCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
 
   "chatTitle": "Messages",
   "@chatTitle": {},

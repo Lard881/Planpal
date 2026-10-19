@@ -1182,6 +1182,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get documentsRecent => 'Recientes';
 
   @override
+  String get documentsGridView => 'Vista de cuadrícula';
+
+  @override
+  String get documentsListView => 'Vista de lista';
+
+  @override
   String get documentsRecentTitle => 'Documentos recientes';
 
   @override
@@ -1214,6 +1220,18 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get documentNewFolder => 'Nueva carpeta';
+
+  @override
+  String documentsFolderFileCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count archivos',
+      one: '1 archivo',
+      zero: '0 archivos',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get chatTitle => 'Mensajes';
