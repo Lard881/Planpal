@@ -68,6 +68,9 @@ class DocumentModel {
 
   bool get isWritten => kind == 'written';
   bool get isFile => kind == 'file';
+  bool get isImage =>
+      mimeType?.startsWith('image/') == true ||
+      const {'jpg', 'jpeg', 'png', 'gif', 'webp'}.contains(extension);
 
   String get extension {
     final parts = title.split('.');

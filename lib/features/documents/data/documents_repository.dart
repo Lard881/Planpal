@@ -254,7 +254,6 @@ class DocumentsRepository {
     final row = await (_db.select(
       _db.folders,
     )..where((folder) => folder.id.equals(folderId))).getSingleOrNull();
-    if (row == null) return const NotFoundFailure();
     try {
       await _dio.delete('/workspaces/$workspaceId/folders/$folderId');
       await (_db.delete(
@@ -263,11 +262,19 @@ class DocumentsRepository {
       return null;
     } on DioException catch (e) {
       final failure = mapDioError(e);
+      if (failure is NotFoundFailure) {
+        await (_db.delete(
+          _db.folders,
+        )..where((folder) => folder.id.equals(folderId))).go();
+        return null;
+      }
       if (!_isTemporaryFailure(failure)) return failure;
 
-      await (_db.update(_db.folders)
-            ..where((folder) => folder.id.equals(folderId)))
-          .write(FoldersCompanion(deletedAt: Value(DateTime.now())));
+      if (row != null) {
+        await (_db.update(_db.folders)
+              ..where((folder) => folder.id.equals(folderId)))
+            .write(FoldersCompanion(deletedAt: Value(DateTime.now())));
+      }
       await _sync.queueDelete('folders', folderId);
       return null;
     }
@@ -534,6 +541,12 @@ class DocumentsRepository {
       return null;
     } on DioException catch (e) {
       final failure = mapDioError(e);
+      if (failure is NotFoundFailure) {
+        await (_db.delete(
+          _db.documents,
+        )..where((row) => row.id.equals(documentId))).go();
+        return null;
+      }
       if (existing != null && _isTemporaryFailure(failure)) {
         final nextContent =
             content ??
@@ -582,10 +595,6 @@ class DocumentsRepository {
     final row = await (_db.select(
       _db.documents,
     )..where((document) => document.id.equals(documentId))).getSingleOrNull();
-    if (row == null) return const NotFoundFailure();
-    await (_db.update(_db.documents)
-          ..where((document) => document.id.equals(documentId)))
-        .write(DocumentsCompanion(deletedAt: Value(DateTime.now())));
     try {
       await _dio.delete('/documents/$documentId');
       await (_db.delete(
@@ -594,13 +603,21 @@ class DocumentsRepository {
       return null;
     } on DioException catch (e) {
       final failure = mapDioError(e);
+      if (failure is NotFoundFailure) {
+        await (_db.delete(
+          _db.documents,
+        )..where((document) => document.id.equals(documentId))).go();
+        return null;
+      }
       if (_isTemporaryFailure(failure)) {
+        if (row != null) {
+          await (_db.update(_db.documents)
+                ..where((document) => document.id.equals(documentId)))
+              .write(DocumentsCompanion(deletedAt: Value(DateTime.now())));
+        }
         await _sync.queueDelete('documents', documentId);
         return null;
       }
-      await (_db.update(_db.documents)
-            ..where((document) => document.id.equals(documentId)))
-          .write(const DocumentsCompanion(deletedAt: Value(null)));
       return failure;
     }
   }
