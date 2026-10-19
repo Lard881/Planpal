@@ -193,6 +193,38 @@ void main() {
   });
 
   test(
+    'cached document detail is available without a network request',
+    () async {
+      await repository.getDocuments(_workspaceId);
+      requestPaths.clear();
+
+      final cached = await repository.getCachedDocument(_documentId);
+
+      expect(cached?.id, _documentId);
+      expect(requestPaths, isEmpty);
+    },
+  );
+
+  test('written documents are cached and queued before remote sync', () async {
+    mode = 'offline';
+
+    final (document, failure) = await repository.createWrittenDocument(
+      _workspaceId,
+      'Instant draft',
+    );
+
+    expect(failure, isNull);
+    expect(document, isNotNull);
+    final created = document!;
+    expect((await repository.getCachedDocument(created.id))?.id, created.id);
+    final queued = await (database.select(
+      database.outboxEntries,
+    )..where((entry) => entry.entityId.equals(created.id))).getSingle();
+    expect(queued.operation, 'create');
+    expect(queued.entityType, 'documents');
+  });
+
+  test(
     'successful folder and document lists prune stale cached rows',
     () async {
       await repository.getFolders(_workspaceId);

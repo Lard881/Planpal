@@ -13,7 +13,6 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:pdfrx/pdfrx.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/connectivity/connectivity_service.dart';
 import '../../../core/network/app_failure.dart';
@@ -46,12 +45,16 @@ const _folderIconColors = [
 
 class DocumentsScreen extends ConsumerWidget {
   final String? documentId;
-  const DocumentsScreen({super.key, this.documentId});
+  final DocumentModel? initialDocument;
+  const DocumentsScreen({super.key, this.documentId, this.initialDocument});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (documentId != null) {
-      return DocumentEditorScreen(documentId: documentId!);
+      return DocumentEditorScreen(
+        documentId: documentId!,
+        initialDocument: initialDocument,
+      );
     }
     return context.isDesktopLayout
         ? const _DesktopDocuments()
@@ -403,11 +406,11 @@ class _DesktopDocumentsState extends ConsumerState<_DesktopDocuments> {
               final title = ctrl.text.trim();
               if (title.isEmpty) return;
               Navigator.pop(dialogContext);
-              final (id, failure) = await ref
+              final (document, failure) = await ref
                   .read(documentsProvider.notifier)
                   .createWrittenDocument(title);
-              if (id != null && context.mounted) {
-                context.push('/documents/$id');
+              if (document != null && context.mounted) {
+                context.push('/documents/${document.id}', extra: document);
               } else if (failure != null && context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text(localizeFailureText(l10n, failure))),
@@ -606,7 +609,7 @@ class _RecentDocsGrid extends ConsumerWidget {
       itemBuilder: (_, i) {
         final doc = docs[i];
         return GestureDetector(
-          onTap: () => _openDocument(context, ref, doc),
+          onTap: () => _openDocument(context, doc),
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -789,127 +792,8 @@ class _DocumentUploadDialogState extends ConsumerState<_DocumentUploadDialog> {
   }
 }
 
-Future<void> _openDocument(
-  BuildContext context,
-  WidgetRef ref,
-  DocumentModel document,
-) async {
-  if (document.isWritten) {
-    context.push('/documents/${document.id}');
-    return;
-  }
-  if (document.fileId == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(AppLocalizations.of(context).errorGeneric)),
-    );
-    return;
-  }
-  if (!ref.read(isOnlineProvider)) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(AppLocalizations.of(context).taskAttachmentOffline),
-      ),
-    );
-    return;
-  }
-  final (url, failure) = await ref
-      .read(documentsRepositoryProvider)
-      .getDownloadUrl(document.fileId!);
-  if (!context.mounted) return;
-  if (failure != null || url == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          failure?.localizedMessage(context) ??
-              AppLocalizations.of(context).errorGeneric,
-        ),
-      ),
-    );
-    return;
-  }
-  final isTextFile =
-      document.mimeType?.startsWith('text/') == true ||
-      const {'txt', 'csv', 'md', 'log', 'json'}.contains(document.extension);
-  if (isTextFile && (document.sizeBytes ?? 0) <= 1024 * 1024) {
-    final (contents, contentFailure) = await ref
-        .read(documentsRepositoryProvider)
-        .getTextFileContents(url);
-    if (!context.mounted) return;
-    if (contentFailure != null || contents == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            contentFailure?.localizedMessage(context) ??
-                AppLocalizations.of(context).errorGeneric,
-          ),
-        ),
-      );
-      return;
-    }
-    await showDialog<void>(
-      context: context,
-      builder: (_) => Dialog(
-        child: SizedBox(
-          width: 720,
-          height: 600,
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  document.title,
-                  style: AppText.sectionTitle.copyWith(
-                    color: context.colors.textPrimary,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Expanded(
-                  child: SingleChildScrollView(child: SelectableText(contents)),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  } else if (document.isImage) {
-    await showDialog<void>(
-      context: context,
-      builder: (_) => Dialog(
-        child: InteractiveViewer(
-          child: Image.network(
-            url,
-            errorBuilder: (_, _, _) =>
-                Center(child: Text(AppLocalizations.of(context).errorGeneric)),
-          ),
-        ),
-      ),
-    );
-  } else if (document.mimeType == 'application/pdf' ||
-      document.extension == 'pdf') {
-    final size = MediaQuery.sizeOf(context);
-    await showDialog<void>(
-      context: context,
-      builder: (_) => Dialog(
-        child: SizedBox(
-          width: size.width * 0.8,
-          height: size.height * 0.85,
-          child: PdfViewer.uri(Uri.parse(url)),
-        ),
-      ),
-    );
-  } else {
-    final launched = await launchUrl(
-      Uri.parse(url),
-      mode: LaunchMode.externalApplication,
-    );
-    if (!launched && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context).errorGeneric)),
-      );
-    }
-  }
+void _openDocument(BuildContext context, DocumentModel document) {
+  context.push('/documents/${document.id}', extra: document);
 }
 
 Future<bool> _confirmDocumentDeletion(BuildContext context) async {
@@ -1014,7 +898,7 @@ void _showDocumentMenu(
             title: Text(l10n.btnOpen),
             onTap: () {
               Navigator.pop(sheetContext);
-              _openDocument(context, ref, document);
+              _openDocument(context, document);
             },
           ),
           if (document.isFile)
@@ -1510,7 +1394,7 @@ class _RecentDocsList extends ConsumerWidget {
                   Icon(LucideIcons.chevronRight, color: colors.textMuted),
                 ],
               ),
-              onTap: () => _openDocument(context, ref, document),
+              onTap: () => _openDocument(context, document),
             ),
           )
           .toList(),
@@ -1854,11 +1738,11 @@ class _MobileDocumentsState extends ConsumerState<_MobileDocuments> {
               final title = ctrl.text.trim();
               if (title.isEmpty) return;
               Navigator.pop(dialogContext);
-              final (id, failure) = await ref
+              final (document, failure) = await ref
                   .read(documentsProvider.notifier)
                   .createWrittenDocument(title);
-              if (id != null && context.mounted) {
-                context.push('/documents/$id');
+              if (document != null && context.mounted) {
+                context.push('/documents/${document.id}', extra: document);
               } else if (failure != null && context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text(localizeFailureText(l10n, failure))),
@@ -1882,7 +1766,7 @@ class _MobileDocRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.colors;
     return GestureDetector(
-      onTap: () => _openDocument(context, ref, doc),
+      onTap: () => _openDocument(context, doc),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
@@ -1915,10 +1799,18 @@ class _MobileDocRow extends StatelessWidget {
 // ── Document Editor ───────────────────────────────────────────────────────────
 class DocumentEditorScreen extends ConsumerWidget {
   final String documentId;
-  const DocumentEditorScreen({super.key, required this.documentId});
+  final DocumentModel? initialDocument;
+  const DocumentEditorScreen({
+    super.key,
+    required this.documentId,
+    this.initialDocument,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (initialDocument?.id == documentId) {
+      return _QuillEditorContent(doc: initialDocument!, widgetRef: ref);
+    }
     final docAsync = ref.watch(documentDetailProvider(documentId));
 
     return docAsync.when(
@@ -1963,6 +1855,8 @@ class _QuillEditorContentState extends State<_QuillEditorContent> {
   late TextEditingController _titleCtrl;
   late quill.QuillController _quillCtrl;
   bool _saving = false;
+  bool _dirty = false;
+  int _changeVersion = 0;
   Timer? _saveTimer;
   String _saveStatus = '';
   final _focusNode = FocusNode();
@@ -1988,6 +1882,8 @@ class _QuillEditorContentState extends State<_QuillEditorContent> {
     _quillCtrl.document.changes.listen((_) {
       if (mounted) {
         setState(() {
+          _dirty = true;
+          _changeVersion++;
           _saveStatus = AppLocalizations.of(context).documentWaitingToSync;
         });
         _saveTimer?.cancel();
@@ -2007,7 +1903,10 @@ class _QuillEditorContentState extends State<_QuillEditorContent> {
   }
 
   Future<void> _save() async {
+    if (!_dirty || _saving) return;
     _saveTimer?.cancel();
+    final savedVersion = _changeVersion;
+    final title = _titleCtrl.text.trim();
     setState(() {
       _saving = true;
       _saveStatus = AppLocalizations.of(context).documentSaving;
@@ -2018,7 +1917,7 @@ class _QuillEditorContentState extends State<_QuillEditorContent> {
         .read(documentsRepositoryProvider)
         .updateDocument(
           widget.doc.id,
-          title: _titleCtrl.text.trim(),
+          title: title,
           content: {'ops': deltaJson},
           contentText: plainText,
         );
@@ -2026,12 +1925,14 @@ class _QuillEditorContentState extends State<_QuillEditorContent> {
       final l10n = AppLocalizations.of(context);
       setState(() {
         _saving = false;
+        if (failure == null && savedVersion == _changeVersion) {
+          _dirty = false;
+        }
         _saveStatus = failure != null
             ? failure.localizedMessage(context)
-            : widget.widgetRef.read(isOnlineProvider)
-            ? l10n.documentSaved
             : l10n.documentSavedLocally;
       });
+      if (failure == null && _dirty) _scheduleSave();
     }
   }
 
@@ -2040,167 +1941,390 @@ class _QuillEditorContentState extends State<_QuillEditorContent> {
     final doc = widget.doc;
     final c = context.colors;
     final l10n = AppLocalizations.of(context);
-    return Scaffold(
-      backgroundColor: c.background,
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Header (fix F11 — no Share)
-            Container(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-              color: c.surface,
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () => context.pop(),
+    final isWritten = doc.isWritten;
+    final editorTitle = isWritten ? _titleCtrl.text : doc.title;
+    final navigator = Navigator.of(context);
+    return PopScope(
+      canPop: !_dirty && !_saving,
+      onPopInvokedWithResult: (didPop, _) async {
+        if (didPop) return;
+        await _save();
+        if (!mounted || _dirty || _saving) return;
+        await WidgetsBinding.instance.endOfFrame;
+        if (mounted && navigator.mounted && !_dirty && !_saving) {
+          navigator.pop();
+        }
+      },
+      child: Scaffold(
+        backgroundColor: c.background,
+        body: SafeArea(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
+                child: Row(
+                  children: [
+                    IconButton(
+                      tooltip: l10n.btnCancel,
+                      onPressed: () => context.pop(),
+                      icon: Icon(LucideIcons.arrowLeft, color: c.textMuted),
+                    ),
+                    const SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                        '${l10n.documentsTitle} / $editorTitle',
+                        style: AppText.body.copyWith(color: c.textMuted),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    if (isWritten && _saveStatus.isNotEmpty) ...[
+                      const SizedBox(width: 12),
+                      Flexible(
+                        child: Text(
+                          _saveStatus,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppText.caption.copyWith(
+                            color: _saveStatus == l10n.documentSavedLocally
+                                ? c.success
+                                : c.textMuted,
+                          ),
+                        ),
+                      ),
+                    ],
+                    const SizedBox(width: 12),
+                    if (isWritten)
+                      PlanPalButton(
+                        label: l10n.documentEditorSave,
+                        toolbar: true,
+                        loading: _saving,
+                        onPressed: _save,
+                      )
+                    else
+                      OutlinedButton.icon(
+                        onPressed: () =>
+                            _downloadDocument(context, widget.widgetRef, doc),
+                        icon: const Icon(LucideIcons.download, size: 16),
+                        label: Text(l10n.btnDownload),
+                      ),
+                  ],
+                ),
+              ),
+              if (isWritten)
+                Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 940),
                     child: Container(
-                      width: 36,
-                      height: 36,
+                      margin: const EdgeInsets.fromLTRB(24, 8, 24, 4),
                       decoration: BoxDecoration(
                         color: c.surface,
-                        borderRadius: BorderRadius.circular(AppRadius.control),
+                        borderRadius: BorderRadius.circular(20),
                         border: Border.all(color: c.border),
                       ),
-                      child: Icon(
-                        LucideIcons.arrowLeft,
-                        size: 18,
-                        color: c.textPrimary,
+                      child: quill.QuillSimpleToolbar(
+                        controller: _quillCtrl,
+                        config: const quill.QuillSimpleToolbarConfig(
+                          showFontFamily: false,
+                          showFontSize: false,
+                          showBackgroundColorButton: false,
+                          showColorButton: false,
+                          showAlignmentButtons: false,
+                          showIndent: false,
+                          showSubscript: false,
+                          showSuperscript: false,
+                          showSearchButton: false,
+                          showInlineCode: false,
+                          showCodeBlock: false,
+                          showSmallButton: false,
+                          showUndo: false,
+                          showRedo: false,
+                        ),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      '${l10n.documentsTitle} / ${doc.title}',
-                      style: AppText.body.copyWith(color: c.textMuted),
-                      overflow: TextOverflow.ellipsis,
+                ),
+              Expanded(
+                child: SingleChildScrollView(
+                  controller: _scrollCtrl,
+                  padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 940),
+                      child: isWritten
+                          ? Container(
+                              constraints: const BoxConstraints(minHeight: 430),
+                              decoration: BoxDecoration(
+                                color: c.surface,
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: c.border),
+                                boxShadow:
+                                    Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? const []
+                                    : [
+                                        BoxShadow(
+                                          color: c.textPrimary.withValues(
+                                            alpha: 0.06,
+                                          ),
+                                          blurRadius: 24,
+                                          offset: const Offset(0, 8),
+                                        ),
+                                      ],
+                              ),
+                              padding: const EdgeInsets.fromLTRB(
+                                32,
+                                28,
+                                32,
+                                32,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  TextField(
+                                    controller: _titleCtrl,
+                                    style: AppText.pageTitle.copyWith(
+                                      color: c.textPrimary,
+                                    ),
+                                    decoration: InputDecoration(
+                                      hintText: l10n.documentNewTitle,
+                                      hintStyle: AppText.pageTitle.copyWith(
+                                        color: c.textMuted,
+                                      ),
+                                      border: InputBorder.none,
+                                      filled: false,
+                                      contentPadding: EdgeInsets.zero,
+                                    ),
+                                    onChanged: (_) {
+                                      setState(() {
+                                        _dirty = true;
+                                        _changeVersion++;
+                                        _saveStatus =
+                                            l10n.documentWaitingToSync;
+                                      });
+                                      _scheduleSave();
+                                    },
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    [
+                                      DateFormat.yMMMd(
+                                        Localizations.localeOf(
+                                          context,
+                                        ).toString(),
+                                      ).format(doc.updatedAt),
+                                      if (doc.createdByName?.isNotEmpty == true)
+                                        doc.createdByName!,
+                                    ].join(' · '),
+                                    style: AppText.caption.copyWith(
+                                      color: c.textMuted,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 24),
+                                  quill.QuillEditor(
+                                    controller: _quillCtrl,
+                                    focusNode: _focusNode,
+                                    scrollController: _scrollCtrl,
+                                    config: quill.QuillEditorConfig(
+                                      placeholder:
+                                          l10n.documentEditorStartWriting,
+                                      scrollable: false,
+                                      autoFocus: false,
+                                      expands: false,
+                                      padding: EdgeInsets.zero,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : _UploadedFilePreview(
+                              document: doc,
+                              widgetRef: widget.widgetRef,
+                            ),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _scheduleSave() {
+    _saveTimer?.cancel();
+    _saveTimer = Timer(const Duration(seconds: 2), _save);
+  }
+}
+
+class _UploadedFilePreview extends ConsumerStatefulWidget {
+  final DocumentModel document;
+  final WidgetRef widgetRef;
+
+  const _UploadedFilePreview({required this.document, required this.widgetRef});
+
+  @override
+  ConsumerState<_UploadedFilePreview> createState() =>
+      _UploadedFilePreviewState();
+}
+
+class _UploadedFilePreviewState extends ConsumerState<_UploadedFilePreview> {
+  String? _downloadUrl;
+  String? _textContents;
+  AppFailure? _failure;
+  bool _loading = true;
+
+  bool get _isTextFile =>
+      widget.document.mimeType?.startsWith('text/') == true ||
+      const {
+        'txt',
+        'csv',
+        'md',
+        'log',
+        'json',
+      }.contains(widget.document.extension);
+  bool get _isPdf =>
+      widget.document.mimeType == 'application/pdf' ||
+      widget.document.extension == 'pdf';
+  bool get _isPreviewable =>
+      widget.document.isImage ||
+      _isPdf ||
+      (_isTextFile && (widget.document.sizeBytes ?? 0) <= 1024 * 1024);
+
+  @override
+  void initState() {
+    super.initState();
+    if (_isPreviewable) unawaited(_loadPreview());
+  }
+
+  Future<void> _loadPreview() async {
+    final fileId = widget.document.fileId;
+    if (fileId == null) {
+      setState(() {
+        _failure = const NotFoundFailure();
+        _loading = false;
+      });
+      return;
+    }
+    if (!widget.widgetRef.read(isOnlineProvider)) {
+      setState(() => _loading = false);
+      return;
+    }
+    final repository = widget.widgetRef.read(documentsRepositoryProvider);
+    final (url, urlFailure) = await repository.getDownloadUrl(fileId);
+    if (!mounted) return;
+    if (urlFailure != null || url == null) {
+      setState(() {
+        _failure = urlFailure ?? const UnknownFailure();
+        _loading = false;
+      });
+      return;
+    }
+    if (_isTextFile) {
+      final (contents, contentFailure) = await repository.getTextFileContents(
+        url,
+      );
+      if (!mounted) return;
+      setState(() {
+        _downloadUrl = url;
+        _textContents = contents;
+        _failure = contentFailure;
+        _loading = false;
+      });
+      return;
+    }
+    setState(() {
+      _downloadUrl = url;
+      _loading = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    final l10n = AppLocalizations.of(context);
+    final isOnline = ref.watch(isOnlineProvider);
+    ref.listen(isOnlineProvider, (previous, next) {
+      if (next && previous != true) {
+        setState(() => _loading = true);
+        unawaited(_loadPreview());
+      }
+    });
+    return Container(
+      constraints: const BoxConstraints(minHeight: 430),
+      decoration: BoxDecoration(
+        color: c.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: c.border),
+      ),
+      padding: const EdgeInsets.all(24),
+      child: !_isPreviewable
+          ? Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  FileTypeBadge(extension: widget.document.extension),
+                  const SizedBox(height: 16),
                   Text(
-                    _saveStatus,
-                    style: AppText.caption.copyWith(
-                      color:
-                          _saveStatus == l10n.documentSaved ||
-                              _saveStatus == l10n.documentSavedLocally
-                          ? c.success
-                          : c.textMuted,
-                    ),
+                    widget.document.title,
+                    style: AppText.sectionTitle.copyWith(color: c.textPrimary),
+                    textAlign: TextAlign.center,
                   ),
-                  const SizedBox(width: 8),
-                  PlanPalButton(
-                    label: l10n.documentEditorSave,
-                    toolbar: true,
-                    loading: _saving,
-                    onPressed: _save,
+                  const SizedBox(height: 16),
+                  OutlinedButton.icon(
+                    onPressed: () => _downloadDocument(
+                      context,
+                      widget.widgetRef,
+                      widget.document,
+                    ),
+                    icon: const Icon(LucideIcons.download, size: 16),
+                    label: Text(l10n.btnDownload),
                   ),
                 ],
               ),
-            ),
-            // Quill toolbar
-            Container(
-              decoration: BoxDecoration(
-                color: c.surface,
-                border: Border(
-                  bottom: BorderSide(color: c.border),
-                  top: BorderSide(color: c.border),
-                ),
+            )
+          : _loading
+          ? const Center(child: CircularProgressIndicator())
+          : _failure != null
+          ? Center(
+              child: Text(
+                _failure!.localizedMessage(context),
+                style: AppText.body.copyWith(color: c.textMuted),
+                textAlign: TextAlign.center,
               ),
-              child: quill.QuillSimpleToolbar(
-                controller: _quillCtrl,
-                config: const quill.QuillSimpleToolbarConfig(
-                  showFontFamily: false,
-                  showFontSize: false,
-                  showBackgroundColorButton: false,
-                  showColorButton: false,
-                  showAlignmentButtons: false,
-                  showIndent: false,
-                  showSubscript: false,
-                  showSuperscript: false,
-                  showSearchButton: false,
-                  showInlineCode: false,
-                  showCodeBlock: false,
-                  showSmallButton: false,
-                ),
+            )
+          : !isOnline
+          ? Center(
+              child: Text(
+                l10n.taskAttachmentOffline,
+                style: AppText.body.copyWith(color: c.textMuted),
               ),
-            ),
-            // Editor
-            Expanded(
-              child: SingleChildScrollView(
-                controller: _scrollCtrl,
-                padding: const EdgeInsets.all(24),
-                child: Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 700),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        TextField(
-                          controller: _titleCtrl,
-                          style: AppText.pageTitle.copyWith(
-                            color: c.textPrimary,
-                          ),
-                          decoration: InputDecoration(
-                            hintText: l10n.documentNewTitle,
-                            hintStyle: AppText.pageTitle.copyWith(
-                              color: c.textMuted,
-                            ),
-                            border: InputBorder.none,
-                            filled: false,
-                          ),
-                          onChanged: (_) {
-                            setState(
-                              () => _saveStatus = l10n.documentWaitingToSync,
-                            );
-                            _saveTimer?.cancel();
-                            _saveTimer = Timer(
-                              const Duration(seconds: 2),
-                              _save,
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          [
-                            DateFormat.yMMMd(
-                              Localizations.localeOf(context).toString(),
-                            ).format(doc.updatedAt),
-                            if (doc.createdByName?.isNotEmpty == true)
-                              doc.createdByName!,
-                          ].join(' · '),
-                          style: AppText.caption.copyWith(color: c.textMuted),
-                        ),
-                        const SizedBox(height: 24),
-                        Container(
-                          constraints: const BoxConstraints(minHeight: 300),
-                          decoration: BoxDecoration(
-                            color: c.surface,
-                            borderRadius: BorderRadius.circular(AppRadius.card),
-                            border: Border.all(color: c.border),
-                          ),
-                          padding: const EdgeInsets.all(16),
-                          child: quill.QuillEditor(
-                            controller: _quillCtrl,
-                            focusNode: _focusNode,
-                            scrollController: _scrollCtrl,
-                            config: quill.QuillEditorConfig(
-                              placeholder: l10n.documentEditorStartWriting,
-                              scrollable: false,
-                              autoFocus: false,
-                              expands: false,
-                              padding: EdgeInsets.zero,
-                            ),
-                          ),
-                        ),
-                      ],
+            )
+          : _isTextFile
+          ? SelectableText(
+              _textContents ?? '',
+              style: AppText.body.copyWith(color: c.textPrimary),
+            )
+          : _isPdf
+          ? SizedBox(
+              height: MediaQuery.sizeOf(context).height * 0.68,
+              child: PdfViewer.uri(Uri.parse(_downloadUrl!)),
+            )
+          : Center(
+              child: InteractiveViewer(
+                child: Image.network(
+                  _downloadUrl!,
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, _, _) => Center(
+                    child: Text(
+                      l10n.errorGeneric,
+                      style: AppText.body.copyWith(color: c.textMuted),
                     ),
                   ),
                 ),
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 }

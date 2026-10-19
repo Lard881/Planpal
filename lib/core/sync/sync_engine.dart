@@ -52,6 +52,8 @@ class SyncEngine extends StateNotifier<SyncState> {
   final Future<void> Function(String key, String value) _writeCheckpoint;
   Timer? _periodicTimer;
   bool _syncing = false;
+  bool _syncRequestedAgain = false;
+  String? _queuedWorkspaceId;
 
   SyncEngine(
     this._dio,
@@ -547,6 +549,10 @@ class SyncEngine extends StateNotifier<SyncState> {
           await (_db.delete(
             _db.folders,
           )..where((row) => row.id.equals(entityId))).go();
+        } else if (entry.operation == 'create' && entityType == 'documents') {
+          await (_db.delete(
+            _db.documents,
+          )..where((row) => row.id.equals(entityId))).go();
         } else if (entry.operation == 'update' &&
             (entityType == 'folders' || entityType == 'documents') &&
             payload['_previous'] is Map<String, dynamic>) {
@@ -595,7 +601,11 @@ class SyncEngine extends StateNotifier<SyncState> {
 
   // ── Full sync ────────────────────────────────────────────────────────────--
   Future<void> sync({String? workspaceId}) async {
-    if (_syncing) return;
+    if (_syncing) {
+      _syncRequestedAgain = true;
+      _queuedWorkspaceId = workspaceId ?? _queuedWorkspaceId;
+      return;
+    }
     _syncing = true;
     state = state.copyWith(status: SyncStatus.syncing);
 
@@ -608,6 +618,7 @@ class SyncEngine extends StateNotifier<SyncState> {
         _db.outboxEntries,
       )..where((t) => t.retryCount.equals(5))).get();
 
+      if (!mounted) return;
       state = state.copyWith(
         pendingCount: pending.length,
         failedCount: failed.length,
@@ -621,6 +632,7 @@ class SyncEngine extends StateNotifier<SyncState> {
       final remainingFailed = await (_db.select(
         _db.outboxEntries,
       )..where((t) => t.retryCount.equals(5))).get();
+      if (!mounted) return;
       state = state.copyWith(
         pendingCount: remainingPending.length,
         failedCount: remainingFailed.length,
@@ -631,18 +643,26 @@ class SyncEngine extends StateNotifier<SyncState> {
         await pull(workspaceId);
       }
 
+      if (!mounted) return;
       state = state.copyWith(
         status: SyncStatus.idle,
         lastSyncAt: DateTime.now(),
         clearError: true,
       );
     } catch (e) {
+      if (!mounted) return;
       state = state.copyWith(
         status: SyncStatus.failed,
         lastError: e.toString(),
       );
     } finally {
       _syncing = false;
+      if (_syncRequestedAgain && mounted) {
+        _syncRequestedAgain = false;
+        final nextWorkspaceId = _queuedWorkspaceId;
+        _queuedWorkspaceId = null;
+        await sync(workspaceId: nextWorkspaceId);
+      }
     }
   }
 

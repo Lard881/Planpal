@@ -1,6 +1,7 @@
 // app/lib/features/documents/data/documents_repository.dart
 import 'dart:io';
 import 'dart:convert';
+import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -231,6 +232,20 @@ class DocumentsRepository {
         .toList();
   }
 
+  Future<List<FolderModel>> getCachedFolders(
+    String workspaceId, {
+    String? parentId,
+  }) => _cachedFolders(workspaceId, parentId);
+
+  Future<List<DocumentModel>> getCachedDocuments(
+    String workspaceId, {
+    String? folderId,
+    bool recent = false,
+  }) => _cachedDocuments(workspaceId, folderId: folderId, recent: recent);
+
+  Future<DocumentModel?> getCachedDocument(String documentId) =>
+      _cachedDocumentById(documentId);
+
   // ── Folders ──────────────────────────────────────────────────────────────
   Future<(List<FolderModel>, AppFailure?)> getFolders(
     String workspaceId, {
@@ -304,34 +319,14 @@ class DocumentsRepository {
       updatedAt: now,
     );
     await _cacheFolder(localFolder);
-    try {
-      final res = await _dio.post(
-        '/workspaces/$workspaceId/folders',
-        data: {
-          'id': id,
-          'name': name,
-          if (parentId != null) 'parentId': parentId,
-        },
-      );
-      final folder = FolderModel.fromJson(
-        res.data['folder'] as Map<String, dynamic>,
-      );
-      await _cacheFolder(folder);
-      return (folder, null);
-    } on DioException catch (e) {
-      final failure = mapDioError(e);
-      if (_isTemporaryFailure(failure)) {
-        await _sync.queueCreate('workspaces/$workspaceId/folders', id, {
-          'id': id,
-          'workspaceId': workspaceId,
-          'name': name,
-          if (parentId != null) 'parentId': parentId,
-        });
-        return (localFolder, null);
-      }
-      await (_db.delete(_db.folders)..where((row) => row.id.equals(id))).go();
-      return (null, failure);
-    }
+    await _sync.queueCreate('workspaces/$workspaceId/folders', id, {
+      'id': id,
+      'workspaceId': workspaceId,
+      'name': name,
+      if (parentId != null) 'parentId': parentId,
+    });
+    unawaited(_sync.sync());
+    return (localFolder, null);
   }
 
   Future<AppFailure?> deleteFolder(String folderId) async {
@@ -557,51 +552,29 @@ class DocumentsRepository {
         {'insert': '\n'},
       ],
     };
-    try {
-      final res = await _dio.post(
-        '/workspaces/$workspaceId/documents',
-        data: {
-          'id': id,
-          'kind': 'written',
-          'title': title,
-          if (folderId != null) 'folderId': folderId,
-          'content': content,
-          'contentText': '',
-        },
-      );
-      final document = DocumentModel.fromJson(
-        res.data['document'] as Map<String, dynamic>,
-      );
-      await _cacheDocument(document);
-      return (document, null);
-    } on DioException catch (e) {
-      final failure = mapDioError(e);
-      if (_isTemporaryFailure(failure)) {
-        final document = DocumentModel(
-          id: id,
-          workspaceId: workspaceId,
-          folderId: folderId,
-          kind: 'written',
-          title: title,
-          content: content,
-          createdBy: '',
-          createdAt: now,
-          updatedAt: now,
-        );
-        await _cacheDocument(document);
-        await _sync.queueCreate('documents', id, {
-          'id': id,
-          'workspaceId': workspaceId,
-          'kind': 'written',
-          'title': title,
-          'folderId': folderId,
-          'content': content,
-          'contentText': '',
-        });
-        return (document, null);
-      }
-      return (null, failure);
-    }
+    final document = DocumentModel(
+      id: id,
+      workspaceId: workspaceId,
+      folderId: folderId,
+      kind: 'written',
+      title: title,
+      content: content,
+      createdBy: '',
+      createdAt: now,
+      updatedAt: now,
+    );
+    await _cacheDocument(document);
+    await _sync.queueCreate('documents', id, {
+      'id': id,
+      'workspaceId': workspaceId,
+      'kind': 'written',
+      'title': title,
+      'folderId': folderId,
+      'content': content,
+      'contentText': '',
+    });
+    unawaited(_sync.sync());
+    return (document, null);
   }
 
   Future<(DocumentModel?, AppFailure?)> createFileDocument(
@@ -659,68 +632,44 @@ class DocumentsRepository {
     final existing = await (_db.select(
       _db.documents,
     )..where((row) => row.id.equals(documentId))).getSingleOrNull();
-    final updatedAt = DateTime.now();
-    try {
-      final data = <String, dynamic>{};
-      if (title != null) data['title'] = title;
-      if (folderId != null) data['folderId'] = folderId;
-      if (moveToRoot) data['folderId'] = null;
-      if (content != null) data['content'] = content;
-      if (contentText != null) data['contentText'] = contentText;
-      final response = await _dio.patch('/documents/$documentId', data: data);
-      final document = DocumentModel.fromJson(
-        response.data['document'] as Map<String, dynamic>,
-      );
-      await _cacheDocument(document);
-      return null;
-    } on DioException catch (e) {
-      final failure = mapDioError(e);
-      if (failure is NotFoundFailure) {
-        if (existing != null) await _markDocumentDeleted(documentId);
-        return failure;
-      }
-      if (existing != null && _isTemporaryFailure(failure)) {
-        final nextContent =
-            content ??
-            (existing.content == null
-                ? null
-                : jsonDecode(existing.content!) as Map<String, dynamic>);
-        await (_db.update(
-          _db.documents,
-        )..where((row) => row.id.equals(documentId))).write(
-          DocumentsCompanion(
-            title: title == null ? const Value.absent() : Value(title),
-            folderId: moveToRoot
-                ? const Value(null)
-                : folderId == null
-                ? const Value.absent()
-                : Value(folderId),
-            content: nextContent == null
-                ? const Value.absent()
-                : Value(jsonEncode(nextContent)),
-            contentText: contentText == null
-                ? const Value.absent()
-                : Value(contentText),
-            updatedAt: Value(updatedAt),
-          ),
-        );
-        await _sync.queueUpdate('documents', documentId, {
-          if (title != null) 'title': title,
-          if (folderId != null || moveToRoot)
-            'folderId': moveToRoot ? null : folderId,
-          if (content != null) 'content': content,
-          if (contentText != null) 'contentText': contentText,
-          '_previous': {
-            'title': existing.title,
-            'folderId': existing.folderId,
-            'content': existing.content,
-            'contentText': existing.contentText,
-          },
-        });
-        return null;
-      }
-      return failure;
+    if (existing == null || existing.deletedAt != null) {
+      return const NotFoundFailure();
     }
+    final updatedAt = DateTime.now();
+    await (_db.update(
+      _db.documents,
+    )..where((row) => row.id.equals(documentId))).write(
+      DocumentsCompanion(
+        title: title == null ? const Value.absent() : Value(title),
+        folderId: moveToRoot
+            ? const Value(null)
+            : folderId == null
+            ? const Value.absent()
+            : Value(folderId),
+        content: content == null
+            ? const Value.absent()
+            : Value(jsonEncode(content)),
+        contentText: contentText == null
+            ? const Value.absent()
+            : Value(contentText),
+        updatedAt: Value(updatedAt),
+      ),
+    );
+    await _sync.queueUpdate('documents', documentId, {
+      if (title != null) 'title': title,
+      if (folderId != null || moveToRoot)
+        'folderId': moveToRoot ? null : folderId,
+      if (content != null) 'content': content,
+      if (contentText != null) 'contentText': contentText,
+      '_previous': {
+        'title': existing.title,
+        'folderId': existing.folderId,
+        'content': existing.content,
+        'contentText': existing.contentText,
+      },
+    });
+    unawaited(_sync.sync());
+    return null;
   }
 
   Future<AppFailure?> deleteDocument(String documentId) async {

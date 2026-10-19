@@ -13,6 +13,7 @@ import '../../features/tasks/presentation/tasks_screen.dart';
 import '../../features/calendar/presentation/calendar_screen.dart';
 import '../../features/chat/presentation/chat_screen.dart';
 import '../../features/documents/presentation/documents_screen.dart';
+import '../../features/documents/models/document_models.dart';
 import '../../features/analytics/presentation/analytics_screen.dart';
 import '../../features/team/presentation/team_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
@@ -162,8 +163,13 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: '/documents/:id',
-            builder: (context, state) =>
-                DocumentsScreen(documentId: state.pathParameters['id']),
+            builder: (context, state) {
+              final extra = state.extra;
+              return DocumentsScreen(
+                documentId: state.pathParameters['id'],
+                initialDocument: extra is DocumentModel ? extra : null,
+              );
+            },
           ),
           GoRoute(
             path: '/analytics',

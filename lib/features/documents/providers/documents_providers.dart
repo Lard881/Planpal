@@ -72,15 +72,34 @@ class DocumentsNotifier extends StateNotifier<DocumentsState> {
       currentFolderId: targetFolderId,
       clearCurrentFolder: targetFolderId == null,
     );
-    final (folders, fErr) = await _repo.getFolders(
+    final cachedFoldersFuture = _repo.getCachedFolders(
       workspaceId,
       parentId: targetFolderId,
     );
-    final (docs, dErr) = await _repo.getDocuments(
+    final cachedDocumentsFuture = _repo.getCachedDocuments(
       workspaceId,
       folderId: targetFolderId,
       recent: targetFolderId == null,
     );
+    final foldersFuture = _repo.getFolders(
+      workspaceId,
+      parentId: targetFolderId,
+    );
+    final documentsFuture = _repo.getDocuments(
+      workspaceId,
+      folderId: targetFolderId,
+      recent: targetFolderId == null,
+    );
+    final cachedFolders = await cachedFoldersFuture;
+    final cachedDocuments = await cachedDocumentsFuture;
+    if (generation != _loadGeneration) return;
+    state = state.copyWith(
+      folders: cachedFolders,
+      recentDocs: cachedDocuments,
+      loading: true,
+    );
+    final (folders, fErr) = await foldersFuture;
+    final (docs, dErr) = await documentsFuture;
     if (generation != _loadGeneration) return;
     state = state.copyWith(
       folders: folders,
@@ -222,7 +241,7 @@ class DocumentsNotifier extends StateNotifier<DocumentsState> {
     return null;
   }
 
-  Future<(String?, String?)> createWrittenDocument(String title) async {
+  Future<(DocumentModel?, String?)> createWrittenDocument(String title) async {
     final (doc, err) = await _repo.createWrittenDocument(
       workspaceId,
       title,
@@ -230,33 +249,43 @@ class DocumentsNotifier extends StateNotifier<DocumentsState> {
     );
     if (doc != null) {
       state = state.copyWith(recentDocs: [doc, ...state.recentDocs]);
-      return (doc.id, null);
+      return (doc, null);
     }
     return (null, err?.message);
   }
 
   Future<AppFailure?> deleteDocument(String documentId) async {
+    final previous = state.recentDocs
+        .where((document) => document.id == documentId)
+        .toList();
+    state = state.copyWith(
+      recentDocs: state.recentDocs
+          .where((document) => document.id != documentId)
+          .toList(),
+    );
     final failure = await _repo.deleteDocument(documentId);
-    if (failure == null) {
+    if (failure != null) {
       state = state.copyWith(
-        recentDocs: state.recentDocs
-            .where((document) => document.id != documentId)
-            .toList(),
+        recentDocs: [...state.recentDocs, ...previous],
+        error: failure.message,
       );
-    } else {
-      state = state.copyWith(error: failure.message);
     }
     return failure;
   }
 
   Future<AppFailure?> deleteFolder(String folderId) async {
+    final previous = state.folders
+        .where((folder) => folder.id == folderId)
+        .toList();
+    state = state.copyWith(
+      folders: state.folders.where((folder) => folder.id != folderId).toList(),
+    );
     final err = await _repo.deleteFolder(folderId);
-    if (err == null) {
+    if (err != null) {
       state = state.copyWith(
-        folders: state.folders.where((f) => f.id != folderId).toList(),
+        folders: [...state.folders, ...previous],
+        error: err.message,
       );
-    } else {
-      state = state.copyWith(error: err.message);
     }
     return err;
   }
@@ -270,8 +299,9 @@ final documentsProvider =
 
 final documentDetailProvider = FutureProvider.family
     .autoDispose<DocumentModel?, String>((ref, docId) async {
-      final (doc, _) = await ref
-          .watch(documentsRepositoryProvider)
-          .getDocument(docId);
+      final repository = ref.watch(documentsRepositoryProvider);
+      final cached = await repository.getCachedDocument(docId);
+      if (cached != null) return cached;
+      final (doc, _) = await repository.getDocument(docId);
       return doc;
     });
