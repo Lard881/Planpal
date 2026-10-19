@@ -250,7 +250,7 @@ class DocumentsNotifier extends StateNotifier<DocumentsState> {
   }
 
   Future<AppFailure?> deleteFolder(String folderId) async {
-    final err = await _repo.deleteFolder(workspaceId, folderId);
+    final err = await _repo.deleteFolder(folderId);
     if (err == null) {
       state = state.copyWith(
         folders: state.folders.where((f) => f.id != folderId).toList(),

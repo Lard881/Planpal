@@ -383,7 +383,7 @@ class _DesktopDocumentsState extends ConsumerState<_DesktopDocuments> {
     final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.panel),
         ),
@@ -395,16 +395,17 @@ class _DesktopDocumentsState extends ConsumerState<_DesktopDocuments> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(AppLocalizations.of(context).btnCancel),
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(l10n.btnCancel),
           ),
           FilledButton(
             onPressed: () async {
-              if (ctrl.text.trim().isEmpty) return;
-              Navigator.pop(context);
+              final title = ctrl.text.trim();
+              if (title.isEmpty) return;
+              Navigator.pop(dialogContext);
               final (id, failure) = await ref
                   .read(documentsProvider.notifier)
-                  .createWrittenDocument(ctrl.text.trim());
+                  .createWrittenDocument(title);
               if (id != null && context.mounted) {
                 context.push('/documents/$id');
               } else if (failure != null && context.mounted) {
@@ -826,7 +827,53 @@ Future<void> _openDocument(
     );
     return;
   }
-  if (document.mimeType?.startsWith('image/') == true) {
+  final isTextFile =
+      document.mimeType?.startsWith('text/') == true ||
+      const {'txt', 'csv', 'md', 'log', 'json'}.contains(document.extension);
+  if (isTextFile && (document.sizeBytes ?? 0) <= 1024 * 1024) {
+    final (contents, contentFailure) = await ref
+        .read(documentsRepositoryProvider)
+        .getTextFileContents(url);
+    if (!context.mounted) return;
+    if (contentFailure != null || contents == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            contentFailure?.localizedMessage(context) ??
+                AppLocalizations.of(context).errorGeneric,
+          ),
+        ),
+      );
+      return;
+    }
+    await showDialog<void>(
+      context: context,
+      builder: (_) => Dialog(
+        child: SizedBox(
+          width: 720,
+          height: 600,
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  document.title,
+                  style: AppText.sectionTitle.copyWith(
+                    color: context.colors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Expanded(
+                  child: SingleChildScrollView(child: SelectableText(contents)),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  } else if (document.isImage) {
     await showDialog<void>(
       context: context,
       builder: (_) => Dialog(
@@ -1790,7 +1837,7 @@ class _MobileDocumentsState extends ConsumerState<_MobileDocuments> {
     final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: Text(l10n.documentNewTitle),
         content: TextField(
           controller: ctrl,
@@ -1799,16 +1846,17 @@ class _MobileDocumentsState extends ConsumerState<_MobileDocuments> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext),
             child: Text(l10n.btnCancel),
           ),
           FilledButton(
             onPressed: () async {
-              if (ctrl.text.trim().isEmpty) return;
-              Navigator.pop(context);
+              final title = ctrl.text.trim();
+              if (title.isEmpty) return;
+              Navigator.pop(dialogContext);
               final (id, failure) = await ref
                   .read(documentsProvider.notifier)
-                  .createWrittenDocument(ctrl.text.trim());
+                  .createWrittenDocument(title);
               if (id != null && context.mounted) {
                 context.push('/documents/$id');
               } else if (failure != null && context.mounted) {

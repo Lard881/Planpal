@@ -127,7 +127,13 @@ class DocumentModel {
   }
 
   factory DocumentModel.fromJson(Map<String, dynamic> j) {
-    final file = j['file'] as Map<String, dynamic>?;
+    final rawFile = j['file'];
+    final file = switch (rawFile) {
+      Map<String, dynamic> value => value,
+      List value when value.isNotEmpty && value.first is Map<String, dynamic> =>
+        value.first as Map<String, dynamic>,
+      _ => null,
+    };
     final createdByProfile = j['created_by_profile'] as Map<String, dynamic>?;
     return DocumentModel(
       id: j['id'] as String,

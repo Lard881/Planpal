@@ -145,6 +145,18 @@ class DocumentsRepository {
     _db.outboxEntries,
   )..where((entry) => entry.entityId.equals(entityId))).get()).isNotEmpty;
 
+  Future<void> _markFolderDeleted(String folderId) async {
+    await (_db.update(_db.folders)
+          ..where((folder) => folder.id.equals(folderId)))
+        .write(FoldersCompanion(deletedAt: Value(DateTime.now())));
+  }
+
+  Future<void> _markDocumentDeleted(String documentId) async {
+    await (_db.update(_db.documents)
+          ..where((document) => document.id.equals(documentId)))
+        .write(DocumentsCompanion(deletedAt: Value(DateTime.now())));
+  }
+
   Future<List<FolderModel>> _cachedFolders(
     String workspaceId,
     String? parentId,
@@ -322,31 +334,20 @@ class DocumentsRepository {
     }
   }
 
-  Future<AppFailure?> deleteFolder(String workspaceId, String folderId) async {
-    final row = await (_db.select(
-      _db.folders,
-    )..where((folder) => folder.id.equals(folderId))).getSingleOrNull();
+  Future<AppFailure?> deleteFolder(String folderId) async {
     try {
-      await _dio.delete('/workspaces/$workspaceId/folders/$folderId');
-      await (_db.delete(
-        _db.folders,
-      )..where((folder) => folder.id.equals(folderId))).go();
+      await _dio.delete('/folders/$folderId');
+      await _markFolderDeleted(folderId);
       return null;
     } on DioException catch (e) {
       final failure = mapDioError(e);
       if (failure is NotFoundFailure) {
-        await (_db.delete(
-          _db.folders,
-        )..where((folder) => folder.id.equals(folderId))).go();
+        await _markFolderDeleted(folderId);
         return null;
       }
       if (!_isTemporaryFailure(failure)) return failure;
 
-      if (row != null) {
-        await (_db.update(_db.folders)
-              ..where((folder) => folder.id.equals(folderId)))
-            .write(FoldersCompanion(deletedAt: Value(DateTime.now())));
-      }
+      await _markFolderDeleted(folderId);
       await _sync.queueDelete('folders', folderId);
       return null;
     }
@@ -511,9 +512,7 @@ class DocumentsRepository {
     } on DioException catch (e) {
       final failure = mapDioError(e);
       if (failure is NotFoundFailure) {
-        await (_db.delete(
-          _db.documents,
-        )..where((item) => item.id.equals(documentId))).go();
+        await _markDocumentDeleted(documentId);
         return (null, failure);
       }
       final row =
@@ -677,9 +676,7 @@ class DocumentsRepository {
     } on DioException catch (e) {
       final failure = mapDioError(e);
       if (failure is NotFoundFailure) {
-        await (_db.delete(
-          _db.documents,
-        )..where((row) => row.id.equals(documentId))).go();
+        if (existing != null) await _markDocumentDeleted(documentId);
         return failure;
       }
       if (existing != null && _isTemporaryFailure(failure)) {
@@ -727,29 +724,18 @@ class DocumentsRepository {
   }
 
   Future<AppFailure?> deleteDocument(String documentId) async {
-    final row = await (_db.select(
-      _db.documents,
-    )..where((document) => document.id.equals(documentId))).getSingleOrNull();
     try {
       await _dio.delete('/documents/$documentId');
-      await (_db.delete(
-        _db.documents,
-      )..where((row) => row.id.equals(documentId))).go();
+      await _markDocumentDeleted(documentId);
       return null;
     } on DioException catch (e) {
       final failure = mapDioError(e);
       if (failure is NotFoundFailure) {
-        await (_db.delete(
-          _db.documents,
-        )..where((document) => document.id.equals(documentId))).go();
+        await _markDocumentDeleted(documentId);
         return null;
       }
       if (_isTemporaryFailure(failure)) {
-        if (row != null) {
-          await (_db.update(_db.documents)
-                ..where((document) => document.id.equals(documentId)))
-              .write(DocumentsCompanion(deletedAt: Value(DateTime.now())));
-        }
+        await _markDocumentDeleted(documentId);
         await _sync.queueDelete('documents', documentId);
         return null;
       }
@@ -837,6 +823,18 @@ class DocumentsRepository {
     try {
       final res = await _dio.get('/files/$fileId/download-url');
       return (res.data['downloadUrl'] as String, null);
+    } on DioException catch (e) {
+      return (null, mapDioError(e));
+    }
+  }
+
+  Future<(String?, AppFailure?)> getTextFileContents(String downloadUrl) async {
+    try {
+      final response = await Dio().get<String>(
+        downloadUrl,
+        options: Options(responseType: ResponseType.plain),
+      );
+      return (response.data, null);
     } on DioException catch (e) {
       return (null, mapDioError(e));
     }

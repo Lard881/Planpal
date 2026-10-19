@@ -53,6 +53,20 @@ Map<String, dynamic> _documentJson() => {
   'updated_at': '2026-01-02T12:00:00.000Z',
 };
 
+Map<String, dynamic> _fileDocumentJson() => {
+  ..._documentJson(),
+  'id': '66666666-6666-4666-8666-666666666666',
+  'kind': 'file',
+  'title': 'Design preview.png',
+  'file_id': '77777777-7777-4777-8777-777777777777',
+  'content': null,
+  'file': {
+    'mime_type': 'image/png',
+    'size_bytes': 2048,
+    'storage_path': 'workspace/design-preview.png',
+  },
+};
+
 void main() {
   late AppDatabase database;
   late Dio dio;
@@ -61,16 +75,19 @@ void main() {
   var mode = 'online';
   var documents = <Map<String, dynamic>>[];
   var folders = <Map<String, dynamic>>[];
+  var requestPaths = <String>[];
 
   setUp(() {
     mode = 'online';
     documents = [_documentJson()];
     folders = [_folderJson(), _childFolderJson()];
+    requestPaths = [];
     database = AppDatabase(NativeDatabase.memory());
     dio = Dio(BaseOptions(baseUrl: 'https://planpal.test/api/v1'));
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
+          requestPaths.add(options.path);
           if (mode == 'offline') {
             handler.reject(
               DioException(
@@ -106,6 +123,8 @@ void main() {
                 type: DioExceptionType.badResponse,
               ),
             );
+          } else if (options.method == 'DELETE') {
+            handler.resolve(Response(requestOptions: options, statusCode: 204));
           } else {
             handler.resolve(
               Response(
@@ -163,6 +182,16 @@ void main() {
     expect(cached.single.content?['ops'], isNotEmpty);
   });
 
+  test('uploaded file metadata remains distinct from written documents', () {
+    final fileDocument = DocumentModel.fromJson(_fileDocumentJson());
+
+    expect(fileDocument.isFile, isTrue);
+    expect(fileDocument.isWritten, isFalse);
+    expect(fileDocument.isImage, isTrue);
+    expect(fileDocument.mimeType, 'image/png');
+    expect(fileDocument.sizeBytes, 2048);
+  });
+
   test(
     'successful folder and document lists prune stale cached rows',
     () async {
@@ -213,8 +242,44 @@ void main() {
     final cached = await (database.select(
       database.documents,
     )..where((row) => row.id.equals(_documentId))).getSingleOrNull();
-    expect(cached, isNull);
+    expect(cached?.deletedAt, isNotNull);
   });
+
+  test(
+    'deleted files stay hidden when returning to the document list',
+    () async {
+      await repository.getDocuments(_workspaceId);
+
+      expect(await repository.deleteDocument(_documentId), isNull);
+      expect(requestPaths.last, '/documents/$_documentId');
+
+      final reopenedScreen = DocumentsNotifier(repository, _workspaceId);
+      await reopenedScreen.load();
+      expect(reopenedScreen.state.recentDocs, isEmpty);
+      reopenedScreen.dispose();
+
+      mode = 'offline';
+      expect((await repository.getDocuments(_workspaceId)).$1, isEmpty);
+    },
+  );
+
+  test(
+    'folder deletion uses the item route and stays hidden after re-entry',
+    () async {
+      await repository.getFolders(_workspaceId);
+
+      expect(await repository.deleteFolder(_folderId), isNull);
+      expect(requestPaths.last, '/folders/$_folderId');
+
+      final reopenedScreen = DocumentsNotifier(repository, _workspaceId);
+      await reopenedScreen.load();
+      expect(reopenedScreen.state.folders, isEmpty);
+      reopenedScreen.dispose();
+
+      mode = 'offline';
+      expect((await repository.getFolders(_workspaceId)).$1, isEmpty);
+    },
+  );
 
   test(
     'offline document deletion hides locally and restores on rejection',
